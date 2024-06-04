@@ -1,0 +1,481 @@
+#include "brendancuda_ai_mlpb_mlpbls.cuh"
+#include "brendancuda_binary_basic.cuh"
+#include "brendancuda_random_bits.cuh"
+
+__host__ __device__ uint64_t applyTargetFlipsTo1s_getEdits(uint64_t Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t rn1, uint32_t rn2) {
+    if (rn1 < FlipProb) {
+        uint32_t mrn = rn2 % CountOf1s;
+
+        for (uint64_t m = 1ui64; m; m <<= 1) {
+            if (m & Value) {
+                --mrn;
+                if (!mrn) {
+                    return m;
+                }
+            }
+        }
+    }
+    return 0;
+}
+__host__ __device__ uint32_t applyTargetFlipsTo1s_getEdits(uint32_t Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t rn1, uint32_t rn2) {
+    if (rn1 < FlipProb) {
+        uint32_t mrn = rn2 % CountOf1s;
+
+        for (uint32_t m = 1ui32; m; m <<= 1) {
+            if (m & Value) {
+                --mrn;
+                if (!mrn) {
+                    return m;
+                }
+            }
+        }
+    }
+    return 0;
+}
+__host__ __device__ uint16_t applyTargetFlipsTo1s_getEdits(uint16_t Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t rn1, uint32_t rn2) {
+    if (rn1 < FlipProb) {
+        uint32_t mrn = rn2 % CountOf1s;
+
+        for (uint16_t m = 1ui16; m; m <<= 1) {
+            if (m & Value) {
+                --mrn;
+                if (!mrn) {
+                    return m;
+                }
+            }
+        }
+    }
+    return 0;
+}
+__host__ __device__ uint8_t applyTargetFlipsTo1s_getEdits(uint8_t Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t rn1, uint32_t rn2) {
+    if (rn1 < FlipProb) {
+        uint32_t mrn = rn2 % CountOf1s;
+
+        for (uint8_t m = 1ui8; m; m <<= 1) {
+            if (m & Value) {
+                --mrn;
+                if (!mrn) {
+                    return m;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+__host__ __device__ uint64_t applyTargetFlips(uint64_t Value, uint32_t FlipProb, uint32_t rn1, uint32_t rn2, uint32_t rn3, uint32_t rn4) {
+    if (Value == 0) {
+        if (rn1 < FlipProb) {
+            return 1ui64 << (rn2 & 63);
+        }
+        return 0;
+    }
+    else if (Value == 0xFFFFFFFFFFFFFFFFui64) {
+        if (rn3 < FlipProb) {
+            return ~(1ui64 << (rn4 & 63));
+        }
+        return 0xFFFFFFFFFFFFFFFFui64;
+    }
+    else {
+        uint32_t v1c = BrendanCUDA::Binary::Count1s(Value);
+
+        return 
+            Value ^
+            applyTargetFlipsTo1s_getEdits(Value, v1c, FlipProb, rn1, rn2) ^
+            applyTargetFlipsTo1s_getEdits(~Value, 64 - v1c, FlipProb, rn3, rn4);
+    }
+}
+__host__ __device__ uint32_t applyTargetFlips(uint32_t Value, uint32_t FlipProb, uint32_t rn1, uint32_t rn2, uint32_t rn3, uint32_t rn4) {
+    if (Value == 0) {
+        if (rn1 < FlipProb) {
+            return 1ui32 << (rn2 & 31);
+        }
+        return 0;
+    }
+    else if (Value == 0xFFFFFFFFui32) {
+        if (rn3 < FlipProb) {
+            return ~(1ui32 << (rn4 & 31));
+        }
+        return 0xFFFFFFFFui32;
+    }
+    else {
+        uint32_t v1c = BrendanCUDA::Binary::Count1s(Value);
+
+        return 
+            Value ^
+            applyTargetFlipsTo1s_getEdits(Value, v1c, FlipProb, rn1, rn2) ^
+            applyTargetFlipsTo1s_getEdits(~Value, 32 - v1c, FlipProb, rn3, rn4);
+    }
+}
+__host__ __device__ uint16_t applyTargetFlips(uint16_t Value, uint32_t FlipProb, uint32_t rn1, uint32_t rn2, uint32_t rn3, uint32_t rn4) {
+    if (Value == 0) {
+        if (rn1 < FlipProb) {
+            return 1ui16 << (rn2 & 15);
+        }
+        return 0;
+    }
+    else if (Value == 0xFFFFui16) {
+        if (rn3 < FlipProb) {
+            return ~(1ui16 << (rn4 & 15));
+        }
+        return 0xFFFFui16;
+    }
+    else {
+        uint32_t v1c = BrendanCUDA::Binary::Count1s(Value);
+
+        return 
+            Value ^
+            applyTargetFlipsTo1s_getEdits(Value, v1c, FlipProb, rn1, rn2) ^
+            applyTargetFlipsTo1s_getEdits((uint16_t)~Value, 16 - v1c, FlipProb, rn3, rn4);
+    }
+}
+__host__ __device__ uint8_t applyTargetFlips(uint8_t Value, uint32_t FlipProb, uint32_t rn1, uint32_t rn2, uint32_t rn3, uint32_t rn4) {
+    if (Value == 0) {
+        if (rn1 < FlipProb) {
+            return 1ui8 << (rn2 & 7);
+        }
+        return 0;
+    }
+    else if (Value == 0xFFui8) {
+        if (rn3 < FlipProb) {
+            return ~(1ui8 << (rn4 & 7));
+        }
+        return 0xFFui8;
+    }
+    else {
+        uint32_t v1c = BrendanCUDA::Binary::Count1s(Value);
+
+        return 
+            Value ^
+            applyTargetFlipsTo1s_getEdits(Value, v1c, FlipProb, rn1, rn2) ^
+            applyTargetFlipsTo1s_getEdits((uint8_t)~Value, 8 - v1c, FlipProb, rn3, rn4);
+    }
+}
+
+__global__ void applyTargetFlipsOnArray_kernel(uint64_t* arr, uint32_t flipProb, uint64_t bs) {
+    uint64_t& v(arr[blockIdx.x]);
+
+    uint64_t rn64_1 = BrendanCUDA::Random::hashI64(BrendanCUDA::Random::getSeedOnKernel(bs));
+    uint64_t rn64_2 = BrendanCUDA::Random::hashI64(rn64_1 ^ 12210506935820558677);
+
+    uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
+    uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
+    uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
+    uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
+
+    v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+}
+__global__ void applyTargetFlipsOnArray_kernel(uint32_t* arr, uint32_t flipProb, uint64_t bs) {
+    uint32_t& v(arr[blockIdx.x]);
+
+    uint64_t rn64_1 = BrendanCUDA::Random::hashI64(BrendanCUDA::Random::getSeedOnKernel(bs));
+    uint64_t rn64_2 = BrendanCUDA::Random::hashI64(rn64_1 ^ 484654973014905267);
+
+    uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
+    uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
+    uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
+    uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
+
+    v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+}
+__global__ void applyTargetFlipsOnArray_kernel(uint16_t* arr, uint32_t flipProb, uint64_t bs) {
+    uint16_t& v(arr[blockIdx.x]);
+
+    uint64_t rn64_1 = BrendanCUDA::Random::hashI64(BrendanCUDA::Random::getSeedOnKernel(bs));
+    uint64_t rn64_2 = BrendanCUDA::Random::hashI64(rn64_1 ^ 3123193471197220784);
+
+    uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
+    uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
+    uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
+    uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
+
+    v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+}
+__global__ void applyTargetFlipsOnArray_kernel(uint8_t* arr, uint32_t flipProb, uint64_t bs) {
+    uint8_t& v(arr[blockIdx.x]);
+
+    uint64_t rn64_1 = BrendanCUDA::Random::hashI64(BrendanCUDA::Random::getSeedOnKernel(bs));
+    uint64_t rn64_2 = BrendanCUDA::Random::hashI64(rn64_1 ^ 11199430323554825400);
+
+    uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
+    uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
+    uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
+    uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
+
+    v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+}
+
+__host__ __device__ void applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::rngWState<uint64_t> rng) {
+#if IS_ON_HOST
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng.Run());
+#else
+    for (size_t i = 0; i < sz; ++i) {
+        uint64_t& v(arr[i]);
+
+        uint64_t rn64_1 = rng.Run();
+        uint64_t rn64_2 = rng.Run();
+
+        uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
+        uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
+        uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
+        uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
+
+        v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+    }
+#endif
+}
+__host__ __device__ void applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::rngWState<uint64_t> rng) {
+#if IS_ON_HOST
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng.Run());
+#else
+    for (size_t i = 0; i < sz; ++i) {
+        uint32_t& v(arr[i]);
+
+        uint64_t rn64_1 = rng.Run();
+        uint64_t rn64_2 = rng.Run();
+
+        uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
+        uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
+        uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
+        uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
+
+        v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+    }
+#endif
+}
+__host__ __device__ void applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::rngWState<uint64_t> rng) {
+#if IS_ON_HOST
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng.Run());
+#else
+    for (size_t i = 0; i < sz; ++i) {
+        uint16_t& v(arr[i]);
+
+        uint64_t rn64_1 = rng.Run();
+        uint64_t rn64_2 = rng.Run();
+
+        uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
+        uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
+        uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
+        uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
+
+        v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+    }
+#endif
+}
+__host__ __device__ void applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::rngWState<uint64_t> rng) {
+#if IS_ON_HOST
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng.Run());
+#else
+    for (size_t i = 0; i < sz; ++i) {
+        uint8_t& v(arr[i]);
+
+        uint64_t rn64_1 = rng.Run();
+        uint64_t rn64_2 = rng.Run();
+
+        uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
+        uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
+        uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
+        uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
+
+        v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+    }
+#endif
+}
+
+<# for (int i = 8; i <= 64; i <<= 1) { #>
+<# for (int j = 8; j <= 64; j <<= 1) { #>
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>() {
+#if IS_ON_DEVICE
+    weights = new uint<#= i #>_t[<#= j #>];
+    bias = new uint<#= j #>_t;
+#else
+    cudaMalloc(&weights, sizeof(uint<#= i #>_t) * <#= j #>);
+    cudaMalloc(&bias, sizeof(uint<#= j #>_t));
+#endif
+}
+__host__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>(uint<#= i #>_t* Weights, uint<#= j #>_t* Bias, bool CopyFromHost) {
+    cudaMalloc(&weights, sizeof(uint<#= i #>_t) * <#= j #>);
+    cudaMalloc(&bias, sizeof(uint<#= j #>_t));
+    auto t = CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice;
+    cudaMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>, t);
+    cudaMemcpy(bias, Bias, sizeof(uint<#= j #>_t), t);
+}
+__device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>(uint<#= i #>_t* Weights, uint<#= j #>_t* Bias) {
+    weights = new uint<#= i #>_t[<#= j #>];
+    bias = new uint<#= j #>_t;
+    deviceMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>);
+    *bias = *Bias;
+}
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>(uint<#= i #>_t* Weights, uint<#= j #>_t Bias)
+    : MLPBL<#= i #>T<#= j #>() {
+#if IS_ON_HOST
+    SetWeights(Weights, true);
+#else
+    SetWeights(Weights);
+#endif
+    SetBias(Bias);
+}
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Dispose() {
+#if IS_ON_HOST
+    cudaFree(weights);
+    cudaFree(bias);
+#else
+    delete [] weights;
+    delete [] bias;
+#endif
+}
+__host__ __device__ uint<#= i #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Weights() const {
+    return weights;
+}
+__host__ __device__ uint<#= i #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Weight(size_t Index) const {
+    return &weights[Index];
+}
+__host__ __device__ uint<#= j #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Bias() const {
+    return bias;
+}
+__host__ uint<#= i #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::GetWeights(bool CopyToHost) const {
+    if (CopyToHost) {
+        uint<#= i #>_t* output = new uint<#= i #>_t[<#= j #>];
+        cudaMemcpy(output, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToHost);
+        return output;
+    }
+    else {
+        uint<#= i #>_t* output;
+        cudaMalloc(&output, sizeof(uint<#= j #>_t) * <#= j #>);
+        cudaMemcpy(output, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToDevice);
+        return output;
+    }
+}
+__device__ uint<#= i #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::GetWeights() const {
+    uint<#= i #>_t* output = new uint<#= i #>_t[<#= j #>];
+    deviceMemcpy(output, weights, sizeof(uint<#= i #>_t) * <#= j #>);
+    return output;
+}
+__host__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetWeights(uint<#= i #>_t* Weights, bool CopyFromHost) {
+    cudaMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
+}
+__device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetWeights(uint<#= i #>_t* Weights) {
+    deviceMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>);
+}
+__host__ __device__ uint<#= i #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::GetWeight(size_t Index) const {
+#if IS_ON_DEVICE
+    return weights[Index];
+#else
+    uint<#= i #>_t output;
+    cudaMemcpy(&output, &weights[Index], sizeof(uint<#= i #>_t), cudaMemcpyDeviceToHost);
+    return output;
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetWeight(size_t Index, uint<#= i #>_t Weight) {
+#if IS_ON_DEVICE
+    weights[Index] = Weight;
+#else
+    cudaMemcpy(&weights[Index], &Weight, sizeof(uint<#= i #>_t), cudaMemcpyHostToDevice);
+#endif
+}
+__host__ __device__ uint<#= j #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::GetBias() const {
+#if IS_ON_DEVICE
+    return *bias;
+#else
+    uint<#= j #>_t output;
+    cudaMemcpy(&output, bias, sizeof(uint<#= j #>_t), cudaMemcpyDeviceToHost);
+    return output;
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetBias(uint<#= j #>_t Bias) {
+#if IS_ON_DEVICE
+    *bias = Bias;
+#else
+    cudaMemcpy(bias, &Bias, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice);
+#endif
+}
+__host__ __device__ uint<#= j #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Run(uint<#= i #>_t Input) const {
+#if IS_ON_DEVICE
+    uint<#= j #>_t o = 0i<#= j #>;
+<# for (int k = 0; k < i; ++k) { #>
+    if (Input & weights[<#= k #>])
+        o |= 0b<#= ("1" + new string('0', k)).PadLeft(i, '0') #>;
+<# } #>
+    return o ^ (*bias);
+#else
+    uint<#= j #>_t* hWeights = new uint<#= j #>_t[<#= i #>];
+    uint<#= j #>_t o;
+    cudaMemcpy(hWeights, weights, sizeof(uint<#= j #>_t) * <#= i #>, cudaMemcpyDeviceToHost);
+    cudaMemcpy(&o, bias, sizeof(uint<#= i #>_t), cudaMemcpyDeviceToHost);
+<# for (int k = 0; k < i; ++k) { #>
+    if (Input & hWeights[<#= k #>])
+        o |= 0b<#= ("1" + new string('0', k)).PadLeft(i, '0') #>;
+<# } #>
+    return o;
+#endif
+}
+__host__ __device__ uint64_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::RunG(uint64_t Input) const {
+    return (uint64_t)Run((uint<#= i #>_t)Input);
+}
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::CopyTo(MLPBL<#= i #>T<#= j #> Other) const {
+#if IS_ON_DEVICE
+    deviceMemcpy(Other.weights, weights, sizeof(uint<#= i #>_t) * <#= j #>);
+    deviceMemcpy(Other.bias, bias, sizeof(uint<#= j #>_t));
+#else
+    cudaMemcpy(Other.weights, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToDevice);
+    cudaMemcpy(Other.bias, bias, sizeof(uint<#= j #>_t), cudaMemcpyDeviceToDevice);
+#endif
+}
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Clone() const {
+    MLPBL<#= i #>T<#= j #> n = MLPBL<#= i #>T<#= j #>();
+    CopyTo(n);
+    return n;
+}
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::rngWState<uint64_t> rng) {
+    RandomizeArray(weights, 64, WeightsFlipProb, rng);
+    RandomizeArray(bias, 1, BiasFlipProb, rng);
+}
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::rngWState<uint64_t> rng) const {
+    MLPBL<#= i #>T<#= j #> n = Clone();
+    n.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, rng);
+    return n;
+}
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::rngWState<uint64_t> rng) {
+    applyTargetFlipsOnArray(weights, 64, WeightsEachFlipProb, rng);
+    RandomizeArray(bias, 1, BiasFlipProb, rng);
+}
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::rngWState<uint64_t> rng) const {
+    MLPBL<#= i #>T<#= j #> n = Clone();
+    n.RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, rng);
+    return n;
+}
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::rngWState<uint64_t> rng) {
+    for (uint32_t i = 0; i < 64; ++i) {
+        if (rng.Run() < WeightsMutationProb) {
+            uint<#= i #>_t v = (uint<#= i #>_t)BrendanCUDA::Random::Get64Bits(WeightsProbOf1, rng);
+
+#if __CUDA_ARCH__
+            deviceMemcpy(weights + i, &v, sizeof(uint<#= i #>_t));
+#else
+            cudaMemcpy(weights + i, &v, sizeof(uint<#= i #>_t), cudaMemcpyHostToDevice);
+#endif
+        }
+    }
+    if (rng.Run() < WeightsMutationProb) {
+        uint<#= j #>_t v = (uint<#= j #>_t)BrendanCUDA::Random::Get64Bits(BiasProbOf1, rng);
+        
+#if __CUDA_ARCH__
+        deviceMemcpy(bias, &v, sizeof(uint<#= j #>_t));
+#else
+        cudaMemcpy(bias, &v, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice);
+#endif
+    }
+}
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::rngWState<uint64_t> rng) const {
+    MLPBL<#= i #>T<#= j #> n = Clone();
+    n.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, rng);
+    return n;
+}
+//__host__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Serialize(std::basic_ostream<char>& Stream) {
+//
+//}
+//__host__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Deserialize(std::basic_istream<char>& Stream) {
+//
+//}
+<# } #>
+<# } #>

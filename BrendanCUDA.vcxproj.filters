@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="brendancuda_macros.cuh" />
+    <ClInclude Include="brendancuda_devicecopy.cuh" />
+    <ClInclude Include="brendancuda_ai_mlpb.cuh">
+      <Filter>AI\MLPB</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_mlpb_mlpbl.cuh">
+      <Filter>AI\MLPB</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_mlpb_mlpbls.cuh">
+      <Filter>AI\MLPB</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_fields_field3.cuh">
+      <Filter>Fields</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_evolution_evolver.h">
+      <Filter>AI\Evolution</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_mlp.cuh">
+      <Filter>AI\MLP</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_mlp_mlpl.cuh">
+      <Filter>AI\MLP</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_genetics_genemlp.cuh">
+      <Filter>AI\Genetics</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai.cuh">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_fields_dfield3.cuh">
+      <Filter>Fields</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_serialization_arrays.cuh">
+      <Filter>Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_random_rngfunc.cuh">
+      <Filter>Random</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_random_devicerandom.cuh">
+      <Filter>Random</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_random_sseed.cuh">
+      <Filter>Random</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_random_bits.cuh">
+      <Filter>Random</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_binary_basic.cuh" />
+    <ClInclude Include="brendancuda_ai_evolution_evaluation_output.h">
+      <Filter>AI\Evolution\Evaluation\Output</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_evolution_evaluation_multipleevals.h">
+      <Filter>AI\Evolution\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_evolution.h">
+      <Filter>AI\Evolution</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h">
+      <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h">
+      <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls_H.tt">
+      <Filter>AI\MLPB</Filter>
+    </CustomBuild>
+    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.tt">
+      <Filter>AI\MLPB</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Fields">
+      <UniqueIdentifier>{b56075d7-9c2e-4d47-939d-10dcd496f493}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{c1b12faf-5c1b-4185-a259-39e36db021fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\MLPB">
+      <UniqueIdentifier>{fc38189c-3d12-4b1b-8fe6-85b6084c4cdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Evolution">
+      <UniqueIdentifier>{26b939c8-4823-457f-9cd9-32856e0598eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\MLP">
+      <UniqueIdentifier>{912494ca-a88d-4457-8472-bf9fc8bf0767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Genetics">
+      <UniqueIdentifier>{ce47f0e1-0ba0-4a74-978d-297a10635a19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Serialization">
+      <UniqueIdentifier>{935cd872-ac50-40a9-8efb-8a9f32e3c3e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Random">
+      <UniqueIdentifier>{0bd788c8-6a74-49a0-96b9-dbc38b4bedb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Evolution\Evaluation">
+      <UniqueIdentifier>{62fb3aff-7b01-4a99-8bc8-1dbbb7cf6d5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Evolution\Evaluation\Output">
+      <UniqueIdentifier>{bcf89ce9-1e7e-4c0c-9fe9-87888ae7836e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Evolution\Evaluation\Output\Implementations">
+      <UniqueIdentifier>{7eba125d-403b-46d0-84cb-00c7f4574aad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="brendancuda_ai_evolution_evolver.cpp">
+      <Filter>AI\Evolution</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_ai_genetics_genemlp.cu">
+      <Filter>AI\Genetics</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_ai_mlpb.cu">
+      <Filter>AI\MLPB</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_ai_mlp.cu">
+      <Filter>AI\MLP</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_ai_mlp_mlpl.cu">
+      <Filter>AI\MLP</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_ai_mlpb_mlpbl.cu">
+      <Filter>AI\MLPB</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_ai_mlpb_mlpbls.cu">
+      <Filter>AI\MLPB</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_ai.cu">
+      <Filter>AI</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_random_bits.cu">
+      <Filter>Random</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_random_devicerandom.cu">
+      <Filter>Random</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_random_rngfunc.cu">
+      <Filter>Random</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_random_sseed.cu">
+      <Filter>Random</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_serialization_arrays.cu">
+      <Filter>Serialization</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_binary_basic.cu" />
+    <CudaCompile Include="brendancuda_devicecopy.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp">
+      <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
+    </ClCompile>
+    <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.cpp">
+      <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
