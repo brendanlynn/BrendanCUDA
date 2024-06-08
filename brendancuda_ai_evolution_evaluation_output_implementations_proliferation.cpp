@@ -83,42 +83,47 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProli
         }
         for (size_t j = 0; j < sd.iterationsPerRound; ++j) {
             T* r = oi.IterateInstance(vs);
-            T dev_t = 0;
             for (size_t k = 0; k < sd.outputCount; ++k) {
-                T iv = !(r[k] ^ rndVal);
+                T iv = sd.mask & ~(r[k] ^ rndVal);
                 if (std::is_same<int8_t, T>::value || std::is_same<uint8_t, T>::value) {
-                    iv = BrendanCUDA::Binary::Count1s((uint8_t)iv);
+                    t += BrendanCUDA::Binary::Count1s((uint8_t)iv);
                 }
                 else if (std::is_same<int16_t, T>::value || std::is_same<uint16_t, T>::value) {
-                    iv = BrendanCUDA::Binary::Count1s((uint16_t)iv);
+                    t += BrendanCUDA::Binary::Count1s((uint16_t)iv);
                 }
                 else if (std::is_same<int32_t, T>::value || std::is_same<uint32_t, T>::value) {
-                    iv = BrendanCUDA::Binary::Count1s((uint32_t)iv);
+                    t += BrendanCUDA::Binary::Count1s((uint32_t)iv);
                 }
                 else if (std::is_same<int64_t, T>::value || std::is_same<uint64_t, T>::value) {
-                    iv = BrendanCUDA::Binary::Count1s((uint64_t)iv);
+                    t += BrendanCUDA::Binary::Count1s((uint64_t)iv);
                 }
                 else {
                     throw std::exception();
                 }
-                dev_t += iv;
             }
             delete[] r;
-            t += dev_t;
         }
         delete[] vs;
     }
-    return (float)t;
+    T mc;
+    if (std::is_same<int8_t, T>::value || std::is_same<uint8_t, T>::value) {
+        mc = BrendanCUDA::Binary::Count1s((uint8_t)sd.mask);
+    }
+    else if (std::is_same<int16_t, T>::value || std::is_same<uint16_t, T>::value) {
+        mc = BrendanCUDA::Binary::Count1s((uint16_t)sd.mask);
+    }
+    else if (std::is_same<int32_t, T>::value || std::is_same<uint32_t, T>::value) {
+        mc = BrendanCUDA::Binary::Count1s((uint32_t)sd.mask);
+    }
+    else if (std::is_same<int64_t, T>::value || std::is_same<uint64_t, T>::value) {
+        mc = BrendanCUDA::Binary::Count1s((uint64_t)sd.mask);
+    }
+    else {
+        throw std::exception();
+    }
+    return (float)t / (float)((uint64_t)mc * sd.iterationsPerRound * sd.roundCount * sd.outputCount);
 }
 
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint8_t>(void*, void*);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<int8_t>(void*, void*);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint16_t>(void*, void*);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<int16_t>(void*, void*);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint32_t>(void*, void*);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<int32_t>(void*, void*);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint64_t>(void*, void*);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<int64_t>(void*, void*);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint8_t>(void*, void*);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<int8_t>(void*, void*);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint16_t>(void*, void*);

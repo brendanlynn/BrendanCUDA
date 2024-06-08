@@ -14,7 +14,7 @@ namespace BrendanCUDA {
                         template <typename T>
                         struct evalUniqueValues_sd final {
                             instanceFunctions_t<T> instanceFunctions;
-                            size_t iterationCount;
+                            uint64_t iterationCount;
                             size_t outputCount;
                             bool individual;
                             void* sd_ci;

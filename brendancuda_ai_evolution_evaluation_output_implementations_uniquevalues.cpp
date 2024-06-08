@@ -11,7 +11,7 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqu
         for (size_t i = 0; i < sd.outputCount; ++i) {
             s[i] = std::unordered_set<T>();
         }
-        for (size_t i = 0; i < sd.iterationCount; ++i) {
+        for (uint64_t i = 0; i < sd.iterationCount; ++i) {
             T* o = oi.IterateInstance(0);
             for (size_t j = 0; j < sd.outputCount; ++j) {
                 s[j].insert(o[j]);
@@ -28,7 +28,7 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqu
     }
     else {
         std::unordered_set<T> s;
-        for (size_t i = 0; i < sd.iterationCount; ++i) {
+        for (uint64_t i = 0; i < sd.iterationCount; ++i) {
             T* o = oi.IterateInstance(0);
             for (size_t j = 0; j < sd.outputCount; ++j) {
                 s.insert(o[j]);
