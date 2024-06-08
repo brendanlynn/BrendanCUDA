@@ -206,7 +206,7 @@ __global__ void applyTargetFlipsOnArray_kernel(uint8_t* arr, uint32_t flipProb, 
 }
 
 __host__ __device__ void applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::rngWState<uint64_t> rng) {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng.Run());
 #else
     for (size_t i = 0; i < sz; ++i) {
@@ -225,7 +225,7 @@ __host__ __device__ void applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint6
 #endif
 }
 __host__ __device__ void applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::rngWState<uint64_t> rng) {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng.Run());
 #else
     for (size_t i = 0; i < sz; ++i) {
@@ -244,7 +244,7 @@ __host__ __device__ void applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint6
 #endif
 }
 __host__ __device__ void applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::rngWState<uint64_t> rng) {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng.Run());
 #else
     for (size_t i = 0; i < sz; ++i) {
@@ -263,7 +263,7 @@ __host__ __device__ void applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint6
 #endif
 }
 __host__ __device__ void applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::rngWState<uint64_t> rng) {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng.Run());
 #else
     for (size_t i = 0; i < sz; ++i) {
@@ -285,7 +285,7 @@ __host__ __device__ void applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64
 <# for (int i = 8; i <= 64; i <<= 1) { #>
 <# for (int j = 8; j <= 64; j <<= 1) { #>
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>() {
-#if IS_ON_DEVICE
+#if __CUDA_ARCH__
     weights = new uint<#= i #>_t[<#= j #>];
     bias = new uint<#= j #>_t;
 #else
@@ -308,7 +308,7 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>(uint<#= i #>_t* Weights, uint<#= j #>_t Bias)
     : MLPBL<#= i #>T<#= j #>() {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     SetWeights(Weights, true);
 #else
     SetWeights(Weights);
@@ -316,7 +316,7 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Dispose() {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     cudaFree(weights);
     cudaFree(bias);
 #else
@@ -358,7 +358,7 @@ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetWeights(uint<#
     deviceMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>);
 }
 __host__ __device__ uint<#= i #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::GetWeight(size_t Index) const {
-#if IS_ON_DEVICE
+#if __CUDA_ARCH__
     return weights[Index];
 #else
     uint<#= i #>_t output;
@@ -367,14 +367,14 @@ __host__ __device__ uint<#= i #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>
 #endif
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetWeight(size_t Index, uint<#= i #>_t Weight) {
-#if IS_ON_DEVICE
+#if __CUDA_ARCH__
     weights[Index] = Weight;
 #else
     cudaMemcpy(&weights[Index], &Weight, sizeof(uint<#= i #>_t), cudaMemcpyHostToDevice);
 #endif
 }
 __host__ __device__ uint<#= j #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::GetBias() const {
-#if IS_ON_DEVICE
+#if __CUDA_ARCH__
     return *bias;
 #else
     uint<#= j #>_t output;
@@ -383,14 +383,14 @@ __host__ __device__ uint<#= j #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>
 #endif
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetBias(uint<#= j #>_t Bias) {
-#if IS_ON_DEVICE
+#if __CUDA_ARCH__
     *bias = Bias;
 #else
     cudaMemcpy(bias, &Bias, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice);
 #endif
 }
 __host__ __device__ uint<#= j #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Run(uint<#= i #>_t Input) const {
-#if IS_ON_DEVICE
+#if __CUDA_ARCH__
     uint<#= j #>_t o = 0i<#= j #>;
 <# for (int k = 0; k < i; ++k) { #>
     if (Input & weights[<#= k #>])
@@ -413,7 +413,7 @@ __host__ __device__ uint64_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::RunG
     return (uint64_t)Run((uint<#= i #>_t)Input);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::CopyTo(MLPBL<#= i #>T<#= j #> Other) const {
-#if IS_ON_DEVICE
+#if __CUDA_ARCH__
     deviceMemcpy(Other.weights, weights, sizeof(uint<#= i #>_t) * <#= j #>);
     deviceMemcpy(Other.bias, bias, sizeof(uint<#= j #>_t));
 #else

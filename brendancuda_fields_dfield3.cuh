@@ -64,7 +64,7 @@ __host__ __device__ BrendanCUDA::Fields::DField3<T>::DField3(uint32_t LengthX, u
         lengthX = LengthX;
         lengthY = LengthY;
         lengthZ = LengthZ;
-#if IS_ON_DEVICE
+#if __CUDA_ARCH__
         size_t l = (size_t)LengthX * (size_t)LengthY * (size_t)LengthZ;
         cudaArrayF = new T[l];
         cudaArrayB = new T[l];
@@ -105,7 +105,7 @@ __host__ BrendanCUDA::Fields::DField3<T>::DField3(uint32_t LengthX, uint32_t Len
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<T>::Dispose() {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     cudaFree(cudaArrayF);
     cudaFree(cudaArrayB);
 #else

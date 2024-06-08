@@ -6,7 +6,6 @@
 #include <limits>
 #include <random>
 #include "brendancuda_devicecopy.cuh"
-#include "brendancuda_macros.cuh"
 #include "brendancuda_ai.cuh"
 #include "brendancuda_random_devicerandom.cuh"
 #include "brendancuda_random_rngfunc.cuh"

@@ -3,7 +3,6 @@
 #include <memory>
 #include "brendancuda_ai_mlpb_mlpbl.cuh"
 #include "brendancuda_random_rngfunc.cuh"
-#include "brendancuda_macros.cuh"
 
 namespace BrendanCUDA {
     namespace AI {

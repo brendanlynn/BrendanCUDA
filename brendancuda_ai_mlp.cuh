@@ -3,7 +3,6 @@
 #include "brendancuda_ai_mlp_mlpl.cuh"
 #include "brendancuda_devicecopy.cuh"
 #include "brendancuda_random_rngfunc.cuh"
-#include "brendancuda_macros.cuh"
 
 namespace BrendanCUDA {
     namespace AI {

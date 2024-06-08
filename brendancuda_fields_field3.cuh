@@ -4,7 +4,6 @@
 #include <device_launch_parameters.h>
 #include <memory>
 
-#include "brendancuda_macros.cuh"
 #include "brendancuda_devicecopy.cuh"
 
 namespace BrendanCUDA {
@@ -360,7 +359,7 @@ __host__ __device__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_t LengthX, uin
         lengthX = LengthX;
         lengthY = LengthY;
         lengthZ = LengthZ;
-#if IS_ON_DEVICE
+#if __CUDA_ARCH__
         cudaArray = new T[LengthX * LengthY * LengthZ];
 #else
         cudaError_t e = cudaMalloc(&cudaArray, SizeOnGPU());
@@ -524,7 +523,7 @@ __host__ void BrendanCUDA::Fields::Field3<T>::SetAll(T* All, bool CopyFromHost) 
 template <typename T>
 __host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(size_t Index) const {
     T v;
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     CopyValueOut(Index, &v, true);
 #else
     CopyValueOut(Index, &v);
@@ -538,7 +537,7 @@ __host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint3 Coordinat
 template <typename T>
 __host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint32_t X, uint32_t Y, uint32_t Z) const {
     T v;
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     CopyValueOut(X, Y, Z, &v, true);
 #else
     CopyValueOut(X, Y, Z, &v);
@@ -547,7 +546,7 @@ __host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint32_t X, uin
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(size_t Index, T Value) {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     CopyValueIn(Index, &Value, true);
 #else
     CopyValueIn(Index, &Value);
@@ -559,7 +558,7 @@ __host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(uint3 Coordi
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(uint32_t X, uint32_t Y, uint32_t Z, T Value) {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     CopyValueIn(X, Y, Z, &Value, true);
 #else
     CopyValueIn(X, Y, Z, &Value);
@@ -567,7 +566,7 @@ __host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(uint32_t X, 
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::Field3<T>::Dispose() {
-#if IS_ON_HOST
+#if !__CUDA_ARCH__
     cudaFree(cudaArray);
 #else
     delete[] cudaArray;

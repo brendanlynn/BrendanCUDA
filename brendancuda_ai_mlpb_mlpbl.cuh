@@ -5,7 +5,6 @@
 
 #include "brendancuda_ai_mlpb_mlpbls.cuh"
 #include "brendancuda_random_rngfunc.cuh"
-#include "brendancuda_macros.cuh"
 
 typedef int8_t data16[16];
 

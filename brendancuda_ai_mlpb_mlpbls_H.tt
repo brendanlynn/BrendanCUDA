@@ -3,7 +3,6 @@
 #include <cuda_runtime.h>
 #include <memory>
 #include "brendancuda_devicecopy.cuh"
-#include "brendancuda_macros.cuh"
 #include "brendancuda_random_rngfunc.cuh"
 #include "brendancuda_ai.cuh"
 

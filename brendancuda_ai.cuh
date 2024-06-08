@@ -6,7 +6,6 @@
 #include "brendancuda_random_sseed.cuh"
 #include "brendancuda_random_bits.cuh"
 #include "brendancuda_random_rngfunc.cuh"
-#include "brendancuda_macros.cuh"
 #include <limits>
 
 namespace BrendanCUDA {
