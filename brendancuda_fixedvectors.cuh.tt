@@ -15,6 +15,7 @@ namespace BrendanCUDA {
             struct { <#= tn #> x, y<# if (j > 2) { #>, z<# if (j > 3) { #>, w<# } } #>; };
             <#= tn #> v[<#= j #>];
         };
+        __host__ __device__ <#= t #>_<#= j #>();
         __host__ __device__ <#= t #>_<#= j #>(<#= tn #> x, <#= tn #> y<# if (j > 2) { #>, <#= tn #> z<# if (j > 3) { #>, <#= tn #> w<# } } #>);
         __host__ __device__ <#= t #>_<#= j #>(<#= tn #> v[<#= j #>]);
         __host__ __device__ <#= t #>_<#= j #> operator+(<#= t #>_<#= j #> other);

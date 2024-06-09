@@ -6,6 +6,15 @@
 <# string t = ts[i]; #>
 <# string tn = i >= 2 ? t + "_t" : t; #>
 <# for (int j = 2; j <= 4; ++j) { #>
+__host__ __device__ BrendanCUDA::<#= t #>_<#= j #>::<#= t #>_<#= j #>() {
+    x = 0;
+    y = 0;
+<# if (j > 2) { #>
+    z = 0;
+<# if (j > 3) { #>
+    w = 0;
+<# } } #>
+}
 __host__ __device__ BrendanCUDA::<#= t #>_<#= j #>::<#= t #>_<#= j #>(<#= tn #> x, <#= tn #> y<# if (j > 2) { #>, <#= tn #> z<# if (j > 3) { #>, <#= tn #> w<# } } #>) {
     this->x = x;
     this->y = y;
