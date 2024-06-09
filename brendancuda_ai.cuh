@@ -5,7 +5,7 @@
 #include "brendancuda_random_devicerandom.cuh"
 #include "brendancuda_random_sseed.cuh"
 #include "brendancuda_random_bits.cuh"
-#include "brendancuda_random_rngfunc.cuh"
+#include "brendancuda_random_anyrng.cuh"
 #include <limits>
 
 namespace BrendanCUDA {
@@ -14,42 +14,42 @@ namespace BrendanCUDA {
         using activationFunction_t = T(*)(T);
 
         __global__ void RandomizeArrayKernel(float* Array, float Scalar, uint64_t Seed);
-        __host__ __device__ void RandomizeArray(float* Array, size_t Length, float Scalar, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void RandomizeArray(float* Array, size_t Length, float Scalar, Random::AnyRNG<uint64_t> rng);
         __global__ void RandomizeArrayKernel(float* Array, float Scalar, float LowerBound, float UpperBound, uint64_t Seed);
-        __host__ __device__ void RandomizeArray(float* Array, size_t Length, float Scalar, float LowerBound, float UpperBound, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void RandomizeArray(float* Array, size_t Length, float Scalar, float LowerBound, float UpperBound, Random::AnyRNG<uint64_t> rng);
 
         __global__ void RandomizeArrayKernel(double* Array, double Scalar, uint64_t Seed);
-        __host__ __device__ void RandomizeArray(double* Array, size_t Length, double Scalar, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void RandomizeArray(double* Array, size_t Length, double Scalar, Random::AnyRNG<uint64_t> rng);
         __global__ void RandomizeArrayKernel(double* Array, double Scalar, double LowerBound, double UpperBound, uint64_t Seed);
-        __host__ __device__ void RandomizeArray(double* Array, size_t Length, double Scalar, double LowerBound, double UpperBound, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void RandomizeArray(double* Array, size_t Length, double Scalar, double LowerBound, double UpperBound, Random::AnyRNG<uint64_t> rng);
 
         __global__ void RandomizeArrayKernel(uint64_t* Array, uint32_t ProbabilityOf1, uint64_t Seed);
-        __host__ __device__ void RandomizeArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::rngWState<uint64_t> rng);
-        __host__ __device__ void RandomizeArray(uint32_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::rngWState<uint64_t> rng);
-        __host__ __device__ void RandomizeArray(uint16_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::rngWState<uint64_t> rng);
-        __host__ __device__ void RandomizeArray(uint8_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void RandomizeArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng);
+        __host__ __device__ void RandomizeArray(uint32_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng);
+        __host__ __device__ void RandomizeArray(uint16_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng);
+        __host__ __device__ void RandomizeArray(uint8_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng);
 
         __global__ void InitRandomArrayKernel(float* Array, uint64_t Seed);
-        __host__ __device__ void InitRandomArray(float* Array, size_t Length, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(float* Array, size_t Length, Random::AnyRNG<uint64_t> rng);
         __global__ void InitRandomArrayKernel(float* Array, float LowerBound, float UpperBound, uint64_t Seed);
-        __host__ __device__ void InitRandomArray(float* Array, size_t Length, float LowerBound, float UpperBound, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(float* Array, size_t Length, float LowerBound, float UpperBound, Random::AnyRNG<uint64_t> rng);
 
         __global__ void InitRandomArrayKernel(double* Array, uint64_t Seed);
-        __host__ __device__ void InitRandomArray(double* Array, size_t Length, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(double* Array, size_t Length, Random::AnyRNG<uint64_t> rng);
         __global__ void InitRandomArrayKernel(double* Array, double LowerBound, double UpperBound, uint64_t Seed);
-        __host__ __device__ void InitRandomArray(double* Array, size_t Length, double LowerBound, double UpperBound, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(double* Array, size_t Length, double LowerBound, double UpperBound, Random::AnyRNG<uint64_t> rng);
 
         __global__ void InitRandomArrayKernel(uint64_t* Array, uint64_t Seed);
-        __host__ __device__ void InitRandomArray(uint64_t* Array, size_t Length, Random::rngWState<uint64_t> rng);
-        __host__ __device__ void InitRandomArray(uint32_t* Array, size_t Length, Random::rngWState<uint64_t> rng);
-        __host__ __device__ void InitRandomArray(uint16_t* Array, size_t Length, Random::rngWState<uint64_t> rng);
-        __host__ __device__ void InitRandomArray(uint8_t* Array, size_t Length, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(uint64_t* Array, size_t Length, Random::AnyRNG<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(uint32_t* Array, size_t Length, Random::AnyRNG<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(uint16_t* Array, size_t Length, Random::AnyRNG<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(uint8_t* Array, size_t Length, Random::AnyRNG<uint64_t> rng);
 
         __global__ void InitRandomArrayKernel(uint64_t* Array, uint32_t ProbabilityOf1, uint64_t Seed);
-        __host__ __device__ void InitRandomArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::rngWState<uint64_t> rng);
-        __host__ __device__ void InitRandomArray(uint32_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::rngWState<uint64_t> rng);
-        __host__ __device__ void InitRandomArray(uint16_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::rngWState<uint64_t> rng);
-        __host__ __device__ void InitRandomArray(uint8_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::rngWState<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(uint32_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(uint16_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng);
+        __host__ __device__ void InitRandomArray(uint8_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng);
 
         __global__ void InitZeroArrayKernel(float* Array);
         __host__ __device__ void InitZeroArray(float* Array, size_t Length);

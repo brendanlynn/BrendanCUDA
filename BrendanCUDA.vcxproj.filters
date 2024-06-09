@@ -35,9 +35,6 @@
     <ClInclude Include="brendancuda_serialization_arrays.cuh">
       <Filter>Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_random_rngfunc.cuh">
-      <Filter>Random</Filter>
-    </ClInclude>
     <ClInclude Include="brendancuda_random_devicerandom.cuh">
       <Filter>Random</Filter>
     </ClInclude>
@@ -139,9 +136,6 @@
       <Filter>Random</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_random_devicerandom.cu">
-      <Filter>Random</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_random_rngfunc.cu">
       <Filter>Random</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_random_sseed.cu">

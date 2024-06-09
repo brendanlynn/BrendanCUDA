@@ -108,7 +108,6 @@
     <ClInclude Include="brendancuda_ai_evolution_evolver.h" />
     <ClInclude Include="brendancuda_fields_field3.cuh" />
     <ClInclude Include="brendancuda_ai_genetics_genemlp.cuh" />
-    <ClInclude Include="brendancuda_random_rngfunc.cuh" />
     <ClInclude Include="brendancuda_random_sseed.cuh" />
     <ClInclude Include="brendancuda_ai_mlp.cuh" />
     <ClInclude Include="brendancuda_ai_mlpb.cuh" />
@@ -146,7 +145,6 @@
     <CudaCompile Include="brendancuda_devicecopy.cu" />
     <CudaCompile Include="brendancuda_random_bits.cu" />
     <CudaCompile Include="brendancuda_random_devicerandom.cu" />
-    <CudaCompile Include="brendancuda_random_rngfunc.cu" />
     <CudaCompile Include="brendancuda_random_sseed.cu" />
     <CudaCompile Include="brendancuda_serialization_arrays.cu" />
   </ItemGroup>

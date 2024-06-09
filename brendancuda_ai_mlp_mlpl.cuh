@@ -8,7 +8,7 @@
 #include "brendancuda_devicecopy.cuh"
 #include "brendancuda_ai.cuh"
 #include "brendancuda_random_devicerandom.cuh"
-#include "brendancuda_random_rngfunc.cuh"
+#include "brendancuda_random_anyrng.cuh"
 #include <iostream>
 
 namespace BrendanCUDA {
@@ -26,8 +26,8 @@ namespace BrendanCUDA {
                 __host__ __device__ void Dispose();
 
                 __host__ __device__ void ZeroOverwrite();
-                __host__ __device__ void RandomOverwrite(Random::rngWState<uint64_t> rng);
-                __host__ __device__ void RandomOverwrite(T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng);
+                __host__ __device__ void RandomOverwrite(Random::AnyRNG<uint64_t> rng);
+                __host__ __device__ void RandomOverwrite(T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng);
 
                 __host__ __device__ size_t InputLength() const;
                 __host__ __device__ size_t OutputLength() const;
@@ -55,10 +55,10 @@ namespace BrendanCUDA {
                 __host__ T* Run(T* Input) const;
 
                 __host__ __device__ MLPL<T> Clone() const;
-                __host__ __device__ void Randomize(T Scalar, Random::rngWState<uint64_t> rng);
-                __host__ __device__ void Randomize(T Scalar, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng);
-                __host__ __device__ MLPL<T> Reproduce(T Scalar, Random::rngWState<uint64_t> rng) const;
-                __host__ __device__ MLPL<T> Reproduce(T Scalar, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng) const;
+                __host__ __device__ void Randomize(T Scalar, Random::AnyRNG<uint64_t> rng);
+                __host__ __device__ void Randomize(T Scalar, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng);
+                __host__ __device__ MLPL<T> Reproduce(T Scalar, Random::AnyRNG<uint64_t> rng) const;
+                __host__ __device__ MLPL<T> Reproduce(T Scalar, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) const;
 
                 __host__ void Serialize(std::basic_ostream<char>& Stream);
                 __host__ static MLPL<T> Deserialize(std::basic_istream<char>& Stream);

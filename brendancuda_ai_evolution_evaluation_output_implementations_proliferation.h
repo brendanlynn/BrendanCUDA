@@ -1,6 +1,6 @@
 #pragma once
 
-#include "brendancuda_random_rngfunc.cuh"
+#include "brendancuda_random_anyrng.cuh"
 #include "brendancuda_ai_evolution_evaluation_output.h"
 
 namespace BrendanCUDA {
@@ -22,7 +22,7 @@ namespace BrendanCUDA {
                             bool individual;
                             T mask;
                             void* sd_ci;
-                            BrendanCUDA::Random::rngWState<uint64_t> rng;
+                            BrendanCUDA::Random::AnyRNG<uint64_t> rng;
                         };
                         template <>
                         struct evalProliferation_sd<float> final {
@@ -33,7 +33,7 @@ namespace BrendanCUDA {
                             size_t outputCount;
                             bool individual;
                             void* sd_ci;
-                            BrendanCUDA::Random::rngWState<uint64_t> rng;
+                            BrendanCUDA::Random::AnyRNG<uint64_t> rng;
                         };
                         template <>
                         struct evalProliferation_sd<double> final {
@@ -44,7 +44,7 @@ namespace BrendanCUDA {
                             size_t outputCount;
                             bool individual;
                             void* sd_ci;
-                            BrendanCUDA::Random::rngWState<uint64_t> rng;
+                            BrendanCUDA::Random::AnyRNG<uint64_t> rng;
                         };
                     }
                 }

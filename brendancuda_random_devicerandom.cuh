@@ -18,6 +18,8 @@ namespace BrendanCUDA {
         __device__ uint16_t GetI16();
         __device__ uint32_t GetI32();
         __device__ uint64_t GetI64();
+
+        __device__ uint64_t operator()();
     private:
         uint64_t c[8];
     };

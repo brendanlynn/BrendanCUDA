@@ -18,20 +18,20 @@ namespace BrendanCUDA {
                 void Dispose();
 
                 void ZeroOverwrite();
-                void RandomOverwrite(Random::rngWState<uint64_t> rng);
-                void RandomOverwrite(T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng);
+                void RandomOverwrite(Random::AnyRNG<uint64_t> rng);
+                void RandomOverwrite(T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng);
 
                 std::pair<T*, size_t> Run();
 
                 GeneMLP<T> Clone();
-                void Randomize(T Scalar, Random::rngWState<uint64_t> rng);
-                void Randomize(T Scalar, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng);
-                void Randomize(T Scalar_Base, T Scalar_Intermediate, Random::rngWState<uint64_t> rng);
-                void Randomize(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng);
-                GeneMLP<T> Reproduce(T Scalar, Random::rngWState<uint64_t> rng);
-                GeneMLP<T> Reproduce(T Scalar, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng);
-                GeneMLP<T> Reproduce(T Scalar_Base, T Scalar_Intermediate, Random::rngWState<uint64_t> rng);
-                GeneMLP<T> Reproduce(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng);
+                void Randomize(T Scalar, Random::AnyRNG<uint64_t> rng);
+                void Randomize(T Scalar, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng);
+                void Randomize(T Scalar_Base, T Scalar_Intermediate, Random::AnyRNG<uint64_t> rng);
+                void Randomize(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng);
+                GeneMLP<T> Reproduce(T Scalar, Random::AnyRNG<uint64_t> rng);
+                GeneMLP<T> Reproduce(T Scalar, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng);
+                GeneMLP<T> Reproduce(T Scalar_Base, T Scalar_Intermediate, Random::AnyRNG<uint64_t> rng);
+                GeneMLP<T> Reproduce(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng);
             private:
                 std::pair<T*, size_t> base;
             };

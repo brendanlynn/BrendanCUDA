@@ -1,5 +1,5 @@
 #include "brendancuda_ai_genetics_genemlp.cuh"
-#include "brendancuda_random_rngfunc.cuh"
+#include "brendancuda_random_anyrng.cuh"
 #include "cuda_runtime.h"
 
 template <typename T>
@@ -33,7 +33,7 @@ BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Clo
     return GeneMLP<T>(nb, ni);
 }
 template <typename T>
-void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar, Random::rngWState<uint64_t> rng) {
+void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(base.first, base.second, Scalar, rng);
 #ifdef _DEBUG
     auto x = cudaDeviceSynchronize();
@@ -44,7 +44,7 @@ void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar, Random::rngWStat
 #endif
 }
 template <typename T>
-void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng) {
+void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(base.first, base.second, Scalar, LowerBound, UpperBound, rng);
 #ifdef _DEBUG
     auto x = cudaDeviceSynchronize();
@@ -55,7 +55,7 @@ void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar, T LowerBound, T 
 #endif
 }
 template <typename T>
-void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar_Base, T Scalar_Intermediate, Random::rngWState<uint64_t> rng) {
+void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar_Base, T Scalar_Intermediate, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(base.first, base.second, Scalar_Base, rng);
 #ifdef _DEBUG
     auto x = cudaDeviceSynchronize();
@@ -66,7 +66,7 @@ void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar_Base, T Scalar_In
 #endif
 }
 template <typename T>
-void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng) {
+void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(base.first, base.second, Scalar_Base, LowerBound, UpperBound, rng);
 #ifdef _DEBUG
     auto x = cudaDeviceSynchronize();
@@ -77,7 +77,7 @@ void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar_Base, T Scalar_In
 #endif
 }
 template <typename T>
-BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar, Random::rngWState<uint64_t> rng) {
+BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar, Random::AnyRNG<uint64_t> rng) {
     GeneMLP<T> n = Clone();
 #ifdef _DEBUG
     auto x = cudaDeviceSynchronize();
@@ -89,7 +89,7 @@ BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Rep
     return n;
 }
 template <typename T>
-BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng) {
+BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     GeneMLP<T> n = Clone();
 #ifdef _DEBUG
     auto x = cudaDeviceSynchronize();
@@ -101,7 +101,7 @@ BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Rep
     return n;
 }
 template <typename T>
-BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar_Base, T Scalar_Intermediate, Random::rngWState<uint64_t> rng) {
+BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar_Base, T Scalar_Intermediate, Random::AnyRNG<uint64_t> rng) {
     GeneMLP<T> n = Clone();
 #ifdef _DEBUG
     auto x = cudaDeviceSynchronize();
@@ -113,7 +113,7 @@ BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Rep
     return n;
 }
 template <typename T>
-BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng) {
+BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     GeneMLP<T> n = Clone();
 #ifdef _DEBUG
     auto x = cudaDeviceSynchronize();
@@ -130,12 +130,12 @@ void BrendanCUDA::AI::Genetics::GeneMLP<T>::ZeroOverwrite() {
     Intermediate.ZeroOverwrite();
 }
 template <typename T>
-void BrendanCUDA::AI::Genetics::GeneMLP<T>::RandomOverwrite(Random::rngWState<uint64_t> rng) {
+void BrendanCUDA::AI::Genetics::GeneMLP<T>::RandomOverwrite(Random::AnyRNG<uint64_t> rng) {
     InitRandomArray(base.first, Intermediate.InputLength(), rng);
     Intermediate.RandomOverwrite(rng);
 }
 template <typename T>
-void BrendanCUDA::AI::Genetics::GeneMLP<T>::RandomOverwrite(T LowerBound, T UpperBound, Random::rngWState<uint64_t> rng) {
+void BrendanCUDA::AI::Genetics::GeneMLP<T>::RandomOverwrite(T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     InitRandomArray(base.first, Intermediate.InputLength(), LowerBound, UpperBound, rng);
     Intermediate.RandomOverwrite(LowerBound, UpperBound, rng);
 }

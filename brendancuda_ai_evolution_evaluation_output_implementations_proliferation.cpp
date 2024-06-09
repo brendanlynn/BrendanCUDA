@@ -17,7 +17,7 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProli
     float t = 0.f;
     for (size_t i = 0; i < sd.roundCount; ++i) {
         float* vs = new float[sd.inputCount];
-        float rndVal = sd.rng.Run() * rndSclr - 1.f;
+        float rndVal = sd.rng() * rndSclr - 1.f;
         for (size_t j = 0; j < sd.inputCount; ++j) {
             vs[j] = rndVal;
         }
@@ -48,7 +48,7 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProli
     double t = 0.;
     for (size_t i = 0; i < sd.roundCount; ++i) {
         double* vs = new double[sd.inputCount];
-        double rndVal = sd.rng.Run() * rndSclr - 1.;
+        double rndVal = sd.rng() * rndSclr - 1.;
         for (size_t j = 0; j < sd.inputCount; ++j) {
             vs[j] = rndVal;
         }
@@ -77,7 +77,7 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProli
     uint64_t t = 0ui64;
     for (size_t i = 0; i < sd.roundCount; ++i) {
         T* vs = new T[sd.inputCount];
-        T rndVal = (T)sd.rng.Run();
+        T rndVal = (T)sd.rng();
         for (size_t j = 0; j < sd.inputCount; ++j) {
             vs[j] = rndVal;
         }

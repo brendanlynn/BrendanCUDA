@@ -846,3 +846,6 @@ __device__ uint64_t BrendanCUDA::DeviceRandom::GetI64() {
     Iterate();
     return c[7];
 }
+__device__ uint64_t BrendanCUDA::DeviceRandom::operator()() {
+    return GetI64();
+}

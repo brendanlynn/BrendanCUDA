@@ -181,7 +181,7 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::C
         return MLPBL();
     }
 }
-__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::rngWState<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) {
     switch (type) {
     case eMLPBL8T8:
         d8t8.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, rng);
@@ -233,7 +233,7 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL::RandomizeWFlips(uint32_t 
         break;
     }
 }
-__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::rngWState<uint64_t> rng) const {
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const {
     switch (type) {
     case eMLPBL8T8:
         return MLPBL(d8t8.ReproduceWFlips(WeightsFlipProb, BiasFlipProb, rng));
@@ -271,7 +271,7 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::R
         return MLPBL();
     }
 }
-__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::rngWState<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) {
     switch (type) {
     case eMLPBL8T8:
         d8t8.RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, rng);
@@ -323,7 +323,7 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL::RandomizeWTargets(uint32_
         break;
     }
 }
-__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::rngWState<uint64_t> rng) const {
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const {
     switch (type) {
     case eMLPBL8T8:
         return MLPBL(d8t8.ReproduceWTargets(WeightsEachFlipProb, BiasFlipProb, rng));
@@ -361,7 +361,7 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::R
         return MLPBL();
     }
 }
-__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::rngWState<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) {
     switch (type) {
     case eMLPBL8T8:
         d8t8.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, rng);
@@ -413,7 +413,7 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL::RandomizeWMutations(uint3
         break;
     }
 }
-__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::rngWState<uint64_t> rng) const {
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const {
     switch (type) {
     case eMLPBL8T8:
         return MLPBL(d8t8.ReproduceWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, rng));
