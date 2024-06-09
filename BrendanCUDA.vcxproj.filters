@@ -81,6 +81,12 @@
     </CustomBuild>
     <CustomBuild Include="brendancuda_fixedvectors.cuh.tt" />
     <CustomBuild Include="brendancuda_fixedvectors.cu.tt" />
+    <CustomBuild Include="brendancuda_fields_points.cu.tt">
+      <Filter>Fields</Filter>
+    </CustomBuild>
+    <CustomBuild Include="brendancuda_fields_points.cuh.tt">
+      <Filter>Fields</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">

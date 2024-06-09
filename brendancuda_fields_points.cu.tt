@@ -1,0 +1,45 @@
+#include "brendancuda_fields_points.cuh"
+#include <cuda_runtime.h>
+#include <cstdint>
+#include "brendancuda_fixedvectors.cuh"
+
+<# int[] bitCounts = {32, 64}; #>
+<# foreach (int coordBitCount in bitCounts) { #>
+<# foreach (int indexBitCount in bitCounts) { #>
+<# for (int i = 2; i <= 4; ++i) { #>
+__host__ __device__ uint<#= indexBitCount #>_t BrendanCUDA::Fields::Coordinates<#= coordBitCount #>_<#= i #>ToIndex<#= indexBitCount #>_RM(uint<#= coordBitCount #>_<#= i #> Dimensions, uint<#= coordBitCount #>_<#= i #> Coordinates) {
+    return <# if (i > 3) { #>Coordinates.w + Dimensions.w * (<# } #><# if (i > 2) { #>Coordinates.z + Dimensions.z * (<# } #>Coordinates.y + Dimensions.y * (Coordinates.x)<# if (i > 2) { #>)<# } #><# if (i > 3) { #>)<# } #>;
+}
+__host__ __device__ BrendanCUDA::uint<#= coordBitCount #>_<#= i #> BrendanCUDA::Fields::Index<#= indexBitCount #>ToCoordinates<#= coordBitCount #>_<#= i #>_RM(uint<#= coordBitCount #>_<#= i #> Dimensions, uint<#= indexBitCount #>_t Index) {
+    uint<#= coordBitCount #>_<#= i #> r;
+<# if (i > 2) { #>
+<# if (i > 3) { #>
+    r.w = Index % Dimensions.w;
+    Index /= Dimensions.w;
+<# } #>
+    r.z = Index % Dimensions.z;
+    Index /= Dimensions.z;
+<# } #>
+    r.y = Index % Dimensions.y;
+    Index /= Dimensions.y;
+    r.x = Index;
+    return r;
+}
+__host__ __device__ uint<#= indexBitCount #>_t BrendanCUDA::Fields::Coordinates<#= coordBitCount #>_<#= i #>ToIndex<#= indexBitCount #>_CM(uint<#= coordBitCount #>_<#= i #> Dimensions, uint<#= coordBitCount #>_<#= i #> Coordinates) {
+    return Coordinates.x + Dimensions.x * (Coordinates.y<# if (i > 2) { #> + Dimensions.y * (Coordinates.z<# if (i > 3) { #> + Dimensions.z * (Coordinates.w)<# } #>)<# } #>);
+}
+__host__ __device__ BrendanCUDA::uint<#= coordBitCount #>_<#= i #> BrendanCUDA::Fields::Index<#= indexBitCount #>ToCoordinates<#= coordBitCount #>_<#= i #>_CM(uint<#= coordBitCount #>_<#= i #> Dimensions, uint<#= indexBitCount #>_t Index) {
+    uint<#= coordBitCount #>_<#= i #> r;
+    r.x = Index % Dimensions.x;
+    Index /= Dimensions.x;
+    r.y = Index % Dimensions.y;
+    Index /= Dimensions.y;
+<# if (i > 2) { #>
+    r.z = Index % Dimensions.z;
+    Index /= Dimensions.z;
+<# if (i > 3) { #>
+    r.w = Index;
+<# } } #>
+    return r;
+}
+<# } } } #>
