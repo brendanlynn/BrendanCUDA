@@ -66,6 +66,11 @@
     <ClInclude Include="brendancuda_nets_net.cuh">
       <Filter>Nets</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_fields_points.cuh">
+      <Filter>Fields</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_fixedvectors.cuh" />
+    <ClInclude Include="brendancuda_math.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls_H.tt">
@@ -74,6 +79,8 @@
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.tt">
       <Filter>AI\MLPB</Filter>
     </CustomBuild>
+    <CustomBuild Include="brendancuda_fixedvectors_h.tt" />
+    <CustomBuild Include="brendancuda_fixedvectors.tt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">
@@ -155,6 +162,11 @@
     <CudaCompile Include="brendancuda_nets_net.cu">
       <Filter>Nets</Filter>
     </CudaCompile>
+    <CudaCompile Include="brendancuda_fields_points.cu">
+      <Filter>Fields</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_fixedvectors.cu" />
+    <CudaCompile Include="brendancuda_math.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp">

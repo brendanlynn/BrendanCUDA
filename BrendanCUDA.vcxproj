@@ -99,6 +99,21 @@
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h" />
+    <ClInclude Include="brendancuda_fields_points.cuh" />
+    <ClInclude Include="brendancuda_fixedvectors.cuh" />
+    <CustomBuild Include="brendancuda_fixedvectors_h.tt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cuh" "$(ProjectDir)brendancuda_fixedvectors_h.tt"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.cuh</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_fixedvectors.cuh</Outputs>
+      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cuh" "$(ProjectDir)brendancuda_fixedvectors_h.tt"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.cuh</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_fixedvectors.cuh</Outputs>
+      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
+    </CustomBuild>
+    <ClInclude Include="brendancuda_math.cuh" />
     <ClInclude Include="brendancuda_nets_net.cuh" />
     <ClInclude Include="brendancuda_random_anyrng.cuh" />
     <ClInclude Include="brendancuda_serialization_arrays.cuh" />
@@ -144,6 +159,9 @@
     <CudaCompile Include="brendancuda_ai_mlpb.cu" />
     <CudaCompile Include="brendancuda_binary_basic.cu" />
     <CudaCompile Include="brendancuda_devicecopy.cu" />
+    <CudaCompile Include="brendancuda_fields_points.cu" />
+    <CudaCompile Include="brendancuda_fixedvectors.cu" />
+    <CudaCompile Include="brendancuda_math.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu" />
     <CudaCompile Include="brendancuda_random_bits.cu" />
     <CudaCompile Include="brendancuda_random_devicerandom.cu" />
@@ -166,6 +184,21 @@
   <ItemGroup>
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.cpp" />
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="brendancuda_fixedvectors.tt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cu" "$(ProjectDir)brendancuda_fixedvectors.tt"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.cu</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_fixedvectors.cu</Outputs>
+      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cu" "$(ProjectDir)brendancuda_fixedvectors.tt"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.cu</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_fixedvectors.cu</Outputs>
+      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

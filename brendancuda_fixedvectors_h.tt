@@ -1,0 +1,30 @@
+#pragma once
+
+#include <cstdint>
+#include <cuda_runtime.h>
+
+namespace BrendanCUDA {
+<# string[] ts = {"float", "double", "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64"}; #>
+<# for (int i = 0; i < 8; ++i) { #>
+<# string t = ts[i]; #>
+<# string tn = i >= 2 ? t + "_t" : t; #>
+<# for (int j = 2; j <= 4; ++j) { #>
+    class <#= t #>_<#= j #> final {
+    public:
+        union {
+            struct { <#= tn #> x, y<# if (j > 2) { #>, z<# if (j > 3) { #>, w<# } } #>; };
+            <#= tn #> v[<#= j #>];
+        };
+        __host__ __device__ <#= t #>_<#= j #>(<#= tn #> x, <#= tn #> y<# if (j > 2) { #>, <#= tn #> z<# if (j > 3) { #>, <#= tn #> w<# } } #>);
+        __host__ __device__ <#= t #>_<#= j #>(<#= tn #> v[<#= j #>]);
+        __host__ __device__ <#= t #>_<#= j #> operator+(<#= t #>_<#= j #> other);
+        __host__ __device__ <#= t #>_<#= j #> operator-(<#= t #>_<#= j #> other);
+        __host__ __device__ <#= t #>_<#= j #> operator*(<#= tn #> other);
+        __host__ __device__ <#= t #>_<#= j #> operator/(<#= tn #> other);
+        __host__ __device__ static <#= tn #> Dot(<#= t #>_<#= j #> left, <#= t #>_<#= j #> right);
+        __host__ __device__ <#= tn #> MagnatudeSquared() const;
+        __host__ __device__ <#= tn #> Magnatude() const;
+    };
+<# } #>
+<# } #>
+}
