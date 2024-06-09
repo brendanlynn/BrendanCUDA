@@ -99,6 +99,7 @@
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h" />
+    <ClInclude Include="brendancuda_nets_net.cuh" />
     <ClInclude Include="brendancuda_random_anyrng.cuh" />
     <ClInclude Include="brendancuda_serialization_arrays.cuh" />
     <ClInclude Include="brendancuda_binary_basic.cuh" />

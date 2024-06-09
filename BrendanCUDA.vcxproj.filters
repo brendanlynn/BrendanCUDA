@@ -63,6 +63,9 @@
     <ClInclude Include="brendancuda_random_anyrng.cuh">
       <Filter>Random</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_nets_net.cuh">
+      <Filter>Nets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls_H.tt">
@@ -105,6 +108,9 @@
     </Filter>
     <Filter Include="AI\Evolution\Evaluation\Output\Implementations">
       <UniqueIdentifier>{7eba125d-403b-46d0-84cb-00c7f4574aad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Nets">
+      <UniqueIdentifier>{9dfa7c44-b669-40fb-a640-c89bd8ab5e22}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
