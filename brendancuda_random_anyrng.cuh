@@ -2,12 +2,13 @@
 
 #include <random>
 #include <limits>
+#include <cuda_runtime.h>
 
 namespace BrendanCUDA {
     namespace Random {
         namespace {
             template <typename TOutputType, typename TRNG>
-            TOutputType runRNGFunc(void* rng) {
+            __host__ __device__ TOutputType runRNGFunc(void* rng) {
                 return (TOutputType)((*(TRNG*)rng)());
             }
             template <typename TOutputType>
@@ -17,17 +18,17 @@ namespace BrendanCUDA {
         class AnyRNG final {
         public:
             template <typename TRNG>
-            AnyRNG(TRNG* rng) {
+            __host__ __device__ AnyRNG(TRNG* rng) {
                 i_rng = rng;
                 r_rng = runRNGFunc<TOutputType, TRNG>;
             }
-            TOutputType operator()() {
+            __host__ __device__ TOutputType operator()() {
                 return r_rng(i_rng);
             }
-            static constexpr TOutputType min() {
+            __host__ __device__ static constexpr TOutputType min() {
                 return std::numeric_limits<TOutputType>::min();
             }
-            static constexpr TOutputType max() {
+            __host__ __device__ static constexpr TOutputType max() {
                 return std::numeric_limits<TOutputType>::max();
             }
         private:

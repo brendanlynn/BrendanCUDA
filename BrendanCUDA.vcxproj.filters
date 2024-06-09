@@ -63,7 +63,7 @@
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h">
       <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_random_anyrng.h">
+    <ClInclude Include="brendancuda_random_anyrng.cuh">
       <Filter>Random</Filter>
     </ClInclude>
   </ItemGroup>
