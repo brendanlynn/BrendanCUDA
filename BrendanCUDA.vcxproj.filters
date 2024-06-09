@@ -66,11 +66,11 @@
     <ClInclude Include="brendancuda_nets_net.cuh">
       <Filter>Nets</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_fixedvectors.cuh" />
+    <ClInclude Include="brendancuda_math.cuh" />
     <ClInclude Include="brendancuda_fields_points.cuh">
       <Filter>Fields</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_fixedvectors.cuh" />
-    <ClInclude Include="brendancuda_math.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls_H.tt">
