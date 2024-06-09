@@ -144,6 +144,7 @@
     <CudaCompile Include="brendancuda_ai_mlpb.cu" />
     <CudaCompile Include="brendancuda_binary_basic.cu" />
     <CudaCompile Include="brendancuda_devicecopy.cu" />
+    <CudaCompile Include="brendancuda_nets_net.cu" />
     <CudaCompile Include="brendancuda_random_bits.cu" />
     <CudaCompile Include="brendancuda_random_devicerandom.cu" />
     <CudaCompile Include="brendancuda_random_sseed.cu" />

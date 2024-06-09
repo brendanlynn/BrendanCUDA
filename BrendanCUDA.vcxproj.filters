@@ -152,6 +152,9 @@
     </CudaCompile>
     <CudaCompile Include="brendancuda_binary_basic.cu" />
     <CudaCompile Include="brendancuda_devicecopy.cu" />
+    <CudaCompile Include="brendancuda_nets_net.cu">
+      <Filter>Nets</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp">
