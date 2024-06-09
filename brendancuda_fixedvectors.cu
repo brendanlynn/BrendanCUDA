@@ -1,6 +1,10 @@
 #include "brendancuda_fixedvectors.cuh"
 #include "brendancuda_math.cuh"
 
+__host__ __device__ BrendanCUDA::float_2::float_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::float_2::float_2(float x, float y) {
     this->x = x;
     this->y = y;
@@ -29,6 +33,11 @@ __host__ __device__ float BrendanCUDA::float_2::MagnatudeSquared() const {
 }
 __host__ __device__ float BrendanCUDA::float_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::float_3::float_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::float_3::float_3(float x, float y, float z) {
     this->x = x;
@@ -60,6 +69,12 @@ __host__ __device__ float BrendanCUDA::float_3::MagnatudeSquared() const {
 }
 __host__ __device__ float BrendanCUDA::float_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::float_4::float_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::float_4::float_4(float x, float y, float z, float w) {
     this->x = x;
@@ -94,6 +109,10 @@ __host__ __device__ float BrendanCUDA::float_4::MagnatudeSquared() const {
 __host__ __device__ float BrendanCUDA::float_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::double_2::double_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::double_2::double_2(double x, double y) {
     this->x = x;
     this->y = y;
@@ -122,6 +141,11 @@ __host__ __device__ double BrendanCUDA::double_2::MagnatudeSquared() const {
 }
 __host__ __device__ double BrendanCUDA::double_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::double_3::double_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::double_3::double_3(double x, double y, double z) {
     this->x = x;
@@ -153,6 +177,12 @@ __host__ __device__ double BrendanCUDA::double_3::MagnatudeSquared() const {
 }
 __host__ __device__ double BrendanCUDA::double_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::double_4::double_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::double_4::double_4(double x, double y, double z, double w) {
     this->x = x;
@@ -187,6 +217,10 @@ __host__ __device__ double BrendanCUDA::double_4::MagnatudeSquared() const {
 __host__ __device__ double BrendanCUDA::double_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::int8_2::int8_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::int8_2::int8_2(int8_t x, int8_t y) {
     this->x = x;
     this->y = y;
@@ -215,6 +249,11 @@ __host__ __device__ int8_t BrendanCUDA::int8_2::MagnatudeSquared() const {
 }
 __host__ __device__ int8_t BrendanCUDA::int8_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int8_3::int8_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::int8_3::int8_3(int8_t x, int8_t y, int8_t z) {
     this->x = x;
@@ -246,6 +285,12 @@ __host__ __device__ int8_t BrendanCUDA::int8_3::MagnatudeSquared() const {
 }
 __host__ __device__ int8_t BrendanCUDA::int8_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int8_4::int8_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::int8_4::int8_4(int8_t x, int8_t y, int8_t z, int8_t w) {
     this->x = x;
@@ -280,6 +325,10 @@ __host__ __device__ int8_t BrendanCUDA::int8_4::MagnatudeSquared() const {
 __host__ __device__ int8_t BrendanCUDA::int8_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::uint8_2::uint8_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::uint8_2::uint8_2(uint8_t x, uint8_t y) {
     this->x = x;
     this->y = y;
@@ -308,6 +357,11 @@ __host__ __device__ uint8_t BrendanCUDA::uint8_2::MagnatudeSquared() const {
 }
 __host__ __device__ uint8_t BrendanCUDA::uint8_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint8_3::uint8_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::uint8_3::uint8_3(uint8_t x, uint8_t y, uint8_t z) {
     this->x = x;
@@ -339,6 +393,12 @@ __host__ __device__ uint8_t BrendanCUDA::uint8_3::MagnatudeSquared() const {
 }
 __host__ __device__ uint8_t BrendanCUDA::uint8_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint8_4::uint8_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::uint8_4::uint8_4(uint8_t x, uint8_t y, uint8_t z, uint8_t w) {
     this->x = x;
@@ -373,6 +433,10 @@ __host__ __device__ uint8_t BrendanCUDA::uint8_4::MagnatudeSquared() const {
 __host__ __device__ uint8_t BrendanCUDA::uint8_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::int16_2::int16_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::int16_2::int16_2(int16_t x, int16_t y) {
     this->x = x;
     this->y = y;
@@ -401,6 +465,11 @@ __host__ __device__ int16_t BrendanCUDA::int16_2::MagnatudeSquared() const {
 }
 __host__ __device__ int16_t BrendanCUDA::int16_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int16_3::int16_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::int16_3::int16_3(int16_t x, int16_t y, int16_t z) {
     this->x = x;
@@ -432,6 +501,12 @@ __host__ __device__ int16_t BrendanCUDA::int16_3::MagnatudeSquared() const {
 }
 __host__ __device__ int16_t BrendanCUDA::int16_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int16_4::int16_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::int16_4::int16_4(int16_t x, int16_t y, int16_t z, int16_t w) {
     this->x = x;
@@ -466,6 +541,10 @@ __host__ __device__ int16_t BrendanCUDA::int16_4::MagnatudeSquared() const {
 __host__ __device__ int16_t BrendanCUDA::int16_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::uint16_2::uint16_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::uint16_2::uint16_2(uint16_t x, uint16_t y) {
     this->x = x;
     this->y = y;
@@ -494,6 +573,11 @@ __host__ __device__ uint16_t BrendanCUDA::uint16_2::MagnatudeSquared() const {
 }
 __host__ __device__ uint16_t BrendanCUDA::uint16_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint16_3::uint16_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::uint16_3::uint16_3(uint16_t x, uint16_t y, uint16_t z) {
     this->x = x;
@@ -525,6 +609,12 @@ __host__ __device__ uint16_t BrendanCUDA::uint16_3::MagnatudeSquared() const {
 }
 __host__ __device__ uint16_t BrendanCUDA::uint16_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint16_4::uint16_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::uint16_4::uint16_4(uint16_t x, uint16_t y, uint16_t z, uint16_t w) {
     this->x = x;
@@ -559,6 +649,10 @@ __host__ __device__ uint16_t BrendanCUDA::uint16_4::MagnatudeSquared() const {
 __host__ __device__ uint16_t BrendanCUDA::uint16_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::int32_2::int32_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::int32_2::int32_2(int32_t x, int32_t y) {
     this->x = x;
     this->y = y;
@@ -587,6 +681,11 @@ __host__ __device__ int32_t BrendanCUDA::int32_2::MagnatudeSquared() const {
 }
 __host__ __device__ int32_t BrendanCUDA::int32_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int32_3::int32_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::int32_3::int32_3(int32_t x, int32_t y, int32_t z) {
     this->x = x;
@@ -618,6 +717,12 @@ __host__ __device__ int32_t BrendanCUDA::int32_3::MagnatudeSquared() const {
 }
 __host__ __device__ int32_t BrendanCUDA::int32_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int32_4::int32_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::int32_4::int32_4(int32_t x, int32_t y, int32_t z, int32_t w) {
     this->x = x;
@@ -652,6 +757,10 @@ __host__ __device__ int32_t BrendanCUDA::int32_4::MagnatudeSquared() const {
 __host__ __device__ int32_t BrendanCUDA::int32_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::uint32_2::uint32_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::uint32_2::uint32_2(uint32_t x, uint32_t y) {
     this->x = x;
     this->y = y;
@@ -680,6 +789,11 @@ __host__ __device__ uint32_t BrendanCUDA::uint32_2::MagnatudeSquared() const {
 }
 __host__ __device__ uint32_t BrendanCUDA::uint32_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint32_3::uint32_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::uint32_3::uint32_3(uint32_t x, uint32_t y, uint32_t z) {
     this->x = x;
@@ -711,6 +825,12 @@ __host__ __device__ uint32_t BrendanCUDA::uint32_3::MagnatudeSquared() const {
 }
 __host__ __device__ uint32_t BrendanCUDA::uint32_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint32_4::uint32_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::uint32_4::uint32_4(uint32_t x, uint32_t y, uint32_t z, uint32_t w) {
     this->x = x;
@@ -745,6 +865,10 @@ __host__ __device__ uint32_t BrendanCUDA::uint32_4::MagnatudeSquared() const {
 __host__ __device__ uint32_t BrendanCUDA::uint32_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::int64_2::int64_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::int64_2::int64_2(int64_t x, int64_t y) {
     this->x = x;
     this->y = y;
@@ -773,6 +897,11 @@ __host__ __device__ int64_t BrendanCUDA::int64_2::MagnatudeSquared() const {
 }
 __host__ __device__ int64_t BrendanCUDA::int64_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int64_3::int64_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::int64_3::int64_3(int64_t x, int64_t y, int64_t z) {
     this->x = x;
@@ -804,6 +933,12 @@ __host__ __device__ int64_t BrendanCUDA::int64_3::MagnatudeSquared() const {
 }
 __host__ __device__ int64_t BrendanCUDA::int64_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int64_4::int64_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::int64_4::int64_4(int64_t x, int64_t y, int64_t z, int64_t w) {
     this->x = x;
@@ -838,6 +973,10 @@ __host__ __device__ int64_t BrendanCUDA::int64_4::MagnatudeSquared() const {
 __host__ __device__ int64_t BrendanCUDA::int64_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::uint64_2::uint64_2() {
+    x = 0;
+    y = 0;
+}
 __host__ __device__ BrendanCUDA::uint64_2::uint64_2(uint64_t x, uint64_t y) {
     this->x = x;
     this->y = y;
@@ -866,6 +1005,11 @@ __host__ __device__ uint64_t BrendanCUDA::uint64_2::MagnatudeSquared() const {
 }
 __host__ __device__ uint64_t BrendanCUDA::uint64_2::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint64_3::uint64_3() {
+    x = 0;
+    y = 0;
+    z = 0;
 }
 __host__ __device__ BrendanCUDA::uint64_3::uint64_3(uint64_t x, uint64_t y, uint64_t z) {
     this->x = x;
@@ -897,6 +1041,12 @@ __host__ __device__ uint64_t BrendanCUDA::uint64_3::MagnatudeSquared() const {
 }
 __host__ __device__ uint64_t BrendanCUDA::uint64_3::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint64_4::uint64_4() {
+    x = 0;
+    y = 0;
+    z = 0;
+    w = 0;
 }
 __host__ __device__ BrendanCUDA::uint64_4::uint64_4(uint64_t x, uint64_t y, uint64_t z, uint64_t w) {
     this->x = x;
