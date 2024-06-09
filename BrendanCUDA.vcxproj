@@ -100,14 +100,14 @@
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h" />
     <ClInclude Include="brendancuda_fixedvectors.cuh" />
-    <CustomBuild Include="brendancuda_fixedvectors_h.tt">
+    <CustomBuild Include="brendancuda_fixedvectors.cuh.tt">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cuh" "$(ProjectDir)brendancuda_fixedvectors_h.tt"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cuh" "$(ProjectDir)brendancuda_fixedvectors.cuh.tt"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.cuh</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_fixedvectors.cuh</Outputs>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cuh" "$(ProjectDir)brendancuda_fixedvectors_h.tt"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cuh" "$(ProjectDir)brendancuda_fixedvectors.cuh.tt"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.cuh</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_fixedvectors.cuh</Outputs>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
@@ -132,16 +132,16 @@
     <ClInclude Include="brendancuda_random_bits.cuh" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls_h.tt">
+    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cuh.tt">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cuh" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls_h.tt"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cuh" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cuh.tt"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_ai_mlpb_mlpbls.cuh</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_ai_mlpb_mlpbls.cuh</Message>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_ai_mlpb_mlpbls.cuh</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cuh" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls_h.tt"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cuh" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cuh.tt"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_ai_mlpb_mlpbls.cuh</Outputs>
     </CustomBuild>
   </ItemGroup>
@@ -168,10 +168,10 @@
     <CudaCompile Include="brendancuda_serialization_arrays.cu" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.tt">
+    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cu.tt">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.tt"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.tt"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu.tt"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu.tt"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_ai_mlpb_mlpbls.cu</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_ai_mlpb_mlpbls.cu</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_ai_mlpb_mlpbls.cu</Outputs>
@@ -185,15 +185,15 @@
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="brendancuda_fixedvectors.tt">
+    <CustomBuild Include="brendancuda_fixedvectors.cu.tt">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
       <FileType>Document</FileType>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cu" "$(ProjectDir)brendancuda_fixedvectors.tt"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cu" "$(ProjectDir)brendancuda_fixedvectors.cu.tt"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.cu</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_fixedvectors.cu</Outputs>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cu" "$(ProjectDir)brendancuda_fixedvectors.tt"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.cu" "$(ProjectDir)brendancuda_fixedvectors.cu.tt"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.cu</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_fixedvectors.cu</Outputs>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>

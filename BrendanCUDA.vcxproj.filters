@@ -73,14 +73,14 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls_H.tt">
+    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cuh.tt">
       <Filter>AI\MLPB</Filter>
     </CustomBuild>
-    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.tt">
+    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cu.tt">
       <Filter>AI\MLPB</Filter>
     </CustomBuild>
-    <CustomBuild Include="brendancuda_fixedvectors_h.tt" />
-    <CustomBuild Include="brendancuda_fixedvectors.tt" />
+    <CustomBuild Include="brendancuda_fixedvectors.cuh.tt" />
+    <CustomBuild Include="brendancuda_fixedvectors.cu.tt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">
