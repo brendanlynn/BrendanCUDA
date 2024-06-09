@@ -99,7 +99,6 @@
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h" />
-    <ClInclude Include="brendancuda_fields_points.cuh" />
     <ClInclude Include="brendancuda_fixedvectors.cuh" />
     <CustomBuild Include="brendancuda_fixedvectors_h.tt">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
