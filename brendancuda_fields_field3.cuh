@@ -3,6 +3,7 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <memory>
+#include <thrust/device_ptr.h>
 
 #include "brendancuda_devicecopy.cuh"
 
@@ -103,7 +104,7 @@ namespace BrendanCUDA {
 
             __host__ __device__ void FillWith(T Value);
 
-            __host__ __device__ std::pair<T*, size_t> Data() const;
+            __host__ __device__ std::pair<thrust::device_ptr<T>, size_t> Data() const;
         private:
             uint32_t lengthX;
             uint32_t lengthY;
@@ -733,6 +734,6 @@ __host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(T** Poi
     GetConsecutives(PointerToCoordinates(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 template <typename T>
-__host__ __device__ std::pair<T*, size_t> BrendanCUDA::Fields::Field3<T>::Data() const {
+__host__ __device__ std::pair<thrust::device_ptr<T>, size_t> BrendanCUDA::Fields::Field3<T>::Data() const {
     return { cudaArray, lengthX * lengthY * lengthZ };
 }
