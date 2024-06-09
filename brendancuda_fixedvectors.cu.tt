@@ -2,7 +2,7 @@
 #include "brendancuda_math.cuh"
 
 <# string[] ts = {"float", "double", "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64"}; #>
-<# for (int i = 0; i < 8; ++i) { #>
+<# for (int i = 0; i < 10; ++i) { #>
 <# string t = ts[i]; #>
 <# string tn = i >= 2 ? t + "_t" : t; #>
 <# for (int j = 2; j <= 4; ++j) { #>

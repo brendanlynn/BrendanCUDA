@@ -745,3 +745,189 @@ __host__ __device__ uint32_t BrendanCUDA::uint32_4::MagnatudeSquared() const {
 __host__ __device__ uint32_t BrendanCUDA::uint32_4::Magnatude() const {
     return Math::sqrt(MagnatudeSquared());
 }
+__host__ __device__ BrendanCUDA::int64_2::int64_2(int64_t x, int64_t y) {
+    this->x = x;
+    this->y = y;
+}
+__host__ __device__ BrendanCUDA::int64_2::int64_2(int64_t v[2]) {
+    this->v[0] = v[0];
+    this->v[1] = v[1];
+}
+__host__ __device__ BrendanCUDA::int64_2 BrendanCUDA::int64_2::operator+(int64_2 other) {
+    return int64_2(x + other.x, y + other.y);
+}
+__host__ __device__ BrendanCUDA::int64_2 BrendanCUDA::int64_2::operator-(int64_2 other) {
+    return int64_2(x - other.x, y - other.y);
+}
+__host__ __device__ BrendanCUDA::int64_2 BrendanCUDA::int64_2::operator*(int64_t other) {
+    return int64_2(x * other, y * other);
+}
+__host__ __device__ BrendanCUDA::int64_2 BrendanCUDA::int64_2::operator/(int64_t other) {
+    return int64_2(x / other, y / other);
+}
+__host__ __device__ int64_t BrendanCUDA::int64_2::Dot(int64_2 left, int64_2 right) {
+    return left.x * right.x + left.y * right.y;
+}
+__host__ __device__ int64_t BrendanCUDA::int64_2::MagnatudeSquared() const {
+    return x * x + y * y;
+}
+__host__ __device__ int64_t BrendanCUDA::int64_2::Magnatude() const {
+    return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int64_3::int64_3(int64_t x, int64_t y, int64_t z) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+__host__ __device__ BrendanCUDA::int64_3::int64_3(int64_t v[3]) {
+    this->v[0] = v[0];
+    this->v[1] = v[1];
+    this->v[2] = v[2];
+}
+__host__ __device__ BrendanCUDA::int64_3 BrendanCUDA::int64_3::operator+(int64_3 other) {
+    return int64_3(x + other.x, y + other.y, z + other.z);
+}
+__host__ __device__ BrendanCUDA::int64_3 BrendanCUDA::int64_3::operator-(int64_3 other) {
+    return int64_3(x - other.x, y - other.y, z - other.z);
+}
+__host__ __device__ BrendanCUDA::int64_3 BrendanCUDA::int64_3::operator*(int64_t other) {
+    return int64_3(x * other, y * other, z * other);
+}
+__host__ __device__ BrendanCUDA::int64_3 BrendanCUDA::int64_3::operator/(int64_t other) {
+    return int64_3(x / other, y / other, z / other);
+}
+__host__ __device__ int64_t BrendanCUDA::int64_3::Dot(int64_3 left, int64_3 right) {
+    return left.x * right.x + left.y * right.y + left.z * right.z;
+}
+__host__ __device__ int64_t BrendanCUDA::int64_3::MagnatudeSquared() const {
+    return x * x + y * y + z * z;
+}
+__host__ __device__ int64_t BrendanCUDA::int64_3::Magnatude() const {
+    return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::int64_4::int64_4(int64_t x, int64_t y, int64_t z, int64_t w) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+    this->w = w;
+}
+__host__ __device__ BrendanCUDA::int64_4::int64_4(int64_t v[4]) {
+    this->v[0] = v[0];
+    this->v[1] = v[1];
+    this->v[2] = v[2];
+    this->v[3] = v[3];
+}
+__host__ __device__ BrendanCUDA::int64_4 BrendanCUDA::int64_4::operator+(int64_4 other) {
+    return int64_4(x + other.x, y + other.y, z + other.z, w + other.w);
+}
+__host__ __device__ BrendanCUDA::int64_4 BrendanCUDA::int64_4::operator-(int64_4 other) {
+    return int64_4(x - other.x, y - other.y, z - other.z, w - other.w);
+}
+__host__ __device__ BrendanCUDA::int64_4 BrendanCUDA::int64_4::operator*(int64_t other) {
+    return int64_4(x * other, y * other, z * other, w * other);
+}
+__host__ __device__ BrendanCUDA::int64_4 BrendanCUDA::int64_4::operator/(int64_t other) {
+    return int64_4(x / other, y / other, z / other, w / other);
+}
+__host__ __device__ int64_t BrendanCUDA::int64_4::Dot(int64_4 left, int64_4 right) {
+    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
+}
+__host__ __device__ int64_t BrendanCUDA::int64_4::MagnatudeSquared() const {
+    return x * x + y * y + z * z + w * w;
+}
+__host__ __device__ int64_t BrendanCUDA::int64_4::Magnatude() const {
+    return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint64_2::uint64_2(uint64_t x, uint64_t y) {
+    this->x = x;
+    this->y = y;
+}
+__host__ __device__ BrendanCUDA::uint64_2::uint64_2(uint64_t v[2]) {
+    this->v[0] = v[0];
+    this->v[1] = v[1];
+}
+__host__ __device__ BrendanCUDA::uint64_2 BrendanCUDA::uint64_2::operator+(uint64_2 other) {
+    return uint64_2(x + other.x, y + other.y);
+}
+__host__ __device__ BrendanCUDA::uint64_2 BrendanCUDA::uint64_2::operator-(uint64_2 other) {
+    return uint64_2(x - other.x, y - other.y);
+}
+__host__ __device__ BrendanCUDA::uint64_2 BrendanCUDA::uint64_2::operator*(uint64_t other) {
+    return uint64_2(x * other, y * other);
+}
+__host__ __device__ BrendanCUDA::uint64_2 BrendanCUDA::uint64_2::operator/(uint64_t other) {
+    return uint64_2(x / other, y / other);
+}
+__host__ __device__ uint64_t BrendanCUDA::uint64_2::Dot(uint64_2 left, uint64_2 right) {
+    return left.x * right.x + left.y * right.y;
+}
+__host__ __device__ uint64_t BrendanCUDA::uint64_2::MagnatudeSquared() const {
+    return x * x + y * y;
+}
+__host__ __device__ uint64_t BrendanCUDA::uint64_2::Magnatude() const {
+    return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint64_3::uint64_3(uint64_t x, uint64_t y, uint64_t z) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+__host__ __device__ BrendanCUDA::uint64_3::uint64_3(uint64_t v[3]) {
+    this->v[0] = v[0];
+    this->v[1] = v[1];
+    this->v[2] = v[2];
+}
+__host__ __device__ BrendanCUDA::uint64_3 BrendanCUDA::uint64_3::operator+(uint64_3 other) {
+    return uint64_3(x + other.x, y + other.y, z + other.z);
+}
+__host__ __device__ BrendanCUDA::uint64_3 BrendanCUDA::uint64_3::operator-(uint64_3 other) {
+    return uint64_3(x - other.x, y - other.y, z - other.z);
+}
+__host__ __device__ BrendanCUDA::uint64_3 BrendanCUDA::uint64_3::operator*(uint64_t other) {
+    return uint64_3(x * other, y * other, z * other);
+}
+__host__ __device__ BrendanCUDA::uint64_3 BrendanCUDA::uint64_3::operator/(uint64_t other) {
+    return uint64_3(x / other, y / other, z / other);
+}
+__host__ __device__ uint64_t BrendanCUDA::uint64_3::Dot(uint64_3 left, uint64_3 right) {
+    return left.x * right.x + left.y * right.y + left.z * right.z;
+}
+__host__ __device__ uint64_t BrendanCUDA::uint64_3::MagnatudeSquared() const {
+    return x * x + y * y + z * z;
+}
+__host__ __device__ uint64_t BrendanCUDA::uint64_3::Magnatude() const {
+    return Math::sqrt(MagnatudeSquared());
+}
+__host__ __device__ BrendanCUDA::uint64_4::uint64_4(uint64_t x, uint64_t y, uint64_t z, uint64_t w) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+    this->w = w;
+}
+__host__ __device__ BrendanCUDA::uint64_4::uint64_4(uint64_t v[4]) {
+    this->v[0] = v[0];
+    this->v[1] = v[1];
+    this->v[2] = v[2];
+    this->v[3] = v[3];
+}
+__host__ __device__ BrendanCUDA::uint64_4 BrendanCUDA::uint64_4::operator+(uint64_4 other) {
+    return uint64_4(x + other.x, y + other.y, z + other.z, w + other.w);
+}
+__host__ __device__ BrendanCUDA::uint64_4 BrendanCUDA::uint64_4::operator-(uint64_4 other) {
+    return uint64_4(x - other.x, y - other.y, z - other.z, w - other.w);
+}
+__host__ __device__ BrendanCUDA::uint64_4 BrendanCUDA::uint64_4::operator*(uint64_t other) {
+    return uint64_4(x * other, y * other, z * other, w * other);
+}
+__host__ __device__ BrendanCUDA::uint64_4 BrendanCUDA::uint64_4::operator/(uint64_t other) {
+    return uint64_4(x / other, y / other, z / other, w / other);
+}
+__host__ __device__ uint64_t BrendanCUDA::uint64_4::Dot(uint64_4 left, uint64_4 right) {
+    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
+}
+__host__ __device__ uint64_t BrendanCUDA::uint64_4::MagnatudeSquared() const {
+    return x * x + y * y + z * z + w * w;
+}
+__host__ __device__ uint64_t BrendanCUDA::uint64_4::Magnatude() const {
+    return Math::sqrt(MagnatudeSquared());
+}

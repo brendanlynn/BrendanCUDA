@@ -388,4 +388,100 @@ namespace BrendanCUDA {
         __host__ __device__ uint32_t MagnatudeSquared() const;
         __host__ __device__ uint32_t Magnatude() const;
     };
+    class int64_2 final {
+    public:
+        union {
+            struct { int64_t x, y; };
+            int64_t v[2];
+        };
+        __host__ __device__ int64_2(int64_t x, int64_t y);
+        __host__ __device__ int64_2(int64_t v[2]);
+        __host__ __device__ int64_2 operator+(int64_2 other);
+        __host__ __device__ int64_2 operator-(int64_2 other);
+        __host__ __device__ int64_2 operator*(int64_t other);
+        __host__ __device__ int64_2 operator/(int64_t other);
+        __host__ __device__ static int64_t Dot(int64_2 left, int64_2 right);
+        __host__ __device__ int64_t MagnatudeSquared() const;
+        __host__ __device__ int64_t Magnatude() const;
+    };
+    class int64_3 final {
+    public:
+        union {
+            struct { int64_t x, y, z; };
+            int64_t v[3];
+        };
+        __host__ __device__ int64_3(int64_t x, int64_t y, int64_t z);
+        __host__ __device__ int64_3(int64_t v[3]);
+        __host__ __device__ int64_3 operator+(int64_3 other);
+        __host__ __device__ int64_3 operator-(int64_3 other);
+        __host__ __device__ int64_3 operator*(int64_t other);
+        __host__ __device__ int64_3 operator/(int64_t other);
+        __host__ __device__ static int64_t Dot(int64_3 left, int64_3 right);
+        __host__ __device__ int64_t MagnatudeSquared() const;
+        __host__ __device__ int64_t Magnatude() const;
+    };
+    class int64_4 final {
+    public:
+        union {
+            struct { int64_t x, y, z, w; };
+            int64_t v[4];
+        };
+        __host__ __device__ int64_4(int64_t x, int64_t y, int64_t z, int64_t w);
+        __host__ __device__ int64_4(int64_t v[4]);
+        __host__ __device__ int64_4 operator+(int64_4 other);
+        __host__ __device__ int64_4 operator-(int64_4 other);
+        __host__ __device__ int64_4 operator*(int64_t other);
+        __host__ __device__ int64_4 operator/(int64_t other);
+        __host__ __device__ static int64_t Dot(int64_4 left, int64_4 right);
+        __host__ __device__ int64_t MagnatudeSquared() const;
+        __host__ __device__ int64_t Magnatude() const;
+    };
+    class uint64_2 final {
+    public:
+        union {
+            struct { uint64_t x, y; };
+            uint64_t v[2];
+        };
+        __host__ __device__ uint64_2(uint64_t x, uint64_t y);
+        __host__ __device__ uint64_2(uint64_t v[2]);
+        __host__ __device__ uint64_2 operator+(uint64_2 other);
+        __host__ __device__ uint64_2 operator-(uint64_2 other);
+        __host__ __device__ uint64_2 operator*(uint64_t other);
+        __host__ __device__ uint64_2 operator/(uint64_t other);
+        __host__ __device__ static uint64_t Dot(uint64_2 left, uint64_2 right);
+        __host__ __device__ uint64_t MagnatudeSquared() const;
+        __host__ __device__ uint64_t Magnatude() const;
+    };
+    class uint64_3 final {
+    public:
+        union {
+            struct { uint64_t x, y, z; };
+            uint64_t v[3];
+        };
+        __host__ __device__ uint64_3(uint64_t x, uint64_t y, uint64_t z);
+        __host__ __device__ uint64_3(uint64_t v[3]);
+        __host__ __device__ uint64_3 operator+(uint64_3 other);
+        __host__ __device__ uint64_3 operator-(uint64_3 other);
+        __host__ __device__ uint64_3 operator*(uint64_t other);
+        __host__ __device__ uint64_3 operator/(uint64_t other);
+        __host__ __device__ static uint64_t Dot(uint64_3 left, uint64_3 right);
+        __host__ __device__ uint64_t MagnatudeSquared() const;
+        __host__ __device__ uint64_t Magnatude() const;
+    };
+    class uint64_4 final {
+    public:
+        union {
+            struct { uint64_t x, y, z, w; };
+            uint64_t v[4];
+        };
+        __host__ __device__ uint64_4(uint64_t x, uint64_t y, uint64_t z, uint64_t w);
+        __host__ __device__ uint64_4(uint64_t v[4]);
+        __host__ __device__ uint64_4 operator+(uint64_4 other);
+        __host__ __device__ uint64_4 operator-(uint64_4 other);
+        __host__ __device__ uint64_4 operator*(uint64_t other);
+        __host__ __device__ uint64_4 operator/(uint64_t other);
+        __host__ __device__ static uint64_t Dot(uint64_4 left, uint64_4 right);
+        __host__ __device__ uint64_t MagnatudeSquared() const;
+        __host__ __device__ uint64_t Magnatude() const;
+    };
 }
