@@ -53,7 +53,7 @@ __host__ __device__ BrendanCUDA::uint<#= coordBitCount #>_<#= i #> BrendanCUDA::
 
 <# foreach (int bitCount1 in bitCounts) { #>
 <# foreach (int bitCount2 in bitCounts) { #>
-__host__ __device__ void getIndexDeltas(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t Index, int<#= bitCount1 #>_t& DXP, int<#= bitCount1 #>_t& DXN, int<#= bitCount1 #>_t& DYP, int<#= bitCount1 #>_t& DYN, int<#= bitCount1 #>_t& DZP, int<#= bitCount1 #>_t& DZN) {
+__host__ __device__ void getIndexDeltas_RM(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t Index, int<#= bitCount1 #>_t& DXP, int<#= bitCount1 #>_t& DXN, int<#= bitCount1 #>_t& DYP, int<#= bitCount1 #>_t& DYN, int<#= bitCount1 #>_t& DZP, int<#= bitCount1 #>_t& DZN) {
     int<#= bitCount1 #>_t dX = Dimensions.y * Dimensions.z;
     if (Coordinates.x == 0) {
         DXP = dX;
@@ -94,14 +94,14 @@ __host__ __device__ void getIndexDeltas(uint<#= bitCount2 #>_3 Dimensions, uint<
         DZN = -1i<#= bitCount1 #>;
     }
 }
-__host__ __device__ void getConsecutives(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& OON) {
+__host__ __device__ void getConsecutives_RM(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& OON) {
     int<#= bitCount1 #>_t dXP;
     int<#= bitCount1 #>_t dXN;
     int<#= bitCount1 #>_t dYP;
     int<#= bitCount1 #>_t dYN;
     int<#= bitCount1 #>_t dZP;
     int<#= bitCount1 #>_t dZN;
-    getIndexDeltas(Dimensions, Coordinates, Index, dXP, dXN, dYP, dYN, dZP, dZN);
+    getIndexDeltas_RM(Dimensions, Coordinates, Index, dXP, dXN, dYP, dYN, dZP, dZN);
     POO = Index + dXP;
     NOO = Index + dXN;
     OPO = Index + dYP;
@@ -109,14 +109,14 @@ __host__ __device__ void getConsecutives(uint<#= bitCount2 #>_3 Dimensions, uint
     OOP = Index + dZP;
     OON = Index + dZN;
 }
-__host__ __device__ void getConsecutives(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& PPP, uint<#= bitCount1 #>_t& OPP, uint<#= bitCount1 #>_t& NPP, uint<#= bitCount1 #>_t& POP, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& NOP, uint<#= bitCount1 #>_t& PNP, uint<#= bitCount1 #>_t& ONP, uint<#= bitCount1 #>_t& NNP, uint<#= bitCount1 #>_t& PPO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& NPO, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& PNO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& NNO, uint<#= bitCount1 #>_t& PPN, uint<#= bitCount1 #>_t& OPN, uint<#= bitCount1 #>_t& NPN, uint<#= bitCount1 #>_t& PON, uint<#= bitCount1 #>_t& OON, uint<#= bitCount1 #>_t& NON, uint<#= bitCount1 #>_t& PNN, uint<#= bitCount1 #>_t& ONN, uint<#= bitCount1 #>_t& NNN) {
+__host__ __device__ void getConsecutives_RM(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& PPP, uint<#= bitCount1 #>_t& OPP, uint<#= bitCount1 #>_t& NPP, uint<#= bitCount1 #>_t& POP, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& NOP, uint<#= bitCount1 #>_t& PNP, uint<#= bitCount1 #>_t& ONP, uint<#= bitCount1 #>_t& NNP, uint<#= bitCount1 #>_t& PPO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& NPO, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& PNO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& NNO, uint<#= bitCount1 #>_t& PPN, uint<#= bitCount1 #>_t& OPN, uint<#= bitCount1 #>_t& NPN, uint<#= bitCount1 #>_t& PON, uint<#= bitCount1 #>_t& OON, uint<#= bitCount1 #>_t& NON, uint<#= bitCount1 #>_t& PNN, uint<#= bitCount1 #>_t& ONN, uint<#= bitCount1 #>_t& NNN) {
     int<#= bitCount1 #>_t dXP;
     int<#= bitCount1 #>_t dXN;
     int<#= bitCount1 #>_t dYP;
     int<#= bitCount1 #>_t dYN;
     int<#= bitCount1 #>_t dZP;
     int<#= bitCount1 #>_t dZN;
-    getIndexDeltas(Dimensions, Coordinates, Index, dXP, dXN, dYP, dYN, dZP, dZN);
+    getIndexDeltas_RM(Dimensions, Coordinates, Index, dXP, dXN, dYP, dYN, dZP, dZN);
     PPP = Index + dXP + dYP + dZP;
     OPP = Index + 000 + dYP + dZP;
     NPP = Index + dXN + dYP + dZP;
@@ -246,11 +246,11 @@ __host__ __device__ void getConsecutives(uint<#= bitCount1 #>_3 Dimensions, uint
 <# } #>
 
 <# foreach (int bitCount1 in bitCounts) { #>
-__host__ __device__ void BrendanCUDA::Fields::GetConsecutives(uint<#= bitCount1 #>_3 Dimensions, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& OON) {
-    getConsecutives(Dimensions, BrendanCUDA::Fields::Index<#= bitCount1 #>ToCoordinates<#= bitCount1 #>_3_RM(Dimensions, Index), Index, POO, NOO, OPO, ONO, OOP, OON);
+__host__ __device__ void BrendanCUDA::Fields::GetConsecutives_RM(uint<#= bitCount1 #>_3 Dimensions, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& OON) {
+    getConsecutives_RM(Dimensions, BrendanCUDA::Fields::Index<#= bitCount1 #>ToCoordinates<#= bitCount1 #>_3_RM(Dimensions, Index), Index, POO, NOO, OPO, ONO, OOP, OON);
 }
-__host__ __device__ void BrendanCUDA::Fields::GetConsecutives(uint<#= bitCount1 #>_3 Dimensions, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& PPP, uint<#= bitCount1 #>_t& OPP, uint<#= bitCount1 #>_t& NPP, uint<#= bitCount1 #>_t& POP, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& NOP, uint<#= bitCount1 #>_t& PNP, uint<#= bitCount1 #>_t& ONP, uint<#= bitCount1 #>_t& NNP, uint<#= bitCount1 #>_t& PPO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& NPO, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& PNO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& NNO, uint<#= bitCount1 #>_t& PPN, uint<#= bitCount1 #>_t& OPN, uint<#= bitCount1 #>_t& NPN, uint<#= bitCount1 #>_t& PON, uint<#= bitCount1 #>_t& OON, uint<#= bitCount1 #>_t& NON, uint<#= bitCount1 #>_t& PNN, uint<#= bitCount1 #>_t& ONN, uint<#= bitCount1 #>_t& NNN) {
-    getConsecutives(Dimensions, BrendanCUDA::Fields::Index<#= bitCount1 #>ToCoordinates<#= bitCount1 #>_3_RM(Dimensions, Index), Index, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
+__host__ __device__ void BrendanCUDA::Fields::GetConsecutives_RM(uint<#= bitCount1 #>_3 Dimensions, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& PPP, uint<#= bitCount1 #>_t& OPP, uint<#= bitCount1 #>_t& NPP, uint<#= bitCount1 #>_t& POP, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& NOP, uint<#= bitCount1 #>_t& PNP, uint<#= bitCount1 #>_t& ONP, uint<#= bitCount1 #>_t& NNP, uint<#= bitCount1 #>_t& PPO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& NPO, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& PNO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& NNO, uint<#= bitCount1 #>_t& PPN, uint<#= bitCount1 #>_t& OPN, uint<#= bitCount1 #>_t& NPN, uint<#= bitCount1 #>_t& PON, uint<#= bitCount1 #>_t& OON, uint<#= bitCount1 #>_t& NON, uint<#= bitCount1 #>_t& PNN, uint<#= bitCount1 #>_t& ONN, uint<#= bitCount1 #>_t& NNN) {
+    getConsecutives_RM(Dimensions, BrendanCUDA::Fields::Index<#= bitCount1 #>ToCoordinates<#= bitCount1 #>_3_RM(Dimensions, Index), Index, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 __host__ __device__ void BrendanCUDA::Fields::GetConsecutives(uint<#= bitCount1 #>_3 Dimensions, uint<#= bitCount1 #>_3 Coordinates, uint<#= bitCount1 #>_3& POO, uint<#= bitCount1 #>_3& NOO, uint<#= bitCount1 #>_3& OPO, uint<#= bitCount1 #>_3& ONO, uint<#= bitCount1 #>_3& OOP, uint<#= bitCount1 #>_3& OON) {
     getConsecutives(Dimensions, Coordinates, POO, NOO, OPO, ONO, OOP, OON);
@@ -265,10 +265,10 @@ __host__ __device__ void BrendanCUDA::Fields::GetConsecutives(uint<#= bitCount2 
 __host__ __device__ void BrendanCUDA::Fields::GetConsecutives(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount1 #>_t Index, uint<#= bitCount2 #>_3& PPP, uint<#= bitCount2 #>_3& OPP, uint<#= bitCount2 #>_3& NPP, uint<#= bitCount2 #>_3& POP, uint<#= bitCount2 #>_3& OOP, uint<#= bitCount2 #>_3& NOP, uint<#= bitCount2 #>_3& PNP, uint<#= bitCount2 #>_3& ONP, uint<#= bitCount2 #>_3& NNP, uint<#= bitCount2 #>_3& PPO, uint<#= bitCount2 #>_3& OPO, uint<#= bitCount2 #>_3& NPO, uint<#= bitCount2 #>_3& POO, uint<#= bitCount2 #>_3& NOO, uint<#= bitCount2 #>_3& PNO, uint<#= bitCount2 #>_3& ONO, uint<#= bitCount2 #>_3& NNO, uint<#= bitCount2 #>_3& PPN, uint<#= bitCount2 #>_3& OPN, uint<#= bitCount2 #>_3& NPN, uint<#= bitCount2 #>_3& PON, uint<#= bitCount2 #>_3& OON, uint<#= bitCount2 #>_3& NON, uint<#= bitCount2 #>_3& PNN, uint<#= bitCount2 #>_3& ONN, uint<#= bitCount2 #>_3& NNN) {
     getConsecutives(Dimensions, BrendanCUDA::Fields::Index<#= bitCount1 #>ToCoordinates<#= bitCount2 #>_3_RM(Dimensions, Index), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-__host__ __device__ void BrendanCUDA::Fields::GetConsecutives(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& OON) {
-    getConsecutives(Dimensions, Coordinates, BrendanCUDA::Fields::Coordinates<#= bitCount2 #>_3ToIndex<#= bitCount1 #>_RM(Dimensions, Coordinates), POO, NOO, OPO, ONO, OOP, OON);
+__host__ __device__ void BrendanCUDA::Fields::GetConsecutives_RM(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& OON) {
+    getConsecutives_RM(Dimensions, Coordinates, BrendanCUDA::Fields::Coordinates<#= bitCount2 #>_3ToIndex<#= bitCount1 #>_RM(Dimensions, Coordinates), POO, NOO, OPO, ONO, OOP, OON);
 }
-__host__ __device__ void BrendanCUDA::Fields::GetConsecutives(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t& PPP, uint<#= bitCount1 #>_t& OPP, uint<#= bitCount1 #>_t& NPP, uint<#= bitCount1 #>_t& POP, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& NOP, uint<#= bitCount1 #>_t& PNP, uint<#= bitCount1 #>_t& ONP, uint<#= bitCount1 #>_t& NNP, uint<#= bitCount1 #>_t& PPO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& NPO, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& PNO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& NNO, uint<#= bitCount1 #>_t& PPN, uint<#= bitCount1 #>_t& OPN, uint<#= bitCount1 #>_t& NPN, uint<#= bitCount1 #>_t& PON, uint<#= bitCount1 #>_t& OON, uint<#= bitCount1 #>_t& NON, uint<#= bitCount1 #>_t& PNN, uint<#= bitCount1 #>_t& ONN, uint<#= bitCount1 #>_t& NNN) {
-    getConsecutives(Dimensions, Coordinates, BrendanCUDA::Fields::Coordinates<#= bitCount2 #>_3ToIndex<#= bitCount1 #>_RM(Dimensions, Coordinates), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
+__host__ __device__ void BrendanCUDA::Fields::GetConsecutives_RM(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t& PPP, uint<#= bitCount1 #>_t& OPP, uint<#= bitCount1 #>_t& NPP, uint<#= bitCount1 #>_t& POP, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& NOP, uint<#= bitCount1 #>_t& PNP, uint<#= bitCount1 #>_t& ONP, uint<#= bitCount1 #>_t& NNP, uint<#= bitCount1 #>_t& PPO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& NPO, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& PNO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& NNO, uint<#= bitCount1 #>_t& PPN, uint<#= bitCount1 #>_t& OPN, uint<#= bitCount1 #>_t& NPN, uint<#= bitCount1 #>_t& PON, uint<#= bitCount1 #>_t& OON, uint<#= bitCount1 #>_t& NON, uint<#= bitCount1 #>_t& PNN, uint<#= bitCount1 #>_t& ONN, uint<#= bitCount1 #>_t& NNN) {
+    getConsecutives_RM(Dimensions, Coordinates, BrendanCUDA::Fields::Coordinates<#= bitCount2 #>_3ToIndex<#= bitCount1 #>_RM(Dimensions, Coordinates), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 <# } } #>
