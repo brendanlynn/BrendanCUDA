@@ -28,7 +28,6 @@ BrendanCUDA::Nets::Net::Net()
 __global__ void destroyKernel(BrendanCUDA::Nets::NetNode* nodes, BrendanCUDA::Nets::dataDestructor_t DataDestructor) {
     nodes[blockIdx.x].Destroy(DataDestructor);
 }
-
 void BrendanCUDA::Nets::Net::Destroy(dataDestructor_t DataDestructor) {
     destroyKernel<<<nodes.size(), 1>>>(nodes.data().get(), DataDestructor);
     delete (&nodes);
