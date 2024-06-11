@@ -61,11 +61,10 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPB::Ge
     return layers[LayerIndex];
 #else
     MLPBL r;
-#if _DEBUG
-    auto tm1 = cudaDeviceSynchronize();
-    auto t0 =
-#endif
-        cudaMemcpy(&r, &layers[LayerIndex], sizeof(MLPBL), cudaMemcpyDeviceToHost);
+    auto e = cudaMemcpy(&r, &layers[LayerIndex], sizeof(MLPBL), cudaMemcpyDeviceToHost);
+    if (e) {
+        throw std::exception();
+    }
     return r;
 #endif
 }
