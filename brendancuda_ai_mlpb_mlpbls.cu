@@ -206,9 +206,7 @@ __global__ void applyTargetFlipsOnArray_kernel(uint8_t* arr, uint32_t flipProb, 
 }
 
 __host__ __device__ void applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> rng) {
-#if !__CUDA_ARCH__
-    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
-#else
+#if __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint64_t& v(arr[i]);
 
@@ -222,12 +220,12 @@ __host__ __device__ void applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint6
 
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
+#else
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
 #endif
 }
 __host__ __device__ void applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> rng) {
-#if !__CUDA_ARCH__
-    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
-#else
+#if __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint32_t& v(arr[i]);
 
@@ -241,12 +239,12 @@ __host__ __device__ void applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint6
 
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
+#else
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
 #endif
 }
 __host__ __device__ void applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> rng) {
-#if !__CUDA_ARCH__
-    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
-#else
+#if __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint16_t& v(arr[i]);
 
@@ -260,12 +258,12 @@ __host__ __device__ void applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint6
 
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
+#else
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
 #endif
 }
 __host__ __device__ void applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> rng) {
-#if !__CUDA_ARCH__
-    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
-#else
+#if __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint8_t& v(arr[i]);
 
@@ -279,6 +277,8 @@ __host__ __device__ void applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64
 
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
+#else
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
 #endif
 }
 
@@ -306,20 +306,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL8T8::MLPBL8T8(uint8_t* Weights, uint8_t* 
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL8T8::MLPBL8T8(uint8_t* Weights, uint8_t Bias)
     : MLPBL8T8() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL8T8::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint8_t* BrendanCUDA::AI::MLPB::MLPBL8T8::Weights() const {
@@ -523,20 +523,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL8T16::MLPBL8T16(uint8_t* Weights, uint16_
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL8T16::MLPBL8T16(uint8_t* Weights, uint16_t Bias)
     : MLPBL8T16() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL8T16::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint8_t* BrendanCUDA::AI::MLPB::MLPBL8T16::Weights() const {
@@ -740,20 +740,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL8T32::MLPBL8T32(uint8_t* Weights, uint32_
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL8T32::MLPBL8T32(uint8_t* Weights, uint32_t Bias)
     : MLPBL8T32() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL8T32::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint8_t* BrendanCUDA::AI::MLPB::MLPBL8T32::Weights() const {
@@ -957,20 +957,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL8T64::MLPBL8T64(uint8_t* Weights, uint64_
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL8T64::MLPBL8T64(uint8_t* Weights, uint64_t Bias)
     : MLPBL8T64() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL8T64::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint8_t* BrendanCUDA::AI::MLPB::MLPBL8T64::Weights() const {
@@ -1174,20 +1174,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL16T8::MLPBL16T8(uint16_t* Weights, uint8_
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL16T8::MLPBL16T8(uint16_t* Weights, uint8_t Bias)
     : MLPBL16T8() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL16T8::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint16_t* BrendanCUDA::AI::MLPB::MLPBL16T8::Weights() const {
@@ -1423,20 +1423,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL16T16::MLPBL16T16(uint16_t* Weights, uint
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL16T16::MLPBL16T16(uint16_t* Weights, uint16_t Bias)
     : MLPBL16T16() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL16T16::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint16_t* BrendanCUDA::AI::MLPB::MLPBL16T16::Weights() const {
@@ -1672,20 +1672,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL16T32::MLPBL16T32(uint16_t* Weights, uint
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL16T32::MLPBL16T32(uint16_t* Weights, uint32_t Bias)
     : MLPBL16T32() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL16T32::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint16_t* BrendanCUDA::AI::MLPB::MLPBL16T32::Weights() const {
@@ -1921,20 +1921,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL16T64::MLPBL16T64(uint16_t* Weights, uint
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL16T64::MLPBL16T64(uint16_t* Weights, uint64_t Bias)
     : MLPBL16T64() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL16T64::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint16_t* BrendanCUDA::AI::MLPB::MLPBL16T64::Weights() const {
@@ -2170,20 +2170,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL32T8::MLPBL32T8(uint32_t* Weights, uint8_
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL32T8::MLPBL32T8(uint32_t* Weights, uint8_t Bias)
     : MLPBL32T8() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL32T8::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint32_t* BrendanCUDA::AI::MLPB::MLPBL32T8::Weights() const {
@@ -2483,20 +2483,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL32T16::MLPBL32T16(uint32_t* Weights, uint
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL32T16::MLPBL32T16(uint32_t* Weights, uint16_t Bias)
     : MLPBL32T16() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL32T16::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint32_t* BrendanCUDA::AI::MLPB::MLPBL32T16::Weights() const {
@@ -2796,20 +2796,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL32T32::MLPBL32T32(uint32_t* Weights, uint
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL32T32::MLPBL32T32(uint32_t* Weights, uint32_t Bias)
     : MLPBL32T32() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL32T32::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint32_t* BrendanCUDA::AI::MLPB::MLPBL32T32::Weights() const {
@@ -3109,20 +3109,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL32T64::MLPBL32T64(uint32_t* Weights, uint
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL32T64::MLPBL32T64(uint32_t* Weights, uint64_t Bias)
     : MLPBL32T64() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL32T64::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint32_t* BrendanCUDA::AI::MLPB::MLPBL32T64::Weights() const {
@@ -3422,20 +3422,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL64T8::MLPBL64T8(uint64_t* Weights, uint8_
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL64T8::MLPBL64T8(uint64_t* Weights, uint8_t Bias)
     : MLPBL64T8() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL64T8::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint64_t* BrendanCUDA::AI::MLPB::MLPBL64T8::Weights() const {
@@ -3863,20 +3863,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL64T16::MLPBL64T16(uint64_t* Weights, uint
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL64T16::MLPBL64T16(uint64_t* Weights, uint16_t Bias)
     : MLPBL64T16() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL64T16::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint64_t* BrendanCUDA::AI::MLPB::MLPBL64T16::Weights() const {
@@ -4304,20 +4304,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL64T32::MLPBL64T32(uint64_t* Weights, uint
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL64T32::MLPBL64T32(uint64_t* Weights, uint32_t Bias)
     : MLPBL64T32() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL64T32::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint64_t* BrendanCUDA::AI::MLPB::MLPBL64T32::Weights() const {
@@ -4745,20 +4745,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL64T64::MLPBL64T64(uint64_t* Weights, uint
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL64T64::MLPBL64T64(uint64_t* Weights, uint64_t Bias)
     : MLPBL64T64() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL64T64::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint64_t* BrendanCUDA::AI::MLPB::MLPBL64T64::Weights() const {

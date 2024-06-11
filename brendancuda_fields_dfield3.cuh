@@ -105,12 +105,12 @@ __host__ BrendanCUDA::Fields::DField3<T>::DField3(uint32_t LengthX, uint32_t Len
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<T>::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(cudaArrayF);
-    cudaFree(cudaArrayB);
-#else
+#if __CUDA_ARCH__
     delete[] cudaArrayF;
     delete[] cudaArrayB;
+#else
+    cudaFree(cudaArrayF);
+    cudaFree(cudaArrayB);
 #endif
 }
 template <typename T>

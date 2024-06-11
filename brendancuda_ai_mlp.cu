@@ -4,10 +4,10 @@ template <typename T>
 __host__ __device__ BrendanCUDA::AI::MLP::MLP<T>::MLP(size_t Length, activationFunction_t<T> ActivationFunction) {
     len = Length;
     actnFunc = ActivationFunction;
-#if !__CUDA_ARCH__
-    cudaMalloc(&lyrs, Length * sizeof(MLPL<T>));
-#else
+#if __CUDA_ARCH__
     lyrs = new MLPL<T>[Length];
+#else
+    cudaMalloc(&lyrs, Length * sizeof(MLPL<T>));
 #endif
 }
 template <typename T>
@@ -23,16 +23,16 @@ __device__ BrendanCUDA::AI::MLP::MLP<T>::MLP(size_t Length, activationFunction_t
 template <typename T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::Dispose() {
     for (size_t i = 0; i < len; ++i) {
-#if !__CUDA_ARCH__
-        GetLayer(i).Dispose();
-#else
+#if __CUDA_ARCH__
         Layer(i)->Dispose();
+#else
+        GetLayer(i).Dispose();
 #endif
     }
-#if !__CUDA_ARCH__
-    cudaFree(lyrs);
-#else
+#if __CUDA_ARCH__
     delete[] lyrs;
+#else
+    cudaFree(lyrs);
 #endif
 }
 template <typename T>
@@ -40,7 +40,11 @@ __host__ std::pair<T*, size_t> BrendanCUDA::AI::MLP::MLP<T>::Run(T* Input) {
     if (len == 0) {
         return std::pair<T*, size_t>(0, 0);
     }
-#if !__CUDA_ARCH__
+#if __CUDA_ARCH__
+    MLPL<T>* l = Layer(0);
+    Input = l->Run(Input);
+    RunActivationFunctionOnArray(Input, l->OutputLength());
+#else
     MLPL<T> l = GetLayer(0);
     Input = l.Run(Input);
 #ifdef _DEBUG
@@ -50,22 +54,18 @@ __host__ std::pair<T*, size_t> BrendanCUDA::AI::MLP::MLP<T>::Run(T* Input) {
 #ifdef _DEBUG
     auto s1 = cudaDeviceSynchronize();
 #endif
-#else
-    MLPL<T>* l = Layer(0);
-    Input = l->Run(Input);
-    RunActivationFunctionOnArray(Input, l->OutputLength());
 #endif
     for (size_t i = 1; i < len; ++i) {
-#if !__CUDA_ARCH__
-        l = GetLayer(i);
-        T* nxt = l.Run(Input);
-        RunActivationFunctionOnArray(nxt, l.OutputLength());
-        cudaFree(Input);
-#else
+#if __CUDA_ARCH__
         l = Layer(i);
         T* nxt = l->Run(Input);
         RunActivationFunctionOnArray(nxt, l->OutputLength());
         delete[] Input;
+#else
+        l = GetLayer(i);
+        T* nxt = l.Run(Input);
+        RunActivationFunctionOnArray(nxt, l.OutputLength());
+        cudaFree(Input);
 #endif
         Input = nxt;
     }
@@ -140,10 +140,10 @@ __host__ __device__ size_t BrendanCUDA::AI::MLP::MLP<T>::InputLength() {
     if (len == 0) {
         return 0;
     }
-#if !__CUDA_ARCH__
-    return GetLayer(0).InputLength();
-#else
+#if __CUDA_ARCH__
     return Layer(0)->InputLength();
+#else
+    return GetLayer(0).InputLength();
 #endif
 }
 template <typename T>
@@ -151,10 +151,10 @@ __host__ __device__ size_t BrendanCUDA::AI::MLP::MLP<T>::OutputLength() {
     if (len == 0) {
         return 0;
     }
-#if !__CUDA_ARCH__
-    return GetLayer(len - 1).OutputLength();
-#else
+#if __CUDA_ARCH__
     return Layer(len - 1)->OutputLength();
+#else
+    return GetLayer(len - 1).OutputLength();
 #endif
 }
 //template <typename T>
@@ -175,16 +175,13 @@ __global__ void RunActivationFunctionOnArrayKernel(double* Array, BrendanCUDA::A
 template <typename T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::RunActivationFunctionOnArray(T* Array, size_t Length) {
     activationFunction_t<T> af = actnFunc;
-#if !__CUDA_ARCH__
-    //std::cout << Array << " " << af << std::endl;
-    //std::cout << "t:" << cudaDeviceSynchronize() << std::endl;
-    RunActivationFunctionOnArrayKernel << <Length, 1 >> > (Array, af);
-    //std::cout << "t:" << cudaDeviceSynchronize() << std::endl;
-#else
+#if __CUDA_ARCH__
     for (size_t i = 0; i < Length; ++i) {
         T& p(Array[i]);
         p = af(p);
     }
+#else
+    RunActivationFunctionOnArrayKernel<<<Length, 1 >>>(Array, af);
 #endif
 }
 template <typename T>
@@ -202,26 +199,20 @@ __host__ __device__ BrendanCUDA::AI::MLP::MLP<T> BrendanCUDA::AI::MLP::MLP<T>::C
 template <typename T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::Randomize(T Scalar, Random::AnyRNG<uint64_t> rng) {
     for (size_t i = 0; i < len; ++i) {
-#if !__CUDA_ARCH__
-        GetLayer(i).Randomize(Scalar, rng);
-#else
+#if __CUDA_ARCH__
         Layer(i)->Randomize(Scalar, rng);
+#else
+        GetLayer(i).Randomize(Scalar, rng);
 #endif
     }
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::Randomize(T Scalar, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     for (size_t i = 0; i < len; ++i) {
-#if !__CUDA_ARCH__
-#ifdef _DEBUG
-        cudaDeviceSynchronize();
-#endif
-        GetLayer(i).Randomize(Scalar, LowerBound, UpperBound, rng);
-#ifdef _DEBUG
-        cudaDeviceSynchronize();
-#endif
-#else
+#if __CUDA_ARCH__
         Layer(i)->Randomize(Scalar, LowerBound, UpperBound, rng);
+#else
+        GetLayer(i).Randomize(Scalar, LowerBound, UpperBound, rng);
 #endif
     }
 }
@@ -240,30 +231,30 @@ __host__ __device__ BrendanCUDA::AI::MLP::MLP<T> BrendanCUDA::AI::MLP::MLP<T>::R
 template <typename T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::ZeroOverwrite() {
     for (size_t i = 0; i < len; ++i) {
-#if !__CUDA_ARCH__
-        GetLayer(i).ZeroOverwrite();
-#else
+#if __CUDA_ARCH__
         Layer(i)->ZeroOverwrite();
+#else
+        GetLayer(i).ZeroOverwrite();
 #endif
     }
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::RandomOverwrite(Random::AnyRNG<uint64_t> rng) {
     for (size_t i = 0; i < len; ++i) {
-#if !__CUDA_ARCH__
-        GetLayer(i).RandomOverwrite(rng);
-#else
+#if __CUDA_ARCH__
         Layer(i)->RandomOverwrite(rng);
+#else
+        GetLayer(i).RandomOverwrite(rng);
 #endif
     }
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::RandomOverwrite(T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     for (size_t i = 0; i < len; ++i) {
-#if !__CUDA_ARCH__
-        GetLayer(i).RandomOverwrite(LowerBound, UpperBound, rng);
-#else
+#if __CUDA_ARCH__
         Layer(i)->RandomOverwrite(LowerBound, UpperBound, rng);
+#else
+        GetLayer(i).RandomOverwrite(LowerBound, UpperBound, rng);
 #endif
     }
 }

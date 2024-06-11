@@ -289,10 +289,10 @@ __host__ void BrendanCUDA::Fields::Field3<T>::SetAll(T* All, bool CopyFromHost) 
 template <typename T>
 __host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint64_t Index) const {
     T v;
-#if !__CUDA_ARCH__
-    CopyValueOut(Index, &v, true);
-#else
+#if __CUDA_ARCH__
     CopyValueOut(Index, &v);
+#else
+    CopyValueOut(Index, &v, true);
 #endif
     return v;
 }
@@ -303,19 +303,19 @@ __host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint32_3 Coordi
 template <typename T>
 __host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint32_t X, uint32_t Y, uint32_t Z) const {
     T v;
-#if !__CUDA_ARCH__
-    CopyValueOut(X, Y, Z, &v, true);
-#else
+#if __CUDA_ARCH__
     CopyValueOut(X, Y, Z, &v);
+#else
+    CopyValueOut(X, Y, Z, &v, true);
 #endif
     return v;
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(uint64_t Index, T Value) {
-#if !__CUDA_ARCH__
-    CopyValueIn(Index, &Value, true);
-#else
+#if __CUDA_ARCH__
     CopyValueIn(Index, &Value);
+#else
+    CopyValueIn(Index, &Value, true);
 #endif
 }
 template <typename T>
@@ -324,18 +324,18 @@ __host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(uint32_3 Coo
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(uint32_t X, uint32_t Y, uint32_t Z, T Value) {
-#if !__CUDA_ARCH__
-    CopyValueIn(X, Y, Z, &Value, true);
-#else
+#if __CUDA_ARCH__
     CopyValueIn(X, Y, Z, &Value);
+#else
+    CopyValueIn(X, Y, Z, &Value, true);
 #endif
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::Field3<T>::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(cudaArray);
-#else
+#if __CUDA_ARCH__
     delete[] cudaArray;
+#else
+    cudaFree(cudaArray);
 #endif
 }
 template <typename T>

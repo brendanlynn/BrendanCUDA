@@ -206,9 +206,7 @@ __global__ void applyTargetFlipsOnArray_kernel(uint8_t* arr, uint32_t flipProb, 
 }
 
 __host__ __device__ void applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> rng) {
-#if !__CUDA_ARCH__
-    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
-#else
+#if __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint64_t& v(arr[i]);
 
@@ -222,12 +220,12 @@ __host__ __device__ void applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint6
 
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
+#else
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
 #endif
 }
 __host__ __device__ void applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> rng) {
-#if !__CUDA_ARCH__
-    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
-#else
+#if __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint32_t& v(arr[i]);
 
@@ -241,12 +239,12 @@ __host__ __device__ void applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint6
 
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
+#else
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
 #endif
 }
 __host__ __device__ void applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> rng) {
-#if !__CUDA_ARCH__
-    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
-#else
+#if __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint16_t& v(arr[i]);
 
@@ -260,12 +258,12 @@ __host__ __device__ void applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint6
 
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
+#else
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
 #endif
 }
 __host__ __device__ void applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> rng) {
-#if !__CUDA_ARCH__
-    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
-#else
+#if __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint8_t& v(arr[i]);
 
@@ -279,6 +277,8 @@ __host__ __device__ void applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64
 
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
+#else
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, rng());
 #endif
 }
 
@@ -308,20 +308,20 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>(uint<#= i #>_t* Weights, uint<#= j #>_t Bias)
     : MLPBL<#= i #>T<#= j #>() {
-#if !__CUDA_ARCH__
-    SetWeights(Weights, true);
-#else
+#if __CUDA_ARCH__
     SetWeights(Weights);
+#else
+    SetWeights(Weights, true);
 #endif
     SetBias(Bias);
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Dispose() {
-#if !__CUDA_ARCH__
-    cudaFree(weights);
-    cudaFree(bias);
-#else
+#if __CUDA_ARCH__
     delete [] weights;
     delete [] bias;
+#else
+    cudaFree(weights);
+    cudaFree(bias);
 #endif
 }
 __host__ __device__ uint<#= i #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Weights() const {
