@@ -15,14 +15,15 @@ namespace BrendanCUDA {
 
             __host__ __device__ NetNode();
 
-            __host__ __device__ void Destroy(dataDestructor_t DataDestructor);
+            __host__ __device__ void Dispose(dataDestructor_t DataDestructor);
         };
         class Net final {
         public:
             Net();
-            void Destroy(dataDestructor_t DataDestructor);
+            void Dispose(dataDestructor_t DataDestructor);
             thrust::device_ptr<NetNode> Data();
             thrust::device_reference<NetNode> operator[](size_t i);
+            void RemoveAt(size_t Index, dataDestructor_t DataDestructor);
         private:
             thrust::device_vector<NetNode>& nodes;
         };
