@@ -260,9 +260,6 @@ __device__ void BrendanCUDA::Fields::Field3<T>::CopyValueOut(uint32_3 Coordinate
 }
 template <typename T>
 __host__ void BrendanCUDA::Fields::Field3<T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, T* Value, bool CopyToHost) const {
-#if _DEBUG
-    auto t = cudaDeviceSynchronize();
-#endif
     cudaError_t e = cudaMemcpy(Value, CoordinatesToPointer(X, Y, Z), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
     if (e)
         throw runtime_error("A CUDA error occured. Error #" + to_string(e) + ".");
