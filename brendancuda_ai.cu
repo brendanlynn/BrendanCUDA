@@ -3,48 +3,26 @@
 
 using namespace BrendanCUDA::Random;
 
-__global__ void BrendanCUDA::AI::RandomizeArrayKernel(float* Array, float Scalar, uint64_t Seed) {
+__global__ void randomizeArrayKernel(float* Array, float Scalar, uint64_t Seed) {
     float& p(Array[blockIdx.x]);
     uint64_t ts = getSeedOnKernel(Seed);
     float rd = (float)ts / (float)18446744073709551615;
     p += Scalar * (rd - 0.5f);
 }
-__global__ void BrendanCUDA::AI::RandomizeArrayKernel(double* Array, double Scalar, uint64_t Seed) {
+__global__ void randomizeArrayKernel(double* Array, double Scalar, uint64_t Seed) {
     double& p(Array[blockIdx.x]);
     uint64_t ts = getSeedOnKernel(Seed);
     double rd = (double)ts / (double)18446744073709551615;
     p += Scalar * (rd - 0.5);
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Length, float Scalar, Random::AnyRNG<uint64_t> rng) {
-    Scalar *= 2.0f;
-#if __CUDA_ARCH__
-    DeviceRandom dr(rng());
-    for (size_t i = 0; i < Length; ++i) {
-        Array[i] += Scalar * (dr.GetF() - 0.5f);
-    }
-#else
-    RandomizeArrayKernel<<<Length, 1>>>(Array, Scalar, rng());
-#endif
-}
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t Length, double Scalar, Random::AnyRNG<uint64_t> rng) {
-    Scalar *= 2.0;
-#if __CUDA_ARCH__
-    DeviceRandom dr(rng());
-    for (size_t i = 0; i < Length; ++i) {
-        Array[i] += Scalar * (dr.GetD() - 0.5);
-    }
-#else
-    RandomizeArrayKernel<<<Length, 1>>>(Array, Scalar, rng());
-#endif
-}
-__global__ void BrendanCUDA::AI::RandomizeArrayKernel(float* Array, float Scalar, float LowerBound, float UpperBound, uint64_t Seed) {
+__global__ void randomizeArrayKernel(float* Array, float Scalar, float LowerBound, float UpperBound, uint64_t Seed) {
     float& p(Array[blockIdx.x]);
     uint64_t ts = getSeedOnKernel(Seed);
     float rd = (float)ts / (float)18446744073709551615;
     float v = p + Scalar * (rd - 0.5f);
     if (v < LowerBound) {
         p = LowerBound;
-    }
+}
     else if (v > UpperBound) {
         p = UpperBound;
     }
@@ -52,7 +30,7 @@ __global__ void BrendanCUDA::AI::RandomizeArrayKernel(float* Array, float Scalar
         p = v;
     }
 }
-__global__ void BrendanCUDA::AI::RandomizeArrayKernel(double* Array, double Scalar, double LowerBound, double UpperBound, uint64_t Seed) {
+__global__ void randomizeArrayKernel(double* Array, double Scalar, double LowerBound, double UpperBound, uint64_t Seed) {
     double& p(Array[blockIdx.x]);
     uint64_t ts = getSeedOnKernel(Seed);
     double rd = (double)ts / (double)18446744073709551615;
@@ -67,175 +45,34 @@ __global__ void BrendanCUDA::AI::RandomizeArrayKernel(double* Array, double Scal
         p = v;
     }
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Length, float Scalar, float LowerBound, float UpperBound, Random::AnyRNG<uint64_t> rng) {
-    Scalar *= 2.0f;
-#if __CUDA_ARCH__
-    DeviceRandom dr(rng());
-    for (size_t i = 0; i < Length; ++i) {
-        float& p(Array[i]);
-        float v = p + Scalar * (dr.GetF() - 0.5f);
-        if (v < LowerBound) {
-            p = LowerBound;
-        }
-        else if (v > UpperBound) {
-            p = UpperBound;
-        }
-        else {
-            p = v;
-        }
-    }
-#else
-    RandomizeArrayKernel<<<Length, 1>>>(Array, Scalar, LowerBound, UpperBound, rng());
-#endif
-}
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t Length, double Scalar, double LowerBound, double UpperBound, Random::AnyRNG<uint64_t> rng) {
-    Scalar *= 2.0;
-#if __CUDA_ARCH__
-    DeviceRandom dr(rng());
-    for (size_t i = 0; i < Length; ++i) {
-        double& p(Array[i]);
-        double v = p + Scalar * (dr.GetD() - 0.5);
-        if (v < LowerBound) {
-            p = LowerBound;
-        }
-        else if (v > UpperBound) {
-            p = UpperBound;
-        }
-        else {
-            p = v;
-        }
-    }
-#else
-    RandomizeArrayKernel<<<Length, 1>>>(Array, Scalar, LowerBound, UpperBound, rng());
-#endif
-}
-__global__ void BrendanCUDA::AI::InitRandomArrayKernel(float* Array, uint64_t Seed) {
+__global__ void initRandomArrayKernel(float* Array, uint64_t Seed) {
     float& p(Array[blockIdx.x]);
     uint64_t ts = getSeedOnKernel(Seed);
     p = (float)ts / 18446744073709551615.f;
 }
-__global__ void BrendanCUDA::AI::InitRandomArrayKernel(double* Array, uint64_t Seed) {
+__global__ void initRandomArrayKernel(double* Array, uint64_t Seed) {
     double& p(Array[blockIdx.x]);
     uint64_t ts = getSeedOnKernel(Seed);
     p = (double)ts / 18446744073709551615.f;
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(float* Array, size_t Length, Random::AnyRNG<uint64_t> rng) {
-#if __CUDA_ARCH__
-    DeviceRandom dr(rng());
-    for (size_t i = 0; i < Length; ++i) {
-        Array[i] = dr.GetF();
-    }
-#else
-    InitRandomArrayKernel<<<Length, 1>>>(Array, rng());
-#endif
+__global__ void initRandomArrayKernel(uint64_t* Array, uint64_t Seed) {
+    Array[blockIdx.x] = getSeedOnKernel(Seed);
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(double* Array, size_t Length, Random::AnyRNG<uint64_t> rng) {
-#if __CUDA_ARCH__
-    DeviceRandom dr(rng());
-    for (size_t i = 0; i < Length; ++i) {
-        Array[i] = dr.GetD();
-    }
-#else
-    InitRandomArrayKernel<<<Length, 1>>>(Array, rng());
-#endif
-}
-__global__ void BrendanCUDA::AI::InitRandomArrayKernel(float* Array, float LowerBound, float Difference, uint64_t Seed) {
+__global__ void initRandomArrayKernel(float* Array, float LowerBound, float Difference, uint64_t Seed) {
     constexpr float bs = 1.f / 18446744073709551615.f;
-    
+
     float& p(Array[blockIdx.x]);
     uint64_t ts = getSeedOnKernel(Seed);
     p = (float)ts * bs * Difference + LowerBound;
 }
-__global__ void BrendanCUDA::AI::InitRandomArrayKernel(double* Array, double LowerBound, double Difference, uint64_t Seed) {
+__global__ void initRandomArrayKernel(double* Array, double LowerBound, double Difference, uint64_t Seed) {
     constexpr double bs = 1. / 18446744073709551615.;
 
     double& p(Array[blockIdx.x]);
     uint64_t ts = getSeedOnKernel(Seed);
     p = (double)ts * bs * Difference + LowerBound;
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(float* Array, size_t Length, float LowerBound, float UpperBound, Random::AnyRNG<uint64_t> rng) {
-    UpperBound -= LowerBound;
-#if __CUDA_ARCH__
-    DeviceRandom dr(rng());
-    for (size_t i = 0; i < Length; ++i) {
-        Array[i] = dr.GetF() * UpperBound + LowerBound;
-    }
-#else
-    InitRandomArrayKernel<<<Length, 1>>>(Array, LowerBound, UpperBound, rng());
-#endif
-}
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(double* Array, size_t Length, double LowerBound, double UpperBound, Random::AnyRNG<uint64_t> rng) {
-    UpperBound -= LowerBound;
-#if __CUDA_ARCH__
-    DeviceRandom dr(rng());
-    for (size_t i = 0; i < Length; ++i) {
-        Array[i] = dr.GetD() * UpperBound + LowerBound;
-    }
-#else
-    InitRandomArrayKernel<<<Length, 1>>>(Array, LowerBound, UpperBound, rng());
-#endif
-}
-__global__ void BrendanCUDA::AI::InitZeroArrayKernel(float* Array) {
-    Array[blockIdx.x] = 0.f;
-}
-__global__ void BrendanCUDA::AI::InitZeroArrayKernel(double* Array) {
-    Array[blockIdx.x] = 0.;
-}
-__host__ __device__ void BrendanCUDA::AI::InitZeroArray(float* Array, size_t Length) {
-#if __CUDA_ARCH__
-    for (size_t i = 0; i < Length; ++i) {
-        Array[i] = 0.f;
-    }
-#else
-    InitZeroArrayKernel<<<Length, 1>>>(Array);
-#endif
-}
-__host__ __device__ void BrendanCUDA::AI::InitZeroArray(double* Array, size_t Length) {
-#if __CUDA_ARCH__
-    for (size_t i = 0; i < Length; ++i) {
-        Array[i] = 0.;
-    }
-#else
-    InitZeroArrayKernel<<<Length, 1>>>(Array);
-#endif
-}
-__global__ void BrendanCUDA::AI::CopyFloatsToBoolsKernel(float* Floats, bool* Bools, float Split) {
-    Bools[blockIdx.x] = Floats[blockIdx.x] > Split;
-}
-__host__ void BrendanCUDA::AI::CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split, bool MemoryOnHost) {
-    if (MemoryOnHost) {
-        for (size_t i = 0; i < Length; ++i) {
-            Bools[i] = Floats[i] > Split;
-        }
-    }
-    else {
-        CopyFloatsToBoolsKernel<<<Length, 1>>>(Floats, Bools, Split);
-    }
-}
-__global__ void BrendanCUDA::AI::CopyDoublesToBoolsKernel(float* Doubles, bool* Bools, float Split) {
-    Bools[blockIdx.x] = Doubles[blockIdx.x] > Split;
-}
-__host__ void BrendanCUDA::AI::CopyDoublesToBools(float* Doubles, bool* Bools, size_t Length, float Split, bool MemoryOnHost) {
-    if (MemoryOnHost) {
-        for (size_t i = 0; i < Length; ++i) {
-            Bools[i] = Doubles[i] > Split;
-        }
-    }
-    else {
-        CopyDoublesToBoolsKernel<<<Length, 1>>>(Doubles, Bools, Split);
-    }
-}
-__device__ void BrendanCUDA::AI::CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split) {
-    for (size_t i = 0; i < Length; ++i) {
-        Bools[i] = Floats[i] > Split;
-    }
-}
-__device__ void BrendanCUDA::AI::CopyDoublesToBools(double* Doubles, bool* Bools, size_t Length, double Split) {
-    for (size_t i = 0; i < Length; ++i) {
-        Bools[i] = Doubles[i] > Split;
-    }
-}
-__host__ __device__ void BrendanCUDA::AI::CopyFloatsToInt32Func(float* Floats, uint32_t* Int32, float Split) {
+__host__ __device__ void copyFloatsToInt32Func(float* Floats, uint32_t* Int32, float Split) {
     uint32_t m = 0;
     if (Floats[0] > Split) {
         m |= 1ui32 << 0;
@@ -335,7 +172,7 @@ __host__ __device__ void BrendanCUDA::AI::CopyFloatsToInt32Func(float* Floats, u
     }
     *Int32 = m;
 }
-__host__ __device__ void BrendanCUDA::AI::CopyDoublesToInt32Func(double* Doubles, uint32_t* Int32, double Split) {
+__host__ __device__ void copyDoublesToInt32Func(double* Doubles, uint32_t* Int32, double Split) {
     uint32_t m = 0;
     if (Doubles[0] > Split) {
         m |= 1ui32 << 0;
@@ -435,7 +272,7 @@ __host__ __device__ void BrendanCUDA::AI::CopyDoublesToInt32Func(double* Doubles
     }
     *Int32 = m;
 }
-__host__ __device__ void BrendanCUDA::AI::CopyFloatsToInt64Func(float* Floats, uint64_t* Int64, float Split) {
+__host__ __device__ void copyFloatsToInt64Func(float* Floats, uint64_t* Int64, float Split) {
     uint64_t m = 0;
     if (Floats[0] > Split) {
         m |= 1ui64 << 0;
@@ -631,7 +468,7 @@ __host__ __device__ void BrendanCUDA::AI::CopyFloatsToInt64Func(float* Floats, u
     }
     *Int64 = m;
 }
-__host__ __device__ void BrendanCUDA::AI::CopyDoublesToInt64Func(double* Doubles, uint64_t* Int64, double Split) {
+__host__ __device__ void copyDoublesToInt64Func(double* Doubles, uint64_t* Int64, double Split) {
     uint64_t m = 0;
     if (Doubles[0] > Split) {
         m |= 1ui64 << 0;
@@ -827,76 +664,321 @@ __host__ __device__ void BrendanCUDA::AI::CopyDoublesToInt64Func(double* Doubles
     }
     *Int64 = m;
 }
-__global__ void BrendanCUDA::AI::CopyFloatsToInt32sKernel(float* Floats, uint32_t* Int32s, float Split) {
-    CopyFloatsToInt32Func(&Floats[blockIdx.x << 5], &Int32s[blockIdx.x], Split);
+__global__ void copyFloatsToInt32sKernel(float* Floats, uint32_t* Int32s, float Split) {
+    copyFloatsToInt32Func(&Floats[blockIdx.x << 5], &Int32s[blockIdx.x], Split);
+}
+__global__ void copyDoublesToInt32sKernel(double* Floats, uint32_t* Int32s, double Split) {
+    copyDoublesToInt32Func(&Floats[blockIdx.x << 5], &Int32s[blockIdx.x], Split);
+}
+__global__ void initZeroArrayKernel(float* Array) {
+    Array[blockIdx.x] = 0.f;
+}
+__global__ void initZeroArrayKernel(double* Array) {
+    Array[blockIdx.x] = 0.;
+}
+__global__ void initZeroArrayKernel(uint64_t* Array) {
+    Array[blockIdx.x] = 0;
+}
+__global__ void copyFloatsToInt64sKernel(float* Floats, uint64_t* Int64s, float Split) {
+    copyFloatsToInt64Func(&Floats[blockIdx.x << 5], &Int64s[blockIdx.x], Split);
+}
+__global__ void copyDoublesToInt64sKernel(double* Floats, uint64_t* Int64s, double Split) {
+    copyDoublesToInt64Func(&Floats[blockIdx.x << 5], &Int64s[blockIdx.x], Split);
+}
+__global__ void randomizeArrayKernel(uint64_t* Array, uint32_t ProbabilityOf1, uint64_t Seed) {
+    Seed = getSeedOnKernel(Seed);
+    BrendanCUDA::DeviceRandom dr(Seed);
+    Array[blockIdx.x] ^= BrendanCUDA::Random::Get64Bits(ProbabilityOf1, BrendanCUDA::Random::AnyRNG<uint64_t>(&dr));
+}
+__global__ void initRandomArrayKernel(uint64_t* Array, uint32_t ProbabilityOf1, uint64_t Seed) {
+    BrendanCUDA::DeviceRandom dr(getSeedOnKernel(Seed));
+    Array[blockIdx.x] = BrendanCUDA::Random::Get64Bits(ProbabilityOf1, BrendanCUDA::Random::AnyRNG<uint64_t>(&dr));
+}
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Length, float Scalar, Random::AnyRNG<uint64_t> rng) {
+    Scalar *= 2.0f;
+#if __CUDA_ARCH__
+    DeviceRandom dr(rng());
+    for (size_t i = 0; i < Length; ++i) {
+        Array[i] += Scalar * (dr.GetF() - 0.5f);
+    }
+#else
+    randomizeArrayKernel << <Length, 1 >> > (Array, Scalar, rng());
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t Length, double Scalar, Random::AnyRNG<uint64_t> rng) {
+    Scalar *= 2.0;
+#if __CUDA_ARCH__
+    DeviceRandom dr(rng());
+    for (size_t i = 0; i < Length; ++i) {
+        Array[i] += Scalar * (dr.GetD() - 0.5);
+}
+#else
+    randomizeArrayKernel << <Length, 1 >> > (Array, Scalar, rng());
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Length, float Scalar, float LowerBound, float UpperBound, Random::AnyRNG<uint64_t> rng) {
+    Scalar *= 2.0f;
+#if __CUDA_ARCH__
+    DeviceRandom dr(rng());
+    for (size_t i = 0; i < Length; ++i) {
+        float& p(Array[i]);
+        float v = p + Scalar * (dr.GetF() - 0.5f);
+        if (v < LowerBound) {
+            p = LowerBound;
+        }
+        else if (v > UpperBound) {
+            p = UpperBound;
+        }
+        else {
+            p = v;
+        }
+    }
+#else
+    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, LowerBound, UpperBound, rng());
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t Length, double Scalar, double LowerBound, double UpperBound, Random::AnyRNG<uint64_t> rng) {
+    Scalar *= 2.0;
+#if __CUDA_ARCH__
+    DeviceRandom dr(rng());
+    for (size_t i = 0; i < Length; ++i) {
+        double& p(Array[i]);
+        double v = p + Scalar * (dr.GetD() - 0.5);
+        if (v < LowerBound) {
+            p = LowerBound;
+        }
+        else if (v > UpperBound) {
+            p = UpperBound;
+        }
+        else {
+            p = v;
+        }
+    }
+#else
+    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, LowerBound, UpperBound, rng());
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(float* Array, size_t Length, Random::AnyRNG<uint64_t> rng) {
+#if __CUDA_ARCH__
+    DeviceRandom dr(rng());
+    for (size_t i = 0; i < Length; ++i) {
+        Array[i] = dr.GetF();
+    }
+#else
+    initRandomArrayKernel<<<Length, 1>>>(Array, rng());
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(double* Array, size_t Length, Random::AnyRNG<uint64_t> rng) {
+#if __CUDA_ARCH__
+    DeviceRandom dr(rng());
+    for (size_t i = 0; i < Length; ++i) {
+        Array[i] = dr.GetD();
+    }
+#else
+    initRandomArrayKernel<<<Length, 1>>>(Array, rng());
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(float* Array, size_t Length, float LowerBound, float UpperBound, Random::AnyRNG<uint64_t> rng) {
+    UpperBound -= LowerBound;
+#if __CUDA_ARCH__
+    DeviceRandom dr(rng());
+    for (size_t i = 0; i < Length; ++i) {
+        Array[i] = dr.GetF() * UpperBound + LowerBound;
+    }
+#else
+    initRandomArrayKernel<<<Length, 1>>>(Array, LowerBound, UpperBound, rng());
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(double* Array, size_t Length, double LowerBound, double UpperBound, Random::AnyRNG<uint64_t> rng) {
+    UpperBound -= LowerBound;
+#if __CUDA_ARCH__
+    DeviceRandom dr(rng());
+    for (size_t i = 0; i < Length; ++i) {
+        Array[i] = dr.GetD() * UpperBound + LowerBound;
+    }
+#else
+    initRandomArrayKernel<<<Length, 1>>>(Array, LowerBound, UpperBound, rng());
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitZeroArray(float* Array, size_t Length) {
+#if __CUDA_ARCH__
+    for (size_t i = 0; i < Length; ++i) {
+        Array[i] = 0.f;
+    }
+#else
+    initZeroArrayKernel<<<Length, 1>>>(Array);
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitZeroArray(double* Array, size_t Length) {
+#if __CUDA_ARCH__
+    for (size_t i = 0; i < Length; ++i) {
+        Array[i] = 0.;
+    }
+#else
+    initZeroArrayKernel<<<Length, 1>>>(Array);
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitZeroArray(uint8_t* Array, size_t Length) {
+#if __CUDA_ARCH__
+    size_t l2 = Length >> 3;
+    for (size_t i = 0; i < l2; ++i) {
+        ((uint64_t*)Array)[i] = 0;
+    }
+    Array += Length & ~0b111;
+    size_t l3 = Length & 0b111;
+    for (size_t i = 0; i < l3; ++i) {
+        Array[i] = 0;
+    }
+#else
+    initZeroArrayKernel<<<(Length >> 3), 1>>>((uint64_t*)Array);
+    uint64_t zero = 0;
+    auto e = cudaMemcpy(Array + (Length & ~0b111), &zero, Length & 0b111, cudaMemcpyHostToDevice);
+    if (e) {
+        throw std::exception();
+    }
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitZeroArray(uint16_t* Array, size_t Length) {
+#if __CUDA_ARCH__
+    size_t l2 = Length >> 2;
+    for (size_t i = 0; i < l2; ++i) {
+        ((uint64_t*)Array)[i] = 0;
+    }
+    Array += Length & ~0b11;
+    size_t l3 = Length & 0b11;
+    for (size_t i = 0; i < l3; ++i) {
+        Array[i] = 0;
+    }
+#else
+    initZeroArrayKernel<<<(Length >> 2), 1>>>((uint64_t*)Array);
+    uint64_t zero = 0;
+    auto e = cudaMemcpy(Array + (Length & ~0b11), &zero, Length & 0b11, cudaMemcpyHostToDevice);
+    if (e) {
+        throw std::exception();
+    }
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitZeroArray(uint32_t* Array, size_t Length) {
+#if __CUDA_ARCH__
+    size_t l2 = Length >> 1;
+    for (size_t i = 0; i < l2; ++i) {
+        ((uint64_t*)Array)[i] = 0;
+    }
+    if (Length & 1) {
+        Array[Length & ~1] = 0;
+    }
+#else
+    initZeroArrayKernel<<<(Length >> 1), 1>>>((uint64_t*)Array);
+    uint64_t zero = 0;
+    auto e = cudaMemcpy(Array + (Length & ~1), &zero, Length & 1, cudaMemcpyHostToDevice);
+    if (e) {
+        throw std::exception();
+    }
+#endif
+}
+__host__ __device__ void BrendanCUDA::AI::InitZeroArray(uint64_t* Array, size_t Length) {
+#if __CUDA_ARCH__
+    for (size_t i = 0; i < Length; ++i) {
+        Array[i] = 0;
+    }
+#else
+    initZeroArrayKernel<<<Length, 1>>>(Array);
+#endif
+}
+__global__ void BrendanCUDA::AI::CopyFloatsToBoolsKernel(float* Floats, bool* Bools, float Split) {
+    Bools[blockIdx.x] = Floats[blockIdx.x] > Split;
+}
+__host__ void BrendanCUDA::AI::CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split, bool MemoryOnHost) {
+    if (MemoryOnHost) {
+        for (size_t i = 0; i < Length; ++i) {
+            Bools[i] = Floats[i] > Split;
+        }
+    }
+    else {
+        CopyFloatsToBoolsKernel<<<Length, 1>>>(Floats, Bools, Split);
+    }
+}
+__global__ void BrendanCUDA::AI::CopyDoublesToBoolsKernel(float* Doubles, bool* Bools, float Split) {
+    Bools[blockIdx.x] = Doubles[blockIdx.x] > Split;
+}
+__host__ void BrendanCUDA::AI::CopyDoublesToBools(float* Doubles, bool* Bools, size_t Length, float Split, bool MemoryOnHost) {
+    if (MemoryOnHost) {
+        for (size_t i = 0; i < Length; ++i) {
+            Bools[i] = Doubles[i] > Split;
+        }
+    }
+    else {
+        CopyDoublesToBoolsKernel<<<Length, 1>>>(Doubles, Bools, Split);
+    }
+}
+__device__ void BrendanCUDA::AI::CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split) {
+    for (size_t i = 0; i < Length; ++i) {
+        Bools[i] = Floats[i] > Split;
+    }
+}
+__device__ void BrendanCUDA::AI::CopyDoublesToBools(double* Doubles, bool* Bools, size_t Length, double Split) {
+    for (size_t i = 0; i < Length; ++i) {
+        Bools[i] = Doubles[i] > Split;
+    }
 }
 __host__ void BrendanCUDA::AI::CopyFloatsToInt32s(float* Floats, uint32_t* Int32s, size_t Int32Length, float Split, bool MemoryOnHost) {
     if (MemoryOnHost) {
         for (size_t i = 0; i < Int32Length; ++i) {
-            CopyFloatsToInt32Func(&Floats[i << 5], &Int32s[i], Split);
+            copyFloatsToInt32Func(&Floats[i << 5], &Int32s[i], Split);
         }
     }
     else {
-        CopyFloatsToInt32sKernel<<<Int32Length, 1>>>(Floats, Int32s, Split);
+        copyFloatsToInt32sKernel<<<Int32Length, 1>>>(Floats, Int32s, Split);
     }
-}
-__global__ void BrendanCUDA::AI::CopyDoublesToInt32sKernel(double* Floats, uint32_t* Int32s, double Split) {
-    CopyDoublesToInt32Func(&Floats[blockIdx.x << 5], &Int32s[blockIdx.x], Split);
 }
 __host__ void BrendanCUDA::AI::CopyDoublesToInt32s(double* Doubles, uint32_t* Int32s, size_t Int32Length, double Split, bool MemoryOnHost) {
     if (MemoryOnHost) {
         for (size_t i = 0; i < Int32Length; ++i) {
-            CopyDoublesToInt32Func(&Doubles[i << 5], &Int32s[i], Split);
+            copyDoublesToInt32Func(&Doubles[i << 5], &Int32s[i], Split);
         }
     }
     else {
-        CopyDoublesToInt32sKernel<<<Int32Length, 1>>>(Doubles, Int32s, Split);
+        copyDoublesToInt32sKernel<<<Int32Length, 1>>>(Doubles, Int32s, Split);
     }
 }
 __device__ void BrendanCUDA::AI::CopyFloatsToInt32s(float* Floats, uint32_t* Int32s, size_t Int32Length, float Split) {
     for (size_t i = 0; i < Int32Length; ++i) {
-        CopyFloatsToInt32Func(&Floats[i << 5], &Int32s[i], Split);
+        copyFloatsToInt32Func(&Floats[i << 5], &Int32s[i], Split);
     }
 }
 __device__ void BrendanCUDA::AI::CopyDoublesToInt32s(double* Doubles, uint32_t* Int32s, size_t Int32Length, double Split) {
     for (size_t i = 0; i < Int32Length; ++i) {
-        CopyDoublesToInt32Func(&Doubles[i << 5], &Int32s[i], Split);
+        copyDoublesToInt32Func(&Doubles[i << 5], &Int32s[i], Split);
     }
-}
-__global__ void BrendanCUDA::AI::CopyFloatsToInt64sKernel(float* Floats, uint64_t* Int64s, float Split) {
-    CopyFloatsToInt64Func(&Floats[blockIdx.x << 5], &Int64s[blockIdx.x], Split);
 }
 __host__ void BrendanCUDA::AI::CopyFloatsToInt64s(float* Floats, uint64_t* Int64s, size_t Int64Length, float Split, bool MemoryOnHost) {
     if (MemoryOnHost) {
         for (size_t i = 0; i < Int64Length; ++i) {
-            CopyFloatsToInt64Func(&Floats[i << 5], &Int64s[i], Split);
+            copyFloatsToInt64Func(&Floats[i << 5], &Int64s[i], Split);
         }
     }
     else {
-        CopyFloatsToInt64sKernel<<<Int64Length, 1>>>(Floats, Int64s, Split);
+        copyFloatsToInt64sKernel<<<Int64Length, 1>>>(Floats, Int64s, Split);
     }
-}
-__global__ void BrendanCUDA::AI::CopyDoublesToInt64sKernel(double* Floats, uint64_t* Int64s, double Split) {
-    CopyDoublesToInt64Func(&Floats[blockIdx.x << 5], &Int64s[blockIdx.x], Split);
 }
 __host__ void BrendanCUDA::AI::CopyDoublesToInt64s(double* Doubles, uint64_t* Int64s, size_t Int64Length, double Split, bool MemoryOnHost) {
     if (MemoryOnHost) {
         for (size_t i = 0; i < Int64Length; ++i) {
-            CopyDoublesToInt64Func(&Doubles[i << 5], &Int64s[i], Split);
+            copyDoublesToInt64Func(&Doubles[i << 5], &Int64s[i], Split);
         }
     }
     else {
-        CopyDoublesToInt64sKernel<<<Int64Length, 1>>>(Doubles, Int64s, Split);
+        copyDoublesToInt64sKernel<<<Int64Length, 1>>>(Doubles, Int64s, Split);
     }
 }
 __device__ void BrendanCUDA::AI::CopyFloatsToInt64s(float* Floats, uint64_t* Int64s, size_t Int64Length, float Split) {
     for (size_t i = 0; i < Int64Length; ++i) {
-        CopyFloatsToInt64Func(&Floats[i << 5], &Int64s[i], Split);
+        copyFloatsToInt64Func(&Floats[i << 5], &Int64s[i], Split);
     }
 }
 __device__ void BrendanCUDA::AI::CopyDoublesToInt64s(double* Doubles, uint64_t* Int64s, size_t Int64Length, double Split) {
     for (size_t i = 0; i < Int64Length; ++i) {
-        CopyDoublesToInt64Func(&Doubles[i << 5], &Int64s[i], Split);
+        copyDoublesToInt64Func(&Doubles[i << 5], &Int64s[i], Split);
     }
 }
 __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint8_t* Array, size_t Length, Random::AnyRNG<uint64_t> rng) {
@@ -939,7 +1021,7 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint8_t* Array, size_t
         }
     }
 #else
-    InitRandomArrayKernel<<<l64, 1>>>(a64, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, rng());
     if (Length & 7) {
         uint64_t rv = rng();
         cudaMemcpy(Array + (l64 << 3), &rv, (Length & 7) * sizeof(uint8_t), cudaMemcpyHostToDevice);
@@ -970,7 +1052,7 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint16_t* Array, size_
         }
     }
 #else
-    InitRandomArrayKernel<<<l64, 1>>>(a64, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, rng());
     if (Length & 3) {
         uint64_t rv = rng();
         cudaMemcpy(Array + (l64 << 2), &rv, (Length & 3) * sizeof(uint16_t), cudaMemcpyHostToDevice);
@@ -988,15 +1070,12 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint32_t* Array, size_
         Array[Length - 1] = (uint32_t)rng();
     }
 #else
-    InitRandomArrayKernel<<<l64, 1>>>(a64, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, rng());
     if (Length & 1) {
         uint64_t rv = rng();
         cudaMemcpy(Array + (Length - 1), &rv, sizeof(uint32_t), cudaMemcpyHostToDevice);
     }
 #endif
-}
-__global__ void BrendanCUDA::AI::InitRandomArrayKernel(uint64_t* Array, uint64_t Seed) {
-    Array[blockIdx.x] = hashI64(getSeedOnKernel(Seed));
 }
 __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint64_t* Array, size_t Length, Random::AnyRNG<uint64_t> rng) {
 #if __CUDA_ARCH__
@@ -1004,13 +1083,8 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint64_t* Array, size_
         Array[i] = rng();
     }
 #else
-    InitRandomArrayKernel<<<Length, 1>>>(Array, rng());
+    initRandomArrayKernel<<<Length, 1>>>(Array, rng());
 #endif
-}
-__global__ void BrendanCUDA::AI::RandomizeArrayKernel(uint64_t* Array, uint32_t ProbabilityOf1, uint64_t Seed) {
-    Seed = getSeedOnKernel(Seed);
-    DeviceRandom dr(Seed);
-    Array[blockIdx.x] ^= Random::Get64Bits(ProbabilityOf1, Random::AnyRNG<uint64_t>(&dr));
 }
 __host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng) {
 #if __CUDA_ARCH__
@@ -1018,7 +1092,7 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint64_t* Array, size_t
         Array[i] ^= Random::Get64Bits(ProbabilityOf1, rng);
     }
 #else
-    RandomizeArrayKernel<<<Length, 1>>>(Array, ProbabilityOf1, rng());
+    randomizeArrayKernel<<<Length, 1>>>(Array, ProbabilityOf1, rng());
 #endif
 }
 __host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint32_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng) {
@@ -1032,7 +1106,7 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint32_t* Array, size_t
         Array[Length - 1] = Random::Get64Bits(ProbabilityOf1, rng);
     }
 #else
-    RandomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    randomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
     if (Length & 1) {
         uint32_t n = (uint32_t)Random::Get64Bits(ProbabilityOf1, rng);
         cudaMemcpy(Array + (Length - 1), &n, sizeof(uint32_t), cudaMemcpyHostToDevice);
@@ -1063,7 +1137,7 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint16_t* Array, size_t
         }
     }
 #else
-    RandomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    randomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
     if (Length & 3) {
         uint64_t n = Random::Get64Bits(ProbabilityOf1, rng);
         cudaMemcpy(Array + (l64 << 2), &n, (Length & 3) * sizeof(uint16_t), cudaMemcpyHostToDevice);
@@ -1110,7 +1184,7 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint8_t* Array, size_t 
         }
     }
 #else
-    RandomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    randomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
     if (Length & 7) {
         uint64_t n = Random::Get64Bits(ProbabilityOf1, rng);
         cudaMemcpy(Array + (l64 << 3), &n, (Length & 7) * sizeof(uint8_t), cudaMemcpyHostToDevice);
@@ -1157,7 +1231,7 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint8_t* Array, size_t
         }
     }
 #else
-    InitRandomArrayKernel<<<l64, 1>>>(a64, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, rng());
     if (Length & 7) {
         uint64_t rv = Random::Get64Bits(ProbabilityOf1, rng);
         cudaMemcpy(Array + (l64 << 3), &rv, (Length & 7) * sizeof(uint8_t), cudaMemcpyHostToDevice);
@@ -1188,7 +1262,7 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint16_t* Array, size_
         }
     }
 #else
-    InitRandomArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
     if (Length & 3) {
         uint64_t rv = Random::Get64Bits(ProbabilityOf1, rng);
         cudaMemcpy(Array + (l64 << 2), &rv, (Length & 3) * sizeof(uint16_t), cudaMemcpyHostToDevice);
@@ -1206,16 +1280,12 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint32_t* Array, size_
         Array[Length - 1] = (uint32_t)Random::Get64Bits(ProbabilityOf1, rng);
     }
 #else
-    InitRandomArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
     if (Length & 1) {
         uint64_t rv = Random::Get64Bits(ProbabilityOf1, rng);
         cudaMemcpy(Array + (Length - 1), &rv, sizeof(uint32_t), cudaMemcpyHostToDevice);
     }
 #endif
-}
-__global__ void BrendanCUDA::AI::InitRandomArrayKernel(uint64_t* Array, uint32_t ProbabilityOf1, uint64_t Seed) {
-    DeviceRandom dr(getSeedOnKernel(Seed));
-    Array[blockIdx.x] = Random::Get64Bits(ProbabilityOf1, Random::AnyRNG<uint64_t>(&dr));
 }
 __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, Random::AnyRNG<uint64_t> rng) {
 #if __CUDA_ARCH__
@@ -1223,6 +1293,6 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint64_t* Array, size_
         Array[i] = rng();
     }
 #else
-    InitRandomArrayKernel<<<Length, 1>>>(Array, ProbabilityOf1, rng());
+    initRandomArrayKernel<<<Length, 1>>>(Array, ProbabilityOf1, rng());
 #endif
 }
