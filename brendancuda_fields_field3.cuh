@@ -113,12 +113,12 @@ namespace BrendanCUDA {
 }
 
 template <typename T>
-__global__ void FillWithKernel(BrendanCUDA::Fields::Field3<T> This, T Value) {
-    *This.CoordinatesToPointer(make_int3(blockIdx.x, blockIdx.y, blockIdx.z)) = Value;
+__global__ void fillWithKernel(T* arr, T Value) {
+    arr[blockIdx.x] = Value;
 }
 template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::Field3<T>::FillWith(T Value) {
-    FillWithKernel<T><<<DimensionsD(), 1>>>(this, Value);
+    fillWithKernel<T><<<lengthX * lengthY * lengthZ, 1>>>(cudaArray, Value);
 }
 template <typename T>
 __host__ __device__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_3 Dimensions)
