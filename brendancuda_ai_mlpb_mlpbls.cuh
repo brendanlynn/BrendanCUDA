@@ -38,9 +38,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL8T8 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL8T8 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL8T8 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint8_t* weights;
                 uint8_t* bias;
@@ -74,9 +71,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL8T16 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL8T16 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL8T16 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint8_t* weights;
                 uint16_t* bias;
@@ -110,9 +104,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL8T32 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL8T32 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL8T32 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint8_t* weights;
                 uint32_t* bias;
@@ -146,9 +137,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL8T64 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL8T64 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL8T64 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint8_t* weights;
                 uint64_t* bias;
@@ -182,9 +170,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL16T8 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL16T8 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL16T8 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint16_t* weights;
                 uint8_t* bias;
@@ -218,9 +203,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL16T16 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL16T16 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL16T16 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint16_t* weights;
                 uint16_t* bias;
@@ -254,9 +236,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL16T32 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL16T32 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL16T32 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint16_t* weights;
                 uint32_t* bias;
@@ -290,9 +269,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL16T64 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL16T64 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL16T64 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint16_t* weights;
                 uint64_t* bias;
@@ -326,9 +302,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL32T8 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL32T8 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL32T8 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint32_t* weights;
                 uint8_t* bias;
@@ -362,9 +335,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL32T16 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL32T16 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL32T16 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint32_t* weights;
                 uint16_t* bias;
@@ -398,9 +368,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL32T32 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL32T32 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL32T32 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint32_t* weights;
                 uint32_t* bias;
@@ -434,9 +401,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL32T64 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL32T64 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL32T64 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint32_t* weights;
                 uint64_t* bias;
@@ -470,9 +434,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL64T8 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL64T8 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL64T8 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint64_t* weights;
                 uint8_t* bias;
@@ -506,9 +467,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL64T16 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL64T16 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL64T16 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint64_t* weights;
                 uint16_t* bias;
@@ -542,9 +500,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL64T32 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL64T32 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL64T32 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint64_t* weights;
                 uint32_t* bias;
@@ -578,9 +533,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL64T64 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL64T64 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ MLPBL64T64 Deserialize(std::basic_istream<char>& Stream);
             private:
                 uint64_t* weights;
                 uint64_t* bias;

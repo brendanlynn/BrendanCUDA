@@ -39,9 +39,6 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPB ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPB ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ static MLPBL Deserialize(std::basic_istream<char>& Stream);
             private:
                 MLPBL* layers;
                 size_t layerCount;

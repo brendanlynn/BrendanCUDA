@@ -43,8 +43,6 @@ namespace BrendanCUDA {
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng);
                 __host__ __device__ MLPBL ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const;
 
-                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ static MLPBL Deserialize(std::basic_istream<char>& Stream);
                 union {
                     MLPBL8T8 d8t8;
                     MLPBL8T16 d8t16;
