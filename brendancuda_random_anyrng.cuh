@@ -5,22 +5,22 @@
 #include <cuda_runtime.h>
 
 namespace BrendanCUDA {
-    namespace Random {
-        namespace {
-            template <typename TOutputType, typename TRNG>
-            __host__ __device__ TOutputType runRNGFunc(void* rng) {
-                return (TOutputType)((*(TRNG*)rng)());
-            }
-            template <typename TOutputType>
-            using runRNGFunc_t = TOutputType(*)(void*);
+    namespace details {
+        template <typename TOutputType, typename TRNG>
+        __host__ __device__ TOutputType runRNGFunc(void* rng) {
+            return (TOutputType)((*(TRNG*)rng)());
         }
+        template <typename TOutputType>
+        using runRNGFunc_t = TOutputType(*)(void*);
+    }
+    namespace Random {
         template <typename TOutputType>
         class AnyRNG final {
         public:
             template <typename TRNG>
             __host__ __device__ AnyRNG(TRNG* rng) {
                 i_rng = rng;
-                r_rng = runRNGFunc<TOutputType, TRNG>;
+                r_rng = details::runRNGFunc<TOutputType, TRNG>;
             }
             __host__ __device__ TOutputType operator()() {
                 return r_rng(i_rng);
@@ -33,7 +33,7 @@ namespace BrendanCUDA {
             }
         private:
             void* i_rng;
-            runRNGFunc_t<TOutputType> r_rng;
+            details::runRNGFunc_t<TOutputType> r_rng;
         };
     }
 }
