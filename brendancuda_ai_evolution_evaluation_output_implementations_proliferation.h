@@ -10,9 +10,6 @@ namespace BrendanCUDA {
                 namespace Output {
                     namespace Implementations {
                         template <typename T>
-                        float evalProliferation(void* Object, void* EvaluationSharedData);
-
-                        template <typename T>
                         struct evalProliferation_sd final {
                             instanceFunctions_t<T> instanceFunctions;
                             uint64_t iterationsPerRound;
@@ -46,6 +43,9 @@ namespace BrendanCUDA {
                             void* sd_ci;
                             BrendanCUDA::Random::AnyRNG<uint64_t> rng;
                         };
+
+                        template <typename T>
+                        float evalProliferation(void* Object, evalProliferation_sd<T>& Settings);
                     }
                 }
             }
