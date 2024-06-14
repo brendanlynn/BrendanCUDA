@@ -90,6 +90,7 @@ bool BrendanCUDA::Nets::Net::AddConnection_OnlyInput(size_t InputIndex, size_t O
     }
 
     nodes[InputIndex] = in;
+    return true;
 }
 bool BrendanCUDA::Nets::Net::AddConnection_OnlyOutput(size_t InputIndex, size_t OutputIndex, bool CheckForPreexistence, bool CheckForAvailableExcess) {
     NetNode on = nodes[OutputIndex];
@@ -133,6 +134,7 @@ bool BrendanCUDA::Nets::Net::AddConnection_OnlyOutput(size_t InputIndex, size_t 
     }
 
     nodes[OutputIndex] = on;
+    return true;
 }
 bool BrendanCUDA::Nets::Net::AddConnection(size_t InputIndex, size_t OutputIndex, bool CheckForPreexistence, bool CheckForAvailableExcess) {
     NetNode in = nodes[InputIndex];
@@ -197,6 +199,7 @@ bool BrendanCUDA::Nets::Net::AddConnection(size_t InputIndex, size_t OutputIndex
 
     nodes[InputIndex] = in;
     nodes[OutputIndex] = on;
+    return true;
 }
 
 bool BrendanCUDA::Nets::Net::RemoveConnection_OnlyInput(size_t InputIndex, size_t OutputIndex, bool RemoveExcess) {
@@ -246,6 +249,7 @@ bool BrendanCUDA::Nets::Net::RemoveConnection_OnlyInput(size_t InputIndex, size_
         in.outputCount--;
         nodes[InputIndex] = in;
     }
+    return true;
 }
 bool BrendanCUDA::Nets::Net::RemoveConnection_OnlyOutput(size_t InputIndex, size_t OutputIndex, bool RemoveExcess) {
     NetNode on = nodes[OutputIndex];
@@ -294,6 +298,7 @@ bool BrendanCUDA::Nets::Net::RemoveConnection_OnlyOutput(size_t InputIndex, size
         on.inputCount--;
         nodes[OutputIndex] = on;
     }
+    return true;
 }
 bool BrendanCUDA::Nets::Net::RemoveConnection(size_t InputIndex, size_t OutputIndex, bool RemoveExcess) {
     NetNode in = nodes[InputIndex];
@@ -374,6 +379,7 @@ Exit1B:
         nodes[InputIndex] = in;
         nodes[OutputIndex] = on;
     }
+    return true;
 }
 
 void BrendanCUDA::Nets::Net::RemoveAt(size_t Index, dataDestructor_t DataDestructor) {
