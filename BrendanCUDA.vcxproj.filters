@@ -72,6 +72,7 @@
       <Filter>Fields</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_cudaerrorhelpers.h" />
+    <ClInclude Include="brendancuda_crossassignment.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cuh.tt">
