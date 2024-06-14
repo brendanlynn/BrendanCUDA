@@ -1,7 +1,7 @@
 #include "brendancuda_ai.cuh"
 #include "brendancuda_random_bits.cuh"
 
-using namespace BrendanCUDA::Random;
+using BrendanCUDA::Random::getSeedOnKernel;
 
 __global__ void randomizeArrayKernel(float* Array, float Scalar, uint64_t Seed) {
     float& p(Array[blockIdx.x]);
