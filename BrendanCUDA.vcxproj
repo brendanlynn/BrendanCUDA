@@ -63,6 +63,7 @@
     <CudaLink>
       <AdditionalDependencies>cublas.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <PerformDeviceLink>false</PerformDeviceLink>
+      <AdditionalOptions>--expt-relaxed-constexpr %(AdditionalOptions)</AdditionalOptions>
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
