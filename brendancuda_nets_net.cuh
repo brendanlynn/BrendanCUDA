@@ -14,9 +14,9 @@ namespace BrendanCUDA {
             NetNode** outputs;
             size_t outputCount;
 
-            __host__ __device__ NetNode();
+            NetNode();
 
-            __host__ __device__ void Dispose(dataDestructor_t DataDestructor);
+            void Dispose(dataDestructor_t DataDestructor);
         };
         class Net final {
         public:

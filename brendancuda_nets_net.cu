@@ -3,7 +3,7 @@
 #include "brendancuda_cudaerrorhelpers.h"
 #include "brendancuda_crossassignment.h"
 
-__host__ __device__ BrendanCUDA::Nets::NetNode::NetNode() {
+BrendanCUDA::Nets::NetNode::NetNode() {
     data = 0;
     inputs = 0;
     inputCount = 0;
@@ -11,7 +11,7 @@ __host__ __device__ BrendanCUDA::Nets::NetNode::NetNode() {
     outputCount = 0;
 }
 
-__host__ __device__ void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t DataDestructor) {
+void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t DataDestructor) {
     if (DataDestructor) {
         DataDestructor(data);
     }
@@ -27,11 +27,10 @@ __host__ __device__ void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t Da
 BrendanCUDA::Nets::Net::Net() 
     : nodes(*(new thrust::device_vector<NetNode>())) {}
 
-__global__ void disposeKernel(BrendanCUDA::Nets::NetNode* nodes, BrendanCUDA::Nets::dataDestructor_t DataDestructor) {
-    nodes[blockIdx.x].Dispose(DataDestructor);
-}
 void BrendanCUDA::Nets::Net::Dispose(dataDestructor_t DataDestructor) {
-    disposeKernel<<<nodes.size(), 1>>>(nodes.data().get(), DataDestructor);
+    for (size_t i = 0; i < nodes.size(); ++i) {
+        ((NetNode)nodes[i]).Dispose(DataDestructor);
+    }
     delete (&nodes);
 }
 
