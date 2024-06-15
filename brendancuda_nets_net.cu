@@ -49,7 +49,7 @@ __global__ void net_addConnection_checkForPreexistence(BrendanCUDA::Nets::NetNod
     }
 }
 
-bool BrendanCUDA::Nets::Net_AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
+bool BrendanCUDA::Nets::Net::AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
     NetNode in = GetVR(InputNode);
 
     if (in.outputs) {
@@ -100,7 +100,7 @@ bool BrendanCUDA::Nets::Net_AddConnection_OnlyInput(NetNode* InputNode, NetNode*
     SetVR(InputNode, in);
     return true;
 }
-bool BrendanCUDA::Nets::Net_AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
+bool BrendanCUDA::Nets::Net::AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
     NetNode on = GetVR(InputNode);
 
     if (on.inputs) {
@@ -151,7 +151,7 @@ bool BrendanCUDA::Nets::Net_AddConnection_OnlyOutput(NetNode* InputNode, NetNode
     SetVR(OutputNode, on);
     return true;
 }
-bool BrendanCUDA::Nets::Net_AddConnection(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
+bool BrendanCUDA::Nets::Net::AddConnection(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
     NetNode in = GetVR(InputNode);
     NetNode on = GetVR(OutputNode);
 
@@ -241,7 +241,7 @@ bool BrendanCUDA::Nets::Net_AddConnection(NetNode* InputNode, NetNode* OutputNod
     return true;
 }
 
-bool BrendanCUDA::Nets::Net_RemoveConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
+bool BrendanCUDA::Nets::Net::RemoveConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
     NetNode in = GetVR(InputNode);
 
     if (in.outputs) {
@@ -295,7 +295,7 @@ bool BrendanCUDA::Nets::Net_RemoveConnection_OnlyInput(NetNode* InputNode, NetNo
         return false;
     }
 }
-bool BrendanCUDA::Nets::Net_RemoveConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
+bool BrendanCUDA::Nets::Net::RemoveConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
     NetNode on = GetVR(OutputNode);
 
     if (on.inputs) {
@@ -349,7 +349,7 @@ bool BrendanCUDA::Nets::Net_RemoveConnection_OnlyOutput(NetNode* InputNode, NetN
         return false;
     }
 }
-bool BrendanCUDA::Nets::Net_RemoveConnection(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
+bool BrendanCUDA::Nets::Net::RemoveConnection(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
     NetNode in = GetVR(InputNode);
     NetNode on = GetVR(OutputNode);
 
@@ -436,7 +436,7 @@ bool BrendanCUDA::Nets::Net_RemoveConnection(NetNode* InputNode, NetNode* Output
     }
 }
 
-void BrendanCUDA::Nets::Net_RemoveAllConnections(NetNode* Node) {
+void BrendanCUDA::Nets::Net::RemoveAllConnections(NetNode* Node) {
     NetNode nn = GetVR(Node);
     NetNode** inputs = new NetNode*[nn.inputCount];
     NetNode** outputs = new NetNode*[nn.outputCount];
@@ -445,13 +445,13 @@ void BrendanCUDA::Nets::Net_RemoveAllConnections(NetNode* Node) {
     for (size_t i = 0; i < nn.inputCount; ++i) {
         NetNode* o = inputs[i];
         if (o != Node) {
-            Net_RemoveConnection_OnlyInput(o, Node, false);
+            RemoveConnection_OnlyInput(o, Node, false);
         }
     }
     for (size_t i = 0; i < nn.outputCount; ++i) {
         NetNode* o = outputs[i];
         if (o != Node) {
-            Net_RemoveConnection_OnlyOutput(Node, o, false);
+            RemoveConnection_OnlyOutput(Node, o, false);
         }
     }
     delete[] inputs;

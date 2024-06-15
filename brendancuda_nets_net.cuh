@@ -24,16 +24,17 @@ namespace BrendanCUDA {
             void Dispose(dataDestructor_t DataDestructor);
             thrust::device_ptr<NetNode> Data();
             thrust::device_reference<NetNode> operator[](size_t i);
+
+            static bool AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
+            static bool AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
+            static bool AddConnection(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
+            static bool RemoveConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess);
+            static bool RemoveConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess);
+            static bool RemoveConnection(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess);
+            static void RemoveAllConnections(NetNode* Node);
         private:
             thrust::device_vector<NetNode>& nodes;
         };
 
-        bool Net_AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
-        bool Net_AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
-        bool Net_AddConnection(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
-        bool Net_RemoveConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess);
-        bool Net_RemoveConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess);
-        bool Net_RemoveConnection(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess);
-        void Net_RemoveAllConnections(NetNode* Node);
     }
 }
