@@ -10,6 +10,12 @@
 #include "brendancuda_cudaerrorhelpers.h"
 
 namespace BrendanCUDA {
+    namespace details {
+        template <typename T>
+        __global__ void fillWithKernel(T* arr, T Value) {
+            arr[blockIdx.x] = Value;
+        }
+    }
     namespace Fields {
         template <typename T>
         class Field3 final {
@@ -114,12 +120,8 @@ namespace BrendanCUDA {
 }
 
 template <typename T>
-__global__ void fillWithKernel(T* arr, T Value) {
-    arr[blockIdx.x] = Value;
-}
-template <typename T>
 __host__ __device__ void BrendanCUDA::Fields::Field3<T>::FillWith(T Value) {
-    fillWithKernel<T><<<lengthX * lengthY * lengthZ, 1>>>(cudaArray, Value);
+    details::fillWithKernel<T><<<lengthX * lengthY * lengthZ, 1>>>(cudaArray, Value);
 }
 template <typename T>
 __host__ __device__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_3 Dimensions)
