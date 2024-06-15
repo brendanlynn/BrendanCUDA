@@ -35,14 +35,14 @@ void BrendanCUDA::Nets::Net::Dispose(dataDestructor_t DataDestructor) {
     delete (&nodes);
 }
 
-thrust::device_vector<BrendanCUDA::Nets::NetNode>& BrendanCUDA::Nets::Net::DataVec() {
+thrust::device_vector<BrendanCUDA::Nets::NetNode>& BrendanCUDA::Nets::Net::DataVec() const {
     return nodes;
 }
-thrust::device_ptr<BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::DataPtr() {
+thrust::device_ptr<BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::DataPtr() const {
     return nodes.data();
 }
 
-thrust::device_reference<BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::operator[](size_t i) {
+thrust::device_reference<BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::operator[](size_t i) const {
     return nodes[i];
 }
 
