@@ -54,12 +54,6 @@
     <ClInclude Include="brendancuda_ai_evolution.h">
       <Filter>AI\Evolution</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h">
-      <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h">
-      <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
-    </ClInclude>
     <ClInclude Include="brendancuda_random_anyrng.cuh">
       <Filter>Random</Filter>
     </ClInclude>
@@ -73,6 +67,12 @@
     </ClInclude>
     <ClInclude Include="brendancuda_cudaerrorhelpers.h" />
     <ClInclude Include="brendancuda_crossassignment.h" />
+    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h">
+      <Filter>AI\Evolution\Evaluation\Output</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h">
+      <Filter>AI\Evolution\Evaluation\Output</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cuh.tt">
@@ -120,9 +120,6 @@
     </Filter>
     <Filter Include="AI\Evolution\Evaluation\Output">
       <UniqueIdentifier>{bcf89ce9-1e7e-4c0c-9fe9-87888ae7836e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\Evolution\Evaluation\Output\Implementations">
-      <UniqueIdentifier>{7eba125d-403b-46d0-84cb-00c7f4574aad}</UniqueIdentifier>
     </Filter>
     <Filter Include="Nets">
       <UniqueIdentifier>{9dfa7c44-b669-40fb-a640-c89bd8ab5e22}</UniqueIdentifier>
@@ -178,12 +175,13 @@
     <CudaCompile Include="brendancuda_cudaerrorhelpers.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp">
-      <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
-    </ClCompile>
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.cpp">
-      <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
+      <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClCompile>
+    <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp">
+      <Filter>AI\Evolution\Evaluation\Output</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <None Include="NamingConventions.md" />
   </ItemGroup>
