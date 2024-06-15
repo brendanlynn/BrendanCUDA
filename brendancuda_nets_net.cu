@@ -466,3 +466,23 @@ void BrendanCUDA::Nets::Net::RemoveAllConnections(NetNode* Node) {
     nn.outputCount = 0;
     nn.outputs = 0;
 }
+void BrendanCUDA::Nets::Net::PrintTo(std::ostream& Output) const {
+    thrust::device_vector<NetNode>& vec = DataVec();
+    for (size_t i = 0; i < vec.size(); ++i) {
+        thrust::device_ptr<NetNode> dp = vec.data() + i;
+        NetNode* p = dp.get();
+        NetNode v = *dp;
+        Output << p << ":" << std::endl;
+        Output << "    Data: " << v.data << std::endl;
+        Output << "    Input Count: " << v.inputCount << std::endl;
+        Output << "    Inputs: " << v.inputs << std::endl;
+        for (size_t j = 0; j < v.inputCount; ++j) {
+            Output << "        " << j << ": " << GetVR(v.inputs + j) << std::endl;
+        }
+        Output << "    Output Count: " << v.outputCount << std::endl;
+        Output << "    Outputs: " << v.outputs << std::endl;
+        for (size_t j = 0; j < v.outputCount; ++j) {
+            Output << "        " << j << ": " << GetVR(v.outputs + j) << std::endl;
+        }
+    }
+}

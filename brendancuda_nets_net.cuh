@@ -2,11 +2,11 @@
 
 #include <thrust/device_vector.h>
 #include <cuda_runtime.h>
+#include <ostream>
 
 namespace BrendanCUDA {
     namespace Nets {
         using dataDestructor_t = void (*)(void*);
-
         struct NetNode final {
             void* data;
             NetNode** inputs;
@@ -25,6 +25,7 @@ namespace BrendanCUDA {
             thrust::device_vector<NetNode>& DataVec() const;
             thrust::device_ptr<NetNode> DataPtr() const;
             thrust::device_reference<NetNode> operator[](size_t i) const;
+            void PrintTo(std::ostream& Output) const;
 
             static bool AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
             static bool AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
@@ -36,6 +37,5 @@ namespace BrendanCUDA {
         private:
             thrust::device_vector<NetNode>& nodes;
         };
-
     }
 }
