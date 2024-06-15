@@ -182,7 +182,4 @@
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="NamingConventions.md" />
-  </ItemGroup>
 </Project>
