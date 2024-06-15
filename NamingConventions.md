@@ -1,9 +1,7 @@
 # Naming Conventions
 * `ObjectNames`,
 * `FunctionNames`,
-* `structFieldNames`,
-* `ClassPublicFieldNames`,
-* `classPrivateFieldNames`,
+* `objectFieldNames`,
 * `_TemplateParameterNames`,
 * `ParameterNames`,
 * `localVariableNames`,
