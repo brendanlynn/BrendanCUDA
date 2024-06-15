@@ -22,7 +22,7 @@ namespace BrendanCUDA {
         public:
             Net();
             void Dispose(dataDestructor_t DataDestructor);
-            const thrust::device_vector<NetNode>& DataVec();
+            thrust::device_vector<NetNode>& DataVec();
             thrust::device_ptr<NetNode> DataPtr();
             thrust::device_reference<NetNode> operator[](size_t i);
 

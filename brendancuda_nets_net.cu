@@ -35,7 +35,7 @@ void BrendanCUDA::Nets::Net::Dispose(dataDestructor_t DataDestructor) {
     delete (&nodes);
 }
 
-const thrust::device_vector<BrendanCUDA::Nets::NetNode>& BrendanCUDA::Nets::Net::DataVec() {
+thrust::device_vector<BrendanCUDA::Nets::NetNode>& BrendanCUDA::Nets::Net::DataVec() {
     return nodes;
 }
 thrust::device_ptr<BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::DataPtr() {
