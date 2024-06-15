@@ -184,5 +184,7 @@
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.cpp">
       <Filter>AI\Evolution\Evaluation\Output\Implementations</Filter>
     </ClCompile>
+  <ItemGroup>
+    <None Include="NamingConventions.md" />
   </ItemGroup>
 </Project>
