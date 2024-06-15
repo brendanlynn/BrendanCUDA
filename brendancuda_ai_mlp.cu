@@ -48,13 +48,7 @@ __host__ std::pair<_T*, size_t> BrendanCUDA::AI::MLP::MLP<_T>::Run(_T* Input) {
 #else
     MLPL<_T> l = GetLayer(0);
     Input = l.Run(Input);
-#ifdef _DEBUG
-    auto s0 = cudaDeviceSynchronize();
-#endif
     RunActivationFunctionOnArray(Input, l.OutputLength());
-#ifdef _DEBUG
-    auto s1 = cudaDeviceSynchronize();
-#endif
 #endif
     for (size_t i = 1; i < len; ++i) {
 #if __CUDA_ARCH__
@@ -121,10 +115,7 @@ __host__ __device__ BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLP<_T>
     return lyrs[LayerIndex];
 #else
     MLPL<_T> r;
-#ifdef _DEBUG
-    auto x =
-#endif
-        ThrowIfBad(cudaMemcpy(&r, &lyrs[LayerIndex], sizeof(MLPL<_T>), cudaMemcpyDeviceToHost));
+    ThrowIfBad(cudaMemcpy(&r, &lyrs[LayerIndex], sizeof(MLPL<_T>), cudaMemcpyDeviceToHost));
     return r;
 #endif
 }

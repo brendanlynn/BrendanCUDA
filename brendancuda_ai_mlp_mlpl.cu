@@ -226,24 +226,12 @@ __host__ __device__ BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T
 template <typename _T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLPL<_T>::Randomize(_T Scalar, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(wgts, iptLen * optLen, Scalar, rng);
-#if defined(_DEBUG) && !defined(__CUDA_ARCH__)
-    auto x = cudaDeviceSynchronize();
-#endif
     RandomizeArray(bias, optLen, Scalar, rng);
-#if defined(_DEBUG) && !defined(__CUDA_ARCH__)
-    auto y = cudaDeviceSynchronize();
-#endif
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLPL<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(wgts, iptLen * optLen, Scalar, LowerBound, UpperBound, rng);
-#if defined(_DEBUG) && !defined(__CUDA_ARCH__)
-    auto x = cudaDeviceSynchronize();
-#endif
     RandomizeArray(bias, optLen, Scalar, LowerBound, UpperBound, rng);
-#if defined(_DEBUG) && !defined(__CUDA_ARCH__)
-    auto y = cudaDeviceSynchronize();
-#endif
 }
 template <typename _T>
 __host__ __device__ BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T>::Reproduce(_T Scalar, Random::AnyRNG<uint64_t> rng) const {
