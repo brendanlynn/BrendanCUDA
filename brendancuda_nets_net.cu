@@ -173,7 +173,7 @@ bool BrendanCUDA::Nets::Net::AddConnection(NetNode* InputNode, NetNode* OutputNo
             bool* opt;
             ThrowIfBad(cudaMalloc(&opt, sizeof(bool)));
             ThrowIfBad(cudaMemcpy(opt, &f, sizeof(bool), cudaMemcpyHostToDevice));
-            net_addConnection_checkForPreexistence << <in.outputCount, 1 >> > (in.outputs, OutputNode, opt);
+            net_addConnection_checkForPreexistence<<<in.outputCount, 1>>>(in.outputs, OutputNode, opt);
             ThrowIfBad(cudaMemcpy(&f, opt, sizeof(bool), cudaMemcpyDeviceToHost));
             ThrowIfBad(cudaFree(opt));
             if (f) {
