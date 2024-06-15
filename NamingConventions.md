@@ -1,10 +1,12 @@
 # Naming Conventions
-* ```ObjectNames```,
-* ```FunctionNames```,
-* ```objectMemberNames```,
-* ```_TemplateParameterNames```,
-* ```_parameterNames```,
-* ```localVariableNames```,
-* ```redeclarationNames_t```,
-* ```constexprNames```, and
-* ```MACRO_NAMES```.
+* `ObjectNames`,
+* `FunctionNames`,
+* `structFieldNames`,
+* `ClassPublicFieldNames`,
+* `classPrivateFieldNames`,
+* `_TemplateParameterNames`,
+* `_parameterNames`,
+* `localVariableNames`,
+* `redeclarationNames_t`,
+* `constexprNames`, and
+* `MACRO_NAMES`.
