@@ -5,7 +5,7 @@
 * `ClassPublicFieldNames`,
 * `classPrivateFieldNames`,
 * `_TemplateParameterNames`,
-* `_parameterNames`,
+* `ParameterNames`,
 * `localVariableNames`,
 * `redeclarationNames_t`,
 * `constexprNames`, and
