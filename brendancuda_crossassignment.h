@@ -4,20 +4,20 @@
 #include "brendancuda_cudaerrorhelpers.h"
 
 namespace BrendanCUDA {
-    template <typename T>
-    T GetVR(T* DevicePointer);
-    template <typename T>
-    void SetVR(T* DevicePointer, T Value);
+    template <typename _T>
+    _T GetVR(_T* DevicePointer);
+    template <typename _T>
+    void SetVR(_T* DevicePointer, _T Value);
 }
 
-template <typename T>
-T BrendanCUDA::GetVR(T* DevicePointer) {
-    T v;
-    ThrowIfBad(cudaMemcpy(&v, DevicePointer, sizeof(T), cudaMemcpyDeviceToHost));
+template <typename _T>
+_T BrendanCUDA::GetVR(_T* DevicePointer) {
+    _T v;
+    ThrowIfBad(cudaMemcpy(&v, DevicePointer, sizeof(_T), cudaMemcpyDeviceToHost));
     return v;
 }
 
-template <typename T>
-void BrendanCUDA::SetVR(T* DevicePointer, T Value) {
-    ThrowIfBad(cudaMemcpy(DevicePointer, &Value, sizeof(T), cudaMemcpyHostToDevice));
+template <typename _T>
+void BrendanCUDA::SetVR(_T* DevicePointer, _T Value) {
+    ThrowIfBad(cudaMemcpy(DevicePointer, &Value, sizeof(_T), cudaMemcpyHostToDevice));
 }

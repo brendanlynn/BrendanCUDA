@@ -7,19 +7,17 @@ namespace BrendanCUDA {
         namespace Evolution {
             namespace Evaluation {
                 namespace Output {
-                    namespace Implementations {
-                        template <typename T>
-                        struct evalUniqueValues_sd final {
-                            instanceFunctions_t<T> instanceFunctions;
-                            uint64_t iterationCount;
-                            size_t outputCount;
-                            bool individual;
-                            void* sd_ci;
-                        };
+                    template <typename _T>
+                    struct Evaluate_UniqueValues_SD final {
+                        InstanceFunctions<_T> instanceFunctions;
+                        uint64_t iterationCount;
+                        size_t outputCount;
+                        bool individual;
+                        void* sd_ci;
+                    };
 
-                        template <typename T>
-                        float evalUniqueValues(void* Object, evalUniqueValues_sd<T>& Settings);
-                    }
+                    template <typename _T>
+                    float Evaluate_UniqueValues(void* Object, Evaluate_UniqueValues_SD<_T>& Settings);
                 }
             }
         }

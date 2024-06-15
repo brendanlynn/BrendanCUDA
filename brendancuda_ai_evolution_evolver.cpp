@@ -8,9 +8,9 @@ BrendanCUDA::AI::Evolution::Evolver::Evolver(
     disposeFunction_t DisposeFunction
 ) {
     objs = std::pair<void**, size_t>(new void*[ContestantCount], ContestantCount);
-    this->EvaluationFunction = EvaluationFunction;
-    this->ReproductionFunction = ReproductionFunction;
-    this->DisposeFunction = DisposeFunction;
+    evaluationFunction = EvaluationFunction;
+    reproductionFunction = ReproductionFunction;
+    disposeFunction = DisposeFunction;
 }
 BrendanCUDA::AI::Evolution::Evolver::Evolver(
     size_t ContestantCount,
@@ -37,7 +37,7 @@ void BrendanCUDA::AI::Evolution::Evolver::InitAll(void* DisposeSharedData, creat
 
     for (size_t i = 0; i < objs.second; ++i) {
         void*& v = objs.first[i];
-        DisposeFunction(v, DisposeSharedData);
+        disposeFunction(v, DisposeSharedData);
         v = CreationFunction(CreationSharedData);
     }
 }
@@ -46,7 +46,7 @@ std::pair<std::pair<float, size_t>*, size_t> BrendanCUDA::AI::Evolution::Evolver
 
     std::pair<std::pair<float, size_t>*, size_t> scores = std::pair<std::pair<float, size_t>*, size_t>(new std::pair<float, size_t>[objs.second], objs.second);
     for (size_t i = 0; i < objs.second; ++i) {
-        scores.first[i] = std::pair<float, size_t>(EvaluationFunction(objs.first[i], EvaluationSharedData), i);
+        scores.first[i] = std::pair<float, size_t>(evaluationFunction(objs.first[i], EvaluationSharedData), i);
     }
     return scores;
 }
@@ -68,8 +68,8 @@ void BrendanCUDA::AI::Evolution::Evolver::ActOnSortedEvaluations(std::pair<std::
     for (i = 0; i < s1_2; ++i) {
         void*& iVP(objs.first[Evaluations.first[i].second]);
         void*& jVP(objs.first[Evaluations.first[j].second]);
-        void* n = ReproductionFunction(jVP, ReproductionSharedData);
-        DisposeFunction(iVP, DisposeSharedData);
+        void* n = reproductionFunction(jVP, ReproductionSharedData);
+        disposeFunction(iVP, DisposeSharedData);
         iVP = n;
 
         ++j;
@@ -85,7 +85,7 @@ void BrendanCUDA::AI::Evolution::Evolver::Dispose(void* DisposeSharedData) {
     for (size_t i = 0; i < objs.second; ++i) {
         void* v = objs.first[i];
         if (v != 0) {
-            DisposeFunction(v, DisposeSharedData);
+            disposeFunction(v, DisposeSharedData);
         }
     }
     delete objs.first;

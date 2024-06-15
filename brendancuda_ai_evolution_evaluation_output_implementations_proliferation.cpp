@@ -6,12 +6,12 @@
 #include <cmath>
 
 template <>
-float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<float>(void* Object, evalProliferation_sd<float>& Settings) {
+float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<float>(void* Object, Evaluate_Proliferation_SD<float>& Settings) {
     constexpr float rndSclr = 2.f / (float)std::numeric_limits<uint64_t>::max();
     if (!Settings.inputCount) {
         throw std::runtime_error("'Settings.inputCount' cannot be zero.");
     }
-    instance_v_t<float> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
+    Instance_V<float> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
     float t = 0.f;
     for (size_t i = 0; i < Settings.roundCount; ++i) {
         float* vs = new float[Settings.inputCount];
@@ -35,13 +35,13 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProli
 }
 
 template<>
-float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<double>(void* Object, evalProliferation_sd<double>& Settings) {
+float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<double>(void* Object, Evaluate_Proliferation_SD<double>& Settings) {
     constexpr double rndSclr = 2. / (double)std::numeric_limits<uint64_t>::max();
 
     if (!Settings.inputCount) {
         throw std::runtime_error("'Settings.inputCount' cannot be zero.");
     }
-    instance_v_t<double> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
+    Instance_V<double> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
     double t = 0.;
     for (size_t i = 0; i < Settings.roundCount; ++i) {
         double* vs = new double[Settings.inputCount];
@@ -64,33 +64,33 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProli
     return (float)t;
 }
 
-template <typename T>
-float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation(void* Object, evalProliferation_sd<T>& Settings) {
+template <typename _T>
+float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation(void* Object, Evaluate_Proliferation_SD<_T>& Settings) {
     if (!Settings.inputCount) {
         throw std::runtime_error("'Settings.inputCount' cannot be zero.");
     }
-    instance_v_t<T> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
+    Instance_V<_T> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
     uint64_t t = 0ui64;
     for (size_t i = 0; i < Settings.roundCount; ++i) {
-        T* vs = new T[Settings.inputCount];
-        T rndVal = (T)Settings.rng();
+        _T* vs = new _T[Settings.inputCount];
+        _T rndVal = (_T)Settings.rng();
         for (size_t j = 0; j < Settings.inputCount; ++j) {
             vs[j] = rndVal;
         }
         for (size_t j = 0; j < Settings.iterationsPerRound; ++j) {
-            T* r = oi.IterateInstance(vs);
+            _T* r = oi.IterateInstance(vs);
             for (size_t k = 0; k < Settings.outputCount; ++k) {
-                T iv = Settings.mask & ~(r[k] ^ rndVal);
-                if (std::is_same<int8_t, T>::value || std::is_same<uint8_t, T>::value) {
+                _T iv = Settings.mask & ~(r[k] ^ rndVal);
+                if (std::is_same<int8_t, _T>::value || std::is_same<uint8_t, _T>::value) {
                     t += BrendanCUDA::Binary::Count1s((uint8_t)iv);
                 }
-                else if (std::is_same<int16_t, T>::value || std::is_same<uint16_t, T>::value) {
+                else if (std::is_same<int16_t, _T>::value || std::is_same<uint16_t, _T>::value) {
                     t += BrendanCUDA::Binary::Count1s((uint16_t)iv);
                 }
-                else if (std::is_same<int32_t, T>::value || std::is_same<uint32_t, T>::value) {
+                else if (std::is_same<int32_t, _T>::value || std::is_same<uint32_t, _T>::value) {
                     t += BrendanCUDA::Binary::Count1s((uint32_t)iv);
                 }
-                else if (std::is_same<int64_t, T>::value || std::is_same<uint64_t, T>::value) {
+                else if (std::is_same<int64_t, _T>::value || std::is_same<uint64_t, _T>::value) {
                     t += BrendanCUDA::Binary::Count1s((uint64_t)iv);
                 }
                 else {
@@ -101,17 +101,17 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProli
         }
         delete[] vs;
     }
-    T mc;
-    if (std::is_same<int8_t, T>::value || std::is_same<uint8_t, T>::value) {
+    _T mc;
+    if (std::is_same<int8_t, _T>::value || std::is_same<uint8_t, _T>::value) {
         mc = BrendanCUDA::Binary::Count1s((uint8_t)Settings.mask);
     }
-    else if (std::is_same<int16_t, T>::value || std::is_same<uint16_t, T>::value) {
+    else if (std::is_same<int16_t, _T>::value || std::is_same<uint16_t, _T>::value) {
         mc = BrendanCUDA::Binary::Count1s((uint16_t)Settings.mask);
     }
-    else if (std::is_same<int32_t, T>::value || std::is_same<uint32_t, T>::value) {
+    else if (std::is_same<int32_t, _T>::value || std::is_same<uint32_t, _T>::value) {
         mc = BrendanCUDA::Binary::Count1s((uint32_t)Settings.mask);
     }
-    else if (std::is_same<int64_t, T>::value || std::is_same<uint64_t, T>::value) {
+    else if (std::is_same<int64_t, _T>::value || std::is_same<uint64_t, _T>::value) {
         mc = BrendanCUDA::Binary::Count1s((uint64_t)Settings.mask);
     }
     else {
@@ -120,13 +120,13 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProli
     return (float)t / (float)((uint64_t)mc * Settings.iterationsPerRound * Settings.roundCount * Settings.outputCount);
 }
 
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint8_t>(void*, evalProliferation_sd<uint8_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<int8_t>(void*, evalProliferation_sd<int8_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint16_t>(void*, evalProliferation_sd<uint16_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<int16_t>(void*, evalProliferation_sd<int16_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint32_t>(void*, evalProliferation_sd<uint32_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<int32_t>(void*, evalProliferation_sd<int32_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<uint64_t>(void*, evalProliferation_sd<uint64_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<int64_t>(void*, evalProliferation_sd<int64_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<float>(void*, evalProliferation_sd<float>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalProliferation<double>(void*, evalProliferation_sd<double>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint8_t>(void*, Evaluate_Proliferation_SD<uint8_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int8_t>(void*, Evaluate_Proliferation_SD<int8_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint16_t>(void*, Evaluate_Proliferation_SD<uint16_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int16_t>(void*, Evaluate_Proliferation_SD<int16_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint32_t>(void*, Evaluate_Proliferation_SD<uint32_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int32_t>(void*, Evaluate_Proliferation_SD<int32_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint64_t>(void*, Evaluate_Proliferation_SD<uint64_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int64_t>(void*, Evaluate_Proliferation_SD<int64_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<float>(void*, Evaluate_Proliferation_SD<float>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<double>(void*, Evaluate_Proliferation_SD<double>&);

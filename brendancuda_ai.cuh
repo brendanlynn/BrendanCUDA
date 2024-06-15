@@ -10,8 +10,8 @@
 
 namespace BrendanCUDA {
     namespace AI {
-        template <typename T>
-        using activationFunction_t = T(*)(T);
+        template <typename _T>
+        using activationFunction_t = _T(*)(_T Value);
 
         __host__ __device__ void RandomizeArray(float* Array, size_t Length, float Scalar, Random::AnyRNG<uint64_t> rng);
         __host__ __device__ void RandomizeArray(float* Array, size_t Length, float Scalar, float LowerBound, float UpperBound, Random::AnyRNG<uint64_t> rng);

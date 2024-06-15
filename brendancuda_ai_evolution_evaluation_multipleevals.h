@@ -6,29 +6,29 @@ namespace BrendanCUDA {
     namespace AI {
         namespace Evolution {
             namespace Evaluation {
-                template <evaluationFunction_t SingleEvaluationFunc, size_t IterationCount>
-                float evalMultipleTimes_am_cc(void* Object, void* EvaluationSharedData) {
-                    constexpr float s = 1.f / IterationCount;
+                template <evaluationFunction_t _SingleEvaluationFunc, size_t _IterationCount>
+                float Evaluate_MultipleTimes_AM_C(void* Object, void* EvaluationSharedData) {
+                    constexpr float s = 1.f / _IterationCount;
 
                     float t = 0.f;
-                    for (size_t i = 0; i < IterationCount; ++i) {
-                        t += SingleEvaluationFunc(Object, EvaluationSharedData);
+                    for (size_t i = 0; i < _IterationCount; ++i) {
+                        t += _SingleEvaluationFunc(Object, EvaluationSharedData);
                     }
 
-                    return t / IterationCount;
+                    return t / _IterationCount;
                 }
-                template <evaluationFunction_t SingleEvaluationFunc>
-                float evalMultipleTimes_am_vc(void* Object, void* EvaluationSharedData) {
-                    evalMultipleTimes_am_vc_sd sd = *(evalMultipleTimes_am_vc_sd*)EvaluationSharedData;
-                    
+                template <evaluationFunction_t _SingleEvaluationFunc>
+                float Evaluate_MultipleTimes_AM_V(void* Object, void* EvaluationSharedData) {
+                    Evaluate_MultipleTimes_AM_V_SD sd = *(Evaluate_MultipleTimes_AM_V_SD*)EvaluationSharedData;
+
                     float t = 0.f;
                     for (size_t i = 0; i < sd.iterationCount; ++i) {
-                        t += SingleEvaluationFunc(Object, sd.internalEvaluationSharedData);
+                        t += _SingleEvaluationFunc(Object, sd.internalEvaluationSharedData);
                     }
 
                     return t / sd.iterationCount;
                 }
-                struct evalMultipleTimes_am_vc_sd final {
+                struct Evaluate_MultipleTimes_AM_V_SD final {
                     size_t iterationCount;
                     void* internalEvaluationSharedData;
                 };

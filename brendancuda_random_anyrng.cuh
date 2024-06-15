@@ -6,18 +6,18 @@
 
 namespace BrendanCUDA {
     namespace details {
-        template <typename TOutputType, typename TRNG>
+        template <typename _TOutputType, typename _TRNG>
         __host__ __device__ TOutputType runRNGFunc(void* rng) {
             return (TOutputType)((*(TRNG*)rng)());
         }
-        template <typename TOutputType>
+        template <typename _TOutputType>
         using runRNGFunc_t = TOutputType(*)(void*);
     }
     namespace Random {
-        template <typename TOutputType>
+        template <typename _TOutputType>
         class AnyRNG final {
         public:
-            template <typename TRNG>
+            template <typename _TRNG>
             __host__ __device__ AnyRNG(TRNG* rng) {
                 i_rng = rng;
                 r_rng = details::runRNGFunc<TOutputType, TRNG>;

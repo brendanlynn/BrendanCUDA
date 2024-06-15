@@ -8,45 +8,43 @@ namespace BrendanCUDA {
         namespace Evolution {
             namespace Evaluation {
                 namespace Output {
-                    namespace Implementations {
-                        template <typename T>
-                        struct evalProliferation_sd final {
-                            instanceFunctions_t<T> instanceFunctions;
-                            uint64_t iterationsPerRound;
-                            uint64_t roundCount;
-                            size_t inputCount;
-                            size_t outputCount;
-                            bool individual;
-                            T mask;
-                            void* sd_ci;
-                            BrendanCUDA::Random::AnyRNG<uint64_t> rng;
-                        };
-                        template <>
-                        struct evalProliferation_sd<float> final {
-                            instanceFunctions_t<float> instanceFunctions;
-                            uint64_t iterationsPerRound;
-                            uint64_t roundCount;
-                            size_t inputCount;
-                            size_t outputCount;
-                            bool individual;
-                            void* sd_ci;
-                            BrendanCUDA::Random::AnyRNG<uint64_t> rng;
-                        };
-                        template <>
-                        struct evalProliferation_sd<double> final {
-                            instanceFunctions_t<double> instanceFunctions;
-                            uint64_t iterationsPerRound;
-                            uint64_t roundCount;
-                            size_t inputCount;
-                            size_t outputCount;
-                            bool individual;
-                            void* sd_ci;
-                            BrendanCUDA::Random::AnyRNG<uint64_t> rng;
-                        };
+                    template <typename _T>
+                    struct Evaluate_Proliferation_SD final {
+                        InstanceFunctions<_T> instanceFunctions;
+                        uint64_t iterationsPerRound;
+                        uint64_t roundCount;
+                        size_t inputCount;
+                        size_t outputCount;
+                        bool individual;
+                        _T mask;
+                        void* sd_ci;
+                        BrendanCUDA::Random::AnyRNG<uint64_t> rng;
+                    };
+                    template <>
+                    struct Evaluate_Proliferation_SD<float> final {
+                        InstanceFunctions<float> instanceFunctions;
+                        uint64_t iterationsPerRound;
+                        uint64_t roundCount;
+                        size_t inputCount;
+                        size_t outputCount;
+                        bool individual;
+                        void* sd_ci;
+                        BrendanCUDA::Random::AnyRNG<uint64_t> rng;
+                    };
+                    template <>
+                    struct Evaluate_Proliferation_SD<double> final {
+                        InstanceFunctions<double> instanceFunctions;
+                        uint64_t iterationsPerRound;
+                        uint64_t roundCount;
+                        size_t inputCount;
+                        size_t outputCount;
+                        bool individual;
+                        void* sd_ci;
+                        BrendanCUDA::Random::AnyRNG<uint64_t> rng;
+                    };
 
-                        template <typename T>
-                        float evalProliferation(void* Object, evalProliferation_sd<T>& Settings);
-                    }
+                    template <typename _T>
+                    float Evaluate_Proliferation(void* Object, Evaluate_Proliferation_SD<_T>& Settings);
                 }
             }
         }

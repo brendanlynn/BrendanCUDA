@@ -11,23 +11,23 @@
 
 namespace BrendanCUDA {
     namespace details {
-        template <typename T>
-        __global__ void fillWithKernel(T* arr, T Value) {
+        template <typename _T>
+        __global__ void fillWithKernel(_T* arr, _T Value) {
             arr[blockIdx.x] = Value;
         }
     }
     namespace Fields {
-        template <typename T>
+        template <typename _T>
         class Field3 final {
         public:
             __host__ __device__ Field3(uint32_3 Dimensions);
             __host__ __device__ Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ);
 
-            __device__ Field3(uint32_3 Dimensions, T* All);
-            __device__ Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, T* All);
+            __device__ Field3(uint32_3 Dimensions, _T* All);
+            __device__ Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All);
 
-            __host__ Field3(uint32_3 Dimensions, T* All, bool CopyFromHost);
-            __host__ Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, T* All, bool CopyFromHost);
+            __host__ Field3(uint32_3 Dimensions, _T* All, bool CopyFromHost);
+            __host__ Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All, bool CopyFromHost);
 
             __host__ __device__ uint32_t LengthX() const;
             __host__ __device__ uint32_t LengthY() const;
@@ -37,34 +37,34 @@ namespace BrendanCUDA {
 
             __host__ __device__ size_t SizeOnGPU() const;
 
-            __host__ void CopyAllIn(T* All, bool CopyFromHost);
-            __device__ void CopyAllIn(T* All);
-            __host__ void CopyAllOut(T* All, bool CopyToHost) const;
-            __device__ void CopyAllOut(T* All) const;
-            __host__ void CopyValueIn(uint64_t Index, T* Value, bool CopyFromHost);
-            __device__ void CopyValueIn(uint64_t Index, T* Value);
-            __host__ void CopyValueIn(uint32_3 Coordinates, T* Value, bool CopyFromHost);
-            __device__ void CopyValueIn(uint32_3 Coordinates, T* Value);
-            __host__ void CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, T* Value, bool CopyFromHost);
-            __device__ void CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, T* Value);
-            __host__ void CopyValueOut(uint64_t Index, T* Value, bool CopyToHost) const;
-            __device__ void CopyValueOut(uint64_t Index, T* Value) const;
-            __host__ void CopyValueOut(uint32_3 Coordinates, T* Value, bool CopyToHost) const;
-            __device__ void CopyValueOut(uint32_3 Coordinates, T* Value) const;
-            __host__ void CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, T* Value, bool CopyToHost) const;
-            __device__ void CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, T* Value) const;
+            __host__ void CopyAllIn(_T* All, bool CopyFromHost);
+            __device__ void CopyAllIn(_T* All);
+            __host__ void CopyAllOut(_T* All, bool CopyToHost) const;
+            __device__ void CopyAllOut(_T* All) const;
+            __host__ void CopyValueIn(uint64_t Index, _T* Value, bool CopyFromHost);
+            __device__ void CopyValueIn(uint64_t Index, _T* Value);
+            __host__ void CopyValueIn(uint32_3 Coordinates, _T* Value, bool CopyFromHost);
+            __device__ void CopyValueIn(uint32_3 Coordinates, _T* Value);
+            __host__ void CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value, bool CopyFromHost);
+            __device__ void CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value);
+            __host__ void CopyValueOut(uint64_t Index, _T* Value, bool CopyToHost) const;
+            __device__ void CopyValueOut(uint64_t Index, _T* Value) const;
+            __host__ void CopyValueOut(uint32_3 Coordinates, _T* Value, bool CopyToHost) const;
+            __device__ void CopyValueOut(uint32_3 Coordinates, _T* Value) const;
+            __host__ void CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value, bool CopyToHost) const;
+            __device__ void CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) const;
 
-            __host__ T* GetAll(bool CopyToHost) const;
-            __device__ T* GetAll() const;
-            __host__ __device__ void SetAll(T* All, bool CopyFromHost);
+            __host__ _T* GetAll(bool CopyToHost) const;
+            __device__ _T* GetAll() const;
+            __host__ __device__ void SetAll(_T* All, bool CopyFromHost);
 
-            __host__ __device__ T GetValueAt(uint64_t Index) const;
-            __host__ __device__ T GetValueAt(uint32_3 Coordinates) const;
-            __host__ __device__ T GetValueAt(uint32_t X, uint32_t Y, uint32_t Z) const;
+            __host__ __device__ _T GetValueAt(uint64_t Index) const;
+            __host__ __device__ _T GetValueAt(uint32_3 Coordinates) const;
+            __host__ __device__ _T GetValueAt(uint32_t X, uint32_t Y, uint32_t Z) const;
 
-            __host__ __device__ void SetValueAt(uint64_t Index, T Value);
-            __host__ __device__ void SetValueAt(uint32_3 Coordinates, T Value);
-            __host__ __device__ void SetValueAt(uint32_t X, uint32_t Y, uint32_t Z, T Value);
+            __host__ __device__ void SetValueAt(uint64_t Index, _T Value);
+            __host__ __device__ void SetValueAt(uint32_3 Coordinates, _T Value);
+            __host__ __device__ void SetValueAt(uint32_t X, uint32_t Y, uint32_t Z, _T Value);
 
             __host__ __device__ void Dispose();
 
@@ -72,18 +72,18 @@ namespace BrendanCUDA {
             __host__ __device__ uint64_t CoordinatesToIndex(uint32_t X, uint32_t Y, uint32_t Z) const;
             __host__ __device__ uint32_3 IndexToCoordinates(uint64_t Index) const;
 
-            __host__ __device__ T* IndexToPointer(uint64_t Index) const;
-            __host__ __device__ uint64_t PointerToIndex(T* Pointer) const;
+            __host__ __device__ _T* IndexToPointer(uint64_t Index) const;
+            __host__ __device__ uint64_t PointerToIndex(_T* Pointer) const;
 
-            __host__ __device__ T* CoordinatesToPointer(uint32_3 Coordinates) const;
-            __host__ __device__ T* CoordinatesToPointer(uint32_t X, uint32_t Y, uint32_t Z) const;
-            __host__ __device__ uint32_3 PointerToCoordinates(T* Pointer) const;
+            __host__ __device__ _T* CoordinatesToPointer(uint32_3 Coordinates) const;
+            __host__ __device__ _T* CoordinatesToPointer(uint32_t X, uint32_t Y, uint32_t Z) const;
+            __host__ __device__ uint32_3 PointerToCoordinates(_T* Pointer) const;
 
             __host__ __device__ void GetConsecutives(uint64_t Index, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const;
             __host__ __device__ void GetConsecutives(uint64_t Index, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const;
 
-            __host__ __device__ void GetConsecutives(uint64_t Index, T*& POO, T*& NOO, T*& OPO, T*& ONO, T*& OOP, T*& OON) const;
-            __host__ __device__ void GetConsecutives(uint64_t Index, T*& PPP, T*& OPP, T*& NPP, T*& POP, T*& OOP, T*& NOP, T*& PNP, T*& ONP, T*& NNP, T*& PPO, T*& OPO, T*& NPO, T*& POO, T*& NOO, T*& PNO, T*& ONO, T*& NNO, T*& PPN, T*& OPN, T*& NPN, T*& PON, T*& OON, T*& NON, T*& PNN, T*& ONN, T*& NNN) const;
+            __host__ __device__ void GetConsecutives(uint64_t Index, _T*& POO, _T*& NOO, _T*& OPO, _T*& ONO, _T*& OOP, _T*& OON) const;
+            __host__ __device__ void GetConsecutives(uint64_t Index, _T*& PPP, _T*& OPP, _T*& NPP, _T*& POP, _T*& OOP, _T*& NOP, _T*& PNP, _T*& ONP, _T*& NNP, _T*& PPO, _T*& OPO, _T*& NPO, _T*& POO, _T*& NOO, _T*& PNO, _T*& ONO, _T*& NNO, _T*& PPN, _T*& OPN, _T*& NPN, _T*& PON, _T*& OON, _T*& NON, _T*& PNN, _T*& ONN, _T*& NNN) const;
 
             __host__ __device__ void GetConsecutives(uint64_t Index, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const;
             __host__ __device__ void GetConsecutives(uint64_t Index, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const;
@@ -91,43 +91,43 @@ namespace BrendanCUDA {
             __host__ __device__ void GetConsecutives(uint32_3 Coordinates, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const;
             __host__ __device__ void GetConsecutives(uint32_3 Coordinates, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const;
 
-            __host__ __device__ void GetConsecutives(uint32_3 Coordinates, T*& POO, T*& NOO, T*& OPO, T*& ONO, T*& OOP, T*& OON) const;
-            __host__ __device__ void GetConsecutives(uint32_3 Coordinates, T*& PPP, T*& OPP, T*& NPP, T*& POP, T*& OOP, T*& NOP, T*& PNP, T*& ONP, T*& NNP, T*& PPO, T*& OPO, T*& NPO, T*& POO, T*& NOO, T*& PNO, T*& ONO, T*& NNO, T*& PPN, T*& OPN, T*& NPN, T*& PON, T*& OON, T*& NON, T*& PNN, T*& ONN, T*& NNN) const;
+            __host__ __device__ void GetConsecutives(uint32_3 Coordinates, _T*& POO, _T*& NOO, _T*& OPO, _T*& ONO, _T*& OOP, _T*& OON) const;
+            __host__ __device__ void GetConsecutives(uint32_3 Coordinates, _T*& PPP, _T*& OPP, _T*& NPP, _T*& POP, _T*& OOP, _T*& NOP, _T*& PNP, _T*& ONP, _T*& NNP, _T*& PPO, _T*& OPO, _T*& NPO, _T*& POO, _T*& NOO, _T*& PNO, _T*& ONO, _T*& NNO, _T*& PPN, _T*& OPN, _T*& NPN, _T*& PON, _T*& OON, _T*& NON, _T*& PNN, _T*& ONN, _T*& NNN) const;
 
             __host__ __device__ void GetConsecutives(uint32_3 Coordinates, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const;
             __host__ __device__ void GetConsecutives(uint32_3 Coordinates, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const;
 
-            __host__ __device__ void GetConsecutives(T*& Pointer, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const;
-            __host__ __device__ void GetConsecutives(T*& Pointer, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const;
+            __host__ __device__ void GetConsecutives(_T*& Pointer, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const;
+            __host__ __device__ void GetConsecutives(_T*& Pointer, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const;
 
-            __host__ __device__ void GetConsecutives(T*& Pointer, T*& POO, T*& NOO, T*& OPO, T*& ONO, T*& OOP, T*& OON) const;
-            __host__ __device__ void GetConsecutives(T*& Pointer, T*& PPP, T*& OPP, T*& NPP, T*& POP, T*& OOP, T*& NOP, T*& PNP, T*& ONP, T*& NNP, T*& PPO, T*& OPO, T*& NPO, T*& POO, T*& NOO, T*& PNO, T*& ONO, T*& NNO, T*& PPN, T*& OPN, T*& NPN, T*& PON, T*& OON, T*& NON, T*& PNN, T*& ONN, T*& NNN) const;
+            __host__ __device__ void GetConsecutives(_T*& Pointer, _T*& POO, _T*& NOO, _T*& OPO, _T*& ONO, _T*& OOP, _T*& OON) const;
+            __host__ __device__ void GetConsecutives(_T*& Pointer, _T*& PPP, _T*& OPP, _T*& NPP, _T*& POP, _T*& OOP, _T*& NOP, _T*& PNP, _T*& ONP, _T*& NNP, _T*& PPO, _T*& OPO, _T*& NPO, _T*& POO, _T*& NOO, _T*& PNO, _T*& ONO, _T*& NNO, _T*& PPN, _T*& OPN, _T*& NPN, _T*& PON, _T*& OON, _T*& NON, _T*& PNN, _T*& ONN, _T*& NNN) const;
 
-            __host__ __device__ void GetConsecutives(T*& Pointer, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const;
-            __host__ __device__ void GetConsecutives(T*& Pointer, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const;
+            __host__ __device__ void GetConsecutives(_T*& Pointer, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const;
+            __host__ __device__ void GetConsecutives(_T*& Pointer, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const;
 
-            __host__ __device__ void FillWith(T Value);
+            __host__ __device__ void FillWith(_T Value);
 
-            __host__ __device__ std::pair<thrust::device_ptr<T>, size_t> Data() const;
+            __host__ __device__ std::pair<thrust::device_ptr<_T>, size_t> Data() const;
         private:
             uint32_t lengthX;
             uint32_t lengthY;
             uint32_t lengthZ;
 
-            T* cudaArray;
+            _T* cudaArray;
         };
     }
 }
 
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::FillWith(T Value) {
-    details::fillWithKernel<T><<<lengthX * lengthY * lengthZ, 1>>>(cudaArray, Value);
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::FillWith(_T Value) {
+    details::fillWithKernel<_T><<<lengthX * lengthY * lengthZ, 1>>>(cudaArray, Value);
 }
-template <typename T>
-__host__ __device__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_3 Dimensions)
+template <typename _T>
+__host__ __device__ BrendanCUDA::Fields::Field3<_T>::Field3(uint32_3 Dimensions)
     : Field3(Dimensions.x, Dimensions.y, Dimensions.z) { }
-template <typename T>
-__host__ __device__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ) {
+template <typename _T>
+__host__ __device__ BrendanCUDA::Fields::Field3<_T>::Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ) {
     if (LengthX == 0 || LengthY == 0 || LengthZ == 0) {
         lengthX = 0;
         lengthY = 0;
@@ -139,117 +139,117 @@ __host__ __device__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_t LengthX, uin
         lengthY = LengthY;
         lengthZ = LengthZ;
 #if __CUDA_ARCH__
-        cudaArray = new T[LengthX * LengthY * LengthZ];
+        cudaArray = new _T[LengthX * LengthY * LengthZ];
 #else
         ThrowIfBad(cudaMalloc(&cudaArray, SizeOnGPU()));
 #endif
     }
 }
-template <typename T>
-__device__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_3 Dimensions, T* All)
+template <typename _T>
+__device__ BrendanCUDA::Fields::Field3<_T>::Field3(uint32_3 Dimensions, _T* All)
     : Field3(Dimensions.x, Dimensions.y, Dimensions.z, All, CopyFromHost) { }
-template <typename T>
-__device__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, T* All)
+template <typename _T>
+__device__ BrendanCUDA::Fields::Field3<_T>::Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All)
     : Field3(LengthX, LengthY, LengthZ) {
     CopyAllIn(All);
 }
-template <typename T>
-__host__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_3 Dimensions, T* All, bool CopyFromHost)
+template <typename _T>
+__host__ BrendanCUDA::Fields::Field3<_T>::Field3(uint32_3 Dimensions, _T* All, bool CopyFromHost)
     : Field3(Dimensions.x, Dimensions.y, Dimensions.z, All, CopyFromHost) { }
-template <typename T>
-__host__ BrendanCUDA::Fields::Field3<T>::Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, T* All, bool CopyFromHost)
+template <typename _T>
+__host__ BrendanCUDA::Fields::Field3<_T>::Field3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All, bool CopyFromHost)
     : Field3(LengthX, LengthY, LengthZ) {
     CopyAllIn(All, CopyFromHost);
 }
-template <typename T>
-__host__ __device__ uint32_t BrendanCUDA::Fields::Field3<T>::LengthX() const {
+template <typename _T>
+__host__ __device__ uint32_t BrendanCUDA::Fields::Field3<_T>::LengthX() const {
     return lengthX;
 }
-template <typename T>
-__host__ __device__ uint32_t BrendanCUDA::Fields::Field3<T>::LengthY() const {
+template <typename _T>
+__host__ __device__ uint32_t BrendanCUDA::Fields::Field3<_T>::LengthY() const {
     return lengthY;
 }
-template <typename T>
-__host__ __device__ uint32_t BrendanCUDA::Fields::Field3<T>::LengthZ() const {
+template <typename _T>
+__host__ __device__ uint32_t BrendanCUDA::Fields::Field3<_T>::LengthZ() const {
     return lengthZ;
 }
-template <typename T>
-__host__ __device__ BrendanCUDA::uint32_3 BrendanCUDA::Fields::Field3<T>::Dimensions() const {
+template <typename _T>
+__host__ __device__ BrendanCUDA::uint32_3 BrendanCUDA::Fields::Field3<_T>::Dimensions() const {
     return uint32_3(lengthX, lengthY, lengthZ);
 }
-template <typename T>
-__host__ __device__ size_t BrendanCUDA::Fields::Field3<T>::SizeOnGPU() const {
-    return (((size_t)lengthX) * ((size_t)lengthY) * ((size_t)lengthZ)) * sizeof(T);
+template <typename _T>
+__host__ __device__ size_t BrendanCUDA::Fields::Field3<_T>::SizeOnGPU() const {
+    return (((size_t)lengthX) * ((size_t)lengthY) * ((size_t)lengthZ)) * sizeof(_T);
 }
-template <typename T>
-__host__ void BrendanCUDA::Fields::Field3<T>::CopyAllIn(T* All, bool CopyFromHost) {
+template <typename _T>
+__host__ void BrendanCUDA::Fields::Field3<_T>::CopyAllIn(_T* All, bool CopyFromHost) {
     ThrowIfBad(cudaMemcpy(cudaArray, All, SizeOnGPU(), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
-template <typename T>
-__device__ void BrendanCUDA::Fields::Field3<T>::CopyAllIn(T* All) {
+template <typename _T>
+__device__ void BrendanCUDA::Fields::Field3<_T>::CopyAllIn(_T* All) {
     deviceMemcpy(cudaArray, All, SizeOnGPU());
 }
-template <typename T>
-__host__ void BrendanCUDA::Fields::Field3<T>::CopyAllOut(T* All, bool CopyToHost) const {
+template <typename _T>
+__host__ void BrendanCUDA::Fields::Field3<_T>::CopyAllOut(_T* All, bool CopyToHost) const {
     ThrowIfBad(cudaMemcpy(All, cudaArray, SizeOnGPU(), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
 }
-template <typename T>
-__device__ void BrendanCUDA::Fields::Field3<T>::CopyAllOut(T* All) const {
+template <typename _T>
+__device__ void BrendanCUDA::Fields::Field3<_T>::CopyAllOut(_T* All) const {
     deviceMemcpy(All, cudaArray, SizeOnGPU());
 }
-template <typename T>
-__host__ void BrendanCUDA::Fields::Field3<T>::CopyValueIn(uint64_t Index, T* Value, bool CopyFromHost) {
-    ThrowIfBad(cudaMemcpy(IndexToPointer(Index), Value, sizeof(T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
+template <typename _T>
+__host__ void BrendanCUDA::Fields::Field3<_T>::CopyValueIn(uint64_t Index, _T* Value, bool CopyFromHost) {
+    ThrowIfBad(cudaMemcpy(IndexToPointer(Index), Value, sizeof(_T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
-template <typename T>
-__device__ void BrendanCUDA::Fields::Field3<T>::CopyValueIn(uint64_t Index, T* Value) {
-    deviceMemcpy(IndexToPointer(Index), Value, sizeof(T));
+template <typename _T>
+__device__ void BrendanCUDA::Fields::Field3<_T>::CopyValueIn(uint64_t Index, _T* Value) {
+    deviceMemcpy(IndexToPointer(Index), Value, sizeof(_T));
 }
-template <typename T>
-__host__ void BrendanCUDA::Fields::Field3<T>::CopyValueIn(uint32_3 Coordinates, T* Value, bool CopyFromHost) {
-    ThrowIfBad(cudaMemcpy(CoordinatesToPointer(Coordinates), Value, sizeof(T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
+template <typename _T>
+__host__ void BrendanCUDA::Fields::Field3<_T>::CopyValueIn(uint32_3 Coordinates, _T* Value, bool CopyFromHost) {
+    ThrowIfBad(cudaMemcpy(CoordinatesToPointer(Coordinates), Value, sizeof(_T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
-template <typename T>
-__device__ void BrendanCUDA::Fields::Field3<T>::CopyValueIn(uint32_3 Coordinates, T* Value) {
-    deviceMemcpy(CoordinatesToPointer(Coordinates), Value, sizeof(T));
+template <typename _T>
+__device__ void BrendanCUDA::Fields::Field3<_T>::CopyValueIn(uint32_3 Coordinates, _T* Value) {
+    deviceMemcpy(CoordinatesToPointer(Coordinates), Value, sizeof(_T));
 }
-template <typename T>
-__host__ void BrendanCUDA::Fields::Field3<T>::CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, T* Value, bool CopyFromHost) {
-    ThrowIfBad(cudaMemcpy(CoordinatesToPointer(X, Y, Z), Value, sizeof(T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
+template <typename _T>
+__host__ void BrendanCUDA::Fields::Field3<_T>::CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value, bool CopyFromHost) {
+    ThrowIfBad(cudaMemcpy(CoordinatesToPointer(X, Y, Z), Value, sizeof(_T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
-template <typename T>
-__device__ void BrendanCUDA::Fields::Field3<T>::CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, T* Value) {
-    deviceMemcpy(CoordinatesToPointer(X, Y, Z), Value, sizeof(T));
+template <typename _T>
+__device__ void BrendanCUDA::Fields::Field3<_T>::CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) {
+    deviceMemcpy(CoordinatesToPointer(X, Y, Z), Value, sizeof(_T));
 }
-template <typename T>
-__host__ void BrendanCUDA::Fields::Field3<T>::CopyValueOut(uint64_t Index, T* Value, bool CopyToHost) const {
-    ThrowIfBad(cudaMemcpy(Value, IndexToPointer(Index), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
+template <typename _T>
+__host__ void BrendanCUDA::Fields::Field3<_T>::CopyValueOut(uint64_t Index, _T* Value, bool CopyToHost) const {
+    ThrowIfBad(cudaMemcpy(Value, IndexToPointer(Index), sizeof(_T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
 }
-template <typename T>
-__device__ void BrendanCUDA::Fields::Field3<T>::CopyValueOut(uint64_t Index, T* Value) const {
-    deviceMemcpy(Value, IndexToPointer(Index), sizeof(T));
+template <typename _T>
+__device__ void BrendanCUDA::Fields::Field3<_T>::CopyValueOut(uint64_t Index, _T* Value) const {
+    deviceMemcpy(Value, IndexToPointer(Index), sizeof(_T));
 }
-template <typename T>
-__host__ void BrendanCUDA::Fields::Field3<T>::CopyValueOut(uint32_3 Coordinates, T* Value, bool CopyToHost) const {
-    ThrowIfBad(cudaMemcpy(Value, CoordinatesToPointer(Coordinates), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
+template <typename _T>
+__host__ void BrendanCUDA::Fields::Field3<_T>::CopyValueOut(uint32_3 Coordinates, _T* Value, bool CopyToHost) const {
+    ThrowIfBad(cudaMemcpy(Value, CoordinatesToPointer(Coordinates), sizeof(_T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
 }
-template <typename T>
-__device__ void BrendanCUDA::Fields::Field3<T>::CopyValueOut(uint32_3 Coordinates, T* Value) const {
-    deviceMemcpy(Value, CoordinatesToPointer(Coordinates), sizeof(T));
+template <typename _T>
+__device__ void BrendanCUDA::Fields::Field3<_T>::CopyValueOut(uint32_3 Coordinates, _T* Value) const {
+    deviceMemcpy(Value, CoordinatesToPointer(Coordinates), sizeof(_T));
 }
-template <typename T>
-__host__ void BrendanCUDA::Fields::Field3<T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, T* Value, bool CopyToHost) const {
-    ThrowIfBad(cudaMemcpy(Value, CoordinatesToPointer(X, Y, Z), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
+template <typename _T>
+__host__ void BrendanCUDA::Fields::Field3<_T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value, bool CopyToHost) const {
+    ThrowIfBad(cudaMemcpy(Value, CoordinatesToPointer(X, Y, Z), sizeof(_T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
 }
-template <typename T>
-__device__ void BrendanCUDA::Fields::Field3<T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, T* Value) const {
-    deviceMemcpy(Value, CoordinatesToPointer(X, Y, Z), sizeof(T));
+template <typename _T>
+__device__ void BrendanCUDA::Fields::Field3<_T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) const {
+    deviceMemcpy(Value, CoordinatesToPointer(X, Y, Z), sizeof(_T));
 }
-template <typename T>
-__host__ T* BrendanCUDA::Fields::Field3<T>::GetAll(bool CopyToHost) const {
-    T* a;
+template <typename _T>
+__host__ _T* BrendanCUDA::Fields::Field3<_T>::GetAll(bool CopyToHost) const {
+    _T* a;
     if (CopyToHost) {
-        a = new T[lengthX * lengthY * lengthZ * lengthD];
+        a = new _T[lengthX * lengthY * lengthZ * lengthD];
     }
     else {
         ThrowIfBad(cudaMalloc(&a, SizeOnGPU()));
@@ -257,19 +257,19 @@ __host__ T* BrendanCUDA::Fields::Field3<T>::GetAll(bool CopyToHost) const {
     CopyAllOut(a, CopyToHost);
     return a;
 }
-template <typename T>
-__device__ T* BrendanCUDA::Fields::Field3<T>::GetAll() const {
-    T* a = new T[lengthX * lengthY * lengthZ * lengthD];
+template <typename _T>
+__device__ _T* BrendanCUDA::Fields::Field3<_T>::GetAll() const {
+    _T* a = new _T[lengthX * lengthY * lengthZ * lengthD];
     CopyAllOut(a, false);
     return a;
 }
-template <typename T>
-__host__ void BrendanCUDA::Fields::Field3<T>::SetAll(T* All, bool CopyFromHost) {
+template <typename _T>
+__host__ void BrendanCUDA::Fields::Field3<_T>::SetAll(_T* All, bool CopyFromHost) {
     CopyAllIn(All, CopyFromHost);
 }
-template <typename T>
-__host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint64_t Index) const {
-    T v;
+template <typename _T>
+__host__ __device__ _T BrendanCUDA::Fields::Field3<_T>::GetValueAt(uint64_t Index) const {
+    _T v;
 #if __CUDA_ARCH__
     CopyValueOut(Index, &v);
 #else
@@ -277,13 +277,13 @@ __host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint64_t Index)
 #endif
     return v;
 }
-template <typename T>
-__host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint32_3 Coordinates) const {
+template <typename _T>
+__host__ __device__ _T BrendanCUDA::Fields::Field3<_T>::GetValueAt(uint32_3 Coordinates) const {
     return GetValueAt(Coordinates.x, Coordinates.y, Coordinates.z);
 }
-template <typename T>
-__host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint32_t X, uint32_t Y, uint32_t Z) const {
-    T v;
+template <typename _T>
+__host__ __device__ _T BrendanCUDA::Fields::Field3<_T>::GetValueAt(uint32_t X, uint32_t Y, uint32_t Z) const {
+    _T v;
 #if __CUDA_ARCH__
     CopyValueOut(X, Y, Z, &v);
 #else
@@ -291,76 +291,76 @@ __host__ __device__ T BrendanCUDA::Fields::Field3<T>::GetValueAt(uint32_t X, uin
 #endif
     return v;
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(uint64_t Index, T Value) {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::SetValueAt(uint64_t Index, _T Value) {
 #if __CUDA_ARCH__
     CopyValueIn(Index, &Value);
 #else
     CopyValueIn(Index, &Value, true);
 #endif
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(uint32_3 Coordinates, T Value) {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::SetValueAt(uint32_3 Coordinates, _T Value) {
     SetValueAt(Coordinates.x, Coordinates.y, Coordinates.z, Value);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::SetValueAt(uint32_t X, uint32_t Y, uint32_t Z, T Value) {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::SetValueAt(uint32_t X, uint32_t Y, uint32_t Z, _T Value) {
 #if __CUDA_ARCH__
     CopyValueIn(X, Y, Z, &Value);
 #else
     CopyValueIn(X, Y, Z, &Value, true);
 #endif
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::Dispose() {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::Dispose() {
 #if __CUDA_ARCH__
     delete[] cudaArray;
 #else
     ThrowIfBad(cudaFree(cudaArray));
 #endif
 }
-template <typename T>
-__host__ __device__ uint64_t BrendanCUDA::Fields::Field3<T>::CoordinatesToIndex(uint32_3 Coordinates) const {
+template <typename _T>
+__host__ __device__ uint64_t BrendanCUDA::Fields::Field3<_T>::CoordinatesToIndex(uint32_3 Coordinates) const {
     return Fields::Coordinates32_3ToIndex64_RM(Dimensions(), Coordinates);
 }
-template <typename T>
-__host__ __device__ uint64_t BrendanCUDA::Fields::Field3<T>::CoordinatesToIndex(uint32_t X, uint32_t Y, uint32_t Z) const {
+template <typename _T>
+__host__ __device__ uint64_t BrendanCUDA::Fields::Field3<_T>::CoordinatesToIndex(uint32_t X, uint32_t Y, uint32_t Z) const {
     return Fields::Coordinates32_3ToIndex64_RM(Dimensions(), uint32_3(X, Y, Z));
 }
-template <typename T>
-__host__ __device__ BrendanCUDA::uint32_3 BrendanCUDA::Fields::Field3<T>::IndexToCoordinates(uint64_t Index) const {
+template <typename _T>
+__host__ __device__ BrendanCUDA::uint32_3 BrendanCUDA::Fields::Field3<_T>::IndexToCoordinates(uint64_t Index) const {
     return Fields::Index64ToCoordinates32_3_RM(Dimensions(), Index);
 }
-template <typename T>
-__host__ __device__ T* BrendanCUDA::Fields::Field3<T>::IndexToPointer(uint64_t Index) const {
+template <typename _T>
+__host__ __device__ _T* BrendanCUDA::Fields::Field3<_T>::IndexToPointer(uint64_t Index) const {
     return &cudaArray[Index];
 }
-template <typename T>
-__host__ __device__ uint64_t BrendanCUDA::Fields::Field3<T>::PointerToIndex(T* Pointer) const {
+template <typename _T>
+__host__ __device__ uint64_t BrendanCUDA::Fields::Field3<_T>::PointerToIndex(_T* Pointer) const {
     return Pointer - cudaArray;
 }
-template <typename T>
-__host__ __device__ T* BrendanCUDA::Fields::Field3<T>::CoordinatesToPointer(uint32_3 Coordinates) const {
+template <typename _T>
+__host__ __device__ _T* BrendanCUDA::Fields::Field3<_T>::CoordinatesToPointer(uint32_3 Coordinates) const {
     return IndexToPointer(CoordinatesToIndex(Coordinates));
 }
-template <typename T>
-__host__ __device__ T* BrendanCUDA::Fields::Field3<T>::CoordinatesToPointer(uint32_t X, uint32_t Y, uint32_t Z) const {
+template <typename _T>
+__host__ __device__ _T* BrendanCUDA::Fields::Field3<_T>::CoordinatesToPointer(uint32_t X, uint32_t Y, uint32_t Z) const {
     return IndexToPointer(CoordinatesToIndex(X, Y, Z));
 }
-template <typename T>
-__host__ __device__ BrendanCUDA::uint32_3 BrendanCUDA::Fields::Field3<T>::PointerToCoordinates(T* Pointer) const {
+template <typename _T>
+__host__ __device__ BrendanCUDA::uint32_3 BrendanCUDA::Fields::Field3<_T>::PointerToCoordinates(_T* Pointer) const {
     return IndexToCoordinates(PointerToIndex(Pointer));
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint64_t Index, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint64_t Index, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const {
     Fields::GetConsecutives_RM(Dimensions(), Index, POO, NOO, OPO, ONO, OOP, OON);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint64_t Index, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint64_t Index, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const {
     Fields::GetConsecutives_RM(Dimensions(), Index, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint64_t Index, T*& POO, T*& NOO, T*& OPO, T*& ONO, T*& OOP, T*& OON) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint64_t Index, _T*& POO, _T*& NOO, _T*& OPO, _T*& ONO, _T*& OOP, _T*& OON) const {
     uint64_t iPOO;
     uint64_t iNOO;
     uint64_t iOPO;
@@ -377,8 +377,8 @@ __host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint64_
     OOP = cudaArray + iOOP;
     OON = cudaArray + iOON;
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint64_t Index, T*& PPP, T*& OPP, T*& NPP, T*& POP, T*& OOP, T*& NOP, T*& PNP, T*& ONP, T*& NNP, T*& PPO, T*& OPO, T*& NPO, T*& POO, T*& NOO, T*& PNO, T*& ONO, T*& NNO, T*& PPN, T*& OPN, T*& NPN, T*& PON, T*& OON, T*& NON, T*& PNN, T*& ONN, T*& NNN) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint64_t Index, _T*& PPP, _T*& OPP, _T*& NPP, _T*& POP, _T*& OOP, _T*& NOP, _T*& PNP, _T*& ONP, _T*& NNP, _T*& PPO, _T*& OPO, _T*& NPO, _T*& POO, _T*& NOO, _T*& PNO, _T*& ONO, _T*& NNO, _T*& PPN, _T*& OPN, _T*& NPN, _T*& PON, _T*& OON, _T*& NON, _T*& PNN, _T*& ONN, _T*& NNN) const {
     uint64_t iPPP;
     uint64_t iOPP;
     uint64_t iNPP;
@@ -435,24 +435,24 @@ __host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint64_
     ONN = cudaArray + iONN;
     NNN = cudaArray + iNNN;
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint64_t Index, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint64_t Index, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const {
     Fields::GetConsecutives_RM(Dimensions(), Index, POO, NOO, OPO, ONO, OOP, OON);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint64_t Index, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint64_t Index, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const {
     Fields::GetConsecutives_RM(Dimensions(), Index, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint32_3 Coordinates, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint32_3 Coordinates, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const {
     Fields::GetConsecutives_RM(Dimensions(), Coordinates, POO, NOO, OPO, ONO, OOP, OON);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint32_3 Coordinates, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint32_3 Coordinates, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const {
     Fields::GetConsecutives_RM(Dimensions(), Coordinates, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint32_3 Coordinates, T*& POO, T*& NOO, T*& OPO, T*& ONO, T*& OOP, T*& OON) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint32_3 Coordinates, _T*& POO, _T*& NOO, _T*& OPO, _T*& ONO, _T*& OOP, _T*& OON) const {
     uint64_t iPOO;
     uint64_t iNOO;
     uint64_t iOPO;
@@ -469,8 +469,8 @@ __host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint32_
     OOP = cudaArray + iOOP;
     OON = cudaArray + iOON;
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint32_3 Coordinates, T*& PPP, T*& OPP, T*& NPP, T*& POP, T*& OOP, T*& NOP, T*& PNP, T*& ONP, T*& NNP, T*& PPO, T*& OPO, T*& NPO, T*& POO, T*& NOO, T*& PNO, T*& ONO, T*& NNO, T*& PPN, T*& OPN, T*& NPN, T*& PON, T*& OON, T*& NON, T*& PNN, T*& ONN, T*& NNN) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint32_3 Coordinates, _T*& PPP, _T*& OPP, _T*& NPP, _T*& POP, _T*& OOP, _T*& NOP, _T*& PNP, _T*& ONP, _T*& NNP, _T*& PPO, _T*& OPO, _T*& NPO, _T*& POO, _T*& NOO, _T*& PNO, _T*& ONO, _T*& NNO, _T*& PPN, _T*& OPN, _T*& NPN, _T*& PON, _T*& OON, _T*& NON, _T*& PNN, _T*& ONN, _T*& NNN) const {
     uint64_t iPPP;
     uint64_t iOPP;
     uint64_t iNPP;
@@ -527,39 +527,39 @@ __host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint32_
     ONN = cudaArray + iONN;
     NNN = cudaArray + iNNN;
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint32_3 Coordinates, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint32_3 Coordinates, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const {
     Fields::GetConsecutives(Dimensions(), Coordinates, POO, NOO, OPO, ONO, OOP, OON);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(uint32_3 Coordinates, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(uint32_3 Coordinates, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const {
     Fields::GetConsecutives(Dimensions(), Coordinates, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(T*& Pointer, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(_T*& Pointer, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const {
     Fields::GetConsecutives(Dimensions(), PointerToIndex(Pointer), POO, NOO, OPO, ONO, OOP, OON);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(T*& Pointer, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(_T*& Pointer, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const {
     Fields::GetConsecutives(Dimensions(), PointerToIndex(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(T*& Pointer, T*& POO, T*& NOO, T*& OPO, T*& ONO, T*& OOP, T*& OON) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(_T*& Pointer, _T*& POO, _T*& NOO, _T*& OPO, _T*& ONO, _T*& OOP, _T*& OON) const {
     Fields::GetConsecutives(Dimensions(), PointerToIndex(Pointer), POO, NOO, OPO, ONO, OOP, OON);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(T*& Pointer, T*& PPP, T*& OPP, T*& NPP, T*& POP, T*& OOP, T*& NOP, T*& PNP, T*& ONP, T*& NNP, T*& PPO, T*& OPO, T*& NPO, T*& POO, T*& NOO, T*& PNO, T*& ONO, T*& NNO, T*& PPN, T*& OPN, T*& NPN, T*& PON, T*& OON, T*& NON, T*& PNN, T*& ONN, T*& NNN) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(_T*& Pointer, _T*& PPP, _T*& OPP, _T*& NPP, _T*& POP, _T*& OOP, _T*& NOP, _T*& PNP, _T*& ONP, _T*& NNP, _T*& PPO, _T*& OPO, _T*& NPO, _T*& POO, _T*& NOO, _T*& PNO, _T*& ONO, _T*& NNO, _T*& PPN, _T*& OPN, _T*& NPN, _T*& PON, _T*& OON, _T*& NON, _T*& PNN, _T*& ONN, _T*& NNN) const {
     Fields::GetConsecutives(Dimensions(), PointerToIndex(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(T*& Pointer, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(_T*& Pointer, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const {
     Fields::GetConsecutives(Dimensions(), PointerToCoordinates(Pointer), POO, NOO, OPO, ONO, OOP, OON);
 }
-template <typename T>
-__host__ __device__ void BrendanCUDA::Fields::Field3<T>::GetConsecutives(T*& Pointer, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const {
+template <typename _T>
+__host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(_T*& Pointer, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const {
     Fields::GetConsecutives(Dimensions(), PointerToCoordinates(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-template <typename T>
-__host__ __device__ std::pair<thrust::device_ptr<T>, size_t> BrendanCUDA::Fields::Field3<T>::Data() const {
+template <typename _T>
+__host__ __device__ std::pair<thrust::device_ptr<_T>, size_t> BrendanCUDA::Fields::Field3<_T>::Data() const {
     return { cudaArray, lengthX * lengthY * lengthZ };
 }

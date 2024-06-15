@@ -2,16 +2,16 @@
 #include <unordered_set>
 #include <exception>
 
-template <typename T>
-float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqueValues(void* Object, evalUniqueValues_sd<T>& Settings) {
-    instance_v_t<T> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
+template <typename _T>
+float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues(void* Object, Evaluate_UniqueValues_SD<_T>& Settings) {
+    Instance_V<_T> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
     if (Settings.individual) {
-        std::unordered_set<T>* s = new std::unordered_set<T>[Settings.outputCount];
+        std::unordered_set<_T>* s = new std::unordered_set<_T>[Settings.outputCount];
         for (size_t i = 0; i < Settings.outputCount; ++i) {
-            s[i] = std::unordered_set<T>();
+            s[i] = std::unordered_set<_T>();
         }
         for (uint64_t i = 0; i < Settings.iterationCount; ++i) {
-            T* o = oi.IterateInstance(0);
+            _T* o = oi.IterateInstance(0);
             for (size_t j = 0; j < Settings.outputCount; ++j) {
                 s[j].insert(o[j]);
             }
@@ -26,9 +26,9 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqu
         return c / (float)(Settings.iterationCount * Settings.outputCount);
     }
     else {
-        std::unordered_set<T> s;
+        std::unordered_set<_T> s;
         for (uint64_t i = 0; i < Settings.iterationCount; ++i) {
-            T* o = oi.IterateInstance(0);
+            _T* o = oi.IterateInstance(0);
             for (size_t j = 0; j < Settings.outputCount; ++j) {
                 s.insert(o[j]);
             }
@@ -39,11 +39,11 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqu
     }
 }
 
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqueValues<uint8_t>(void*, evalUniqueValues_sd<uint8_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqueValues<int8_t>(void*, evalUniqueValues_sd<int8_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqueValues<uint16_t>(void*, evalUniqueValues_sd<uint16_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqueValues<int16_t>(void*, evalUniqueValues_sd<int16_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqueValues<uint32_t>(void*, evalUniqueValues_sd<uint32_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqueValues<int32_t>(void*, evalUniqueValues_sd<int32_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqueValues<uint64_t>(void*, evalUniqueValues_sd<uint64_t>&);
-template float BrendanCUDA::AI::Evolution::Evaluation::Output::Implementations::evalUniqueValues<int64_t>(void*, evalUniqueValues_sd<int64_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint8_t>(void*, Evaluate_UniqueValues_SD<uint8_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int8_t>(void*, Evaluate_UniqueValues_SD<int8_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint16_t>(void*, Evaluate_UniqueValues_SD<uint16_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int16_t>(void*, Evaluate_UniqueValues_SD<int16_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint32_t>(void*, Evaluate_UniqueValues_SD<uint32_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int32_t>(void*, Evaluate_UniqueValues_SD<int32_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint64_t>(void*, Evaluate_UniqueValues_SD<uint64_t>&);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int64_t>(void*, Evaluate_UniqueValues_SD<int64_t>&);

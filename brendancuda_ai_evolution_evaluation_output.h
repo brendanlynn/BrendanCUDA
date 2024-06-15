@@ -10,52 +10,52 @@ namespace BrendanCUDA {
                 namespace Output {
                     using constructInstance_t = void*(*)(void* Object, void* ConstructInstanceSharedData);
                     
-                    template <typename T>
-                    using iterateInstance_t = T*(*)(void* CurrentInstance, T* Inputs);
+                    template <typename _T>
+                    using iterateInstance_t = _T*(*)(void* CurrentInstance, _T* Inputs);
 
                     using destructInstance_t = void(*)(void* CurrentInstance);
 
-                    template <typename T>
-                    struct instanceFunctions_t final {
+                    template <typename _T>
+                    struct InstanceFunctions final {
                         constructInstance_t constructInstance;
-                        iterateInstance_t<T> iterateInstance;
+                        iterateInstance_t<_T> iterateInstance;
                         destructInstance_t destructInstance;
                     };
 
-                    template <typename T, constructInstance_t ci, iterateInstance_t<T> ii, destructInstance_t di>
-                    class instance_c_t final {
+                    template <typename _T, constructInstance_t _CI, iterateInstance_t<_T> _II, destructInstance_t _DI>
+                    class Instance_C final {
                     public:
-                        instance_c_t(void* Object, void* ConstructInstanceSharedData) {
-                            is = ci(Object, ConstructInstanceSharedData);
+                        Instance_C(void* Object, void* ConstructInstanceSharedData) {
+                            is = _CI(Object, ConstructInstanceSharedData);
                         }
-                        T* IterateInstance(T* Inputs) {
-                            return ii(is, Inputs);
+                        _T* IterateInstance(_T* Inputs) {
+                            return _II(is, Inputs);
                         }
                         void DestroyInstance() {
-                            di(is);
+                            _DI(is);
                         }
                     private:
                         void* is;
                     };
 
-                    template <typename T>
-                    class instance_v_t final {
+                    template <typename _T>
+                    class Instance_V final {
                     public:
-                        instance_v_t(constructInstance_t ci, iterateInstance_t<T> ii, destructInstance_t di, void* Object, void* ConstructInstanceSharedData) {
-                            this->ci = ci;
-                            this->ii = ii;
-                            this->di = di;
+                        Instance_V(constructInstance_t CI, iterateInstance_t<_T> II, destructInstance_t DI, void* Object, void* ConstructInstanceSharedData) {
+                            this->ci = CI;
+                            this->ii = II;
+                            this->di = DI;
                             
-                            is = ci(Object, ConstructInstanceSharedData);
+                            is = CI(Object, ConstructInstanceSharedData);
                         }
-                        instance_v_t(instanceFunctions_t<T> instanceFunctions, void* Object, void* ConstructInstanceSharedData) {
-                            this->ci = instanceFunctions.constructInstance;
-                            this->ii = instanceFunctions.iterateInstance;
-                            this->di = instanceFunctions.destructInstance;
+                        Instance_V(InstanceFunctions<_T> InstanceFunctions, void* Object, void* ConstructInstanceSharedData) {
+                            this->ci = InstanceFunctions.constructInstance;
+                            this->ii = InstanceFunctions.iterateInstance;
+                            this->di = InstanceFunctions.destructInstance;
 
                             is = ci(Object, ConstructInstanceSharedData);
                         }
-                        T* IterateInstance(T* Inputs) {
+                        _T* IterateInstance(_T* Inputs) {
                             return ii(is, Inputs);
                         }
                         void DestroyInstance() {
@@ -63,7 +63,7 @@ namespace BrendanCUDA {
                         }
                     private:
                         constructInstance_t ci;
-                        iterateInstance_t<T> ii;
+                        iterateInstance_t<_T> ii;
                         destructInstance_t di;
                         void* is;
                     };
