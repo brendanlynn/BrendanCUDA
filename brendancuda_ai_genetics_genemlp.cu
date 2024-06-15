@@ -35,93 +35,45 @@ BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Clo
 template <typename T>
 void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(base.first, base.second, Scalar, rng);
-#ifdef _DEBUG
-    auto x = cudaDeviceSynchronize();
-#endif
     Intermediate.Randomize(Scalar, rng);
-#ifdef _DEBUG
-    auto y = cudaDeviceSynchronize();
-#endif
 }
 template <typename T>
 void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(base.first, base.second, Scalar, LowerBound, UpperBound, rng);
-#ifdef _DEBUG
-    auto x = cudaDeviceSynchronize();
-#endif
     Intermediate.Randomize(Scalar, LowerBound, UpperBound, rng);
-#ifdef _DEBUG
-    auto y = cudaDeviceSynchronize();
-#endif
 }
 template <typename T>
 void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar_Base, T Scalar_Intermediate, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(base.first, base.second, Scalar_Base, rng);
-#ifdef _DEBUG
-    auto x = cudaDeviceSynchronize();
-#endif
     Intermediate.Randomize(Scalar_Intermediate, rng);
-#ifdef _DEBUG
-    auto y = cudaDeviceSynchronize();
-#endif
 }
 template <typename T>
 void BrendanCUDA::AI::Genetics::GeneMLP<T>::Randomize(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     RandomizeArray(base.first, base.second, Scalar_Base, LowerBound, UpperBound, rng);
-#ifdef _DEBUG
-    auto x = cudaDeviceSynchronize();
-#endif
     Intermediate.Randomize(Scalar_Intermediate, LowerBound, UpperBound, rng);
-#ifdef _DEBUG
-    auto y = cudaDeviceSynchronize();
-#endif
 }
 template <typename T>
 BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar, Random::AnyRNG<uint64_t> rng) {
     GeneMLP<T> n = Clone();
-#ifdef _DEBUG
-    auto x = cudaDeviceSynchronize();
-#endif
     n.Randomize(Scalar, rng);
-#ifdef _DEBUG
-    auto y = cudaDeviceSynchronize();
-#endif
     return n;
 }
 template <typename T>
 BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     GeneMLP<T> n = Clone();
-#ifdef _DEBUG
-    auto x = cudaDeviceSynchronize();
-#endif
     n.Randomize(Scalar, LowerBound, UpperBound, rng);
-#ifdef _DEBUG
-    auto y = cudaDeviceSynchronize();
-#endif
     return n;
 }
 template <typename T>
 BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar_Base, T Scalar_Intermediate, Random::AnyRNG<uint64_t> rng) {
     GeneMLP<T> n = Clone();
-#ifdef _DEBUG
-    auto x = cudaDeviceSynchronize();
-#endif
     n.Randomize(Scalar_Base, Scalar_Intermediate, rng);
-#ifdef _DEBUG
-    auto y = cudaDeviceSynchronize();
-#endif
     return n;
 }
 template <typename T>
 BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Reproduce(T Scalar_Base, T Scalar_Intermediate, T LowerBound, T UpperBound, Random::AnyRNG<uint64_t> rng) {
     GeneMLP<T> n = Clone();
-#ifdef _DEBUG
-    auto x = cudaDeviceSynchronize();
-#endif
     n.Randomize(Scalar_Base, Scalar_Intermediate, LowerBound, UpperBound, rng);
-#ifdef _DEBUG
-    auto y = cudaDeviceSynchronize();
-#endif
     return n;
 }
 template <typename T>
