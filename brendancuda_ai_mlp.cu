@@ -158,18 +158,11 @@ __host__ __device__ size_t BrendanCUDA::AI::MLP::MLP<T>::OutputLength() {
     return GetLayer(len - 1).OutputLength();
 #endif
 }
-//template <typename T>
-//__global__ void RunActivationFunctionOnArrayKernel(T* Array, BrendanCUDA::AI::activationFunction_t<T> ActivationFunction) {
-//    /*T& p(Array[blockIdx.x]);
-//    p = ActivationFunction(p);*/
-//    Array[blockIdx.x] = ActivationFunction(Array[blockIdx.x]);
-//}
-__global__ void RunActivationFunctionOnArrayKernel(float* Array, BrendanCUDA::AI::activationFunction_t<float> ActivationFunction) {
+__global__ void runActivationFunctionOnArrayKernel(float* Array, BrendanCUDA::AI::activationFunction_t<float> ActivationFunction) {
     float& p(Array[blockIdx.x]);
     p = ActivationFunction(p);
-    //p = p * 2.f;
 }
-__global__ void RunActivationFunctionOnArrayKernel(double* Array, BrendanCUDA::AI::activationFunction_t<double> ActivationFunction) {
+__global__ void runActivationFunctionOnArrayKernel(double* Array, BrendanCUDA::AI::activationFunction_t<double> ActivationFunction) {
     double& p(Array[blockIdx.x]);
     p = ActivationFunction(p);
 }
@@ -182,7 +175,7 @@ __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::RunActivationFunctionOnAr
         p = af(p);
     }
 #else
-    RunActivationFunctionOnArrayKernel<<<Length, 1 >>>(Array, af);
+    runActivationFunctionOnArrayKernel<<<Length, 1 >>>(Array, af);
 #endif
 }
 template <typename T>
