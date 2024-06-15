@@ -33,7 +33,7 @@ namespace BrendanCUDA {
             static bool RemoveConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess);
             static bool RemoveConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess);
             static bool RemoveConnection(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess);
-            static void RemoveAllConnections(NetNode* Node);
+            static void RemoveAllConnections(NetNode* Node, bool RemoveExcess);
         private:
             thrust::device_vector<NetNode>& nodes;
         };

@@ -451,7 +451,7 @@ Exit1B:
     }
 }
 
-void BrendanCUDA::Nets::Net::RemoveAllConnections(NetNode* Node) {
+void BrendanCUDA::Nets::Net::RemoveAllConnections(NetNode* Node, bool RemoveExcess) {
     NetNode nn = GetVR(Node);
     NetNode** inputs = new NetNode*[nn.inputCount];
     NetNode** outputs = new NetNode*[nn.outputCount];
@@ -460,23 +460,25 @@ void BrendanCUDA::Nets::Net::RemoveAllConnections(NetNode* Node) {
     for (size_t i = 0; i < nn.inputCount; ++i) {
         NetNode* o = inputs[i];
         if (o != Node) {
-            RemoveConnection_OnlyInput(o, Node, true);
+            RemoveConnection_OnlyInput(o, Node, RemoveExcess);
         }
     }
     for (size_t i = 0; i < nn.outputCount; ++i) {
         NetNode* o = outputs[i];
         if (o != Node) {
-            RemoveConnection_OnlyOutput(Node, o, true);
+            RemoveConnection_OnlyOutput(Node, o, RemoveExcess);
         }
     }
     delete[] inputs;
     delete[] outputs;
-    ThrowIfBad(cudaFree(nn.inputs));
-    ThrowIfBad(cudaFree(nn.outputs));
+    if (RemoveExcess) {
+        ThrowIfBad(cudaFree(nn.inputs));
+        ThrowIfBad(cudaFree(nn.outputs));
+        nn.inputs = 0;
+        nn.outputs = 0;
+    }
     nn.inputCount = 0;
-    nn.inputs = 0;
     nn.outputCount = 0;
-    nn.outputs = 0;
     SetVR(Node, nn);
 }
 void BrendanCUDA::Nets::Net::PrintTo(std::ostream& Output) const {
