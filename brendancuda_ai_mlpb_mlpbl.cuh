@@ -6,8 +6,6 @@
 #include "brendancuda_ai_mlpb_mlpbls.cuh"
 #include "brendancuda_random_anyrng.cuh"
 
-typedef int8_t data16[16];
-
 namespace BrendanCUDA {
     namespace AI {
         namespace MLPB {
