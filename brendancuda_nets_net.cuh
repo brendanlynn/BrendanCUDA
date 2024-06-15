@@ -22,7 +22,8 @@ namespace BrendanCUDA {
         public:
             Net();
             void Dispose(dataDestructor_t DataDestructor);
-            thrust::device_ptr<NetNode> Data();
+            const thrust::device_vector<NetNode>& DataVec();
+            thrust::device_ptr<NetNode> DataPtr();
             thrust::device_reference<NetNode> operator[](size_t i);
 
             static bool AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
