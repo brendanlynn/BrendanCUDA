@@ -1,5 +1,6 @@
 # Naming Conventions
 * ```ObjectNames```,
+* ```FunctionNames```,
 * ```objectMemberNames```,
 * ```_TemplateParameterNames```,
 * ```_parameterNames```,
