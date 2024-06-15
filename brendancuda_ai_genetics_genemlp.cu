@@ -1,6 +1,7 @@
 #include "brendancuda_ai_genetics_genemlp.cuh"
 #include "brendancuda_random_anyrng.cuh"
 #include "cuda_runtime.h"
+#include "brendancuda_cudaerrorhelpers.h"
 
 template <typename T>
 BrendanCUDA::AI::Genetics::GeneMLP<T>::GeneMLP(std::pair<T*, size_t> Base, MLP::MLP<T> Intermediate) {
@@ -13,7 +14,7 @@ std::pair<T*, size_t> BrendanCUDA::AI::Genetics::GeneMLP<T>::Base() {
 }
 template <typename T>
 void BrendanCUDA::AI::Genetics::GeneMLP<T>::Dispose() {
-    cudaFree(base.first);
+    ThrowIfBad(cudaFree(base.first));
     Intermediate.Dispose();
 }
 template <typename T>
@@ -23,12 +24,9 @@ std::pair<T*, size_t> BrendanCUDA::AI::Genetics::GeneMLP<T>::Run() {
 template <typename T>
 BrendanCUDA::AI::Genetics::GeneMLP<T> BrendanCUDA::AI::Genetics::GeneMLP<T>::Clone() {
     T* b1;
-#ifdef _DEBUG
-    auto a =
-#endif
-    cudaMalloc(&b1, base.second * sizeof(T));
+    ThrowIfBad(cudaMalloc(&b1, base.second * sizeof(T)));
     std::pair<T*, size_t> nb(b1, base.second);
-    cudaMemcpy(b1, base.first, base.second * sizeof(T), cudaMemcpyDeviceToDevice);
+    ThrowIfBad(cudaMemcpy(b1, base.first, base.second * sizeof(T), cudaMemcpyDeviceToDevice));
     MLP::MLP<T> ni = Intermediate.Clone();
     return GeneMLP<T>(nb, ni);
 }

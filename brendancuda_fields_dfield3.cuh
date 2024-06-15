@@ -2,6 +2,7 @@
 
 #include "brendancuda_fields_field3.cuh"
 #include "brendancuda_fields_points.cuh"
+#include "brendancuda_cudaerrorhelpers.h"
 #include <stdexcept>
 #include <string>
 
@@ -135,14 +136,8 @@ __host__ __device__ BrendanCUDA::Fields::DField3<T>::DField3(uint32_t LengthX, u
         cudaArrayB = new T[l];
 #else
         size_t l = (size_t)LengthX * (size_t)LengthY * (size_t)LengthZ * sizeof(T);
-        cudaError_t eF = cudaMalloc(&cudaArrayF, l);
-        cudaError_t eB = cudaMalloc(&cudaArrayB, l);
-        if (eF) {
-            throw std::runtime_error("A CUDA error occured when attempting to allocate 2 lengths of " + std::to_string(l) + " bytes of VRAM memory. Error #" + std::to_string(eF) + ".");
-        }
-        if (eB) {
-            throw std::runtime_error("A CUDA error occured when attempting to allocate 2 lengths of " + std::to_string(l) + " bytes of VRAM memory. Error #" + std::to_string(eB) + ".");
-        }
+        ThrowIfBad(cudaMalloc(&cudaArrayF, l));
+        ThrowIfBad(cudaMalloc(&cudaArrayB, l));
 #endif
     }
 }
@@ -168,8 +163,8 @@ __host__ __device__ void BrendanCUDA::Fields::DField3<T>::Dispose() {
     delete[] cudaArrayF;
     delete[] cudaArrayB;
 #else
-    cudaFree(cudaArrayF);
-    cudaFree(cudaArrayB);
+    ThrowIfBad(cudaFree(cudaArrayF));
+    ThrowIfBad(cudaFree(cudaArrayB));
 #endif
 }
 template <typename T>
@@ -460,10 +455,7 @@ __host__ __device__ std::pair<thrust::device_ptr<T>, size_t> BrendanCUDA::Fields
 }
 template <typename T>
 __host__ void BrendanCUDA::Fields::DField3<T>::CopyAllIn(T* All, bool CopyFromHost) {
-    cudaError_t e = cudaMemcpy(cudaArrayF, All, SizeOnGPU(), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
-    if (e) {
-        throw runtime_error("A CUDA error occured. Error #" + to_string(e) + ".");
-    }
+    ThrowIfBad(cudaMemcpy(cudaArrayF, All, SizeOnGPU(), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ void BrendanCUDA::Fields::DField3<T>::CopyAllIn(T* All) {
@@ -471,10 +463,7 @@ __device__ void BrendanCUDA::Fields::DField3<T>::CopyAllIn(T* All) {
 }
 template <typename T>
 __host__ void BrendanCUDA::Fields::DField3<T>::CopyAllOut(T* All, bool CopyToHost) const {
-    cudaError_t e = cudaMemcpy(All, cudaArrayF, SizeOnGPU(), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
-    if (e) {
-        throw runtime_error("A CUDA error occured. Error #" + to_string(e) + ".");
-    }
+    ThrowIfBad(cudaMemcpy(All, cudaArrayF, SizeOnGPU(), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ void BrendanCUDA::Fields::DField3<T>::CopyAllOut(T* All) const {
@@ -482,10 +471,7 @@ __device__ void BrendanCUDA::Fields::DField3<T>::CopyAllOut(T* All) const {
 }
 template <typename T>
 __host__ void BrendanCUDA::Fields::DField3<T>::CopyValueIn(uint64_t Index, T* Value, bool CopyFromHost) {
-    cudaError_t e = cudaMemcpy(IndexToPointer(Index), Value, sizeof(T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
-    if (e) {
-        throw runtime_error("A CUDA error occured. Error #" + to_string(e) + ".");
-    }
+    ThrowIfBad(cudaMemcpy(IndexToPointer(Index), Value, sizeof(T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueIn(uint64_t Index, T* Value) {
@@ -493,10 +479,7 @@ __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueIn(uint64_t Index, T* 
 }
 template <typename T>
 __host__ void BrendanCUDA::Fields::DField3<T>::CopyValueIn(uint32_3 Coordinates, T* Value, bool CopyFromHost) {
-    cudaError_t e = cudaMemcpy(CoordinatesToPointer(Coordinates), Value, sizeof(T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
-    if (e) {
-        throw runtime_error("A CUDA error occured. Error #" + to_string(e) + ".");
-    }
+    ThrowIfBad(cudaMemcpy(CoordinatesToPointer(Coordinates), Value, sizeof(T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueIn(uint32_3 Coordinates, T* Value) {
@@ -504,10 +487,7 @@ __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueIn(uint32_3 Coordinate
 }
 template <typename T>
 __host__ void BrendanCUDA::Fields::DField3<T>::CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, T* Value, bool CopyFromHost) {
-    cudaError_t e = cudaMemcpy(CoordinatesToPointer(X, Y, Z), Value, sizeof(T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
-    if (e) {
-        throw runtime_error("A CUDA error occured. Error #" + to_string(e) + ".");
-    }
+    ThrowIfBad(cudaMemcpy(CoordinatesToPointer(X, Y, Z), Value, sizeof(T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, T* Value) {
@@ -515,10 +495,7 @@ __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueIn(uint32_t X, uint32_
 }
 template <typename T>
 __host__ void BrendanCUDA::Fields::DField3<T>::CopyValueOut(uint64_t Index, T* Value, bool CopyToHost) const {
-    cudaError_t e = cudaMemcpy(Value, IndexToPointer(Index), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
-    if (e) {
-        throw runtime_error("A CUDA error occured. Error #" + to_string(e) + ".");
-    }
+    ThrowIfBad(cudaMemcpy(Value, IndexToPointer(Index), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueOut(uint64_t Index, T* Value) const {
@@ -526,10 +503,7 @@ __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueOut(uint64_t Index, T*
 }
 template <typename T>
 __host__ void BrendanCUDA::Fields::DField3<T>::CopyValueOut(uint32_3 Coordinates, T* Value, bool CopyToHost) const {
-    cudaError_t e = cudaMemcpy(Value, CoordinatesToPointer(Coordinates), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
-    if (e) {
-        throw runtime_error("A CUDA error occured. Error #" + to_string(e) + ".");
-    }
+    ThrowIfBad(cudaMemcpy(Value, CoordinatesToPointer(Coordinates), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueOut(uint32_3 Coordinates, T* Value) const {
@@ -537,9 +511,7 @@ __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueOut(uint32_3 Coordinat
 }
 template <typename T>
 __host__ void BrendanCUDA::Fields::DField3<T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, T* Value, bool CopyToHost) const {
-    cudaError_t e = cudaMemcpy(Value, CoordinatesToPointer(X, Y, Z), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
-    if (e)
-        throw runtime_error("A CUDA error occured. Error #" + to_string(e) + ".");
+    ThrowIfBad(cudaMemcpy(Value, CoordinatesToPointer(X, Y, Z), sizeof(T), CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ void BrendanCUDA::Fields::DField3<T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, T* Value) const {
@@ -552,7 +524,7 @@ __host__ T* BrendanCUDA::Fields::DField3<T>::GetAll(bool CopyToHost) const {
         a = new T[lengthX * lengthY * lengthZ * lengthD];
     }
     else {
-        cudaMalloc(&a, SizeOnGPU());
+        ThrowIfBad(cudaMalloc(&a, SizeOnGPU()));
     }
     CopyAllOut(a, CopyToHost);
     return a;

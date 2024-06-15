@@ -1,4 +1,5 @@
 #include "brendancuda_ai_mlp.cuh"
+#include "brendancuda_cudaerrorhelpers.h"
 
 template <typename T>
 __host__ __device__ BrendanCUDA::AI::MLP::MLP<T>::MLP(size_t Length, activationFunction_t<T> ActivationFunction) {
@@ -7,13 +8,13 @@ __host__ __device__ BrendanCUDA::AI::MLP::MLP<T>::MLP(size_t Length, activationF
 #if __CUDA_ARCH__
     lyrs = new MLPL<T>[Length];
 #else
-    cudaMalloc(&lyrs, Length * sizeof(MLPL<T>));
+    ThrowIfBad(cudaMalloc(&lyrs, Length * sizeof(MLPL<T>)));
 #endif
 }
 template <typename T>
 __host__ BrendanCUDA::AI::MLP::MLP<T>::MLP(size_t Length, activationFunction_t<T> ActivationFunction, MLPL<T>* Layers, bool CopyFromHost)
     : MLP(Length, ActivationFunction) {
-    cudaMemcpy(lyrs, Layers, Length * sizeof(MLPL<T>), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
+    ThrowIfBad(cudaMemcpy(lyrs, Layers, Length * sizeof(MLPL<T>), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ BrendanCUDA::AI::MLP::MLP<T>::MLP(size_t Length, activationFunction_t<T> ActivationFunction, MLPL<T>* Layers)
@@ -32,7 +33,7 @@ __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::Dispose() {
 #if __CUDA_ARCH__
     delete[] lyrs;
 #else
-    cudaFree(lyrs);
+    ThrowIfBad(cudaFree(lyrs));
 #endif
 }
 template <typename T>
@@ -65,7 +66,7 @@ __host__ std::pair<T*, size_t> BrendanCUDA::AI::MLP::MLP<T>::Run(T* Input) {
         l = GetLayer(i);
         T* nxt = l.Run(Input);
         RunActivationFunctionOnArray(nxt, l.OutputLength());
-        cudaFree(Input);
+        ThrowIfBad(cudaFree(Input));
 #endif
         Input = nxt;
     }
@@ -92,11 +93,11 @@ __host__ BrendanCUDA::AI::MLP::MLPL<T>* BrendanCUDA::AI::MLP::MLP<T>::GetLayers(
     MLPL<T>* p;
     if (CopyToHost) {
         p = new MLPL<T>[len];
-        cudaMemcpy(p, lyrs, sizeof(MLPL<T>) * len, cudaMemcpyDeviceToHost);
+        ThrowIfBad(cudaMemcpy(p, lyrs, sizeof(MLPL<T>) * len, cudaMemcpyDeviceToHost));
     }
     else {
-        cudaMalloc(&p, sizeof(MLPL<T>) * len);
-        cudaMemcpy(p, lyrs, sizeof(MLPL<T>) * len, cudaMemcpyDeviceToDevice);
+        ThrowIfBad(cudaMalloc(&p, sizeof(MLPL<T>) * len));
+        ThrowIfBad(cudaMemcpy(p, lyrs, sizeof(MLPL<T>) * len, cudaMemcpyDeviceToDevice));
     }
     return p;
 }
@@ -108,7 +109,7 @@ __device__ BrendanCUDA::AI::MLP::MLPL<T>* BrendanCUDA::AI::MLP::MLP<T>::GetLayer
 }
 template <typename T>
 __host__ void BrendanCUDA::AI::MLP::MLP<T>::SetLayers(MLPL<T>* Layers, bool CopyFromHost) {
-    cudaMemcpy(lyrs, Layers, sizeof(MLPL<T>) * len, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
+    ThrowIfBad(cudaMemcpy(lyrs, Layers, sizeof(MLPL<T>) * len, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
 template <typename T>
 __device__ void BrendanCUDA::AI::MLP::MLP<T>::SetLayers(MLPL<T>* Layers) {
@@ -123,7 +124,7 @@ __host__ __device__ BrendanCUDA::AI::MLP::MLPL<T> BrendanCUDA::AI::MLP::MLP<T>::
 #ifdef _DEBUG
     auto x =
 #endif
-        cudaMemcpy(&r, &lyrs[LayerIndex], sizeof(MLPL<T>), cudaMemcpyDeviceToHost);
+        ThrowIfBad(cudaMemcpy(&r, &lyrs[LayerIndex], sizeof(MLPL<T>), cudaMemcpyDeviceToHost));
     return r;
 #endif
 }
@@ -132,7 +133,7 @@ __host__ __device__ void BrendanCUDA::AI::MLP::MLP<T>::SetLayer(size_t LayerInde
 #if __CUDA_ARCH__
     lyrs[LayerIndex] = Layer;
 #else
-    cudaMemcpy(&lyrs[LayerIndex], &Layer, sizeof(MLPL<T>), cudaMemcpyHostToDevice);
+    ThrowIfBad(cudaMemcpy(&lyrs[LayerIndex], &Layer, sizeof(MLPL<T>), cudaMemcpyHostToDevice));
 #endif
 }
 template <typename T>

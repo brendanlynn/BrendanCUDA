@@ -19,8 +19,8 @@ __host__ __device__ void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t Da
     delete[] inputs;
     delete[] outputs;
 #else
-    cudaFree(inputs);
-    cudaFree(outputs);
+    ThrowIfBad(cudaFree(inputs));
+    ThrowIfBad(cudaFree(outputs));
 #endif
 }
 
@@ -92,7 +92,7 @@ bool BrendanCUDA::Nets::Net::AddConnection_OnlyInput(NetNode* InputNode, NetNode
         }
     }
     else {
-        cudaMalloc(&in.outputs, sizeof(NetNode*));
+        ThrowIfBad(cudaMalloc(&in.outputs, sizeof(NetNode*)));
         SetVR(in.outputs, OutputNode);
         in.outputCount = 1;
     }
@@ -143,7 +143,7 @@ bool BrendanCUDA::Nets::Net::AddConnection_OnlyOutput(NetNode* InputNode, NetNod
         }
     }
     else {
-        cudaMalloc(&on.inputs, sizeof(NetNode*));
+        ThrowIfBad(cudaMalloc(&on.inputs, sizeof(NetNode*)));
         SetVR(on.inputs, InputNode);
         on.inputCount = 1;
     }
@@ -193,7 +193,7 @@ bool BrendanCUDA::Nets::Net::AddConnection(NetNode* InputNode, NetNode* OutputNo
     }
 
     if (in.outputs) {
-        cudaMalloc(&in.outputs, sizeof(NetNode*));
+        ThrowIfBad(cudaMalloc(&in.outputs, sizeof(NetNode*)));
         SetVR(in.outputs, OutputNode);
         in.outputCount = 1;
     }
@@ -215,7 +215,7 @@ bool BrendanCUDA::Nets::Net::AddConnection(NetNode* InputNode, NetNode* OutputNo
     }
 
     if (on.inputs) {
-        cudaMalloc(&on.inputs, sizeof(NetNode*));
+        ThrowIfBad(cudaMalloc(&on.inputs, sizeof(NetNode*)));
         SetVR(on.inputs, InputNode);
         on.inputCount = 1;
     }
@@ -278,7 +278,7 @@ bool BrendanCUDA::Nets::Net::RemoveConnection_OnlyInput(NetNode* InputNode, NetN
         else {
             for (size_t i = 0; i < in.outputCount; ++i) {
                 if (in_o[i] == OutputNode) {
-                    cudaMemcpy(in.outputs + i, in.outputs + (in.outputCount - 1), sizeof(NetNode*), cudaMemcpyDeviceToDevice);
+                    ThrowIfBad(cudaMemcpy(in.outputs + i, in.outputs + (in.outputCount - 1), sizeof(NetNode*), cudaMemcpyDeviceToDevice));
                     in_o[i] = in_o[in.outputCount - 1];
                     goto ExitB;
                 }
@@ -332,7 +332,7 @@ bool BrendanCUDA::Nets::Net::RemoveConnection_OnlyOutput(NetNode* InputNode, Net
         else {
             for (size_t i = 0; i < on.inputCount; ++i) {
                 if (on_i[i] == InputNode) {
-                    cudaMemcpy(on.inputs + i, on.inputs + (on.inputCount - 1), sizeof(NetNode*), cudaMemcpyDeviceToDevice);
+                    ThrowIfBad(cudaMemcpy(on.inputs + i, on.inputs + (on.inputCount - 1), sizeof(NetNode*), cudaMemcpyDeviceToDevice));
                     on_i[i] = on_i[on.inputCount - 1];
                     goto ExitB;
                 }
@@ -406,7 +406,7 @@ bool BrendanCUDA::Nets::Net::RemoveConnection(NetNode* InputNode, NetNode* Outpu
         else {
             for (size_t i = 0; i < in.outputCount; ++i) {
                 if (in_o[i] == OutputNode) {
-                    cudaMemcpy(in.outputs + i, in.outputs + (in.outputCount - 1), sizeof(NetNode*), cudaMemcpyDeviceToDevice);
+                    ThrowIfBad(cudaMemcpy(in.outputs + i, in.outputs + (in.outputCount - 1), sizeof(NetNode*), cudaMemcpyDeviceToDevice));
                     in_o[i] = in_o[in.outputCount - 1];
                     goto Exit0B;
                 }
@@ -416,7 +416,7 @@ bool BrendanCUDA::Nets::Net::RemoveConnection(NetNode* InputNode, NetNode* Outpu
         Exit0B:
             for (size_t i = 0; i < on.inputCount; ++i) {
                 if (on_i[i] == InputNode) {
-                    cudaMemcpy(on.inputs + i, on.inputs + (on.inputCount - 1), sizeof(NetNode*), cudaMemcpyDeviceToDevice);
+                    ThrowIfBad(cudaMemcpy(on.inputs + i, on.inputs + (on.inputCount - 1), sizeof(NetNode*), cudaMemcpyDeviceToDevice));
                     on_i[i] = on_i[on.inputCount - 1];
                     goto Exit1B;
                 }

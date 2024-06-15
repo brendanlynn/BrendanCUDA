@@ -1,6 +1,7 @@
 #include "brendancuda_ai_mlpb_mlpbls.cuh"
 #include "brendancuda_binary_basic.cuh"
 #include "brendancuda_random_bits.cuh"
+#include "brendancuda_cudaerrorhelpers.h"
 
 __host__ __device__ uint64_t applyTargetFlipsTo1s_getEdits(uint64_t Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t rn1, uint32_t rn2) {
     if (rn1 < FlipProb) {
@@ -289,16 +290,16 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>
     weights = new uint<#= i #>_t[<#= j #>];
     bias = new uint<#= j #>_t;
 #else
-    cudaMalloc(&weights, sizeof(uint<#= i #>_t) * <#= j #>);
-    cudaMalloc(&bias, sizeof(uint<#= j #>_t));
+    ThrowIfBad(cudaMalloc(&weights, sizeof(uint<#= i #>_t) * <#= j #>));
+    ThrowIfBad(cudaMalloc(&bias, sizeof(uint<#= j #>_t)));
 #endif
 }
 __host__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>(uint<#= i #>_t* Weights, uint<#= j #>_t* Bias, bool CopyFromHost) {
-    cudaMalloc(&weights, sizeof(uint<#= i #>_t) * <#= j #>);
-    cudaMalloc(&bias, sizeof(uint<#= j #>_t));
+    ThrowIfBad(cudaMalloc(&weights, sizeof(uint<#= i #>_t) * <#= j #>));
+    ThrowIfBad(cudaMalloc(&bias, sizeof(uint<#= j #>_t)));
     auto t = CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice;
-    cudaMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>, t);
-    cudaMemcpy(bias, Bias, sizeof(uint<#= j #>_t), t);
+    ThrowIfBad(cudaMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>, t));
+    ThrowIfBad(cudaMemcpy(bias, Bias, sizeof(uint<#= j #>_t), t));
 }
 __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>T<#= j #>(uint<#= i #>_t* Weights, uint<#= j #>_t* Bias) {
     weights = new uint<#= i #>_t[<#= j #>];
@@ -320,8 +321,8 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Dispose(
     delete [] weights;
     delete [] bias;
 #else
-    cudaFree(weights);
-    cudaFree(bias);
+    ThrowIfBad(cudaFree(weights));
+    ThrowIfBad(cudaFree(bias));
 #endif
 }
 __host__ __device__ uint<#= i #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Weights() const {
@@ -336,13 +337,13 @@ __host__ __device__ uint<#= j #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #
 __host__ uint<#= i #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::GetWeights(bool CopyToHost) const {
     if (CopyToHost) {
         uint<#= i #>_t* output = new uint<#= i #>_t[<#= j #>];
-        cudaMemcpy(output, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToHost);
+        ThrowIfBad(cudaMemcpy(output, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToHost));
         return output;
     }
     else {
         uint<#= i #>_t* output;
-        cudaMalloc(&output, sizeof(uint<#= j #>_t) * <#= j #>);
-        cudaMemcpy(output, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToDevice);
+        ThrowIfBad(cudaMalloc(&output, sizeof(uint<#= j #>_t) * <#= j #>));
+        ThrowIfBad(cudaMemcpy(output, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToDevice));
         return output;
     }
 }
@@ -352,7 +353,7 @@ __device__ uint<#= i #>_t* BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::GetWei
     return output;
 }
 __host__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetWeights(uint<#= i #>_t* Weights, bool CopyFromHost) {
-    cudaMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
+    ThrowIfBad(cudaMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
 __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetWeights(uint<#= i #>_t* Weights) {
     deviceMemcpy(weights, Weights, sizeof(uint<#= i #>_t) * <#= j #>);
@@ -362,7 +363,7 @@ __host__ __device__ uint<#= i #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>
     return weights[Index];
 #else
     uint<#= i #>_t output;
-    cudaMemcpy(&output, &weights[Index], sizeof(uint<#= i #>_t), cudaMemcpyDeviceToHost);
+    ThrowIfBad(cudaMemcpy(&output, &weights[Index], sizeof(uint<#= i #>_t), cudaMemcpyDeviceToHost));
     return output;
 #endif
 }
@@ -370,7 +371,7 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetWeigh
 #if __CUDA_ARCH__
     weights[Index] = Weight;
 #else
-    cudaMemcpy(&weights[Index], &Weight, sizeof(uint<#= i #>_t), cudaMemcpyHostToDevice);
+    ThrowIfBad(cudaMemcpy(&weights[Index], &Weight, sizeof(uint<#= i #>_t), cudaMemcpyHostToDevice));
 #endif
 }
 __host__ __device__ uint<#= j #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::GetBias() const {
@@ -378,7 +379,7 @@ __host__ __device__ uint<#= j #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>
     return *bias;
 #else
     uint<#= j #>_t output;
-    cudaMemcpy(&output, bias, sizeof(uint<#= j #>_t), cudaMemcpyDeviceToHost);
+    ThrowIfBad(cudaMemcpy(&output, bias, sizeof(uint<#= j #>_t), cudaMemcpyDeviceToHost));
     return output;
 #endif
 }
@@ -386,7 +387,7 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SetBias(
 #if __CUDA_ARCH__
     *bias = Bias;
 #else
-    cudaMemcpy(bias, &Bias, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice);
+    ThrowIfBad(cudaMemcpy(bias, &Bias, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice));
 #endif
 }
 __host__ __device__ uint<#= j #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Run(uint<#= i #>_t Input) const {
@@ -400,8 +401,8 @@ __host__ __device__ uint<#= j #>_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>
 #else
     uint<#= j #>_t* hWeights = new uint<#= j #>_t[<#= i #>];
     uint<#= j #>_t o;
-    cudaMemcpy(hWeights, weights, sizeof(uint<#= j #>_t) * <#= i #>, cudaMemcpyDeviceToHost);
-    cudaMemcpy(&o, bias, sizeof(uint<#= i #>_t), cudaMemcpyDeviceToHost);
+    ThrowIfBad(cudaMemcpy(hWeights, weights, sizeof(uint<#= j #>_t) * <#= i #>, cudaMemcpyDeviceToHost));
+    ThrowIfBad(cudaMemcpy(&o, bias, sizeof(uint<#= i #>_t), cudaMemcpyDeviceToHost));
 <# for (int k = 0; k < i; ++k) { #>
     if (Input & hWeights[<#= k #>])
         o |= 0b<#= ("1" + new string('0', k)).PadLeft(i, '0') #>;
@@ -417,8 +418,8 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::CopyTo(M
     deviceMemcpy(Other.weights, weights, sizeof(uint<#= i #>_t) * <#= j #>);
     deviceMemcpy(Other.bias, bias, sizeof(uint<#= j #>_t));
 #else
-    cudaMemcpy(Other.weights, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToDevice);
-    cudaMemcpy(Other.bias, bias, sizeof(uint<#= j #>_t), cudaMemcpyDeviceToDevice);
+    ThrowIfBad(cudaMemcpy(Other.weights, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToDevice));
+    ThrowIfBad(cudaMemcpy(Other.bias, bias, sizeof(uint<#= j #>_t), cudaMemcpyDeviceToDevice));
 #endif
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Clone() const {
@@ -452,7 +453,7 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Randomiz
 #if __CUDA_ARCH__
             deviceMemcpy(weights + i, &v, sizeof(uint<#= i #>_t));
 #else
-            cudaMemcpy(weights + i, &v, sizeof(uint<#= i #>_t), cudaMemcpyHostToDevice);
+            ThrowIfBad(cudaMemcpy(weights + i, &v, sizeof(uint<#= i #>_t), cudaMemcpyHostToDevice));
 #endif
         }
     }
@@ -462,7 +463,7 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Randomiz
 #if __CUDA_ARCH__
         deviceMemcpy(bias, &v, sizeof(uint<#= j #>_t));
 #else
-        cudaMemcpy(bias, &v, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice);
+        ThrowIfBad(cudaMemcpy(bias, &v, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice));
 #endif
     }
 }

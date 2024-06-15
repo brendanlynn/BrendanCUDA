@@ -1,16 +1,17 @@
 #include "brendancuda_ai_mlpb.cuh"
+#include "brendancuda_cudaerrorhelpers.h"
 
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPB::MLPB(size_t LayerCount) {
 #if __CUDA_ARCH__
     layers = new MLPBL[LayerCount];
 #else
-    cudaMalloc(&layers, sizeof(MLPBL) * LayerCount);
+    ThrowIfBad(cudaMalloc(&layers, sizeof(MLPBL) * LayerCount));
 #endif
     layerCount = LayerCount;
 }
 __host__ BrendanCUDA::AI::MLPB::MLPB::MLPB(MLPBL* Layers, size_t LayerCount, bool CopyFromHost)
     : MLPB(LayerCount) {
-    cudaMemcpy(layers, Layers, sizeof(MLPBL) * LayerCount, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
+    ThrowIfBad(cudaMemcpy(layers, Layers, sizeof(MLPBL) * LayerCount, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
 __device__ BrendanCUDA::AI::MLPB::MLPB::MLPB(MLPBL* Layers, size_t LayerCount) {
     layers = Layers;
@@ -28,7 +29,7 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPB::Dispose() {
 #if __CUDA_ARCH__
     delete[] layers;
 #else
-    cudaFree(layers);
+    ThrowIfBad(cudaFree(layers));
 #endif
 }
 
@@ -36,11 +37,11 @@ __host__ BrendanCUDA::AI::MLPB::MLPBL* BrendanCUDA::AI::MLPB::MLPB::GetLayers(bo
     MLPBL* p;
     if (CopyToHost) {
         p = new MLPBL[layerCount];
-        cudaMemcpy(p, layers, sizeof(MLPBL) * layerCount, cudaMemcpyDeviceToHost);
+        ThrowIfBad(cudaMemcpy(p, layers, sizeof(MLPBL) * layerCount, cudaMemcpyDeviceToHost));
     }
     else {
-        cudaMalloc(&p, sizeof(MLPBL) * layerCount);
-        cudaMemcpy(p, layers, sizeof(MLPBL) * layerCount, cudaMemcpyDeviceToDevice);
+        ThrowIfBad(cudaMalloc(&p, sizeof(MLPBL) * layerCount));
+        ThrowIfBad(cudaMemcpy(p, layers, sizeof(MLPBL) * layerCount, cudaMemcpyDeviceToDevice));
     }
     return p;
 }
@@ -50,7 +51,7 @@ __device__ BrendanCUDA::AI::MLPB::MLPBL* BrendanCUDA::AI::MLPB::MLPB::GetLayers(
     return p;
 }
 __host__ void BrendanCUDA::AI::MLPB::MLPB::SetLayers(MLPBL* Layers, bool CopyFromHost) {
-    cudaMemcpy(layers, Layers, sizeof(MLPBL) * layerCount, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
+    ThrowIfBad(cudaMemcpy(layers, Layers, sizeof(MLPBL) * layerCount, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
 __device__ void BrendanCUDA::AI::MLPB::MLPB::SetLayers(MLPBL* Layers) {
     deviceMemcpy(layers, Layers, sizeof(MLPBL) * layerCount);
@@ -61,10 +62,7 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPB::Ge
     return layers[LayerIndex];
 #else
     MLPBL r;
-    auto e = cudaMemcpy(&r, &layers[LayerIndex], sizeof(MLPBL), cudaMemcpyDeviceToHost);
-    if (e) {
-        throw std::exception();
-    }
+    ThrowIfBad(cudaMemcpy(&r, &layers[LayerIndex], sizeof(MLPBL), cudaMemcpyDeviceToHost));
     return r;
 #endif
 }
@@ -72,7 +70,7 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::MLPB::SetLayer(size_t LayerIndex
 #if __CUDA_ARCH__
     layers[LayerIndex] = Layer;
 #else
-    cudaMemcpy(&layers[LayerIndex], &Layer, sizeof(MLPBL), cudaMemcpyHostToDevice);
+    ThrowIfBad(cudaMemcpy(&layers[LayerIndex], &Layer, sizeof(MLPBL), cudaMemcpyHostToDevice));
 #endif
 }
 
@@ -102,8 +100,8 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPB BrendanCUDA::AI::MLPB::MLPB::ope
     deviceMemcpy(r.layers, layers, d);
     deviceMemcpy(&r.layers[layerCount], layers, d);
 #else
-    cudaMemcpy(r.layers, layers, d, cudaMemcpyDeviceToDevice);
-    cudaMemcpy(&r.layers[layerCount], layers, d, cudaMemcpyDeviceToDevice);
+    ThrowIfBad(cudaMemcpy(r.layers, layers, d, cudaMemcpyDeviceToDevice));
+    ThrowIfBad(cudaMemcpy(&r.layers[layerCount], layers, d, cudaMemcpyDeviceToDevice));
 #endif
     return r;
 }
@@ -113,8 +111,8 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPB BrendanCUDA::AI::MLPB::MLPB::ope
     deviceMemcpy(r.layers, layers, sizeof(MLPBL) * layerCount);
     deviceMemcpy(&r.layers[layerCount], &Value, sizeof(MLPBL));
 #else
-    cudaMemcpy(r.layers, layers, sizeof(MLPBL) * layerCount, cudaMemcpyDeviceToDevice);
-    cudaMemcpy(&r.layers[layerCount], &Value, sizeof(MLPBL), cudaMemcpyDeviceToDevice);
+    ThrowIfBad(cudaMemcpy(r.layers, layers, sizeof(MLPBL) * layerCount, cudaMemcpyDeviceToDevice));
+    ThrowIfBad(cudaMemcpy(&r.layers[layerCount], &Value, sizeof(MLPBL), cudaMemcpyDeviceToDevice));
 #endif
     return r;
 }

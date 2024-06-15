@@ -1,4 +1,5 @@
 #include "brendancuda_serialization_arrays.cuh"
+#include "brendancuda_cudaerrorhelpers.h"
 
 void BrendanCUDA::Serialization::SerializeArrayNoLengthWrite(std::basic_ostream<char>& Stream, uint8_t* Array, size_t Length) {
     size_t s0 = Length / sizeof(char);
@@ -13,7 +14,7 @@ void BrendanCUDA::Serialization::SerializeArrayNoLengthWrite(std::basic_ostream<
 
         size_t i;
         for (i = 1048576; i < Length; i += 1048576) {
-            cudaMemcpy(np, Array, 1048576, cudaMemcpyDeviceToHost);
+            ThrowIfBad(cudaMemcpy(np, Array, 1048576, cudaMemcpyDeviceToHost));
 
             Stream.write((char*)np, s1);
 
@@ -22,7 +23,7 @@ void BrendanCUDA::Serialization::SerializeArrayNoLengthWrite(std::basic_ostream<
         }
 
         i = Length - i;
-        cudaMemcpy(np, Array, i, cudaMemcpyDeviceToHost);
+        ThrowIfBad(cudaMemcpy(np, Array, i, cudaMemcpyDeviceToHost));
 
         Stream.write((char*)np, i);
 
@@ -31,7 +32,7 @@ void BrendanCUDA::Serialization::SerializeArrayNoLengthWrite(std::basic_ostream<
     else {
         uint8_t* hp = new uint8_t[Length];
 
-        cudaMemcpy(hp, Array, Length, cudaMemcpyDeviceToHost);
+        ThrowIfBad(cudaMemcpy(hp, Array, Length, cudaMemcpyDeviceToHost));
 
         Stream.write((char*)hp, s0);
 
