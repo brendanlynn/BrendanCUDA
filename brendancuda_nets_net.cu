@@ -2,6 +2,7 @@
 #include <device_launch_parameters.h>
 #include "brendancuda_cudaerrorhelpers.h"
 #include "brendancuda_crossassignment.h"
+#include <cuda.h>
 
 BrendanCUDA::Nets::NetNode::NetNode() {
     data = 0;
@@ -71,7 +72,7 @@ bool BrendanCUDA::Nets::Net::AddConnection_OnlyInput(NetNode* InputNode, NetNode
         bool in_o_e;
         if (CheckForAvailableExcess) {
             size_t s;
-            ThrowIfBad(cudaGetSymbolSize(&s, in.outputs));
+            ThrowIfBad(cuMemGetAddressRange_v2(0, &s, (CUdeviceptr_v2)in.outputs));
             in_o_e = (s >= (in.outputCount + 1) * sizeof(NetNode*));
         }
         else {
@@ -127,7 +128,7 @@ bool BrendanCUDA::Nets::Net::AddConnection_OnlyOutput(NetNode* InputNode, NetNod
         bool on_i_e;
         if (CheckForAvailableExcess) {
             size_t s;
-            ThrowIfBad(cudaGetSymbolSize(&s, on.inputs));
+            ThrowIfBad(cuMemGetAddressRange_v2(0, &s, (CUdeviceptr_v2)on.inputs));
             on_i_e = (s >= (on.inputCount + 1) * sizeof(NetNode*));
         }
         else {
@@ -186,14 +187,14 @@ bool BrendanCUDA::Nets::Net::AddConnection(NetNode* InputNode, NetNode* OutputNo
         if (CheckForAvailableExcess) {
             size_t s;
             if (in.outputs) {
-                ThrowIfBad(cudaGetSymbolSize(&s, in.outputs));
+                ThrowIfBad(cuMemGetAddressRange_v2(0, &s, (CUdeviceptr_v2)in.outputs));
                 in_o_e = (s >= (in.outputCount + 1) * sizeof(NetNode*));
             }
             else {
                 in_o_e = false;
             }
             if (on.inputs) {
-                ThrowIfBad(cudaGetSymbolSize(&s, on.inputs));
+                ThrowIfBad(cuMemGetAddressRange_v2(0, &s, (CUdeviceptr_v2)on.inputs));
                 on_i_e = (s >= (on.inputCount + 1) * sizeof(NetNode*));
             }
             else {
@@ -274,14 +275,14 @@ bool BrendanCUDA::Nets::Net::AddConnection(NetNode* InputNode, NetNode* OutputNo
         if (CheckForAvailableExcess) {
             size_t s;
             if (n.outputs) {
-                ThrowIfBad(cudaGetSymbolSize(&s, n.outputs));
+                ThrowIfBad(cuMemGetAddressRange_v2(0, &s, (CUdeviceptr_v2)n.outputs));
                 n_o_e = (s >= (n.outputCount + 1) * sizeof(NetNode*));
             }
             else {
                 n_o_e = false;
             }
             if (n.inputs) {
-                ThrowIfBad(cudaGetSymbolSize(&s, n.inputs));
+                ThrowIfBad(cuMemGetAddressRange_v2(0, &s, (CUdeviceptr_v2)n.inputs));
                 n_i_e = (s >= (n.inputCount + 1) * sizeof(NetNode*));
             }
             else {
