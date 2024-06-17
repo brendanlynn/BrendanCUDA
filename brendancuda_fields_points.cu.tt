@@ -341,56 +341,6 @@ __host__ __device__ void getConsecutives3_CM(uint<#= bitCount2 #>_3 Dimensions, 
     ONN = Index + 000 + dYN + dZN;
     NNN = Index + dXN + dYN + dZN;
 }
-/*__host__ __device__ void getConsecutives2_CM(uint<#= bitCount2 #>_2 Dimensions, uint<#= bitCount2 #>_2 Coordinates, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& PP, uint<#= bitCount1 #>_t& OP, uint<#= bitCount1 #>_t& NP, uint<#= bitCount1 #>_t& PO, uint<#= bitCount1 #>_t& NO, uint<#= bitCount1 #>_t& PN, uint<#= bitCount1 #>_t& ON, uint<#= bitCount1 #>_t& NN) {
-    int<#= bitCount1 #>_t dXP;
-    int<#= bitCount1 #>_t dXN;
-    int<#= bitCount1 #>_t dYP;
-    int<#= bitCount1 #>_t dYN;
-    getIndexDeltas2_CM(Dimensions, Coordinates, Index, dXP, dXN, dYP, dYN);
-    PP = Index + dXP + dYP;
-    OP = Index + 000 + dYP;
-    NP = Index + dXN + dYP;
-    PO = Index + dXP + 000;
-    NO = Index + dXN + 000;
-    PN = Index + dXP + dYN;
-    ON = Index + 000 + dYN;
-    NN = Index + dXN + dYN;
-}
-__host__ __device__ void getConsecutives3_CM(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& PPP, uint<#= bitCount1 #>_t& OPP, uint<#= bitCount1 #>_t& NPP, uint<#= bitCount1 #>_t& POP, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& NOP, uint<#= bitCount1 #>_t& PNP, uint<#= bitCount1 #>_t& ONP, uint<#= bitCount1 #>_t& NNP, uint<#= bitCount1 #>_t& PPO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& NPO, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& PNO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& NNO, uint<#= bitCount1 #>_t& PPN, uint<#= bitCount1 #>_t& OPN, uint<#= bitCount1 #>_t& NPN, uint<#= bitCount1 #>_t& PON, uint<#= bitCount1 #>_t& OON, uint<#= bitCount1 #>_t& NON, uint<#= bitCount1 #>_t& PNN, uint<#= bitCount1 #>_t& ONN, uint<#= bitCount1 #>_t& NNN) {
-    int<#= bitCount1 #>_t dXP;
-    int<#= bitCount1 #>_t dXN;
-    int<#= bitCount1 #>_t dYP;
-    int<#= bitCount1 #>_t dYN;
-    int<#= bitCount1 #>_t dZP;
-    int<#= bitCount1 #>_t dZN;
-    getIndexDeltas3_CM(Dimensions, Coordinates, Index, dXP, dXN, dYP, dYN, dZP, dZN);
-    PPP = Index + dXP + dYP + dZP;
-    OPP = Index + 000 + dYP + dZP;
-    NPP = Index + dXN + dYP + dZP;
-    POP = Index + dXP + 000 + dZP;
-    OOP = Index + 000 + 000 + dZP;
-    NOP = Index + dXN + 000 + dZP;
-    PNP = Index + dXP + dYN + dZP;
-    ONP = Index + 000 + dYN + dZP;
-    NNP = Index + dXN + dYN + dZP;
-    PPO = Index + dXP + dYP + 000;
-    OPO = Index + 000 + dYP + 000;
-    NPO = Index + dXN + dYP + 000;
-    POO = Index + dXP + 000 + 000;
-    NOO = Index + dXN + 000 + 000;
-    PNO = Index + dXP + dYN + 000;
-    ONO = Index + 000 + dYN + 000;
-    NNO = Index + dXN + dYN + 000;
-    PPN = Index + dXP + dYP + dZN;
-    OPN = Index + 000 + dYP + dZN;
-    NPN = Index + dXN + dYP + dZN;
-    PON = Index + dXP + 000 + dZN;
-    OON = Index + 000 + 000 + dZN;
-    NON = Index + dXN + 000 + dZN;
-    PNN = Index + dXP + dYN + dZN;
-    ONN = Index + 000 + dYN + dZN;
-    NNN = Index + dXN + dYN + dZN;
-}*/
 __host__ __device__ void getNewCoordinates2(uint<#= bitCount2 #>_2 Dimensions, uint<#= bitCount2 #>_2 Coordinates, uint<#= bitCount1 #>_t& XP, uint<#= bitCount1 #>_t& XN, uint<#= bitCount1 #>_t& YP, uint<#= bitCount1 #>_t& YN) {
     if (!Coordinates.x) {
         XP = 1i<#= bitCount1 #>;
@@ -549,7 +499,6 @@ __host__ __device__ void getConsecutives3(uint<#= bitCount1 #>_3 Dimensions, uin
 <# } #>
 
 <# foreach (int bitCount1 in bitCounts) { #>
-//sl0
 __host__ __device__ void BrendanCUDA::Fields::GetConsecutives2(uint<#= bitCount1 #>_2 Dimensions, uint<#= bitCount1 #>_2 Coordinates, uint<#= bitCount1 #>_2& PO, uint<#= bitCount1 #>_2& NO, uint<#= bitCount1 #>_2& OP, uint<#= bitCount1 #>_2& ON) {
     getConsecutives2(Dimensions, Coordinates, PO, NO, OP, ON);
 }
@@ -562,15 +511,7 @@ __host__ __device__ void BrendanCUDA::Fields::GetConsecutives2(uint<#= bitCount1
 __host__ __device__ void BrendanCUDA::Fields::GetConsecutives3(uint<#= bitCount1 #>_3 Dimensions, uint<#= bitCount1 #>_3 Coordinates, uint<#= bitCount1 #>_3& PPP, uint<#= bitCount1 #>_3& OPP, uint<#= bitCount1 #>_3& NPP, uint<#= bitCount1 #>_3& POP, uint<#= bitCount1 #>_3& OOP, uint<#= bitCount1 #>_3& NOP, uint<#= bitCount1 #>_3& PNP, uint<#= bitCount1 #>_3& ONP, uint<#= bitCount1 #>_3& NNP, uint<#= bitCount1 #>_3& PPO, uint<#= bitCount1 #>_3& OPO, uint<#= bitCount1 #>_3& NPO, uint<#= bitCount1 #>_3& POO, uint<#= bitCount1 #>_3& NOO, uint<#= bitCount1 #>_3& PNO, uint<#= bitCount1 #>_3& ONO, uint<#= bitCount1 #>_3& NNO, uint<#= bitCount1 #>_3& PPN, uint<#= bitCount1 #>_3& OPN, uint<#= bitCount1 #>_3& NPN, uint<#= bitCount1 #>_3& PON, uint<#= bitCount1 #>_3& OON, uint<#= bitCount1 #>_3& NON, uint<#= bitCount1 #>_3& PNN, uint<#= bitCount1 #>_3& ONN, uint<#= bitCount1 #>_3& NNN) {
     getConsecutives3(Dimensions, Coordinates, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-/*__host__ __device__ void BrendanCUDA::Fields::GetConsecutives2(uint<#= bitCount1 #>_2 Dimensions, uint<#= bitCount1 #>_2 Coordinates, uint<#= bitCount1 #>_2& PP, uint<#= bitCount1 #>_2& OP, uint<#= bitCount1 #>_2& NP, uint<#= bitCount1 #>_2& PO, uint<#= bitCount1 #>_2& NO, uint<#= bitCount1 #>_2& PN, uint<#= bitCount1 #>_2& ON, uint<#= bitCount1 #>_2& NN) {
-    getConsecutives2(Dimensions, Coordinates, PP, OP, NP, PO, NO, PN, ON, NN);
-}
-__host__ __device__ void BrendanCUDA::Fields::GetConsecutives3(uint<#= bitCount1 #>_3 Dimensions, uint<#= bitCount1 #>_3 Coordinates, uint<#= bitCount1 #>_3& PPP, uint<#= bitCount1 #>_3& OPP, uint<#= bitCount1 #>_3& NPP, uint<#= bitCount1 #>_3& POP, uint<#= bitCount1 #>_3& OOP, uint<#= bitCount1 #>_3& NOP, uint<#= bitCount1 #>_3& PNP, uint<#= bitCount1 #>_3& ONP, uint<#= bitCount1 #>_3& NNP, uint<#= bitCount1 #>_3& PPO, uint<#= bitCount1 #>_3& OPO, uint<#= bitCount1 #>_3& NPO, uint<#= bitCount1 #>_3& POO, uint<#= bitCount1 #>_3& NOO, uint<#= bitCount1 #>_3& PNO, uint<#= bitCount1 #>_3& ONO, uint<#= bitCount1 #>_3& NNO, uint<#= bitCount1 #>_3& PPN, uint<#= bitCount1 #>_3& OPN, uint<#= bitCount1 #>_3& NPN, uint<#= bitCount1 #>_3& PON, uint<#= bitCount1 #>_3& OON, uint<#= bitCount1 #>_3& NON, uint<#= bitCount1 #>_3& PNN, uint<#= bitCount1 #>_3& ONN, uint<#= bitCount1 #>_3& NNN) {
-    getConsecutives3(Dimensions, Coordinates, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
-}*/
-//el0
 <# foreach (int bitCount2 in bitCounts) { #>
-//sl1
 __host__ __device__ void BrendanCUDA::Fields::GetConsecutives2_RM(uint<#= bitCount2 #>_2 Dimensions, uint<#= bitCount1 #>_t Index, uint<#= bitCount1 #>_t& PO, uint<#= bitCount1 #>_t& NO, uint<#= bitCount1 #>_t& OP, uint<#= bitCount1 #>_t& ON) {
     getConsecutives2_RM(Dimensions, BrendanCUDA::Fields::Index<#= bitCount1 #>ToCoordinates<#= bitCount2 #>_2_RM(Dimensions, Index), Index, PO, NO, OP, ON);
 }
@@ -631,5 +572,4 @@ __host__ __device__ void BrendanCUDA::Fields::GetConsecutives3_CM(uint<#= bitCou
 __host__ __device__ void BrendanCUDA::Fields::GetConsecutives3_CM(uint<#= bitCount2 #>_3 Dimensions, uint<#= bitCount2 #>_3 Coordinates, uint<#= bitCount1 #>_t& PPP, uint<#= bitCount1 #>_t& OPP, uint<#= bitCount1 #>_t& NPP, uint<#= bitCount1 #>_t& POP, uint<#= bitCount1 #>_t& OOP, uint<#= bitCount1 #>_t& NOP, uint<#= bitCount1 #>_t& PNP, uint<#= bitCount1 #>_t& ONP, uint<#= bitCount1 #>_t& NNP, uint<#= bitCount1 #>_t& PPO, uint<#= bitCount1 #>_t& OPO, uint<#= bitCount1 #>_t& NPO, uint<#= bitCount1 #>_t& POO, uint<#= bitCount1 #>_t& NOO, uint<#= bitCount1 #>_t& PNO, uint<#= bitCount1 #>_t& ONO, uint<#= bitCount1 #>_t& NNO, uint<#= bitCount1 #>_t& PPN, uint<#= bitCount1 #>_t& OPN, uint<#= bitCount1 #>_t& NPN, uint<#= bitCount1 #>_t& PON, uint<#= bitCount1 #>_t& OON, uint<#= bitCount1 #>_t& NON, uint<#= bitCount1 #>_t& PNN, uint<#= bitCount1 #>_t& ONN, uint<#= bitCount1 #>_t& NNN) {
     getConsecutives3_CM(Dimensions, Coordinates, BrendanCUDA::Fields::Coordinates<#= bitCount2 #>_3ToIndex<#= bitCount1 #>_RM(Dimensions, Coordinates), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
-//el1
 <# } } #>
