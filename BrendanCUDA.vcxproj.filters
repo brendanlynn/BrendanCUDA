@@ -73,6 +73,12 @@
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_fields_field2.cuh">
+      <Filter>Fields</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_fields_dfield2.cuh">
+      <Filter>Fields</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cuh.tt">

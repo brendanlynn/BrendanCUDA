@@ -239,11 +239,11 @@ __host__ __device__ BrendanCUDA::uint32_3 BrendanCUDA::Fields::DField3<_T>::Poin
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint64_t Index, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const {
-    Fields::GetConsecutives_RM(Dimensions(), Index, POO, NOO, OPO, ONO, OOP, OON);
+    Fields::GetConsecutives3_RM(Dimensions(), Index, POO, NOO, OPO, ONO, OOP, OON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint64_t Index, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const {
-    Fields::GetConsecutives_RM(Dimensions(), Index, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
+    Fields::GetConsecutives3_RM(Dimensions(), Index, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint64_t Index, _T*& POO, _T*& NOO, _T*& OPO, _T*& ONO, _T*& OOP, _T*& OON) const {
@@ -254,7 +254,7 @@ __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint6
     uint64_t iOOP;
     uint64_t iOON;
 
-    Fields::GetConsecutives_RM(Dimensions(), Index, iPOO, iNOO, iOPO, iONO, iOOP, iOON);
+    Fields::GetConsecutives3_RM(Dimensions(), Index, iPOO, iNOO, iOPO, iONO, iOOP, iOON);
 
     POO = cudaArrayF + iPOO;
     NOO = cudaArrayF + iNOO;
@@ -292,7 +292,7 @@ __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint6
     uint64_t iONN;
     uint64_t iNNN;
 
-    Fields::GetConsecutives_RM(Dimensions(), Index, iPPP, iOPP, iNPP, iPOP, iOOP, iNOP, iPNP, iONP, iNNP, iPPO, iOPO, iNPO, iPOO, iNOO, iPNO, iONO, iNNO, iPPN, iOPN, iNPN, iPON, iOON, iNON, iPNN, iONN, iNNN);
+    Fields::GetConsecutives3_RM(Dimensions(), Index, iPPP, iOPP, iNPP, iPOP, iOOP, iNOP, iPNP, iONP, iNNP, iPPO, iOPO, iNPO, iPOO, iNOO, iPNO, iONO, iNNO, iPPN, iOPN, iNPN, iPON, iOON, iNON, iPNN, iONN, iNNN);
 
     PPP = cudaArrayF + iPPP;
     OPP = cudaArrayF + iOPP;
@@ -323,19 +323,19 @@ __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint6
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint64_t Index, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const {
-    Fields::GetConsecutives_RM(Dimensions(), Index, POO, NOO, OPO, ONO, OOP, OON);
+    Fields::GetConsecutives3_RM(Dimensions(), Index, POO, NOO, OPO, ONO, OOP, OON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint64_t Index, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const {
-    Fields::GetConsecutives_RM(Dimensions(), Index, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
+    Fields::GetConsecutives3_RM(Dimensions(), Index, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint32_3 Coordinates, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const {
-    Fields::GetConsecutives_RM(Dimensions(), Coordinates, POO, NOO, OPO, ONO, OOP, OON);
+    Fields::GetConsecutives3_RM(Dimensions(), Coordinates, POO, NOO, OPO, ONO, OOP, OON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint32_3 Coordinates, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const {
-    Fields::GetConsecutives_RM(Dimensions(), Coordinates, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
+    Fields::GetConsecutives3_RM(Dimensions(), Coordinates, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint32_3 Coordinates, _T*& POO, _T*& NOO, _T*& OPO, _T*& ONO, _T*& OOP, _T*& OON) const {
@@ -346,7 +346,7 @@ __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint3
     uint64_t iOOP;
     uint64_t iOON;
 
-    Fields::GetConsecutives_RM(Dimensions(), Coordinates, iPOO, iNOO, iOPO, iONO, iOOP, iOON);
+    Fields::GetConsecutives3_RM(Dimensions(), Coordinates, iPOO, iNOO, iOPO, iONO, iOOP, iOON);
 
     POO = cudaArrayF + iPOO;
     NOO = cudaArrayF + iNOO;
@@ -384,7 +384,7 @@ __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint3
     uint64_t iONN;
     uint64_t iNNN;
 
-    Fields::GetConsecutives_RM(Dimensions(), Coordinates, iPPP, iOPP, iNPP, iPOP, iOOP, iNOP, iPNP, iONP, iNNP, iPPO, iOPO, iNPO, iPOO, iNOO, iPNO, iONO, iNNO, iPPN, iOPN, iNPN, iPON, iOON, iNON, iPNN, iONN, iNNN);
+    Fields::GetConsecutives3_RM(Dimensions(), Coordinates, iPPP, iOPP, iNPP, iPOP, iOOP, iNOP, iPNP, iONP, iNNP, iPPO, iOPO, iNPO, iPOO, iNOO, iPNO, iONO, iNNO, iPPN, iOPN, iNPN, iPON, iOON, iNON, iPNN, iONN, iNNN);
 
     PPP = cudaArrayF + iPPP;
     OPP = cudaArrayF + iOPP;
@@ -415,39 +415,39 @@ __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint3
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint32_3 Coordinates, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const {
-    Fields::GetConsecutives(Dimensions(), Coordinates, POO, NOO, OPO, ONO, OOP, OON);
+    Fields::GetConsecutives3(Dimensions(), Coordinates, POO, NOO, OPO, ONO, OOP, OON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(uint32_3 Coordinates, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const {
-    Fields::GetConsecutives(Dimensions(), Coordinates, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
+    Fields::GetConsecutives3(Dimensions(), Coordinates, PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(_T*& Pointer, uint64_t& POO, uint64_t& NOO, uint64_t& OPO, uint64_t& ONO, uint64_t& OOP, uint64_t& OON) const {
-    Fields::GetConsecutives(Dimensions(), PointerToIndex(Pointer), POO, NOO, OPO, ONO, OOP, OON);
+    Fields::GetConsecutives3(Dimensions(), PointerToIndex(Pointer), POO, NOO, OPO, ONO, OOP, OON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(_T*& Pointer, uint64_t& PPP, uint64_t& OPP, uint64_t& NPP, uint64_t& POP, uint64_t& OOP, uint64_t& NOP, uint64_t& PNP, uint64_t& ONP, uint64_t& NNP, uint64_t& PPO, uint64_t& OPO, uint64_t& NPO, uint64_t& POO, uint64_t& NOO, uint64_t& PNO, uint64_t& ONO, uint64_t& NNO, uint64_t& PPN, uint64_t& OPN, uint64_t& NPN, uint64_t& PON, uint64_t& OON, uint64_t& NON, uint64_t& PNN, uint64_t& ONN, uint64_t& NNN) const {
-    Fields::GetConsecutives(Dimensions(), PointerToIndex(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
+    Fields::GetConsecutives3(Dimensions(), PointerToIndex(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(_T*& Pointer, _T*& POO, _T*& NOO, _T*& OPO, _T*& ONO, _T*& OOP, _T*& OON) const {
-    Fields::GetConsecutives(Dimensions(), PointerToIndex(Pointer), POO, NOO, OPO, ONO, OOP, OON);
+    Fields::GetConsecutives3(Dimensions(), PointerToIndex(Pointer), POO, NOO, OPO, ONO, OOP, OON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(_T*& Pointer, _T*& PPP, _T*& OPP, _T*& NPP, _T*& POP, _T*& OOP, _T*& NOP, _T*& PNP, _T*& ONP, _T*& NNP, _T*& PPO, _T*& OPO, _T*& NPO, _T*& POO, _T*& NOO, _T*& PNO, _T*& ONO, _T*& NNO, _T*& PPN, _T*& OPN, _T*& NPN, _T*& PON, _T*& OON, _T*& NON, _T*& PNN, _T*& ONN, _T*& NNN) const {
-    Fields::GetConsecutives(Dimensions(), PointerToIndex(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
+    Fields::GetConsecutives3(Dimensions(), PointerToIndex(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(_T*& Pointer, uint32_3& POO, uint32_3& NOO, uint32_3& OPO, uint32_3& ONO, uint32_3& OOP, uint32_3& OON) const {
-    Fields::GetConsecutives(Dimensions(), PointerToCoordinates(Pointer), POO, NOO, OPO, ONO, OOP, OON);
+    Fields::GetConsecutives3(Dimensions(), PointerToCoordinates(Pointer), POO, NOO, OPO, ONO, OOP, OON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::GetConsecutives(_T*& Pointer, uint32_3& PPP, uint32_3& OPP, uint32_3& NPP, uint32_3& POP, uint32_3& OOP, uint32_3& NOP, uint32_3& PNP, uint32_3& ONP, uint32_3& NNP, uint32_3& PPO, uint32_3& OPO, uint32_3& NPO, uint32_3& POO, uint32_3& NOO, uint32_3& PNO, uint32_3& ONO, uint32_3& NNO, uint32_3& PPN, uint32_3& OPN, uint32_3& NPN, uint32_3& PON, uint32_3& OON, uint32_3& NON, uint32_3& PNN, uint32_3& ONN, uint32_3& NNN) const {
-    Fields::GetConsecutives(Dimensions(), PointerToCoordinates(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
+    Fields::GetConsecutives3(Dimensions(), PointerToCoordinates(Pointer), PPP, OPP, NPP, POP, OOP, NOP, PNP, ONP, NNP, PPO, OPO, NPO, POO, NOO, PNO, ONO, NNO, PPN, OPN, NPN, PON, OON, NON, PNN, ONN, NNN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField3<_T>::FillWith(_T Value) {
-    fillWithKernel<_T><<<lengthX * lengthY * lengthZ, 1>>>(cudaArrayF, Value);
+    details::fillWithKernel<_T><<<lengthX * lengthY * lengthZ, 1>>>(cudaArrayF, Value);
 }
 template <typename _T>
 __host__ __device__ std::pair<thrust::device_ptr<_T>, size_t> BrendanCUDA::Fields::DField3<_T>::Data() const {
