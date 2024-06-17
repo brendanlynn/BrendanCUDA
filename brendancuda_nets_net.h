@@ -15,7 +15,7 @@ namespace BrendanCUDA {
 
             NetNode();
 
-            void Dispose(dataDestructor_t DataDestructor);
+            void Dispose(dataDestructor_t DataDestructor) const;
         };
         class Net final {
         public:
@@ -25,6 +25,9 @@ namespace BrendanCUDA {
             thrust::device_ptr<NetNode> DataPtr() const;
             thrust::device_reference<NetNode> operator[](size_t i) const;
             void PrintTo(std::ostream& Output, size_t IndentPre = 0, size_t IndentSize = 4) const;
+            void RemoveAt_RemoveAllConnections(size_t i, dataDestructor_t DataDestructor);
+            void RemoveAt_Dispose(size_t i, dataDestructor_t DataDestructor);
+            void RemoveAt_NoDispose(size_t i);
 
             static bool AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
             static bool AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);

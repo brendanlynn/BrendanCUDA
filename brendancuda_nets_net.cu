@@ -14,7 +14,7 @@ BrendanCUDA::Nets::NetNode::NetNode() {
     outputCount = 0;
 }
 
-void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t DataDestructor) {
+void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t DataDestructor) const {
     if (DataDestructor) {
         DataDestructor(data);
     }
@@ -697,4 +697,20 @@ void BrendanCUDA::Nets::Net::PrintTo(std::ostream& Output, size_t IndentPre, siz
             Output << pi << si << si << j << ": " << GetVR(v.outputs + j) << std::endl;
         }
     }
+}
+
+void BrendanCUDA::Nets::Net::RemoveAt_RemoveAllConnections(size_t i, dataDestructor_t DataDestructor) {
+    RemoveAllConnections(nodes.data().get() + i, true);
+    RemoveAt_Dispose(i, DataDestructor);
+}
+
+void BrendanCUDA::Nets::Net::RemoveAt_Dispose(size_t i, dataDestructor_t DataDestructor) {
+    NetNode nn = nodes[i];
+    nn.Dispose(DataDestructor);
+    RemoveAt_NoDispose(i);
+}
+void BrendanCUDA::Nets::Net::RemoveAt_NoDispose(size_t i) {
+    size_t s = nodes.size();
+    nodes[i] = nodes[s - 1];
+    nodes.pop_back();
 }
