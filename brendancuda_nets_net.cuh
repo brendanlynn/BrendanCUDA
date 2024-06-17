@@ -25,7 +25,7 @@ namespace BrendanCUDA {
             thrust::device_vector<NetNode>& DataVec() const;
             thrust::device_ptr<NetNode> DataPtr() const;
             thrust::device_reference<NetNode> operator[](size_t i) const;
-            void PrintTo(std::ostream& Output) const;
+            void PrintTo(std::ostream& Output, size_t IndentPre = 0, size_t IndentSize = 4) const;
 
             static bool AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
             static bool AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);

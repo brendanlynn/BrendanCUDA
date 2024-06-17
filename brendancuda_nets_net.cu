@@ -3,6 +3,7 @@
 #include "brendancuda_cudaerrorhelpers.h"
 #include "brendancuda_crossassignment.h"
 #include <cuda.h>
+#include <string>
 
 BrendanCUDA::Nets::NetNode::NetNode() {
     data = 0;
@@ -674,23 +675,25 @@ void BrendanCUDA::Nets::Net::RemoveAllConnections(NetNode* Node, bool RemoveExce
     nn.outputCount = 0;
     SetVR(Node, nn);
 }
-void BrendanCUDA::Nets::Net::PrintTo(std::ostream& Output) const {
+void BrendanCUDA::Nets::Net::PrintTo(std::ostream& Output, size_t IndentPre, size_t IndentSize) const {
+    std::string pi(' ', IndentPre);
+    std::string si(' ', IndentSize);
     thrust::device_vector<NetNode>& vec = DataVec();
     for (size_t i = 0; i < vec.size(); ++i) {
         thrust::device_ptr<NetNode> dp = vec.data() + i;
         NetNode* p = dp.get();
         NetNode v = *dp;
-        Output << p << ":" << std::endl;
-        Output << "    Data: " << v.data << std::endl;
-        Output << "    Input Count: " << v.inputCount << std::endl;
-        Output << "    Inputs: " << v.inputs << std::endl;
+        Output << pi << p << ":" << std::endl;
+        Output << pi << si << "Data: " << v.data << std::endl;
+        Output << pi << si << "Input Count: " << v.inputCount << std::endl;
+        Output << pi << si << "Inputs: " << v.inputs << std::endl;
         for (size_t j = 0; j < v.inputCount; ++j) {
-            Output << "        " << j << ": " << GetVR(v.inputs + j) << std::endl;
+            Output << pi << si << si << j << ": " << GetVR(v.inputs + j) << std::endl;
         }
-        Output << "    Output Count: " << v.outputCount << std::endl;
-        Output << "    Outputs: " << v.outputs << std::endl;
+        Output << pi << si << "Output Count: " << v.outputCount << std::endl;
+        Output << pi << si << "Outputs: " << v.outputs << std::endl;
         for (size_t j = 0; j < v.outputCount; ++j) {
-            Output << "        " << j << ": " << GetVR(v.outputs + j) << std::endl;
+            Output << pi << si << si << j << ": " << GetVR(v.outputs + j) << std::endl;
         }
     }
 }
