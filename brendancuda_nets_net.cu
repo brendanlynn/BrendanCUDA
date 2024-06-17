@@ -677,8 +677,8 @@ void BrendanCUDA::Nets::Net::RemoveAllConnections(NetNode* Node, bool RemoveExce
     SetVR(Node, nn);
 }
 void BrendanCUDA::Nets::Net::PrintTo(std::ostream& Output, size_t IndentPre, size_t IndentSize) const {
-    std::string pi(' ', IndentPre);
-    std::string si(' ', IndentSize);
+    std::string pi(IndentPre, ' ');
+    std::string si(IndentSize, ' ');
     thrust::device_vector<NetNode>& vec = DataVec();
     for (size_t i = 0; i < vec.size(); ++i) {
         thrust::device_ptr<NetNode> dp = vec.data() + i;
