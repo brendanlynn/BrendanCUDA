@@ -1,7 +1,6 @@
 #pragma once
 
 #include <thrust/device_vector.h>
-#include <cuda_runtime.h>
 #include <ostream>
 
 namespace BrendanCUDA {

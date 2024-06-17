@@ -57,7 +57,7 @@
     <ClInclude Include="brendancuda_random_anyrng.cuh">
       <Filter>Random</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_nets_net.cuh">
+    <ClInclude Include="brendancuda_nets_net.h">
       <Filter>Nets</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_fixedvectors.cuh" />

@@ -1,8 +1,9 @@
-#include "brendancuda_nets_net.cuh"
+#include "brendancuda_nets_net.h"
 #include <device_launch_parameters.h>
 #include "brendancuda_cudaerrorhelpers.h"
 #include "brendancuda_crossassignment.h"
 #include <cuda.h>
+#include <cuda_runtime.h>
 #include <string>
 
 BrendanCUDA::Nets::NetNode::NetNode() {
