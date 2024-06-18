@@ -1,7 +1,7 @@
 #pragma once
 
 #include "brendancuda_fields_field2.cuh"
-#include "brendancuda_fields_points.cuh"
+#include "brendancuda_points.cuh"
 #include "brendancuda_cudaerrorhelpers.h"
 #include <stdexcept>
 #include <string>
@@ -199,15 +199,15 @@ __host__ __device__ size_t BrendanCUDA::Fields::DField2<_T>::SizeOnGPU() const {
 }
 template <typename _T>
 __host__ __device__ uint64_t BrendanCUDA::Fields::DField2<_T>::CoordinatesToIndex(uint32_2 Coordinates) const {
-    return Fields::Coordinates32_2ToIndex64_RM(Dimensions(), Coordinates);
+    return Coordinates32_2ToIndex64_RM(Dimensions(), Coordinates);
 }
 template <typename _T>
 __host__ __device__ uint64_t BrendanCUDA::Fields::DField2<_T>::CoordinatesToIndex(uint32_t X, uint32_t Y) const {
-    return Fields::Coordinates32_2ToIndex64_RM(Dimensions(), uint32_2(X, Y));
+    return Coordinates32_2ToIndex64_RM(Dimensions(), uint32_2(X, Y));
 }
 template <typename _T>
 __host__ __device__ BrendanCUDA::uint32_2 BrendanCUDA::Fields::DField2<_T>::IndexToCoordinates(uint64_t Index) const {
-    return Fields::Index64ToCoordinates32_2_RM(Dimensions(), Index);
+    return Index64ToCoordinates32_2_RM(Dimensions(), Index);
 }
 template <typename _T>
 __host__ __device__ _T* BrendanCUDA::Fields::DField2<_T>::IndexToPointer(uint64_t Index) const {
@@ -231,11 +231,11 @@ __host__ __device__ BrendanCUDA::uint32_2 BrendanCUDA::Fields::DField2<_T>::Poin
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint64_t Index, uint64_t& PO, uint64_t& NO, uint64_t& OP, uint64_t& ON) const {
-    Fields::GetConsecutives2_RM(Dimensions(), Index, PO, NO, OP, ON);
+    GetConsecutives2_RM(Dimensions(), Index, PO, NO, OP, ON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint64_t Index, uint64_t& PP, uint64_t& OP, uint64_t& NP, uint64_t& PO, uint64_t& NO, uint64_t& PN, uint64_t& ON, uint64_t& NN) const {
-    Fields::GetConsecutives2_RM(Dimensions(), Index, PP, OP, NP, PO, NO, PN, ON, NN);
+    GetConsecutives2_RM(Dimensions(), Index, PP, OP, NP, PO, NO, PN, ON, NN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint64_t Index, _T*& PO, _T*& NO, _T*& OP, _T*& ON) const {
@@ -244,7 +244,7 @@ __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint6
     uint64_t iOP;
     uint64_t iON;
 
-    Fields::GetConsecutives2_RM(Dimensions(), Index, iPO, iNO, iOP, iON);
+    GetConsecutives2_RM(Dimensions(), Index, iPO, iNO, iOP, iON);
 
     PO = cudaArrayF + iPO;
     NO = cudaArrayF + iNO;
@@ -263,7 +263,7 @@ __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint6
     uint64_t iON;
     uint64_t iNN;
 
-    Fields::GetConsecutives2_RM(Dimensions(), Index, iPP, iOP, iNP, iPO, iOO, iNO, iPN, iON, iNN);
+    GetConsecutives2_RM(Dimensions(), Index, iPP, iOP, iNP, iPO, iOO, iNO, iPN, iON, iNN);
 
     PP = cudaArrayF + iPP;
     OP = cudaArrayF + iOP;
@@ -276,19 +276,19 @@ __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint6
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint64_t Index, uint32_2& PO, uint32_2& NO, uint32_2& OP, uint32_2& ON) const {
-    Fields::GetConsecutives2_RM(Dimensions(), Index, PO, NO, OP, ON);
+    GetConsecutives2_RM(Dimensions(), Index, PO, NO, OP, ON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint64_t Index, uint32_2& PP, uint32_2& OP, uint32_2& NP, uint32_2& PO, uint32_2& NO, uint32_2& PN, uint32_2& ON, uint32_2& NN) const {
-    Fields::GetConsecutives2_RM(Dimensions(), Index, PP, OP, NP, PO, NO, PN, ON, NN);
+    GetConsecutives2_RM(Dimensions(), Index, PP, OP, NP, PO, NO, PN, ON, NN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint32_2 Coordinates, uint64_t& PO, uint64_t& NO, uint64_t& OP, uint64_t& ON) const {
-    Fields::GetConsecutives2_RM(Dimensions(), Coordinates, PO, NO, OP, ON);
+    GetConsecutives2_RM(Dimensions(), Coordinates, PO, NO, OP, ON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint32_2 Coordinates, uint64_t& PP, uint64_t& OP, uint64_t& NP, uint64_t& PO, uint64_t& NO, uint64_t& PN, uint64_t& ON, uint64_t& NN) const {
-    Fields::GetConsecutives2_RM(Dimensions(), Coordinates, PP, OP, NP, PO, NO, PN, ON, NN, PP, OP, NP, PO, NO, PN, ON, NN);
+    GetConsecutives2_RM(Dimensions(), Coordinates, PP, OP, NP, PO, NO, PN, ON, NN, PP, OP, NP, PO, NO, PN, ON, NN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint32_2 Coordinates, _T*& PO, _T*& NO, _T*& OP, _T*& ON) const {
@@ -297,7 +297,7 @@ __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint3
     uint64_t iOP;
     uint64_t iON;
 
-    Fields::GetConsecutives2_RM(Dimensions(), Coordinates, iPO, iNO, iOP, iON);
+    GetConsecutives2_RM(Dimensions(), Coordinates, iPO, iNO, iOP, iON);
 
     PO = cudaArrayF + iPO;
     NO = cudaArrayF + iNO;
@@ -316,7 +316,7 @@ __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint3
     uint64_t iON;
     uint64_t iNN;
 
-    Fields::GetConsecutives2_RM(Dimensions(), Coordinates, iPP, iOP, iNP, iPO, iOO, iNO, iPN, iON, iNN);
+    GetConsecutives2_RM(Dimensions(), Coordinates, iPP, iOP, iNP, iPO, iOO, iNO, iPN, iON, iNN);
 
     PP = cudaArrayF + iPP;
     OP = cudaArrayF + iOP;
@@ -329,35 +329,35 @@ __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint3
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint32_2 Coordinates, uint32_2& PO, uint32_2& NO, uint32_2& OP, uint32_2& ON) const {
-    Fields::GetConsecutives2(Dimensions(), Coordinates, PO, NO, OP, ON);
+    GetConsecutives2(Dimensions(), Coordinates, PO, NO, OP, ON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(uint32_2 Coordinates, uint32_2& PP, uint32_2& OP, uint32_2& NP, uint32_2& PO, uint32_2& NO, uint32_2& PN, uint32_2& ON, uint32_2& NN) const {
-    Fields::GetConsecutives2(Dimensions(), Coordinates, PP, OP, NP, PO, NO, PN, ON, NN, PP);
+    GetConsecutives2(Dimensions(), Coordinates, PP, OP, NP, PO, NO, PN, ON, NN, PP);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(_T*& Pointer, uint64_t& PO, uint64_t& NO, uint64_t& OP, uint64_t& ON) const {
-    Fields::GetConsecutives2(Dimensions(), PointerToIndex(Pointer), PO, NO, OP, ON);
+    GetConsecutives2(Dimensions(), PointerToIndex(Pointer), PO, NO, OP, ON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(_T*& Pointer, uint64_t& PP, uint64_t& OP, uint64_t& NP, uint64_t& PO, uint64_t& NO, uint64_t& PN, uint64_t& ON, uint64_t& NN) const {
-    Fields::GetConsecutives2(Dimensions(), PointerToIndex(Pointer), PP, OP, NP, PO, NO, PN, ON, NN);
+    GetConsecutives2(Dimensions(), PointerToIndex(Pointer), PP, OP, NP, PO, NO, PN, ON, NN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(_T*& Pointer, _T*& PO, _T*& NO, _T*& OP, _T*& ON) const {
-    Fields::GetConsecutives2(Dimensions(), PointerToIndex(Pointer), PO, NO, OP, ON);
+    GetConsecutives2(Dimensions(), PointerToIndex(Pointer), PO, NO, OP, ON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(_T*& Pointer, _T*& PP, _T*& OP, _T*& NP, _T*& PO, _T*& NO, _T*& PN, _T*& ON, _T*& NN) const {
-    Fields::GetConsecutives2(Dimensions(), PointerToIndex(Pointer), PP, OP, NP, PO, NO, PN, ON, NN);
+    GetConsecutives2(Dimensions(), PointerToIndex(Pointer), PP, OP, NP, PO, NO, PN, ON, NN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(_T*& Pointer, uint32_2& PO, uint32_2& NO, uint32_2& OP, uint32_2& ON) const {
-    Fields::GetConsecutives2(Dimensions(), PointerToCoordinates(Pointer), PO, NO, OP, ON);
+    GetConsecutives2(Dimensions(), PointerToCoordinates(Pointer), PO, NO, OP, ON);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::GetConsecutives(_T*& Pointer, uint32_2& PP, uint32_2& OP, uint32_2& NP, uint32_2& PO, uint32_2& NO, uint32_2& PN, uint32_2& ON, uint32_2& NN) const {
-    Fields::GetConsecutives2(Dimensions(), PointerToCoordinates(Pointer), PP, OP, NP, PO, NO, PN, ON, NN);
+    GetConsecutives2(Dimensions(), PointerToCoordinates(Pointer), PP, OP, NP, PO, NO, PN, ON, NN);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::Fields::DField2<_T>::FillWith(_T Value) {

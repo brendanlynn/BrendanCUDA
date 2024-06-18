@@ -62,9 +62,6 @@
     </ClInclude>
     <ClInclude Include="brendancuda_fixedvectors.cuh" />
     <ClInclude Include="brendancuda_math.cuh" />
-    <ClInclude Include="brendancuda_fields_points.cuh">
-      <Filter>Fields</Filter>
-    </ClInclude>
     <ClInclude Include="brendancuda_cudaerrorhelpers.h" />
     <ClInclude Include="brendancuda_crossassignment.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h">
@@ -79,6 +76,7 @@
     <ClInclude Include="brendancuda_fields_dfield2.cuh">
       <Filter>Fields</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_points.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cuh.tt">
@@ -89,12 +87,8 @@
     </CustomBuild>
     <CustomBuild Include="brendancuda_fixedvectors.cuh.tt" />
     <CustomBuild Include="brendancuda_fixedvectors.cu.tt" />
-    <CustomBuild Include="brendancuda_fields_points.cu.tt">
-      <Filter>Fields</Filter>
-    </CustomBuild>
-    <CustomBuild Include="brendancuda_fields_points.cuh.tt">
-      <Filter>Fields</Filter>
-    </CustomBuild>
+    <CustomBuild Include="brendancuda_points.cu.tt" />
+    <CustomBuild Include="brendancuda_points.cuh.tt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">
@@ -173,12 +167,10 @@
     <CudaCompile Include="brendancuda_nets_net.cu">
       <Filter>Nets</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_fields_points.cu">
-      <Filter>Fields</Filter>
-    </CudaCompile>
     <CudaCompile Include="brendancuda_fixedvectors.cu" />
     <CudaCompile Include="brendancuda_math.cu" />
     <CudaCompile Include="brendancuda_cudaerrorhelpers.cpp" />
+    <CudaCompile Include="brendancuda_points.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.cpp">
