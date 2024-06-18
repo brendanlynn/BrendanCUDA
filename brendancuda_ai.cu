@@ -703,7 +703,7 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Le
         Array[i] += Scalar * (dr.GetF() - 0.5f);
     }
 #else
-    randomizeArrayKernel << <Length, 1 >> > (Array, Scalar, rng());
+    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, rng());
 #endif
 }
 __host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t Length, double Scalar, Random::AnyRNG<uint64_t> rng) {
@@ -714,7 +714,7 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t L
         Array[i] += Scalar * (dr.GetD() - 0.5);
 }
 #else
-    randomizeArrayKernel << <Length, 1 >> > (Array, Scalar, rng());
+    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, rng());
 #endif
 }
 __host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Length, float Scalar, float LowerBound, float UpperBound, Random::AnyRNG<uint64_t> rng) {
