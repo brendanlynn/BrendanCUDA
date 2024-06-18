@@ -1,6 +1,6 @@
 #include "brendancuda_random_sseed.cuh"
 
-__device__ uint32_t BrendanCUDA::Random::getSeedOnKernel(uint32_t BaseSeed) {
+__device__ uint32_t BrendanCUDA::Random::GetSeedOnKernel(uint32_t BaseSeed) {
     constexpr uint32_t m0 = 1172153037;
     constexpr uint32_t m1 = 1306592842;
     constexpr uint32_t m2 = 1313710305;
@@ -41,7 +41,7 @@ __device__ uint32_t BrendanCUDA::Random::getSeedOnKernel(uint32_t BaseSeed) {
         ((v5 << s5) | (v5 >> (32 - s5))) ^
         ((v6 << s6) | (v6 >> (32 - s6)));
 }
-__device__ uint64_t BrendanCUDA::Random::getSeedOnKernel(uint64_t BaseSeed) {
+__device__ uint64_t BrendanCUDA::Random::GetSeedOnKernel(uint64_t BaseSeed) {
     constexpr uint64_t m0 = 4577840436625149039ui64;
     constexpr uint64_t m1 = 6272590855536809777ui64;
     constexpr uint64_t m2 = 3819577067935900843ui64;
@@ -82,7 +82,7 @@ __device__ uint64_t BrendanCUDA::Random::getSeedOnKernel(uint64_t BaseSeed) {
         ((v5 << s5) | (v5 >> (64 - s5))) ^
         v6;
 }
-__host__ __device__ uint64_t BrendanCUDA::Random::hashI64(uint64_t v) {
+__host__ __device__ uint64_t BrendanCUDA::Random::HashI64(uint64_t Value) {
     constexpr uint64_t m0 = 17602768720006943520ui64;
     constexpr uint64_t m1 = 12661310132110239234ui64;
     constexpr uint64_t m2 = 15558628490694610577ui64;
@@ -91,9 +91,9 @@ __host__ __device__ uint64_t BrendanCUDA::Random::hashI64(uint64_t v) {
     constexpr uint32_t s1 = 6;
     constexpr uint32_t s2 = 7;
 
-    uint64_t p0 = v * m0;
-    uint64_t p1 = v * m1;
-    uint64_t p2 = v * m2;
+    uint64_t p0 = Value * m0;
+    uint64_t p1 = Value * m1;
+    uint64_t p2 = Value * m2;
 
     return
         ((p0 << s0) | (p0 >> (32 - s0))) ^

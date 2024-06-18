@@ -6,8 +6,8 @@
 
 namespace BrendanCUDA {
     namespace Random {
-        __device__ uint32_t getSeedOnKernel(uint32_t BaseSeed);
-        __device__ uint64_t getSeedOnKernel(uint64_t BaseSeed);
-        __host__ __device__ uint64_t hashI64(uint64_t v);
+        __device__ uint32_t GetSeedOnKernel(uint32_t BaseSeed);
+        __device__ uint64_t GetSeedOnKernel(uint64_t BaseSeed);
+        __host__ __device__ uint64_t HashI64(uint64_t Value);
     }
 }

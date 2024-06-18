@@ -1,6 +1,6 @@
 #include "brendancuda_random_devicerandom.cuh"
 
-__device__ BrendanCUDA::DeviceRandom::DeviceRandom(uint64_t Seed) {
+__device__ BrendanCUDA::Random::DeviceRandom::DeviceRandom(uint64_t Seed) {
     constexpr uint64_t ma0_0 = 13022122549310882779ui64;
     constexpr uint64_t mu0_0 = 10936551063276595493ui64;
     constexpr int32_t rs0_0 = 61;
@@ -422,7 +422,7 @@ __device__ BrendanCUDA::DeviceRandom::DeviceRandom(uint64_t Seed) {
     c[7] = t0_7 ^ t1_7 ^ t2_7 ^ t3_7 ^ t4_7 ^ t5_7 ^ t6_7 ^ t7_7 ^ t8_7 ^ t9_7 ^ ma7;
 }
 
-__device__ void BrendanCUDA::DeviceRandom::Iterate() {
+__device__ void BrendanCUDA::Random::DeviceRandom::Iterate() {
     constexpr uint64_t ma0_0 = 11192243585111674152ui64;
     constexpr uint64_t mu0_0 = 10694587987243382108ui64;
     constexpr int32_t rs0_0 = 4;
@@ -764,7 +764,7 @@ __device__ void BrendanCUDA::DeviceRandom::Iterate() {
     c[7] = t0_7 ^ t1_7 ^ t2_7 ^ t3_7 ^ t4_7 ^ t5_7 ^ t6_7 ^ t7_7 ^ ma7;
 }
 
-__device__ float BrendanCUDA::DeviceRandom::GetF() {
+__device__ float BrendanCUDA::Random::DeviceRandom::GetF() {
     Iterate();
 
     uint64_t v = c[7];
@@ -797,7 +797,7 @@ ae:
     uint32_t r = (e << 23) | (v1 >> 9);
     return *(float*)&r;
 }
-__device__ double BrendanCUDA::DeviceRandom::GetD() {
+__device__ double BrendanCUDA::Random::DeviceRandom::GetD() {
     Iterate();
 
     uint64_t v0 = c[6];
@@ -830,22 +830,22 @@ ae:
     return *(double*)&r;
 }
 
-__device__ uint8_t BrendanCUDA::DeviceRandom::GetI8() {
+__device__ uint8_t BrendanCUDA::Random::DeviceRandom::GetI8() {
     Iterate();
     return *(uint8_t*)&c[7];
 }
-__device__ uint16_t BrendanCUDA::DeviceRandom::GetI16() {
+__device__ uint16_t BrendanCUDA::Random::DeviceRandom::GetI16() {
     Iterate();
     return *(uint16_t*)&c[7];
 }
-__device__ uint32_t BrendanCUDA::DeviceRandom::GetI32() {
+__device__ uint32_t BrendanCUDA::Random::DeviceRandom::GetI32() {
     Iterate();
     return *(uint32_t*)&c[7];
 }
-__device__ uint64_t BrendanCUDA::DeviceRandom::GetI64() {
+__device__ uint64_t BrendanCUDA::Random::DeviceRandom::GetI64() {
     Iterate();
     return c[7];
 }
-__device__ uint64_t BrendanCUDA::DeviceRandom::operator()() {
+__device__ uint64_t BrendanCUDA::Random::DeviceRandom::operator()() {
     return GetI64();
 }

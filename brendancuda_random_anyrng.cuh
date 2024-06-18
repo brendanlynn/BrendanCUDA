@@ -7,7 +7,7 @@
 namespace BrendanCUDA {
     namespace details {
         template <typename _TOutputType, typename _TRNG>
-        __host__ __device__ _TOutputType runRNGFunc(void* rng) {
+        __host__ __device__ _TOutputType RunRNGFunc(void* rng) {
             return (_TOutputType)((*(_TRNG*)rng)());
         }
         template <typename _TOutputType>
@@ -20,7 +20,7 @@ namespace BrendanCUDA {
             template <typename _TRNG>
             __host__ __device__ AnyRNG(_TRNG* rng) {
                 i_rng = rng;
-                r_rng = details::runRNGFunc<_TOutputType, _TRNG>;
+                r_rng = details::RunRNGFunc<_TOutputType, _TRNG>;
             }
             __host__ __device__ _TOutputType operator()() {
                 return r_rng(i_rng);

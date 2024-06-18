@@ -156,8 +156,8 @@ __host__ __device__ uint8_t applyTargetFlips(uint8_t Value, uint32_t FlipProb, u
 __global__ void applyTargetFlipsOnArray_kernel(uint64_t* arr, uint32_t flipProb, uint64_t bs) {
     uint64_t& v(arr[blockIdx.x]);
 
-    uint64_t rn64_1 = BrendanCUDA::Random::hashI64(BrendanCUDA::Random::getSeedOnKernel(bs));
-    uint64_t rn64_2 = BrendanCUDA::Random::hashI64(rn64_1 ^ 12210506935820558677);
+    uint64_t rn64_1 = BrendanCUDA::Random::HashI64(BrendanCUDA::Random::GetSeedOnKernel(bs));
+    uint64_t rn64_2 = BrendanCUDA::Random::HashI64(rn64_1 ^ 12210506935820558677);
 
     uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
     uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
@@ -169,8 +169,8 @@ __global__ void applyTargetFlipsOnArray_kernel(uint64_t* arr, uint32_t flipProb,
 __global__ void applyTargetFlipsOnArray_kernel(uint32_t* arr, uint32_t flipProb, uint64_t bs) {
     uint32_t& v(arr[blockIdx.x]);
 
-    uint64_t rn64_1 = BrendanCUDA::Random::hashI64(BrendanCUDA::Random::getSeedOnKernel(bs));
-    uint64_t rn64_2 = BrendanCUDA::Random::hashI64(rn64_1 ^ 484654973014905267);
+    uint64_t rn64_1 = BrendanCUDA::Random::HashI64(BrendanCUDA::Random::GetSeedOnKernel(bs));
+    uint64_t rn64_2 = BrendanCUDA::Random::HashI64(rn64_1 ^ 484654973014905267);
 
     uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
     uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
@@ -182,8 +182,8 @@ __global__ void applyTargetFlipsOnArray_kernel(uint32_t* arr, uint32_t flipProb,
 __global__ void applyTargetFlipsOnArray_kernel(uint16_t* arr, uint32_t flipProb, uint64_t bs) {
     uint16_t& v(arr[blockIdx.x]);
 
-    uint64_t rn64_1 = BrendanCUDA::Random::hashI64(BrendanCUDA::Random::getSeedOnKernel(bs));
-    uint64_t rn64_2 = BrendanCUDA::Random::hashI64(rn64_1 ^ 3123193471197220784);
+    uint64_t rn64_1 = BrendanCUDA::Random::HashI64(BrendanCUDA::Random::GetSeedOnKernel(bs));
+    uint64_t rn64_2 = BrendanCUDA::Random::HashI64(rn64_1 ^ 3123193471197220784);
 
     uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
     uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
@@ -195,8 +195,8 @@ __global__ void applyTargetFlipsOnArray_kernel(uint16_t* arr, uint32_t flipProb,
 __global__ void applyTargetFlipsOnArray_kernel(uint8_t* arr, uint32_t flipProb, uint64_t bs) {
     uint8_t& v(arr[blockIdx.x]);
 
-    uint64_t rn64_1 = BrendanCUDA::Random::hashI64(BrendanCUDA::Random::getSeedOnKernel(bs));
-    uint64_t rn64_2 = BrendanCUDA::Random::hashI64(rn64_1 ^ 11199430323554825400);
+    uint64_t rn64_1 = BrendanCUDA::Random::HashI64(BrendanCUDA::Random::GetSeedOnKernel(bs));
+    uint64_t rn64_2 = BrendanCUDA::Random::HashI64(rn64_1 ^ 11199430323554825400);
 
     uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
     uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
