@@ -6,7 +6,7 @@
 #include <cuda_runtime.h>
 #include <string>
 
-BrendanCUDA::Nets::NetNode::NetNode() {
+__host__ __device__ BrendanCUDA::Nets::NetNode::NetNode() {
     data = 0;
     inputs = 0;
     inputCount = 0;

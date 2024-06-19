@@ -13,7 +13,7 @@ namespace BrendanCUDA {
             NetNode** outputs;
             size_t outputCount;
 
-            NetNode();
+            __host__ __device__ NetNode();
 
             void Dispose(dataDestructor_t DataDestructor) const;
         };
