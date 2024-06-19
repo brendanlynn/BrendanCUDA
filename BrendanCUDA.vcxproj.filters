@@ -80,6 +80,12 @@
     <ClInclude Include="brendancuda_nets_makenet.h">
       <Filter>Nets</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_fields_instance3.cuh">
+      <Filter>Fields</Filter>
+    </ClInclude>
+    <ClInclude Include="brendancuda_fields_instance2.cuh">
+      <Filter>Fields</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cuh.tt">
