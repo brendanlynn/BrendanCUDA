@@ -32,6 +32,8 @@ __device__ void addToBucket(Bucket& bucket, size_t value) {
             bucket.capacity <<= 1;
             size_t* nd = new size_t[bucket.capacity];
             memcpy(nd, bucket.data, sizeof(size_t) * bucket.size);
+            delete[] bucket.data;
+            bucket.data = nd;
         }
         bucket.data[bucket.size] = value;
         ++bucket.size;
@@ -89,11 +91,14 @@ __global__ void fillBuckets2(Bucket* nodeData, Bucket* bucketData, uint32_t buck
     for (uint32_t x = lX; x <= uX; ++x) {
         for (uint32_t y = lY; y <= uY; ++y) {
             for (uint32_t z = lZ; z <= uZ; ++z) {
-                size_t i = Coordinates32_3ToIndex64_RM(uint32_3(bucketCountPerD, bucketCountPerD, bucketCountPerD), uint32_3(x, y, z));
-                float_3 tp = data[i];
+                size_t bucketIndex = Coordinates32_3ToIndex64_RM(uint32_3(bucketCountPerD, bucketCountPerD, bucketCountPerD), uint32_3(x, y, z));
+                Bucket bucket = bucketData[bucketIndex];
+                for (size_t i = 0; i < bucket.size; ++i) {
+                    float_3 tp = data[bucket.data[i]];
 
-                if (cr_sq < (p - tp).MagnatudeSquared()) {
-                    addToBucket(mnd, i);
+                    if (cr_sq < (p - tp).MagnatudeSquared()) {
+                        addToBucket(mnd, i);
+                    }
                 }
             }
         }
@@ -135,7 +140,7 @@ BrendanCUDA::Nets::Net BrendanCUDA::Nets::MakeNet_3D(size_t NodeCount, float Con
 
     Bucket* nodesData;
     ThrowIfBad(cudaMalloc(&nodesData, NodeCount * sizeof(Bucket)));
-
+    
     fillBuckets2<<<NodeCount, 1>>>(nodesData, bucketData, bucketCountPerD, dv->data().get(), ConnectionRange);
 
     device_vector<NetNode>& ndv = *new device_vector<NetNode>(NodeCount);
@@ -143,7 +148,7 @@ BrendanCUDA::Nets::Net BrendanCUDA::Nets::MakeNet_3D(size_t NodeCount, float Con
     fillNetNodes<<<NodeCount, 1>>>(ndv.data().get(), nodesData);
 
     disposeOfBuckets<<<bucketCountPerD * bucketCountPerD * bucketCountPerD, 1>>>(bucketData);
-    disposeOfBuckets<<<NodeCount, 1>>>(bucketData);
+    disposeOfBuckets<<<NodeCount, 1>>>(nodesData);
 
     if (NodePoints) {
         *NodePoints = dv;
