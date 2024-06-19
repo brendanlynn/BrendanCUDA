@@ -122,21 +122,21 @@ __global__ void disposeOfBuckets(Bucket* buckets) {
 }
 
 BrendanCUDA::Nets::Net BrendanCUDA::Nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, BrendanCUDA::Random::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
-    thrust::device_vector<float_3> dv(NodeCount);
+    thrust::device_vector<float_3>* dv = new thrust::device_vector<float_3>(NodeCount);
 
-    fillRandomly<<<dv.size(), 1>>>(dv.data().get(), RNG());
+    fillRandomly<<<dv->size(), 1>>>(dv->data().get(), RNG());
 
     constexpr size_t bucketCountPerD = 10;
 
     Bucket* bucketData;
     ThrowIfBad(cudaMalloc(&bucketData, bucketCountPerD * bucketCountPerD * bucketCountPerD * sizeof(Bucket)));
 
-    fillBuckets1<<<dim3(bucketCountPerD, bucketCountPerD, bucketCountPerD), 1>>>(bucketData, bucketCountPerD, dv.data().get(), dv.size());
+    fillBuckets1<<<dim3(bucketCountPerD, bucketCountPerD, bucketCountPerD), 1>>>(bucketData, bucketCountPerD, dv->data().get(), dv->size());
 
     Bucket* nodesData;
     ThrowIfBad(cudaMalloc(&nodesData, NodeCount * sizeof(Bucket)));
 
-    fillBuckets2<<<NodeCount, 1>>>(nodesData, bucketData, bucketCountPerD, dv.data().get(), ConnectionRange);
+    fillBuckets2<<<NodeCount, 1>>>(nodesData, bucketData, bucketCountPerD, dv->data().get(), ConnectionRange);
 
     device_vector<NetNode>& ndv = *new device_vector<NetNode>(NodeCount);
 
@@ -144,6 +144,13 @@ BrendanCUDA::Nets::Net BrendanCUDA::Nets::MakeNet_3D(size_t NodeCount, float Con
 
     disposeOfBuckets<<<bucketCountPerD * bucketCountPerD * bucketCountPerD, 1>>>(bucketData);
     disposeOfBuckets<<<NodeCount, 1>>>(bucketData);
+
+    if (NodePoints) {
+        *NodePoints = dv;
+    }
+    else {
+        delete dv;
+    }
 
     return Net(ndv);
 }
