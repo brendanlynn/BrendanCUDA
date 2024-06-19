@@ -20,6 +20,7 @@ namespace BrendanCUDA {
         class Net final {
         public:
             Net();
+            Net(thrust::device_vector<NetNode>& Data);
             void Dispose(dataDestructor_t DataDestructor);
             thrust::device_vector<NetNode>& DataVec() const;
             thrust::device_ptr<NetNode> DataPtr() const;

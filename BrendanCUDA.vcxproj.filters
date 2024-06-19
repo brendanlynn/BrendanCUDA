@@ -77,6 +77,9 @@
       <Filter>Fields</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_points.cuh" />
+    <ClInclude Include="brendancuda_nets_makenet.h">
+      <Filter>Nets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cuh.tt">
@@ -171,6 +174,9 @@
     <CudaCompile Include="brendancuda_math.cu" />
     <CudaCompile Include="brendancuda_cudaerrorhelpers.cpp" />
     <CudaCompile Include="brendancuda_points.cu" />
+    <CudaCompile Include="brendancuda_nets_makenet.cu">
+      <Filter>Nets</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.cpp">

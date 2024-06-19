@@ -27,8 +27,11 @@ void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t DataDestructor) const 
 #endif
 }
 
-BrendanCUDA::Nets::Net::Net() 
+BrendanCUDA::Nets::Net::Net()
     : nodes(*(new thrust::device_vector<NetNode>())) {}
+
+BrendanCUDA::Nets::Net::Net(thrust::device_vector<NetNode>& Data)
+    : nodes(Data) {}
 
 void BrendanCUDA::Nets::Net::Dispose(dataDestructor_t DataDestructor) {
     for (size_t i = 0; i < nodes.size(); ++i) {
