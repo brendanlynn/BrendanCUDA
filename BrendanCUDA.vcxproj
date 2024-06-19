@@ -58,6 +58,7 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <AdditionalOptions>--expt-relaxed-constexpr %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
     <CudaLink>
       <AdditionalDependencies>cublas.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -107,10 +108,10 @@
     <ClInclude Include="brendancuda_points.cuh" />
     <CustomBuild Include="brendancuda_points.cuh.tt">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fields_points.cuh" "$(ProjectDir)brendancuda_fields_points.cuh.tt"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_points.cuh" "$(ProjectDir)brendancuda_points.cuh.tt"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_points.cuh" "$(ProjectDir)brendancuda_points.cuh.tt"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_fields_points.cuh</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_fields_points.cuh</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_points.cuh</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_points.cuh</Outputs>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_points.cuh</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_points.cuh</Outputs>
@@ -180,9 +181,9 @@
     <CudaCompile Include="brendancuda_points.cu" />
     <CustomBuild Include="brendancuda_points.cu.tt">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fields_points.cu" "$(ProjectDir)brendancuda_fields_points.cu.tt"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_fields_points.cu</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_fields_points.cu</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_points.cu" "$(ProjectDir)brendancuda_points.cu.tt"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_points.cu</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_points.cu</Outputs>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_points.cu" "$(ProjectDir)brendancuda_points.cu.tt"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_points.cu</Message>
