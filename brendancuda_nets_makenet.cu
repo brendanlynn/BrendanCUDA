@@ -111,14 +111,22 @@ __global__ void fillNetNodes(NetNode* netNodes, Bucket* nodeDataBuckets) {
 
     nn.data = 0;
     
-    nn.inputCount = b.size;
-    nn.outputCount = b.size;
-    nn.inputs = new NetNode*[b.size];
-    nn.outputs = new NetNode*[b.size];
+    if (b.size) {
+        nn.inputCount = b.size;
+        nn.outputCount = b.size;
+        nn.inputs = new NetNode*[b.size];
+        nn.outputs = new NetNode*[b.size];
 
-    for (size_t i = 0; i < b.size; ++i) {
-        nn.inputs[i] = netNodes + b.data[i];
-        nn.outputs[i] = netNodes + b.data[i];
+        for (size_t i = 0; i < b.size; ++i) {
+            nn.inputs[i] = netNodes + b.data[i];
+            nn.outputs[i] = netNodes + b.data[i];
+        }
+    }
+    else {
+        nn.inputCount = 0;
+        nn.outputCount = 0;
+        nn.inputs = 0;
+        nn.outputs = 0;
     }
 }
 
