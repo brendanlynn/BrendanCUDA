@@ -3,6 +3,7 @@
 #include "brendancuda_random_sseed.cuh"
 #include "brendancuda_cudaerrorhelpers.h"
 #include "brendancuda_points.cuh"
+#include <cuda_runtime.h>
 
 using BrendanCUDA::float_3;
 using BrendanCUDA::Random::DeviceRandom;
@@ -20,6 +21,31 @@ struct Bucket {
     size_t size;
     size_t capacity;
 };
+
+struct BucketTS {
+    size_t* data;
+    size_t size;
+    size_t capacity;
+    int lock;
+};
+
+__device__ uint32_3 whichBucket(float_3 point, uint32_t bucketCountPerD) {
+    uint32_t bX = (uint32_t)std::floor(point.x * bucketCountPerD);
+    uint32_t bY = (uint32_t)std::floor(point.y * bucketCountPerD);
+    uint32_t bZ = (uint32_t)std::floor(point.z * bucketCountPerD);
+
+    if (bX >= bucketCountPerD) {
+        bX = bucketCountPerD - 1;
+    }
+    if (bY >= bucketCountPerD) {
+        bY = bucketCountPerD - 1;
+    }
+    if (bZ >= bucketCountPerD) {
+        bZ = bucketCountPerD - 1;
+    }
+
+    return uint32_3(bX, bY, bZ);
+}
 
 __global__ void fillRandomly(BrendanCUDA::float_3* arr, uint64_t bS) {
     DeviceRandom dr(bS);
@@ -45,46 +71,92 @@ __device__ void addToBucket(Bucket& bucket, size_t value) {
     }
 }
 
-__global__ void fillBuckets1(Bucket* bucketData, size_t bucketCountPerD, BrendanCUDA::float_3* data, size_t dataCount) {
-    const uint32_3 myBucket(blockIdx.x, blockIdx.y, blockIdx.z);
+__global__ void initBuckets(BucketTS* buckets) {
+    buckets[blockIdx.x] = { 0, 0, 0, 0 };
+}
 
-    size_t i = Coordinates32_3ToIndex64_RM(uint32_3(bucketCountPerD, bucketCountPerD, bucketCountPerD), myBucket);
-    Bucket& bucket = bucketData[i];
+__global__ void initBuckets(Bucket* buckets) {
+    buckets[blockIdx.x] = { 0, 0, 0 };
+}
 
-    bucket = Bucket{0, 0, 0};
+__device__ void resizeBucket(size_t*& bucket, size_t newCapacity, size_t size, size_t currentCapacity) {
+    //assert(size <= currentCapacity);
+    if (size > currentCapacity) {
+        size = currentCapacity;
+    }
+    size_t* newArr = new size_t[newCapacity];
+    if (bucket) {
+        for (size_t i = 0; i < size; ++i) {
+            newArr[i] = bucket[i];
+        }
+        delete[] bucket;
+    }
+    bucket = newArr;
+}
 
-    float fv = 1.f / bucketCountPerD;
-    float x_lb = fv * myBucket.x;
-    float x_ub = fv * (myBucket.x + 1);
-    float y_lb = fv * myBucket.y;
-    float y_ub = fv * (myBucket.y + 1);
-    float z_lb = fv * myBucket.z;
-    float z_ub = fv * (myBucket.z + 1);
+__device__ void addToBucketTS(BucketTS& bucket, size_t value) {
+    size_t pos = atomicAdd(&bucket.size, 1);
 
-    for (size_t i = 0; i < dataCount; ++i) {
-        float_3 p = data[i];
-        if ((p.x > x_lb && p.x <= x_ub && p.y > y_lb && p.y <= y_ub && p.z > z_lb && p.z <= z_ub) || ((!myBucket.x) && (p.x == 0.f)) || ((!myBucket.y) && (p.y == 0.f)) || ((!myBucket.z) && (p.z == 0.f))) {
-            addToBucket(bucket, i);
+    while (true) {
+        if (!atomicCAS(&bucket.lock, 0, 1)) {
+            if (pos >= bucket.capacity) {
+                size_t nCap = bucket.capacity;
+                if (nCap < bucket.size) {
+                    if (nCap) {
+                        nCap <<= 1;
+                    }
+                    else {
+                        nCap = 1;
+                    }
+                }
+                while (nCap < bucket.size) {
+                    nCap <<= 1;
+                }
+                resizeBucket(bucket.data, nCap, pos, bucket.capacity);
+                bucket.capacity = nCap;
+            }
+            bucket.data[pos] = value;
+            __threadfence();
+            atomicExch(&bucket.lock, 0);
+            break;
+        }
+        else {
+            while (bucket.lock) { }
         }
     }
 }
 
-__global__ void fillBuckets2(Bucket* nodeData, Bucket* bucketData, uint32_t bucketCountPerD, BrendanCUDA::float_3* data, float ConnectionRange) {
+__global__ void fillBuckets1(BucketTS* bucketData, size_t bucketCountPerD, BrendanCUDA::float_3* data, size_t dataCount) {
+    float_3 p = data[blockIdx.x];
+    
+    uint32_3 bCs = whichBucket(p, bucketCountPerD);
+
+    size_t bI = Coordinates32_3ToIndex64_RM(uint32_3(bucketCountPerD, bucketCountPerD, bucketCountPerD), bCs);
+
+    addToBucketTS(bucketData[bI], blockIdx.x);
+}
+
+__global__ void fillBuckets2(Bucket* nodeData, BucketTS* bucketData, uint32_t bucketCountPerD, BrendanCUDA::float_3* data, float ConnectionRange) {
     float_3 p = data[blockIdx.x];
     Bucket& mnd = nodeData[blockIdx.x];
 
-    uint32_t bX = (uint32_t)std::floor(p.x * (float)bucketCountPerD);
-    uint32_t bY = (uint32_t)std::floor(p.y * (float)bucketCountPerD);
-    uint32_t bZ = (uint32_t)std::floor(p.z * (float)bucketCountPerD);
+    uint32_3 bCs = whichBucket(p, bucketCountPerD);
+    uint32_t bX = bCs.x;
+    uint32_t bY = bCs.y;
+    uint32_t bZ = bCs.z;
     uint32_t bC = (uint32_t)std::ceil(ConnectionRange * (float)bucketCountPerD);
 
     uint32_t bucketCountPerDM1 = bucketCountPerD - 1;
-    uint32_t lX = std::max(bX - bC, 0ui32);
-    uint32_t uX = std::min(bX + bC, bucketCountPerDM1);
-    uint32_t lY = std::max(bY - bC, 0ui32);
-    uint32_t uY = std::min(bY + bC, bucketCountPerDM1);
-    uint32_t lZ = std::max(bZ - bC, 0ui32);
-    uint32_t uZ = std::min(bZ + bC, bucketCountPerDM1);
+    uint32_t lX = bC > bX ? 0 : bX - bC;
+    uint32_t uX = bX + bC;
+    uint32_t lY = bC > bY ? 0 : bY - bC;
+    uint32_t uY = bY + bC;
+    uint32_t lZ = bC > bZ ? 0 : bZ - bC;
+    uint32_t uZ = bZ + bC;
+
+    if (uX > bucketCountPerDM1) uX = bucketCountPerDM1;
+    if (uY > bucketCountPerDM1) uY = bucketCountPerDM1;
+    if (uZ > bucketCountPerDM1) uZ = bucketCountPerDM1;
 
     float cr_sq = ConnectionRange * ConnectionRange;
     mnd = { 0, 0, 0 };
@@ -92,12 +164,13 @@ __global__ void fillBuckets2(Bucket* nodeData, Bucket* bucketData, uint32_t buck
         for (uint32_t y = lY; y <= uY; ++y) {
             for (uint32_t z = lZ; z <= uZ; ++z) {
                 size_t bucketIndex = Coordinates32_3ToIndex64_RM(uint32_3(bucketCountPerD, bucketCountPerD, bucketCountPerD), uint32_3(x, y, z));
-                Bucket bucket = bucketData[bucketIndex];
+                BucketTS bucket = bucketData[bucketIndex];
                 for (size_t i = 0; i < bucket.size; ++i) {
-                    float_3 tp = data[bucket.data[i]];
+                    size_t j = bucket.data[i];
+                    float_3 tp = data[j];
 
-                    if (cr_sq < (p - tp).MagnatudeSquared()) {
-                        addToBucket(mnd, i);
+                    if (cr_sq > (p - tp).MagnatudeSquared()) {
+                        addToBucket(mnd, j);
                     }
                 }
             }
@@ -108,29 +181,21 @@ __global__ void fillBuckets2(Bucket* nodeData, Bucket* bucketData, uint32_t buck
 __global__ void fillNetNodes(NetNode* netNodes, Bucket* nodeDataBuckets) {
     NetNode& nn = netNodes[blockIdx.x];
     Bucket b = nodeDataBuckets[blockIdx.x];
-
-    nn.data = 0;
     
     if (b.size) {
-        nn.inputCount = b.size;
-        nn.outputCount = b.size;
-        nn.inputs = new NetNode*[b.size];
-        nn.outputs = new NetNode*[b.size];
-
         for (size_t i = 0; i < b.size; ++i) {
-            nn.inputs[i] = netNodes + b.data[i];
-            nn.outputs[i] = netNodes + b.data[i];
+            NetNode* p = netNodes + b.data[i];
+            nn.inputs[i] = p;
+            nn.outputs[i] = p;
         }
-    }
-    else {
-        nn.inputCount = 0;
-        nn.outputCount = 0;
-        nn.inputs = 0;
-        nn.outputs = 0;
     }
 }
 
 __global__ void disposeOfBuckets(Bucket* buckets) {
+    delete[] buckets[blockIdx.x].data;
+}
+
+__global__ void disposeOfBuckets(BucketTS* buckets) {
     delete[] buckets[blockIdx.x].data;
 }
 
@@ -141,22 +206,42 @@ BrendanCUDA::Nets::Net BrendanCUDA::Nets::MakeNet_3D(size_t NodeCount, float Con
 
     constexpr size_t bucketCountPerD = 10;
 
-    Bucket* bucketData;
-    ThrowIfBad(cudaMalloc(&bucketData, bucketCountPerD * bucketCountPerD * bucketCountPerD * sizeof(Bucket)));
+    BucketTS* bucketData;
+    ThrowIfBad(cudaMalloc(&bucketData, bucketCountPerD * bucketCountPerD * bucketCountPerD * sizeof(BucketTS)));
 
-    fillBuckets1<<<dim3(bucketCountPerD, bucketCountPerD, bucketCountPerD), 1>>>(bucketData, bucketCountPerD, dv->data().get(), dv->size());
+    initBuckets<<<bucketCountPerD * bucketCountPerD * bucketCountPerD, 1>>>(bucketData);
 
-    Bucket* nodesData;
-    ThrowIfBad(cudaMalloc(&nodesData, NodeCount * sizeof(Bucket)));
+    fillBuckets1<<<NodeCount, 1>>>(bucketData, bucketCountPerD, dv->data().get(), dv->size());
+
+    device_vector<Bucket> nodesData(NodeCount);
     
-    fillBuckets2<<<NodeCount, 1>>>(nodesData, bucketData, bucketCountPerD, dv->data().get(), ConnectionRange);
+    initBuckets<<<NodeCount, 1>>>(nodesData.data().get());
+
+    fillBuckets2<<<NodeCount, 1>>>(nodesData.data().get(), bucketData, bucketCountPerD, dv->data().get(), ConnectionRange);
 
     device_vector<NetNode>& ndv = *new device_vector<NetNode>(NodeCount);
 
-    fillNetNodes<<<NodeCount, 1>>>(ndv.data().get(), nodesData);
+    for (size_t i = 0; i < NodeCount; ++i) {
+        size_t c = ((Bucket)nodesData[i]).size;
+        NetNode** ipts;
+        NetNode** opts;
+        ThrowIfBad(cudaMalloc(&ipts, c * sizeof(NetNode*)));
+        ThrowIfBad(cudaMalloc(&opts, c * sizeof(NetNode*)));
+        NetNode nn;
+        nn.data = 0;
+        nn.inputCount = c;
+        nn.outputCount = c;
+        nn.inputs = ipts;
+        nn.outputs = opts;
+        ndv[i] = nn;
+    }
+
+    fillNetNodes<<<NodeCount, 1>>>(ndv.data().get(), nodesData.data().get());
 
     disposeOfBuckets<<<bucketCountPerD * bucketCountPerD * bucketCountPerD, 1>>>(bucketData);
-    disposeOfBuckets<<<NodeCount, 1>>>(nodesData);
+    disposeOfBuckets<<<NodeCount, 1>>>(nodesData.data().get());
+
+    cudaFree(bucketData);
 
     if (NodePoints) {
         *NodePoints = dv;
