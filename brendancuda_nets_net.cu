@@ -701,19 +701,3 @@ void BrendanCUDA::Nets::Net::PrintTo(std::ostream& Output, size_t IndentPre, siz
         }
     }
 }
-
-void BrendanCUDA::Nets::Net::RemoveAt_RemoveAllConnections(size_t i, dataDestructor_t DataDestructor) {
-    RemoveAllConnections(nodes.data().get() + i, true);
-    RemoveAt_Dispose(i, DataDestructor);
-}
-
-void BrendanCUDA::Nets::Net::RemoveAt_Dispose(size_t i, dataDestructor_t DataDestructor) {
-    NetNode nn = nodes[i];
-    nn.Dispose(DataDestructor);
-    RemoveAt_NoDispose(i);
-}
-void BrendanCUDA::Nets::Net::RemoveAt_NoDispose(size_t i) {
-    size_t s = nodes.size();
-    nodes[i] = nodes[s - 1];
-    nodes.pop_back();
-}
