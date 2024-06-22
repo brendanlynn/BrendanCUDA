@@ -5,7 +5,9 @@
 
 namespace BrendanCUDA {
     namespace Nets {
-        using dataDestructor_t = void (*)(void*);
+        struct NetNode;
+        using dataDestructor_t = void(*)(NetNode);
+        using dataCloner_t = void*(*)(NetNode);
         struct NetNode final {
             void* data;
             NetNode** inputs;
@@ -26,6 +28,7 @@ namespace BrendanCUDA {
             thrust::device_ptr<NetNode> DataPtr() const;
             thrust::device_reference<NetNode> operator[](size_t i) const;
             void PrintTo(std::ostream& Output, size_t IndentPre = 0, size_t IndentSize = 4) const;
+            Net Clone(dataCloner_t DataCloner) const;
 
             static bool AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);
             static bool AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess);

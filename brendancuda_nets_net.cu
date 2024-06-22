@@ -16,7 +16,7 @@ __host__ __device__ BrendanCUDA::Nets::NetNode::NetNode() {
 
 void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t DataDestructor) const {
     if (DataDestructor) {
-        DataDestructor(data);
+        DataDestructor(*this);
     }
 #if __CUDA_ARCH__
     delete[] inputs;
@@ -55,6 +55,33 @@ __global__ void net_addConnection_checkForPreexistence(BrendanCUDA::Nets::NetNod
     if (arr[blockIdx.x] == v) {
         *opt = true;
     }
+}
+
+__global__ void replaceBase(BrendanCUDA::Nets::NetNode* oldBase, BrendanCUDA::Nets::NetNode** oldNodes, BrendanCUDA::Nets::NetNode* newBase, BrendanCUDA::Nets::NetNode** newNodes) {
+    BrendanCUDA::Nets::NetNode* oldNode = oldNodes[blockIdx.x];
+    BrendanCUDA::Nets::NetNode*& newNode = newNodes[blockIdx.x];
+
+    newNode = oldNode - oldBase + newBase;
+}
+
+BrendanCUDA::Nets::Net BrendanCUDA::Nets::Net::Clone(dataCloner_t DataCloner) const {
+    thrust::device_vector<NetNode>* p_newNodes = new thrust::device_vector<NetNode>(nodes.size());
+    thrust::device_vector<NetNode>& newNodes = *p_newNodes;
+    NetNode* oldBaseNN = nodes.data().get();
+    NetNode* newBaseNN = newNodes.data().get();
+    for (size_t i = 0; i < nodes.size(); ++i) {
+        NetNode oldNN = nodes[i];
+        NetNode newNN;
+        newNN.data = DataCloner(oldNN);
+        newNN.inputCount = oldNN.inputCount;
+        newNN.outputCount = oldNN.outputCount;
+        cudaMalloc(&newNN.inputs, sizeof(NetNode*) * oldNN.inputCount);
+        cudaMalloc(&newNN.outputs, sizeof(NetNode*) * oldNN.outputCount);
+        replaceBase<<<oldNN.inputCount, 1>>>(oldBaseNN, oldNN.inputs, newBaseNN, newNN.inputs);
+        replaceBase<<<oldNN.outputCount, 1>>>(oldBaseNN, oldNN.outputs, newBaseNN, newNN.outputs);
+        newNodes[i] = newNN;
+    }
+    return Net(newNodes);
 }
 
 bool BrendanCUDA::Nets::Net::AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
