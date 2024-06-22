@@ -26,8 +26,8 @@ namespace BrendanCUDA {
                 __host__ __device__ void Dispose();
 
                 __host__ __device__ void ZeroOverwrite();
-                __host__ __device__ void RandomOverwrite(Random::AnyRNG<uint64_t> rng);
-                __host__ __device__ void RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> rng);
+                __host__ __device__ void RandomOverwrite(Random::AnyRNG<uint64_t> RNG);
+                __host__ __device__ void RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG);
 
                 __host__ __device__ size_t InputLength() const;
                 __host__ __device__ size_t OutputLength() const;
@@ -55,10 +55,10 @@ namespace BrendanCUDA {
                 __host__ _T* Run(_T* Input) const;
 
                 __host__ __device__ MLPL<_T> Clone() const;
-                __host__ __device__ void Randomize(_T Scalar, Random::AnyRNG<uint64_t> rng);
-                __host__ __device__ void Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> rng);
-                __host__ __device__ MLPL<_T> Reproduce(_T Scalar, Random::AnyRNG<uint64_t> rng) const;
-                __host__ __device__ MLPL<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> rng) const;
+                __host__ __device__ void Randomize(_T Scalar, Random::AnyRNG<uint64_t> RNG);
+                __host__ __device__ void Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG);
+                __host__ __device__ MLPL<_T> Reproduce(_T Scalar, Random::AnyRNG<uint64_t> RNG) const;
+                __host__ __device__ MLPL<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) const;
 
                 __host__ void Serialize(std::basic_ostream<char>& Stream);
                 __host__ static MLPL<_T> Deserialize(std::basic_istream<char>& Stream);

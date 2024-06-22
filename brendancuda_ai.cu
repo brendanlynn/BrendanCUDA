@@ -699,32 +699,32 @@ __global__ void initRandomArrayKernel(uint64_t* Array, uint32_t ProbabilityOf1, 
     DeviceRandom dr(GetSeedOnKernel(Seed));
     Array[blockIdx.x] = Get64Bits(ProbabilityOf1, AnyRNG<uint64_t>(&dr));
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Length, float Scalar, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Length, float Scalar, AnyRNG<uint64_t> RNG) {
     Scalar *= 2.0f;
 #if __CUDA_ARCH__
-    DeviceRandom dr(rng());
+    DeviceRandom dr(RNG());
     for (size_t i = 0; i < Length; ++i) {
         Array[i] += Scalar * (dr.GetF() - 0.5f);
     }
 #else
-    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, rng());
+    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, RNG());
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t Length, double Scalar, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t Length, double Scalar, AnyRNG<uint64_t> RNG) {
     Scalar *= 2.0;
 #if __CUDA_ARCH__
-    DeviceRandom dr(rng());
+    DeviceRandom dr(RNG());
     for (size_t i = 0; i < Length; ++i) {
         Array[i] += Scalar * (dr.GetD() - 0.5);
 }
 #else
-    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, rng());
+    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, RNG());
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Length, float Scalar, float LowerBound, float UpperBound, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Length, float Scalar, float LowerBound, float UpperBound, AnyRNG<uint64_t> RNG) {
     Scalar *= 2.0f;
 #if __CUDA_ARCH__
-    DeviceRandom dr(rng());
+    DeviceRandom dr(RNG());
     for (size_t i = 0; i < Length; ++i) {
         float& p(Array[i]);
         float v = p + Scalar * (dr.GetF() - 0.5f);
@@ -739,13 +739,13 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(float* Array, size_t Le
         }
     }
 #else
-    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, LowerBound, UpperBound, rng());
+    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, LowerBound, UpperBound, RNG());
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t Length, double Scalar, double LowerBound, double UpperBound, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t Length, double Scalar, double LowerBound, double UpperBound, AnyRNG<uint64_t> RNG) {
     Scalar *= 2.0;
 #if __CUDA_ARCH__
-    DeviceRandom dr(rng());
+    DeviceRandom dr(RNG());
     for (size_t i = 0; i < Length; ++i) {
         double& p(Array[i]);
         double v = p + Scalar * (dr.GetD() - 0.5);
@@ -760,49 +760,49 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(double* Array, size_t L
         }
     }
 #else
-    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, LowerBound, UpperBound, rng());
+    randomizeArrayKernel<<<Length, 1>>>(Array, Scalar, LowerBound, UpperBound, RNG());
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(float* Array, size_t Length, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(float* Array, size_t Length, AnyRNG<uint64_t> RNG) {
 #if __CUDA_ARCH__
-    DeviceRandom dr(rng());
+    DeviceRandom dr(RNG());
     for (size_t i = 0; i < Length; ++i) {
         Array[i] = dr.GetF();
     }
 #else
-    initRandomArrayKernel<<<Length, 1>>>(Array, rng());
+    initRandomArrayKernel<<<Length, 1>>>(Array, RNG());
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(double* Array, size_t Length, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(double* Array, size_t Length, AnyRNG<uint64_t> RNG) {
 #if __CUDA_ARCH__
-    DeviceRandom dr(rng());
+    DeviceRandom dr(RNG());
     for (size_t i = 0; i < Length; ++i) {
         Array[i] = dr.GetD();
     }
 #else
-    initRandomArrayKernel<<<Length, 1>>>(Array, rng());
+    initRandomArrayKernel<<<Length, 1>>>(Array, RNG());
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(float* Array, size_t Length, float LowerBound, float UpperBound, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(float* Array, size_t Length, float LowerBound, float UpperBound, AnyRNG<uint64_t> RNG) {
     UpperBound -= LowerBound;
 #if __CUDA_ARCH__
-    DeviceRandom dr(rng());
+    DeviceRandom dr(RNG());
     for (size_t i = 0; i < Length; ++i) {
         Array[i] = dr.GetF() * UpperBound + LowerBound;
     }
 #else
-    initRandomArrayKernel<<<Length, 1>>>(Array, LowerBound, UpperBound, rng());
+    initRandomArrayKernel<<<Length, 1>>>(Array, LowerBound, UpperBound, RNG());
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(double* Array, size_t Length, double LowerBound, double UpperBound, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(double* Array, size_t Length, double LowerBound, double UpperBound, AnyRNG<uint64_t> RNG) {
     UpperBound -= LowerBound;
 #if __CUDA_ARCH__
-    DeviceRandom dr(rng());
+    DeviceRandom dr(RNG());
     for (size_t i = 0; i < Length; ++i) {
         Array[i] = dr.GetD() * UpperBound + LowerBound;
     }
 #else
-    initRandomArrayKernel<<<Length, 1>>>(Array, LowerBound, UpperBound, rng());
+    initRandomArrayKernel<<<Length, 1>>>(Array, LowerBound, UpperBound, RNG());
 #endif
 }
 __host__ __device__ void BrendanCUDA::AI::InitZeroArray(float* Array, size_t Length) {
@@ -977,15 +977,15 @@ __device__ void BrendanCUDA::AI::CopyDoublesToInt64s(double* Doubles, uint64_t* 
         copyDoublesToInt64Func(&Doubles[i << 5], &Int64s[i], Split);
     }
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint8_t* Array, size_t Length, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint8_t* Array, size_t Length, AnyRNG<uint64_t> RNG) {
     size_t l64 = Length >> 3;
     uint64_t* a64 = (uint64_t*)Array;
 #if __CUDA_ARCH__
     for (size_t i = 0; i < l64; ++i) {
-        a64[i] = rng();
+        a64[i] = RNG();
     }
     if (Length & 7) {
-        uint64_t n = rng();
+        uint64_t n = RNG();
         uint8_t* p = Array + (l64 << 3);
         switch (Length & 7) {
         case 1:
@@ -1017,22 +1017,22 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint8_t* Array, size_t
         }
     }
 #else
-    initRandomArrayKernel<<<l64, 1>>>(a64, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, RNG());
     if (Length & 7) {
-        uint64_t rv = rng();
+        uint64_t rv = RNG();
         ThrowIfBad(cudaMemcpy(Array + (l64 << 3), &rv, (Length & 7) * sizeof(uint8_t), cudaMemcpyHostToDevice));
     }
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint16_t* Array, size_t Length, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint16_t* Array, size_t Length, AnyRNG<uint64_t> RNG) {
     size_t l64 = Length >> 2;
     uint64_t* a64 = (uint64_t*)Array;
 #if __CUDA_ARCH__
     for (size_t i = 0; i < l64; ++i) {
-        a64[i] = rng();
+        a64[i] = RNG();
     }
     if (Length & 3) {
-        uint64_t n = rng();
+        uint64_t n = RNG();
         uint16_t* p = Array + (l64 << 2);
         switch (Length & 3) {
         case 1:
@@ -1048,76 +1048,76 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint16_t* Array, size_
         }
     }
 #else
-    initRandomArrayKernel<<<l64, 1>>>(a64, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, RNG());
     if (Length & 3) {
-        uint64_t rv = rng();
+        uint64_t rv = RNG();
         ThrowIfBad(cudaMemcpy(Array + (l64 << 2), &rv, (Length & 3) * sizeof(uint16_t), cudaMemcpyHostToDevice));
     }
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint32_t* Array, size_t Length, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint32_t* Array, size_t Length, AnyRNG<uint64_t> RNG) {
     size_t l64 = Length >> 1;
     uint64_t* a64 = (uint64_t*)Array;
 #if __CUDA_ARCH__
     for (size_t i = 0; i < l64; ++i) {
-        a64[i] = rng();
+        a64[i] = RNG();
     }
     if (Length & 1) {
-        Array[Length - 1] = (uint32_t)rng();
+        Array[Length - 1] = (uint32_t)RNG();
     }
 #else
-    initRandomArrayKernel<<<l64, 1>>>(a64, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, RNG());
     if (Length & 1) {
-        uint64_t rv = rng();
+        uint64_t rv = RNG();
         ThrowIfBad(cudaMemcpy(Array + (Length - 1), &rv, sizeof(uint32_t), cudaMemcpyHostToDevice));
     }
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint64_t* Array, size_t Length, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint64_t* Array, size_t Length, AnyRNG<uint64_t> RNG) {
 #if __CUDA_ARCH__
     for (size_t i = 0; i < Length; ++i) {
-        Array[i] = rng();
+        Array[i] = RNG();
     }
 #else
-    initRandomArrayKernel<<<Length, 1>>>(Array, rng());
+    initRandomArrayKernel<<<Length, 1>>>(Array, RNG());
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG) {
 #if __CUDA_ARCH__
     for (size_t i = 0; i < Length; ++i) {
-        Array[i] ^= Random::Get64Bits(ProbabilityOf1, rng);
+        Array[i] ^= Random::Get64Bits(ProbabilityOf1, RNG);
     }
 #else
-    randomizeArrayKernel<<<Length, 1>>>(Array, ProbabilityOf1, rng());
+    randomizeArrayKernel<<<Length, 1>>>(Array, ProbabilityOf1, RNG());
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint32_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint32_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG) {
     size_t l64 = Length >> 1;
     uint64_t* a64 = (uint64_t*)Array;
 #if __CUDA_ARCH__
     for (size_t i = 0; i < l64; ++i) {
-        a64[i] = Random::Get64Bits(ProbabilityOf1, rng);
+        a64[i] = Random::Get64Bits(ProbabilityOf1, RNG);
     }
     if (Length & 1) {
-        Array[Length - 1] = Random::Get64Bits(ProbabilityOf1, rng);
+        Array[Length - 1] = Random::Get64Bits(ProbabilityOf1, RNG);
     }
 #else
-    randomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    randomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, RNG());
     if (Length & 1) {
-        uint32_t n = (uint32_t)Random::Get64Bits(ProbabilityOf1, rng);
+        uint32_t n = (uint32_t)Random::Get64Bits(ProbabilityOf1, RNG);
         ThrowIfBad(cudaMemcpy(Array + (Length - 1), &n, sizeof(uint32_t), cudaMemcpyHostToDevice));
     }
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint16_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint16_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG) {
     size_t l64 = Length >> 2;
     uint64_t* a64 = (uint64_t*)Array;
 #if __CUDA_ARCH__
     for (size_t i = 0; i < l64; ++i) {
-        a64[i] = Random::Get64Bits(ProbabilityOf1, rng);
+        a64[i] = Random::Get64Bits(ProbabilityOf1, RNG);
     }
     if (Length & 3) {
-        uint64_t n = Random::Get64Bits(ProbabilityOf1, rng);
+        uint64_t n = Random::Get64Bits(ProbabilityOf1, RNG);
         uint16_t* p = Array + (l64 << 2);
         switch (Length & 3) {
         case 1:
@@ -1133,22 +1133,22 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint16_t* Array, size_t
         }
     }
 #else
-    randomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    randomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, RNG());
     if (Length & 3) {
-        uint64_t n = Random::Get64Bits(ProbabilityOf1, rng);
+        uint64_t n = Random::Get64Bits(ProbabilityOf1, RNG);
         ThrowIfBad(cudaMemcpy(Array + (l64 << 2), &n, (Length & 3) * sizeof(uint16_t), cudaMemcpyHostToDevice));
     }
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint8_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint8_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG) {
     size_t l64 = Length >> 3;
     uint64_t* a64 = (uint64_t*)Array;
 #if __CUDA_ARCH__
     for (size_t i = 0; i < l64; ++i) {
-        a64[i] = Random::Get64Bits(ProbabilityOf1, rng);
+        a64[i] = Random::Get64Bits(ProbabilityOf1, RNG);
     }
     if (Length & 7) {
-        uint64_t n = Random::Get64Bits(ProbabilityOf1, rng);
+        uint64_t n = Random::Get64Bits(ProbabilityOf1, RNG);
         uint8_t* p = Array + (l64 << 3);
         switch (Length & 7) {
         case 1:
@@ -1180,22 +1180,22 @@ __host__ __device__ void BrendanCUDA::AI::RandomizeArray(uint8_t* Array, size_t 
         }
     }
 #else
-    randomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    randomizeArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, RNG());
     if (Length & 7) {
-        uint64_t n = Random::Get64Bits(ProbabilityOf1, rng);
+        uint64_t n = Random::Get64Bits(ProbabilityOf1, RNG);
         ThrowIfBad(cudaMemcpy(Array + (l64 << 3), &n, (Length & 7) * sizeof(uint8_t), cudaMemcpyHostToDevice));
     }
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint8_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint8_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG) {
     size_t l64 = Length >> 3;
     uint64_t* a64 = (uint64_t*)Array;
 #if __CUDA_ARCH__
     for (size_t i = 0; i < l64; ++i) {
-        a64[i] = Random::Get64Bits(ProbabilityOf1, rng);
+        a64[i] = Random::Get64Bits(ProbabilityOf1, RNG);
     }
     if (Length & 7) {
-        uint64_t n = Random::Get64Bits(ProbabilityOf1, rng);
+        uint64_t n = Random::Get64Bits(ProbabilityOf1, RNG);
         uint8_t* p = Array + (l64 << 3);
         switch (Length & 7) {
         case 1:
@@ -1227,22 +1227,22 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint8_t* Array, size_t
         }
     }
 #else
-    initRandomArrayKernel<<<l64, 1>>>(a64, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, RNG());
     if (Length & 7) {
-        uint64_t rv = Random::Get64Bits(ProbabilityOf1, rng);
+        uint64_t rv = Random::Get64Bits(ProbabilityOf1, RNG);
         ThrowIfBad(cudaMemcpy(Array + (l64 << 3), &rv, (Length & 7) * sizeof(uint8_t), cudaMemcpyHostToDevice));
     }
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint16_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint16_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG) {
     size_t l64 = Length >> 2;
     uint64_t* a64 = (uint64_t*)Array;
 #if __CUDA_ARCH__
     for (size_t i = 0; i < l64; ++i) {
-        a64[i] = Random::Get64Bits(ProbabilityOf1, rng);
+        a64[i] = Random::Get64Bits(ProbabilityOf1, RNG);
     }
     if (Length & 3) {
-        uint64_t n = Random::Get64Bits(ProbabilityOf1, rng);
+        uint64_t n = Random::Get64Bits(ProbabilityOf1, RNG);
         uint16_t* p = Array + (l64 << 2);
         switch (Length & 3) {
         case 1:
@@ -1258,37 +1258,37 @@ __host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint16_t* Array, size_
         }
     }
 #else
-    initRandomArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, RNG());
     if (Length & 3) {
-        uint64_t rv = Random::Get64Bits(ProbabilityOf1, rng);
+        uint64_t rv = Random::Get64Bits(ProbabilityOf1, RNG);
         ThrowIfBad(cudaMemcpy(Array + (l64 << 2), &rv, (Length & 3) * sizeof(uint16_t), cudaMemcpyHostToDevice));
     }
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint32_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint32_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG) {
     size_t l64 = Length >> 1;
     uint64_t* a64 = (uint64_t*)Array;
 #if __CUDA_ARCH__
     for (size_t i = 0; i < l64; ++i) {
-        a64[i] = Random::Get64Bits(ProbabilityOf1, rng);
+        a64[i] = Random::Get64Bits(ProbabilityOf1, RNG);
     }
     if (Length & 1) {
-        Array[Length - 1] = (uint32_t)Random::Get64Bits(ProbabilityOf1, rng);
+        Array[Length - 1] = (uint32_t)Random::Get64Bits(ProbabilityOf1, RNG);
     }
 #else
-    initRandomArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, rng());
+    initRandomArrayKernel<<<l64, 1>>>(a64, ProbabilityOf1, RNG());
     if (Length & 1) {
-        uint64_t rv = Random::Get64Bits(ProbabilityOf1, rng);
+        uint64_t rv = Random::Get64Bits(ProbabilityOf1, RNG);
         ThrowIfBad(cudaMemcpy(Array + (Length - 1), &rv, sizeof(uint32_t), cudaMemcpyHostToDevice));
     }
 #endif
 }
-__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::InitRandomArray(uint64_t* Array, size_t Length, uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG) {
 #if __CUDA_ARCH__
     for (size_t i = 0; i < Length; ++i) {
-        Array[i] = rng();
+        Array[i] = RNG();
     }
 #else
-    initRandomArrayKernel<<<Length, 1>>>(Array, ProbabilityOf1, rng());
+    initRandomArrayKernel<<<Length, 1>>>(Array, ProbabilityOf1, RNG());
 #endif
 }

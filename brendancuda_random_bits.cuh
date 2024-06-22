@@ -7,6 +7,6 @@
 
 namespace BrendanCUDA {
     namespace Random {
-        __host__ __device__ uint64_t Get64Bits(uint32_t ProbabilityOf1, AnyRNG<uint64_t> rng);
+        __host__ __device__ uint64_t Get64Bits(uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG);
     }
 }

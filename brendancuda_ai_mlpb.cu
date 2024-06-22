@@ -123,45 +123,45 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPB BrendanCUDA::AI::MLPB::MLPB::Clo
     }
     return n;
 }
-__host__ __device__ void BrendanCUDA::AI::MLPB::MLPB::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPB::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < layerCount; ++i) {
 #if __CUDA_ARCH__
-        Layer(i)->RandomizeWFlips(WeightsFlipProb, BiasFlipProb, rng);
+        Layer(i)->RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
 #else
-        GetLayer(i).RandomizeWFlips(WeightsFlipProb, BiasFlipProb, rng);
+        GetLayer(i).RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
 #endif
     }
 }
-__host__ __device__ BrendanCUDA::AI::MLPB::MLPB BrendanCUDA::AI::MLPB::MLPB::ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const {
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPB BrendanCUDA::AI::MLPB::MLPB::ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const {
     MLPB n = Clone();
-    n.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, rng);
+    n.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
     return n;
 }
-__host__ __device__ void BrendanCUDA::AI::MLPB::MLPB::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPB::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < layerCount; ++i) {
 #if __CUDA_ARCH__
-        Layer(i)->RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, rng);
+        Layer(i)->RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, RNG);
 #else
-        GetLayer(i).RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, rng);
+        GetLayer(i).RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, RNG);
 #endif
     }
 }
-__host__ __device__ BrendanCUDA::AI::MLPB::MLPB BrendanCUDA::AI::MLPB::MLPB::ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> rng) const {
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPB BrendanCUDA::AI::MLPB::MLPB::ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const {
     MLPB n = Clone();
-    n.RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, rng);
+    n.RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, RNG);
     return n;
 }
-__host__ __device__ void BrendanCUDA::AI::MLPB::MLPB::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLPB::MLPB::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < layerCount; ++i) {
 #if __CUDA_ARCH__
-        Layer(i)->RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, rng);
+        Layer(i)->RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
 #else
-        GetLayer(i).RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, rng);
+        GetLayer(i).RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
 #endif
     }
 }
-__host__ __device__ BrendanCUDA::AI::MLPB::MLPB BrendanCUDA::AI::MLPB::MLPB::ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> rng) const {
+__host__ __device__ BrendanCUDA::AI::MLPB::MLPB BrendanCUDA::AI::MLPB::MLPB::ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const {
     MLPB n = Clone();
-    n.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, rng);
+    n.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
     return n;
 }

@@ -182,35 +182,35 @@ __host__ __device__ BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>:
     return m;
 }
 template <typename _T>
-__host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::Randomize(_T Scalar, Random::AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::Randomize(_T Scalar, Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < len; ++i) {
 #if __CUDA_ARCH__
-        Layer(i)->Randomize(Scalar, rng);
+        Layer(i)->Randomize(Scalar, RNG);
 #else
-        GetLayer(i).Randomize(Scalar, rng);
+        GetLayer(i).Randomize(Scalar, RNG);
 #endif
     }
 }
 template <typename _T>
-__host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < len; ++i) {
 #if __CUDA_ARCH__
-        Layer(i)->Randomize(Scalar, LowerBound, UpperBound, rng);
+        Layer(i)->Randomize(Scalar, LowerBound, UpperBound, RNG);
 #else
-        GetLayer(i).Randomize(Scalar, LowerBound, UpperBound, rng);
+        GetLayer(i).Randomize(Scalar, LowerBound, UpperBound, RNG);
 #endif
     }
 }
 template <typename _T>
-__host__ __device__ BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Reproduce(_T Scalar, Random::AnyRNG<uint64_t> rng) const {
+__host__ __device__ BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Reproduce(_T Scalar, Random::AnyRNG<uint64_t> RNG) const {
     MLP<_T> n = Clone();
-    n.Randomize(Scalar, rng);
+    n.Randomize(Scalar, RNG);
     return n;
 }
 template <typename _T>
-__host__ __device__ BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> rng) const {
+__host__ __device__ BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) const {
     MLP<_T> n = Clone();
-    n.Randomize(Scalar, LowerBound, UpperBound, rng);
+    n.Randomize(Scalar, LowerBound, UpperBound, RNG);
     return n;
 }
 template <typename _T>
@@ -224,22 +224,22 @@ __host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::ZeroOverwrite() {
     }
 }
 template <typename _T>
-__host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::RandomOverwrite(Random::AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::RandomOverwrite(Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < len; ++i) {
 #if __CUDA_ARCH__
-        Layer(i)->RandomOverwrite(rng);
+        Layer(i)->RandomOverwrite(RNG);
 #else
-        GetLayer(i).RandomOverwrite(rng);
+        GetLayer(i).RandomOverwrite(RNG);
 #endif
     }
 }
 template <typename _T>
-__host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> rng) {
+__host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < len; ++i) {
 #if __CUDA_ARCH__
-        Layer(i)->RandomOverwrite(LowerBound, UpperBound, rng);
+        Layer(i)->RandomOverwrite(LowerBound, UpperBound, RNG);
 #else
-        GetLayer(i).RandomOverwrite(LowerBound, UpperBound, rng);
+        GetLayer(i).RandomOverwrite(LowerBound, UpperBound, RNG);
 #endif
     }
 }
