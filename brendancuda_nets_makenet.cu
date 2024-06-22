@@ -96,30 +96,30 @@ __device__ void resizeBucket(size_t*& bucket, size_t newCapacity, size_t size, s
 __device__ void addToBucketTS(BucketTS& bucket, size_t value) {
     size_t pos = atomicAdd(&bucket.size, 1);
 
-    while (true) {
-        if (!atomicCAS(&bucket.lock, 0, 1)) {
-            if (pos >= bucket.capacity) {
-                size_t nCap = bucket.capacity;
-                if (nCap < bucket.size) {
-                    if (nCap) {
-                        nCap <<= 1;
-                    }
-                    else {
-                        nCap = 1;
-                    }
-                }
-                while (nCap < bucket.size) {
-                    nCap <<= 1;
-                }
-                resizeBucket(bucket.data, nCap, pos, bucket.capacity);
-                bucket.capacity = nCap;
+    while (atomicCAS(&bucket.lock, 0, 1)) {}
+
+    if (pos >= bucket.capacity) {
+        size_t nCap = bucket.capacity;
+        if (nCap < bucket.size) {
+            if (nCap) {
+                nCap <<= 1;
             }
-            bucket.data[pos] = value;
-            __threadfence();
-            atomicExch(&bucket.lock, 0);
-            break;
+            else {
+                nCap = 1;
+            }
         }
+        while (nCap < bucket.size) {
+            nCap <<= 1;
+        }
+
+        resizeBucket(bucket.data, nCap, pos, bucket.capacity);
+        bucket.capacity = nCap;
     }
+
+    bucket.data[pos] = value;
+
+    __threadfence();
+    atomicExch(&bucket.lock, 0);
 }
 
 __global__ void fillBuckets1(BucketTS* bucketData, size_t bucketCountPerD, BrendanCUDA::float_3* data, size_t dataCount) {
