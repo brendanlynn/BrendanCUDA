@@ -47,10 +47,8 @@ namespace BrendanCUDA {
         __host__ __device__ void InitZeroArray(uint16_t* Array, size_t Length);
         __host__ __device__ void InitZeroArray(uint8_t* Array, size_t Length);
 
-        __global__ void CopyFloatsToBoolsKernel(float* Floats, bool* Bools, float Split);
         __host__ void CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split, bool MemoryOnHost);
 
-        __global__ void CopyDoublesToBoolsKernel(float* Doubles, bool* Bools, float Split);
         __host__ void CopyDoublesToBools(float* Doubles, bool* Bools, size_t Length, float Split, bool MemoryOnHost);
 
         __device__ void CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split);

@@ -881,7 +881,7 @@ __host__ __device__ void BrendanCUDA::AI::InitZeroArray(uint64_t* Array, size_t 
     initZeroArrayKernel<<<Length, 1>>>(Array);
 #endif
 }
-__global__ void BrendanCUDA::AI::CopyFloatsToBoolsKernel(float* Floats, bool* Bools, float Split) {
+__global__ void copyFloatsToBoolsKernel(float* Floats, bool* Bools, float Split) {
     Bools[blockIdx.x] = Floats[blockIdx.x] > Split;
 }
 __host__ void BrendanCUDA::AI::CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split, bool MemoryOnHost) {
@@ -891,10 +891,10 @@ __host__ void BrendanCUDA::AI::CopyFloatsToBools(float* Floats, bool* Bools, siz
         }
     }
     else {
-        CopyFloatsToBoolsKernel<<<Length, 1>>>(Floats, Bools, Split);
+        copyFloatsToBoolsKernel<<<Length, 1>>>(Floats, Bools, Split);
     }
 }
-__global__ void BrendanCUDA::AI::CopyDoublesToBoolsKernel(float* Doubles, bool* Bools, float Split) {
+__global__ void copyDoublesToBoolsKernel(float* Doubles, bool* Bools, float Split) {
     Bools[blockIdx.x] = Doubles[blockIdx.x] > Split;
 }
 __host__ void BrendanCUDA::AI::CopyDoublesToBools(float* Doubles, bool* Bools, size_t Length, float Split, bool MemoryOnHost) {
@@ -904,7 +904,7 @@ __host__ void BrendanCUDA::AI::CopyDoublesToBools(float* Doubles, bool* Bools, s
         }
     }
     else {
-        CopyDoublesToBoolsKernel<<<Length, 1>>>(Doubles, Bools, Split);
+        copyDoublesToBoolsKernel<<<Length, 1>>>(Doubles, Bools, Split);
     }
 }
 __device__ void BrendanCUDA::AI::CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split) {
