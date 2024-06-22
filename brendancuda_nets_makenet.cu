@@ -80,7 +80,6 @@ __global__ void initBuckets(Bucket* buckets) {
 }
 
 __device__ void resizeBucket(size_t*& bucket, size_t newCapacity, size_t size, size_t currentCapacity) {
-    //assert(size <= currentCapacity);
     if (size > currentCapacity) {
         size = currentCapacity;
     }
