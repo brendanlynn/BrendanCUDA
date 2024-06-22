@@ -120,9 +120,6 @@ __device__ void addToBucketTS(BucketTS& bucket, size_t value) {
             atomicExch(&bucket.lock, 0);
             break;
         }
-        else {
-            while (bucket.lock) { }
-        }
     }
 }
 
