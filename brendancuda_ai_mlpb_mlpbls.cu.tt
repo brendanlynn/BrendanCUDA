@@ -318,8 +318,8 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::MLPBL<#= i #>
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Dispose() {
 #if __CUDA_ARCH__
-    delete [] weights;
-    delete [] bias;
+    delete[] weights;
+    delete[] bias;
 #else
     ThrowIfBad(cudaFree(weights));
     ThrowIfBad(cudaFree(bias));

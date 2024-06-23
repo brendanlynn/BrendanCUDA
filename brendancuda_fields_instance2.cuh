@@ -21,7 +21,7 @@ namespace BrendanCUDA {
         template <typename _T>
         using fieldInstance2_objectRunner_t = void(*)(void* Object, DField2<_T> Field, void* SharedData);
         template <typename _T>
-        using fieldInstance2_createField_t = DField2<_T>* (*)(void* SharedData);
+        using fieldInstance2_createField_t = DField2<_T>*(*)(void* SharedData);
         template <typename _T>
         struct FieldInstance2_Construct_Settings final {
             Random::AnyRNG<uint32_t> rng;
