@@ -69,14 +69,7 @@ namespace BrendanCUDA {
                 __host__ __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint32_t> RNG);
                 __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const;
                 template <size_t _Index>
-                __host__ __device__ layerType_t<_Index>& Layer() {
-                    if constexpr (_Index) {
-                        return nextLayers.Layer<_Index - 1>();
-                    }
-                    else {
-                        return layer;
-                    }
-                }
+                __host__ __device__ layerType_t<_Index>& Layer();
 
                 static constexpr size_t InputCount();
                 static constexpr size_t OutputCount();
@@ -99,10 +92,7 @@ namespace BrendanCUDA {
                 __host__ __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint32_t> RNG);
                 __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const;
                 template <size_t _Index>
-                __host__ __device__ layerType_t<_Index>& Layer() {
-                    static_assert(!_Index, "_Index is out of bounds.");
-                    return layer;
-                }
+                __host__ __device__ layerType_t<_Index>& Layer();
 
                 static constexpr size_t InputCount();
                 static constexpr size_t OutputCount();
@@ -229,9 +219,27 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction,
     if (!Intermediate2) delete[] i2;
 }
 
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+template <size_t _Index>
+__host__ __device__ BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::layerType_t<_Index>& BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Layer() {
+    if constexpr (_Index) {
+        return nextLayers.Layer<_Index - 1>();
+    }
+    else {
+        return layer;
+    }
+}
+
 template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
 __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
     layer.Run(Input, Output);
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+template <size_t _Index>
+__host__ __device__ BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::layerType_t<_Index>& BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Layer() {
+    static_assert(!_Index, "_Index is out of bounds.");
+    return layer;
 }
 
 template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
