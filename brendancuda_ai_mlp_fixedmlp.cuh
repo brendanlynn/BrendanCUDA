@@ -80,7 +80,7 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction
 
 template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
 __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::FillWithRandom(Random::AnyRNG<uint32_t> RNG) {
-    std::uniform_real_distribution<_T> dis(0., 1.);
+    std::uniform_real_distribution<_T> dis(-1., 1.);
 
     for (size_t i = 0; i < _OutputCount; ++i) {
         for (size_t j = 0; j < _InputCount; ++j) {
