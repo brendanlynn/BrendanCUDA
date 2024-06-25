@@ -5,15 +5,10 @@
 
 namespace BrendanCUDA {
     namespace Math {
-        __host__ __device__ float sqrt(float value);
-        __host__ __device__ double sqrt(double value);
-        __host__ __device__ int8_t sqrt(int8_t value);
-        __host__ __device__ uint8_t sqrt(uint8_t value);
-        __host__ __device__ int16_t sqrt(int16_t value);
-        __host__ __device__ uint16_t sqrt(uint16_t value);
-        __host__ __device__ int32_t sqrt(int32_t value);
-        __host__ __device__ uint32_t sqrt(uint32_t value);
-        __host__ __device__ int64_t sqrt(int64_t value);
-        __host__ __device__ uint64_t sqrt(uint64_t value);
+        template <typename _T>
+        __host__ __device__ _T sqrt(_T value);
+
+        template <typename _T>
+        __host__ __device__ _T clamp(_T value, _T lower, _T upper);
     }
 }
