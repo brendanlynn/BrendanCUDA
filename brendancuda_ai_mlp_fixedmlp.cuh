@@ -1,0 +1,240 @@
+#pragma once
+
+#include <cuda_runtime.h>
+#include <type_traits>
+#include "brendancuda_random_anyrng.cuh"
+#include <random>
+#include "brendancuda_ai.cuh"
+#include "brendancuda_math.cuh"
+
+namespace BrendanCUDA {
+    namespace AI {
+        namespace MLP {
+            template <typename _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+            struct FixedMLPL final {
+                static_assert(std::is_same<_T, float>::value || std::is_same<_T, double>::value, "_T must be either float or double.");
+                static_assert(_InputCount, "_InputCount must be greater than 0.");
+                static_assert(_OutputCount, "_OutputCount must be greater than 0.");
+
+                _T weights[_InputCount][_OutputCount];
+                _T bias[_OutputCount];
+
+                __host__ __device__ void FillWith0();
+                __host__ __device__ void FillWithRandom(Random::AnyRNG<uint32_t> RNG);
+                __host__ __device__ void ChangeWithRandom(_T Scalar, Random::AnyRNG<uint32_t> RNG);
+                __host__ __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint32_t> RNG);
+                __host__ __device__ void Run(const _T* Input, _T* Output) const;
+            };
+            template <typename _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+            struct FixedMLP;
+            template <typename _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+            struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> final {
+                static_assert(std::is_same<_T, float>::value || std::is_same<_T, double>::value, "_T must be either float or double.");
+
+                FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
+                FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...> nextLayers;
+
+                __host__ __device__ void FillWith0();
+                __host__ __device__ void FillWithRandom(Random::AnyRNG<uint32_t> RNG);
+                __host__ __device__ void ChangeWithRandom(_T Scalar, Random::AnyRNG<uint32_t> RNG);
+                __host__ __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint32_t> RNG);
+                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const;
+
+                static constexpr size_t InputCount();
+                static constexpr size_t OutputCount();
+                static constexpr size_t Intermediate0Count();
+                static constexpr size_t Intermediate1Count();
+                static constexpr size_t MaxLayerOutputCount();
+            };
+            template <typename _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+            struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> final {
+                static_assert(std::is_same<_T, float>::value || std::is_same<_T, double>::value, "_T must be either float or double.");
+
+                FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
+
+                __host__ __device__ void FillWith0();
+                __host__ __device__ void FillWithRandom(Random::AnyRNG<uint32_t> RNG);
+                __host__ __device__ void ChangeWithRandom(_T Scalar, Random::AnyRNG<uint32_t> RNG);
+                __host__ __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint32_t> RNG);
+                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const;
+
+                static constexpr size_t InputCount();
+                static constexpr size_t OutputCount();
+                static constexpr size_t Intermediate0Count();
+                static constexpr size_t Intermediate1Count();
+                static constexpr size_t MaxLayerOutputCount();
+            };
+        }
+    }
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::FillWith0() {
+    for (size_t i = 0; i < _OutputCount; ++i) {
+        for (size_t j = 0; j < _InputCount; ++j) {
+            weights[i][j] = 0.;
+        }
+        bias[i] = 0.;
+    }
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::FillWithRandom(Random::AnyRNG<uint32_t> RNG) {
+    std::uniform_real_distribution<_T> dis(0., 1.);
+
+    for (size_t i = 0; i < _OutputCount; ++i) {
+        for (size_t j = 0; j < _InputCount; ++j) {
+            weights[i][j] = dis(RNG);
+        }
+        bias[i] = dis(RNG);
+    }
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, Random::AnyRNG<uint32_t> RNG) {
+    std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
+
+    for (size_t i = 0; i < _OutputCount; ++i) {
+        for (size_t j = 0; j < _InputCount; ++j) {
+            weights[i][j] += dis(RNG);
+        }
+        bias[i] += dis(RNG);
+    }
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint32_t> RNG) {
+    std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
+
+    for (size_t i = 0; i < _OutputCount; ++i) {
+        for (size_t j = 0; j < _InputCount; ++j) {
+            _T& v = weights[i][j];
+            v = Math::clamp(v + dis(RNG), LowerBound, UpperBound);
+        }
+        _T& v = bias[i];
+        v = Math::clamp(v + dis(RNG), LowerBound, UpperBound);
+    }
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Run(const _T* Input, _T* Output) const {
+    for (size_t j = 0; j < _OutputCount; ++j) {
+        size_t v = bias[j];
+        for (size_t i = 0; i < _InputCount; ++i) {
+            v += weights[i][j] * Input[i];
+        }
+        Output[j] = _ActivationFunction(v);
+    }
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::FillWith0() {
+    layer.FillWith0();
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::FillWithRandom(Random::AnyRNG<uint32_t> RNG) {
+    layer.FillWithRandom(RNG);
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::ChangeWithRandom(_T Scalar, Random::AnyRNG<uint32_t> RNG) {
+    layer.ChangeWithRandom(Scalar, RNG);
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint32_t> RNG) {
+    layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::FillWith0() {
+    layer.FillWith0();
+    nextLayers.FillWith0();
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::FillWithRandom(Random::AnyRNG<uint32_t> RNG) {
+    layer.FillWithRandom(RNG);
+    nextLayers.FillWithRandom(RNG);
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::ChangeWithRandom(_T Scalar, Random::AnyRNG<uint32_t> RNG) {
+    layer.ChangeWithRandom(Scalar, RNG);
+    nextLayers.ChangeWithRandom(Scalar, RNG);
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint32_t> RNG) {
+    layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+    nextLayers.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
+    _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
+    _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
+    
+    layer.Run(Input, i1);
+    nextLayers.Run(i1, i2, i1, Output);
+
+    if (!Intermediate1) delete[] i1;
+    if (!Intermediate2) delete[] i2;
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
+    layer.Run(Input, Output);
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::InputCount() {
+    return _InputCount;
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::InputCount() {
+    return _InputCount;
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::OutputCount() {
+    return BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::OutputCount();
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::OutputCount() {
+    return _Output1Count;
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+static constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate0Count() {
+    return std::max(_Output1Count, BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate1Count());
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+static constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Intermediate0Count() {
+    return 0;
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+static constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate1Count() {
+    return BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate0Count();
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+static constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Intermediate1Count() {
+    return 0;
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::MaxLayerOutputCount() {
+    constexpr size_t maxNextLayers = FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::MaxLayerOutputCount();
+    return _Output1Count > maxNextLayers ? _Output1Count : maxNextLayers;
+}
+
+template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::MaxLayerOutputCount() {
+    return _Output1Count;
+}

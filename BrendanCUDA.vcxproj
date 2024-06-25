@@ -104,6 +104,7 @@
     <ClInclude Include="brendancuda_fields_field2.cuh" />
     <ClInclude Include="brendancuda_fields_instance2.cuh" />
     <ClInclude Include="brendancuda_fields_instance3.cuh" />
+    <ClInclude Include="brendancuda_ai_mlp_fixedmlp.cuh" />
     <ClInclude Include="brendancuda_nets_makenet.h" />
     <ClInclude Include="brendancuda_points.cuh" />
     <CustomBuild Include="brendancuda_points.cuh.tt">
