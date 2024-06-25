@@ -66,7 +66,7 @@ __host__ _T* BrendanCUDA::AI::MLP::MLPL<_T>::Run(_T* Input) const {
     cublasHandle_t h;
     cublasCreate(&h);
 
-    if (std::is_same<float, _T>::value) {
+    if constexpr (std::is_same<float, _T>::value) {
         float f = 1.0f;
         cublasSgemv(h, CUBLAS_OP_N, optLen, iptLen, &f, (float*)wgts, optLen, (float*)Input, 1, &f, (float*)output, 1);
     }

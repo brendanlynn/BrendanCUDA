@@ -81,16 +81,16 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation(voi
             _T* r = oi.IterateInstance(vs);
             for (size_t k = 0; k < Settings.outputCount; ++k) {
                 _T iv = Settings.mask & ~(r[k] ^ rndVal);
-                if (std::is_same<int8_t, _T>::value || std::is_same<uint8_t, _T>::value) {
+                if constexpr (std::is_same<int8_t, _T>::value || std::is_same<uint8_t, _T>::value) {
                     t += BrendanCUDA::Binary::Count1s((uint8_t)iv);
                 }
-                else if (std::is_same<int16_t, _T>::value || std::is_same<uint16_t, _T>::value) {
+                else if constexpr (std::is_same<int16_t, _T>::value || std::is_same<uint16_t, _T>::value) {
                     t += BrendanCUDA::Binary::Count1s((uint16_t)iv);
                 }
-                else if (std::is_same<int32_t, _T>::value || std::is_same<uint32_t, _T>::value) {
+                else if constexpr (std::is_same<int32_t, _T>::value || std::is_same<uint32_t, _T>::value) {
                     t += BrendanCUDA::Binary::Count1s((uint32_t)iv);
                 }
-                else if (std::is_same<int64_t, _T>::value || std::is_same<uint64_t, _T>::value) {
+                else if constexpr (std::is_same<int64_t, _T>::value || std::is_same<uint64_t, _T>::value) {
                     t += BrendanCUDA::Binary::Count1s((uint64_t)iv);
                 }
                 else {
@@ -102,16 +102,16 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation(voi
         delete[] vs;
     }
     _T mc;
-    if (std::is_same<int8_t, _T>::value || std::is_same<uint8_t, _T>::value) {
+    if constexpr (std::is_same<int8_t, _T>::value || std::is_same<uint8_t, _T>::value) {
         mc = BrendanCUDA::Binary::Count1s((uint8_t)Settings.mask);
     }
-    else if (std::is_same<int16_t, _T>::value || std::is_same<uint16_t, _T>::value) {
+    else if constexpr (std::is_same<int16_t, _T>::value || std::is_same<uint16_t, _T>::value) {
         mc = BrendanCUDA::Binary::Count1s((uint16_t)Settings.mask);
     }
-    else if (std::is_same<int32_t, _T>::value || std::is_same<uint32_t, _T>::value) {
+    else if constexpr (std::is_same<int32_t, _T>::value || std::is_same<uint32_t, _T>::value) {
         mc = BrendanCUDA::Binary::Count1s((uint32_t)Settings.mask);
     }
-    else if (std::is_same<int64_t, _T>::value || std::is_same<uint64_t, _T>::value) {
+    else if constexpr (std::is_same<int64_t, _T>::value || std::is_same<uint64_t, _T>::value) {
         mc = BrendanCUDA::Binary::Count1s((uint64_t)Settings.mask);
     }
     else {
