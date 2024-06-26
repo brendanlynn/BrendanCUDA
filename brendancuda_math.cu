@@ -118,7 +118,7 @@ __host__ __device__ uint64_t BrendanCUDA::Math::sqrt<uint64_t>(uint64_t value) {
 }
 
 template <typename _T>
-__host__ __device__ constexpr _T BrendanCUDA::Math::clamp<_T>(_T value, _T lower, _T upper) {
+__host__ __device__ _T BrendanCUDA::Math::clamp<_T>(_T value, _T lower, _T upper) {
     if (value < lower) {
         return lower;
     }

@@ -9,6 +9,6 @@ namespace BrendanCUDA {
         __host__ __device__ _T sqrt(_T value);
 
         template <typename _T>
-        __host__ __device__ constexpr _T clamp(_T value, _T lower, _T upper);
+        __host__ __device__ _T clamp(_T value, _T lower, _T upper);
     }
 }
