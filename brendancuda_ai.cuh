@@ -14,6 +14,19 @@ namespace BrendanCUDA {
         template <typename _T>
         using activationFunction_t = _T(*)(_T Value);
 
+        template <typename _T>
+        __host__ __device__ _T ReLU(_T Value);
+        template <typename _T, _T _Slope>
+        __host__ __device__ _T LeakyReLU(_T Value);
+        template <typename _T, _T _Lower, _T _Upper>
+        __host__ __device__ _T BoundReLU(_T Value);
+        template <typename _T, _T _Slope, _T _Lower, _T _Upper>
+        __host__ __device__ _T LeakyBoundReLU(_T Value);
+        template <typename _T>
+        __host__ __device__ _T TanH(_T Value);
+        template <typename _T>
+        __host__ __device__ _T Sigmoid(_T Value);
+
         //Makes a small, random adjustment in the range of [-Scalar, +Scalar] to each of the values of Array (Array being a pointer to VRAM).
         __host__ __device__ void RandomizeArray(float* Array, size_t Length, float Scalar, Random::AnyRNG<uint64_t> RNG);
         //Makes a small, random adjustment in the range of [-Scalar, +Scalar] to each of the values of Array (Array being a pointer to VRAM), clamping the final value in the range of [LowerBound, UpperBound], even if it wasn't in that range to start.
@@ -100,4 +113,21 @@ namespace BrendanCUDA {
         //Converts an array of doubles (Doubles) to an array of 64-bit unsigned integers (Int64s). There should be 64 times as many doubles as 64-bit unsigned integers, with Int64Length representing the quantity of the integers. Each bit is true if its cooresponding double is greater than Split, and false otherwise. The pointers are expected to point to memory on the VRAM.
         __device__ void CopyDoublesToInt64s(double* Doubles, uint64_t* Int64s, size_t Int64Length, double Split);
     }
+}
+
+template <typename _T, _T _Slope>
+__host__ __device__ _T BrendanCUDA::AI::LeakyReLU(_T Value) {
+    return (Value < (_T)0.) ? Value * _Slope : Value;
+}
+template <typename _T, _T _Lower, _T _Upper>
+__host__ __device__ _T BrendanCUDA::AI::BoundReLU(_T Value) {
+    if (Value < _Lower) return (_T)0.;
+    if (Value > _Upper) return (_T)1.;
+    return Value;
+}
+template <typename _T, _T _Slope, _T _Lower, _T _Upper>
+__host__ __device__ _T BrendanCUDA::AI::LeakyBoundReLU(_T Value) {
+    if (Value < _Lower) return Value * _Slope;
+    if (Value > _Upper) return (_T)1. + (Value - _Upper) * _Slope;
+    return Value;
 }

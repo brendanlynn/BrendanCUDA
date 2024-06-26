@@ -8,6 +8,27 @@ using BrendanCUDA::Random::HashI64;
 using BrendanCUDA::Random::Get64Bits;
 using BrendanCUDA::Random::AnyRNG;
 
+template <typename _T>
+__host__ __device__ _T BrendanCUDA::AI::ReLU(_T Value) {
+    return (Value < (_T)0.) ? (_T)0. : Value;
+}
+template <typename _T>
+__host__ __device__ _T BrendanCUDA::AI::TanH(_T Value) {
+    return std::tanh(Value);
+}
+template <typename _T>
+__host__ __device__ _T BrendanCUDA::AI::Sigmoid(_T Value) {
+    Value = std::exp(Value);
+    return Value / ((_T)1. + Value);
+}
+
+template float BrendanCUDA::AI::ReLU<float>(float);
+template double BrendanCUDA::AI::ReLU<double>(double);
+template float BrendanCUDA::AI::TanH<float>(float);
+template double BrendanCUDA::AI::TanH<double>(double);
+template float BrendanCUDA::AI::Sigmoid<float>(float);
+template double BrendanCUDA::AI::Sigmoid<double>(double);
+
 __global__ void randomizeArrayKernel(float* Array, float Scalar, uint64_t Seed) {
     float& p(Array[blockIdx.x]);
     uint64_t ts = GetSeedOnKernel(Seed);
