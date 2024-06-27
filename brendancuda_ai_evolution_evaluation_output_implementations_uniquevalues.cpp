@@ -39,6 +39,11 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues(void
     }
 }
 
+template <typename _T>
+float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues(void* Object, void* Settings) {
+    return Evaluate_UniqueValues(Object, *(Evaluate_UniqueValues_SD<_T>*)Settings);
+}
+
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint8_t>(void*, Evaluate_UniqueValues_SD<uint8_t>&);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int8_t>(void*, Evaluate_UniqueValues_SD<int8_t>&);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint16_t>(void*, Evaluate_UniqueValues_SD<uint16_t>&);
@@ -47,3 +52,12 @@ template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueVa
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int32_t>(void*, Evaluate_UniqueValues_SD<int32_t>&);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint64_t>(void*, Evaluate_UniqueValues_SD<uint64_t>&);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int64_t>(void*, Evaluate_UniqueValues_SD<int64_t>&);
+
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint8_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int8_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint16_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int16_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint32_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int32_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint64_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int64_t>(void*, void*);

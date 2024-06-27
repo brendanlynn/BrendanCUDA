@@ -120,6 +120,11 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation(voi
     return (float)t / (float)((uint64_t)mc * Settings.iterationsPerRound * Settings.roundCount * Settings.outputCount);
 }
 
+template <typename _T>
+float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation(void* Object, void* Settings) {
+    return Evaluate_Proliferation<_T>(Object, *(Evaluate_Proliferation_SD<_T>*)Settings);
+}
+
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint8_t>(void*, Evaluate_Proliferation_SD<uint8_t>&);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int8_t>(void*, Evaluate_Proliferation_SD<int8_t>&);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint16_t>(void*, Evaluate_Proliferation_SD<uint16_t>&);
@@ -130,3 +135,14 @@ template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Prolifer
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int64_t>(void*, Evaluate_Proliferation_SD<int64_t>&);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<float>(void*, Evaluate_Proliferation_SD<float>&);
 template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<double>(void*, Evaluate_Proliferation_SD<double>&);
+
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint8_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int8_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint16_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int16_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint32_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int32_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<uint64_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<int64_t>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<float>(void*, void*);
+template float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<double>(void*, void*);

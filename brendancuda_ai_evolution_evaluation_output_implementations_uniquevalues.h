@@ -18,6 +18,8 @@ namespace BrendanCUDA {
 
                     template <typename _T>
                     float Evaluate_UniqueValues(void* Object, Evaluate_UniqueValues_SD<_T>& Settings);
+                    template <typename _T>
+                    float Evaluate_UniqueValues(void* Object, void* Settings);
                 }
             }
         }

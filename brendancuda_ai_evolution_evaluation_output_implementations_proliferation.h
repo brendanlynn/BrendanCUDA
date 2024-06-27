@@ -45,6 +45,8 @@ namespace BrendanCUDA {
 
                     template <typename _T>
                     float Evaluate_Proliferation(void* Object, Evaluate_Proliferation_SD<_T>& Settings);
+                    template <typename _T>
+                    float Evaluate_Proliferation(void* Object, void* Settings);
                 }
             }
         }
