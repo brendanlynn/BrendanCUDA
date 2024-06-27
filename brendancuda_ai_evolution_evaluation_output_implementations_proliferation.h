@@ -19,7 +19,7 @@ namespace BrendanCUDA {
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
                         inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG)
-                            : rng(RNG) {
+                            : rng(RNG), instanceFunctions() {
                             iterationsPerRound = 0;
                             roundCount = 0;
                             inputCount = 0;
@@ -38,7 +38,7 @@ namespace BrendanCUDA {
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
                         inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG)
-                            : rng(RNG) {
+                            : rng(RNG), instanceFunctions() {
                             iterationsPerRound = 0;
                             roundCount = 0;
                             inputCount = 0;
@@ -56,7 +56,7 @@ namespace BrendanCUDA {
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
                         inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG)
-                            : rng(RNG) {
+                            : rng(RNG), instanceFunctions() {
                             iterationsPerRound = 0;
                             roundCount = 0;
                             inputCount = 0;
