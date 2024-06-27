@@ -14,6 +14,7 @@ namespace BrendanCUDA {
                         size_t outputCount;
                         bool individual;
                         void* sd_ci;
+                        inline Evaluate_UniqueValues_SD() = default;
                     };
 
                     template <typename _T>

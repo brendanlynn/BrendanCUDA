@@ -19,6 +19,7 @@ namespace BrendanCUDA {
                         _T mask;
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
+                        inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG) : rng(RNG) { }
                     };
                     template <>
                     struct Evaluate_Proliferation_SD<float> final {
@@ -30,6 +31,7 @@ namespace BrendanCUDA {
                         bool individual;
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
+                        inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG) : rng(RNG) { }
                     };
                     template <>
                     struct Evaluate_Proliferation_SD<double> final {
@@ -41,6 +43,7 @@ namespace BrendanCUDA {
                         bool individual;
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
+                        inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG) : rng(RNG) { }
                     };
 
                     template <typename _T>
