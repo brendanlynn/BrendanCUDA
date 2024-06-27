@@ -15,7 +15,6 @@ namespace BrendanCUDA {
                         uint64_t roundCount;
                         size_t inputCount;
                         size_t outputCount;
-                        bool individual;
                         _T mask;
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
@@ -28,7 +27,6 @@ namespace BrendanCUDA {
                         uint64_t roundCount;
                         size_t inputCount;
                         size_t outputCount;
-                        bool individual;
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
                         inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG) : rng(RNG) { }
@@ -40,7 +38,6 @@ namespace BrendanCUDA {
                         uint64_t roundCount;
                         size_t inputCount;
                         size_t outputCount;
-                        bool individual;
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
                         inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG) : rng(RNG) { }
