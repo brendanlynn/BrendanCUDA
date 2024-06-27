@@ -14,16 +14,22 @@ namespace BrendanCUDA {
         template <typename _T>
         using activationFunction_t = _T(*)(_T Value);
 
+        //The ReLU activation function, compatible with activationFunction_t.
         template <typename _T>
         __host__ __device__ _T ReLU(_T Value);
+        //The Leaky ReLU activation function, compatible with activationFunction_t.
         template <typename _T, _T _Slope>
         __host__ __device__ _T LeakyReLU(_T Value);
+        //The ReLU activation function, not maximized, but clamped, and compatible with activationFunction_t.
         template <typename _T, _T _Lower, _T _Upper>
         __host__ __device__ _T BoundReLU(_T Value);
+        //The Leaky ReLU activation function, not maximized, but clamped, and compatible with activationFunction_t.
         template <typename _T, _T _Slope, _T _Lower, _T _Upper>
         __host__ __device__ _T LeakyBoundReLU(_T Value);
+        //The TanH activation function, compatible with activationFunction_t.
         template <typename _T>
         __host__ __device__ _T TanH(_T Value);
+        //The Sigmoid activation function, like the TanH, but worse, though still compatible with activationFunction_t.
         template <typename _T>
         __host__ __device__ _T Sigmoid(_T Value);
 
