@@ -18,7 +18,15 @@ namespace BrendanCUDA {
                         _T mask;
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
-                        inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG) : rng(RNG) { }
+                        inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG)
+                            : rng(RNG) {
+                            iterationsPerRound = 0;
+                            roundCount = 0;
+                            inputCount = 0;
+                            outputCount = 0;
+                            mask = 0;
+                            sd_ci = 0;
+                        }
                     };
                     template <>
                     struct Evaluate_Proliferation_SD<float> final {
@@ -29,7 +37,14 @@ namespace BrendanCUDA {
                         size_t outputCount;
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
-                        inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG) : rng(RNG) { }
+                        inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG)
+                            : rng(RNG) {
+                            iterationsPerRound = 0;
+                            roundCount = 0;
+                            inputCount = 0;
+                            outputCount = 0;
+                            sd_ci = 0;
+                        }
                     };
                     template <>
                     struct Evaluate_Proliferation_SD<double> final {
@@ -40,7 +55,14 @@ namespace BrendanCUDA {
                         size_t outputCount;
                         void* sd_ci;
                         BrendanCUDA::Random::AnyRNG<uint64_t> rng;
-                        inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG) : rng(RNG) { }
+                        inline Evaluate_Proliferation_SD(BrendanCUDA::Random::AnyRNG<uint64_t> RNG)
+                            : rng(RNG) {
+                            iterationsPerRound = 0;
+                            roundCount = 0;
+                            inputCount = 0;
+                            outputCount = 0;
+                            sd_ci = 0;
+                        }
                     };
 
                     template <typename _T>
