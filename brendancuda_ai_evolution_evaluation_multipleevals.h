@@ -91,7 +91,7 @@ float BrendanCUDA::AI::Evolution::Evaluation::Evaluate_MultipleTimes_Max_C(void*
         }
     }
 
-    return min;
+    return max;
 }
 
 template <BrendanCUDA::AI::Evolution::evaluationFunction_t _SingleEvaluationFunc>
