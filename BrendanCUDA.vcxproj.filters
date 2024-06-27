@@ -98,7 +98,6 @@
       <Filter>AI\MLPB</Filter>
     </CustomBuild>
     <CustomBuild Include="brendancuda_fixedvectors.cuh.tt" />
-    <CustomBuild Include="brendancuda_fixedvectors.cu.tt" />
     <CustomBuild Include="brendancuda_points.cu.tt" />
     <CustomBuild Include="brendancuda_points.cuh.tt" />
   </ItemGroup>
@@ -179,7 +178,6 @@
     <CudaCompile Include="brendancuda_nets_net.cu">
       <Filter>Nets</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_fixedvectors.cu" />
     <CudaCompile Include="brendancuda_math.cu" />
     <CudaCompile Include="brendancuda_cudaerrorhelpers.cpp" />
     <CudaCompile Include="brendancuda_points.cu" />
