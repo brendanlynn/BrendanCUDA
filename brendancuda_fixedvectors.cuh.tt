@@ -20,9 +20,13 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr <#= t #>_<#= j #>(<#= tn #> x, <#= tn #> y<# if (j > 2) { #>, <#= tn #> z<# if (j > 3) { #>, <#= tn #> w<# } } #>);
         __host__ __device__ inline constexpr <#= t #>_<#= j #>(const <#= tn #> v[<#= j #>]);
         __host__ __device__ inline constexpr <#= t #>_<#= j #> operator+(<#= t #>_<#= j #> other) const;
+        __host__ __device__ inline void operator+=(<#= t #>_<#= j #> other);
         __host__ __device__ inline constexpr <#= t #>_<#= j #> operator-(<#= t #>_<#= j #> other) const;
+        __host__ __device__ inline void operator-=(<#= t #>_<#= j #> other);
         __host__ __device__ inline constexpr <#= t #>_<#= j #> operator*(<#= tn #> other) const;
+        __host__ __device__ inline void operator*=(<#= tn #> other);
         __host__ __device__ inline constexpr <#= t #>_<#= j #> operator/(<#= tn #> other) const;
+        __host__ __device__ inline void operator/=(<#= tn #> other);
         __host__ __device__ static inline constexpr <#= tn #> Dot(<#= t #>_<#= j #> left, <#= t #>_<#= j #> right);
         __host__ __device__ inline constexpr <#= tn #> MagnatudeSquared() const;
         __host__ __device__ inline <#= tn #> Magnatude() const;
@@ -41,14 +45,50 @@ __host__ __device__ inline constexpr BrendanCUDA::<#= t #>_<#= j #>::<#= t #>_<#
 __host__ __device__ inline constexpr BrendanCUDA::<#= t #>_<#= j #> BrendanCUDA::<#= t #>_<#= j #>::operator+(<#= t #>_<#= j #> other) const {
     return <#= t #>_<#= j #>(x + other.x, y + other.y<# if (j > 2) { #>, z + other.z<# if (j > 3) { #>, w + other.w<# } } #>);
 }
+__host__ __device__ inline void BrendanCUDA::<#= t #>_<#= j #>::operator+=(<#= t #>_<#= j #> other) {
+    x += other.x;
+    y += other.y;
+<# if (j > 2) { #>
+    z += other.z;
+<# if (j > 3) { #>
+    w += other.w;
+<# } } #>
+}
 __host__ __device__ inline constexpr BrendanCUDA::<#= t #>_<#= j #> BrendanCUDA::<#= t #>_<#= j #>::operator-(<#= t #>_<#= j #> other) const {
     return <#= t #>_<#= j #>(x - other.x, y - other.y<# if (j > 2) { #>, z - other.z<# if (j > 3) { #>, w - other.w<# } } #>);
+}
+__host__ __device__ inline void BrendanCUDA::<#= t #>_<#= j #>::operator-=(<#= t #>_<#= j #> other) {
+    x -= other.x;
+    y -= other.y;
+<# if (j > 2) { #>
+    z -= other.z;
+<# if (j > 3) { #>
+    w -= other.w;
+<# } } #>
 }
 __host__ __device__ inline constexpr BrendanCUDA::<#= t #>_<#= j #> BrendanCUDA::<#= t #>_<#= j #>::operator*(<#= tn #> other) const {
     return <#= t #>_<#= j #>(x * other, y * other<# if (j > 2) { #>, z * other<# if (j > 3) { #>, w * other<# } } #>);
 }
+__host__ __device__ inline void BrendanCUDA::<#= t #>_<#= j #>::operator*=(<#= tn #> other) {
+    x *= other;
+    y *= other;
+<# if (j > 2) { #>
+    z *= other;
+<# if (j > 3) { #>
+    w *= other;
+<# } } #>
+}
 __host__ __device__ inline constexpr BrendanCUDA::<#= t #>_<#= j #> BrendanCUDA::<#= t #>_<#= j #>::operator/(<#= tn #> other) const {
     return <#= t #>_<#= j #>(x / other, y / other<# if (j > 2) { #>, z / other<# if (j > 3) { #>, w / other<# } } #>);
+}
+__host__ __device__ inline void BrendanCUDA::<#= t #>_<#= j #>::operator/=(<#= tn #> other) {
+    x /= other;
+    y /= other;
+<# if (j > 2) { #>
+    z /= other;
+<# if (j > 3) { #>
+    w /= other;
+<# } } #>
 }
 __host__ __device__ inline constexpr <#= tn #> BrendanCUDA::<#= t #>_<#= j #>::Dot(<#= t #>_<#= j #> left, <#= t #>_<#= j #> right) {
     return left.x * right.x + left.y * right.y<# if (j > 2) { #> + left.z * right.z<# if (j > 3) { #> + left.w * right.w<# } } #>;
