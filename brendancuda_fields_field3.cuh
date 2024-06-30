@@ -564,5 +564,5 @@ __host__ __device__ void BrendanCUDA::Fields::Field3<_T>::GetConsecutives(_T*& P
 }
 template <typename _T>
 __host__ __device__ std::pair<thrust::device_ptr<_T>, size_t> BrendanCUDA::Fields::Field3<_T>::Data() const {
-    return { cudaArray, lengthX * lengthY * lengthZ };
+    return { thrust::device_ptr<_T>(cudaArray), (size_t)lengthX * (size_t)lengthY * (size_t)lengthZ };
 }
