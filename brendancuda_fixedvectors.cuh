@@ -5,8 +5,7 @@
 #include "brendancuda_math.cuh"
 
 namespace BrendanCUDA {
-    class float_2 final {
-    public:
+    struct float_2 final {
         union {
             struct { float x, y; };
             float v[2];
@@ -26,8 +25,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr float MagnatudeSquared() const;
         __host__ __device__ inline float Magnatude() const;
     };
-    class float_3 final {
-    public:
+    struct float_3 final {
         union {
             struct { float x, y, z; };
             float v[3];
@@ -47,8 +45,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr float MagnatudeSquared() const;
         __host__ __device__ inline float Magnatude() const;
     };
-    class float_4 final {
-    public:
+    struct float_4 final {
         union {
             struct { float x, y, z, w; };
             float v[4];
@@ -68,8 +65,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr float MagnatudeSquared() const;
         __host__ __device__ inline float Magnatude() const;
     };
-    class double_2 final {
-    public:
+    struct double_2 final {
         union {
             struct { double x, y; };
             double v[2];
@@ -89,8 +85,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr double MagnatudeSquared() const;
         __host__ __device__ inline double Magnatude() const;
     };
-    class double_3 final {
-    public:
+    struct double_3 final {
         union {
             struct { double x, y, z; };
             double v[3];
@@ -110,8 +105,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr double MagnatudeSquared() const;
         __host__ __device__ inline double Magnatude() const;
     };
-    class double_4 final {
-    public:
+    struct double_4 final {
         union {
             struct { double x, y, z, w; };
             double v[4];
@@ -131,8 +125,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr double MagnatudeSquared() const;
         __host__ __device__ inline double Magnatude() const;
     };
-    class int8_2 final {
-    public:
+    struct int8_2 final {
         union {
             struct { int8_t x, y; };
             int8_t v[2];
@@ -152,8 +145,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int8_t MagnatudeSquared() const;
         __host__ __device__ inline int8_t Magnatude() const;
     };
-    class int8_3 final {
-    public:
+    struct int8_3 final {
         union {
             struct { int8_t x, y, z; };
             int8_t v[3];
@@ -173,8 +165,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int8_t MagnatudeSquared() const;
         __host__ __device__ inline int8_t Magnatude() const;
     };
-    class int8_4 final {
-    public:
+    struct int8_4 final {
         union {
             struct { int8_t x, y, z, w; };
             int8_t v[4];
@@ -194,8 +185,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int8_t MagnatudeSquared() const;
         __host__ __device__ inline int8_t Magnatude() const;
     };
-    class uint8_2 final {
-    public:
+    struct uint8_2 final {
         union {
             struct { uint8_t x, y; };
             uint8_t v[2];
@@ -215,8 +205,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint8_t MagnatudeSquared() const;
         __host__ __device__ inline uint8_t Magnatude() const;
     };
-    class uint8_3 final {
-    public:
+    struct uint8_3 final {
         union {
             struct { uint8_t x, y, z; };
             uint8_t v[3];
@@ -236,8 +225,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint8_t MagnatudeSquared() const;
         __host__ __device__ inline uint8_t Magnatude() const;
     };
-    class uint8_4 final {
-    public:
+    struct uint8_4 final {
         union {
             struct { uint8_t x, y, z, w; };
             uint8_t v[4];
@@ -257,8 +245,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint8_t MagnatudeSquared() const;
         __host__ __device__ inline uint8_t Magnatude() const;
     };
-    class int16_2 final {
-    public:
+    struct int16_2 final {
         union {
             struct { int16_t x, y; };
             int16_t v[2];
@@ -278,8 +265,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int16_t MagnatudeSquared() const;
         __host__ __device__ inline int16_t Magnatude() const;
     };
-    class int16_3 final {
-    public:
+    struct int16_3 final {
         union {
             struct { int16_t x, y, z; };
             int16_t v[3];
@@ -299,8 +285,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int16_t MagnatudeSquared() const;
         __host__ __device__ inline int16_t Magnatude() const;
     };
-    class int16_4 final {
-    public:
+    struct int16_4 final {
         union {
             struct { int16_t x, y, z, w; };
             int16_t v[4];
@@ -320,8 +305,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int16_t MagnatudeSquared() const;
         __host__ __device__ inline int16_t Magnatude() const;
     };
-    class uint16_2 final {
-    public:
+    struct uint16_2 final {
         union {
             struct { uint16_t x, y; };
             uint16_t v[2];
@@ -341,8 +325,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint16_t MagnatudeSquared() const;
         __host__ __device__ inline uint16_t Magnatude() const;
     };
-    class uint16_3 final {
-    public:
+    struct uint16_3 final {
         union {
             struct { uint16_t x, y, z; };
             uint16_t v[3];
@@ -362,8 +345,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint16_t MagnatudeSquared() const;
         __host__ __device__ inline uint16_t Magnatude() const;
     };
-    class uint16_4 final {
-    public:
+    struct uint16_4 final {
         union {
             struct { uint16_t x, y, z, w; };
             uint16_t v[4];
@@ -383,8 +365,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint16_t MagnatudeSquared() const;
         __host__ __device__ inline uint16_t Magnatude() const;
     };
-    class int32_2 final {
-    public:
+    struct int32_2 final {
         union {
             struct { int32_t x, y; };
             int32_t v[2];
@@ -404,8 +385,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int32_t MagnatudeSquared() const;
         __host__ __device__ inline int32_t Magnatude() const;
     };
-    class int32_3 final {
-    public:
+    struct int32_3 final {
         union {
             struct { int32_t x, y, z; };
             int32_t v[3];
@@ -425,8 +405,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int32_t MagnatudeSquared() const;
         __host__ __device__ inline int32_t Magnatude() const;
     };
-    class int32_4 final {
-    public:
+    struct int32_4 final {
         union {
             struct { int32_t x, y, z, w; };
             int32_t v[4];
@@ -446,8 +425,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int32_t MagnatudeSquared() const;
         __host__ __device__ inline int32_t Magnatude() const;
     };
-    class uint32_2 final {
-    public:
+    struct uint32_2 final {
         union {
             struct { uint32_t x, y; };
             uint32_t v[2];
@@ -467,8 +445,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint32_t MagnatudeSquared() const;
         __host__ __device__ inline uint32_t Magnatude() const;
     };
-    class uint32_3 final {
-    public:
+    struct uint32_3 final {
         union {
             struct { uint32_t x, y, z; };
             uint32_t v[3];
@@ -488,8 +465,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint32_t MagnatudeSquared() const;
         __host__ __device__ inline uint32_t Magnatude() const;
     };
-    class uint32_4 final {
-    public:
+    struct uint32_4 final {
         union {
             struct { uint32_t x, y, z, w; };
             uint32_t v[4];
@@ -509,8 +485,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint32_t MagnatudeSquared() const;
         __host__ __device__ inline uint32_t Magnatude() const;
     };
-    class int64_2 final {
-    public:
+    struct int64_2 final {
         union {
             struct { int64_t x, y; };
             int64_t v[2];
@@ -530,8 +505,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int64_t MagnatudeSquared() const;
         __host__ __device__ inline int64_t Magnatude() const;
     };
-    class int64_3 final {
-    public:
+    struct int64_3 final {
         union {
             struct { int64_t x, y, z; };
             int64_t v[3];
@@ -551,8 +525,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int64_t MagnatudeSquared() const;
         __host__ __device__ inline int64_t Magnatude() const;
     };
-    class int64_4 final {
-    public:
+    struct int64_4 final {
         union {
             struct { int64_t x, y, z, w; };
             int64_t v[4];
@@ -572,8 +545,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr int64_t MagnatudeSquared() const;
         __host__ __device__ inline int64_t Magnatude() const;
     };
-    class uint64_2 final {
-    public:
+    struct uint64_2 final {
         union {
             struct { uint64_t x, y; };
             uint64_t v[2];
@@ -593,8 +565,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint64_t MagnatudeSquared() const;
         __host__ __device__ inline uint64_t Magnatude() const;
     };
-    class uint64_3 final {
-    public:
+    struct uint64_3 final {
         union {
             struct { uint64_t x, y, z; };
             uint64_t v[3];
@@ -614,8 +585,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline constexpr uint64_t MagnatudeSquared() const;
         __host__ __device__ inline uint64_t Magnatude() const;
     };
-    class uint64_4 final {
-    public:
+    struct uint64_4 final {
         union {
             struct { uint64_t x, y, z, w; };
             uint64_t v[4];

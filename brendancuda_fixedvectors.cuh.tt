@@ -10,8 +10,7 @@ namespace BrendanCUDA {
 <# string t = ts[i]; #>
 <# string tn = i >= 2 ? t + "_t" : t; #>
 <# for (int j = 2; j <= 4; ++j) { #>
-    class <#= t #>_<#= j #> final {
-    public:
+    struct <#= t #>_<#= j #> final {
         union {
             struct { <#= tn #> x, y<# if (j > 2) { #>, z<# if (j > 3) { #>, w<# } } #>; };
             <#= tn #> v[<#= j #>];
