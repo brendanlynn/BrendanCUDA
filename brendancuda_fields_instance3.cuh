@@ -4,6 +4,7 @@
 #include "brendancuda_random_anyrng.cuh"
 #include <tuple>
 #include "brendancuda_random_sseed.cuh"
+#include "brendancuda_ai_evolution_evaluation_output.h"
 
 namespace BrendanCUDA {
     namespace details {
@@ -37,6 +38,8 @@ namespace BrendanCUDA {
         _T* FieldInstance3_Iterate(void* CurrentInstance, _T* Inputs);
         template <typename _T>
         void FieldInstance3_Destruct(void* CurrentInstance);
+        template <typename _T, fieldInstance3_createField_t<_T> _CreateField, fieldInstance3_objectRunner_t<_T> _ObjectRunner>
+        constexpr AI::Evolution::Evaluation::Output::InstanceFunctions<_T> FieldInstance3();
     }
 }
 
@@ -100,3 +103,12 @@ void BrendanCUDA::Fields::FieldInstance3_Destruct(void* CurrentInstance) {
     delete[] c.outputs;
     delete p_c;
 };
+
+template <typename _T, BrendanCUDA::Fields::fieldInstance3_createField_t<_T> _CreateField, BrendanCUDA::Fields::fieldInstance3_objectRunner_t<_T> _ObjectRunner>
+constexpr BrendanCUDA::AI::Evolution::Evaluation::Output::InstanceFunctions<_T> BrendanCUDA::Fields::FieldInstance3() {
+    AI::Evolution::Evaluation::Output::InstanceFunctions<_T> ifs;
+    ifs.constructInstance = FieldInstance3_Construct<_T, _CreateField>;
+    ifs.iterateInstance = FieldInstance3_Iterate<_T, _ObjectRunner>;
+    ifs.destructInstance = FieldInstance3_Destruct<_T>;
+    return ifs;
+}
