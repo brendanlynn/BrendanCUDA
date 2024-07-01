@@ -4,6 +4,7 @@
 #include "brendancuda_random_anyrng.cuh"
 #include <tuple>
 #include "brendancuda_random_sseed.cuh"
+#include "brendancuda_ai_evolution_evaluation_output.h"
 
 namespace BrendanCUDA {
     namespace details {
@@ -33,10 +34,12 @@ namespace BrendanCUDA {
         };
         template <typename _T, fieldInstance2_createField_t<_T> _CreateField>
         void* FieldInstance2_Construct(void* Object, void* Settings);
-        template <typename _T, fieldInstance2_objectRunner_t<_T> _ObjRunner>
+        template <typename _T, fieldInstance2_objectRunner_t<_T> _ObjectRunner>
         _T* FieldInstance2_Iterate(void* CurrentInstance, _T* Inputs);
         template <typename _T>
         void FieldInstance2_Destruct(void* CurrentInstance);
+        template <typename _T, fieldInstance2_createField_t<_T> _CreateField, fieldInstance2_objectRunner_t<_T> _ObjectRunner>
+        constexpr AI::Evolution::Evaluation::Output::InstanceFunctions<_T> FieldInstance2();
     }
 }
 
@@ -47,7 +50,7 @@ void* BrendanCUDA::Fields::FieldInstance2_Construct(void* Object, void* Settings
 
     DField2<_T>& f = *_CreateField(settings.createField_sharedData);
     details::FieldInstance2_CurrentInstance<_T>* p_rv = new details::FieldInstance2_CurrentInstance<_T>{ f, 0, settings.inputCount, 0, settings.outputCount, Object, settings.objectRunner_sharedData, rng };
-    details::FieldInstance3_CurrentInstance<_T>& rv = *p_rv;
+    details::FieldInstance2_CurrentInstance<_T>& rv = *p_rv;
     uint32_2*& il = rv.inputs;
     uint32_2*& ol = rv.outputs;
 
@@ -68,7 +71,7 @@ void* BrendanCUDA::Fields::FieldInstance2_Construct(void* Object, void* Settings
 
     return p_rv;
 };
-template <typename _T, BrendanCUDA::Fields::fieldInstance2_objectRunner_t<_T> _ObjRunner>
+template <typename _T, BrendanCUDA::Fields::fieldInstance2_objectRunner_t<_T> _ObjectRunner>
 _T* BrendanCUDA::Fields::FieldInstance2_Iterate(void* CurrentInstance, _T* Inputs) {
     details::FieldInstance2_CurrentInstance<_T> c = *(details::FieldInstance2_CurrentInstance<_T>*)CurrentInstance;
     DField2<_T>& f = c.field;
@@ -80,7 +83,7 @@ _T* BrendanCUDA::Fields::FieldInstance2_Iterate(void* CurrentInstance, _T* Input
             f.FFront().SetValueAt(il[i], Inputs[i]);
         }
     }
-    _ObjRunner(c.obj, f, c.objectRunner_sharedData);
+    _ObjectRunner(c.obj, f, c.objectRunner_sharedData);
     _T* opts = new _T[c.outputCount];
     for (size_t i = 0; i < c.outputCount; ++i) {
         opts[i] = f.FFront().GetValueAt(ol[i]);
@@ -99,3 +102,12 @@ void BrendanCUDA::Fields::FieldInstance2_Destruct(void* CurrentInstance) {
     delete[] c.outputs;
     delete p_c;
 };
+
+template <typename _T, BrendanCUDA::Fields::fieldInstance2_createField_t<_T> _CreateField, BrendanCUDA::Fields::fieldInstance2_objectRunner_t<_T> _ObjectRunner>
+constexpr BrendanCUDA::AI::Evolution::Evaluation::Output::InstanceFunctions<_T> BrendanCUDA::Fields::FieldInstance2() {
+    AI::Evolution::Evaluation::Output::InstanceFunctions<_T> ifs;
+    ifs.constructInstance = FieldInstance2_Construct<_T, _CreateField>;
+    ifs.iterateInstance = FieldInstance2_Iterate<_T, _ObjectRunner>;
+    ifs.destructInstance = FieldInstance2_Destruct<_T>;
+    return ifs;
+}
