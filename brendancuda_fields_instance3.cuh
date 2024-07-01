@@ -33,7 +33,7 @@ namespace BrendanCUDA {
         };
         template <typename _T, fieldInstance3_createField_t<_T> _CreateField>
         void* FieldInstance3_Construct(void* Object, void* Settings);
-        template <typename _T, fieldInstance3_objectRunner_t<_T> _ObjRunner>
+        template <typename _T, fieldInstance3_objectRunner_t<_T> _ObjectRunner>
         _T* FieldInstance3_Iterate(void* CurrentInstance, _T* Inputs);
         template <typename _T>
         void FieldInstance3_Destruct(void* CurrentInstance);
@@ -69,7 +69,7 @@ void* BrendanCUDA::Fields::FieldInstance3_Construct(void* Object, void* Settings
 
     return p_rv;
 };
-template <typename _T, BrendanCUDA::Fields::fieldInstance3_objectRunner_t<_T> _ObjRunner>
+template <typename _T, BrendanCUDA::Fields::fieldInstance3_objectRunner_t<_T> _ObjectRunner>
 _T* BrendanCUDA::Fields::FieldInstance3_Iterate(void* CurrentInstance, _T* Inputs) {
     details::FieldInstance3_CurrentInstance<_T> c = *(details::FieldInstance3_CurrentInstance<_T>*)CurrentInstance;
     DField3<_T>& f = c.field;
@@ -81,7 +81,7 @@ _T* BrendanCUDA::Fields::FieldInstance3_Iterate(void* CurrentInstance, _T* Input
             f.FFront().SetValueAt(il[i], Inputs[i]);
         }
     }
-    _ObjRunner(c.obj, f, c.objectRunner_sharedData);
+    _ObjectRunner(c.obj, f, c.objectRunner_sharedData);
     _T* opts = new _T[c.outputCount];
     for (size_t i = 0; i < c.outputCount; ++i) {
         opts[i] = f.FFront().GetValueAt(ol[i]);
