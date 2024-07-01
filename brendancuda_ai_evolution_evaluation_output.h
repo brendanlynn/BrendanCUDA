@@ -20,7 +20,7 @@ namespace BrendanCUDA {
                         constructInstance_t constructInstance;
                         iterateInstance_t<_T> iterateInstance;
                         destructInstance_t destructInstance;
-                        InstanceFunctions() = default;
+                        constexpr InstanceFunctions() = default;
                     };
 
                     template <typename _T, constructInstance_t _CI, iterateInstance_t<_T> _II, destructInstance_t _DI>
