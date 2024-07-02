@@ -37,7 +37,7 @@ namespace BrendanCUDA {
         template <typename _T>
         void FieldInstance3_Destruct(void* CurrentInstance);
         template <typename _T, fieldInstance3_createField_t<_T> _CreateField, fieldInstance3_objectRunner_t<_T> _ObjectRunner>
-        constexpr AI::Evolution::Evaluation::Output::InstanceFunctions<_T> FieldInstance3();
+        AI::Evolution::Evaluation::Output::InstanceFunctions<_T> FieldInstance3();
     }
 }
 
@@ -101,7 +101,7 @@ void BrendanCUDA::Fields::FieldInstance3_Destruct(void* CurrentInstance) {
 };
 
 template <typename _T, BrendanCUDA::Fields::fieldInstance3_createField_t<_T> _CreateField, BrendanCUDA::Fields::fieldInstance3_objectRunner_t<_T> _ObjectRunner>
-constexpr BrendanCUDA::AI::Evolution::Evaluation::Output::InstanceFunctions<_T> BrendanCUDA::Fields::FieldInstance3() {
+BrendanCUDA::AI::Evolution::Evaluation::Output::InstanceFunctions<_T> BrendanCUDA::Fields::FieldInstance3() {
     AI::Evolution::Evaluation::Output::InstanceFunctions<_T> ifs;
     ifs.constructInstance = FieldInstance3_Construct<_T, _CreateField>;
     ifs.iterateInstance = FieldInstance3_Iterate<_T, _ObjectRunner>;
