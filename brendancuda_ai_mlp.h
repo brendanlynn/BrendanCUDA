@@ -2,8 +2,13 @@
 
 #include "brendancuda_ai_mlp_mlpl.h"
 #include "brendancuda_random_anyrng.h"
+#include "brendancuda_arrays.h"
 
 namespace BrendanCUDA {
+    namespace details {
+        template <typename _T>
+        __host__ __device__ void RunActivationFunctionOnArray(Span<_T> Array, AI::activationFunction_t<_T> ActivationFunction);
+    }
     namespace AI {
         namespace MLP {
             template <typename _T>
@@ -36,7 +41,7 @@ namespace BrendanCUDA {
                 __host__ __device__ size_t InputLength();
                 __host__ __device__ size_t OutputLength();
 
-                __host__ std::pair<_T*, size_t> Run(_T* Input);
+                __host__ _T* Run(_T* Input) const;
 
                 __host__ __device__ MLP<_T> Clone() const;
                 __host__ __device__ void Randomize(_T Scalar, Random::AnyRNG<uint64_t> RNG);
@@ -44,14 +49,12 @@ namespace BrendanCUDA {
                 __host__ __device__ MLP<_T> Reproduce(_T Scalar, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ MLP<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) const;
 
-                __host__ void Serialize(std::basic_ostream<char>& Stream);
+                __host__ void Serialize(std::basic_ostream<char>& Stream) const;
                 __host__ static MLP<_T> Deserialize(std::basic_istream<char>& Stream, activationFunction_t<_T> ActivationFunction);
             private:
                 size_t len;
                 MLPL<_T>* lyrs;
                 activationFunction_t<_T> actnFunc;
-
-                __host__ __device__ void RunActivationFunctionOnArray(_T* Array, size_t Length);
             };
         }
     }

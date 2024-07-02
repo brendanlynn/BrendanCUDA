@@ -11,10 +11,8 @@ namespace BrendanCUDA {
         template <typename _T>
         struct FieldInstance3_CurrentInstance final {
             Fields::DField3<_T>& field;
-            uint32_3* inputs;
-            size_t inputCount;
-            uint32_3* outputs;
-            size_t outputCount;
+            ArrayV<uint32_3> inputs;
+            ArrayV<uint32_3> outputs;
             void* obj;
             void* objectRunner_sharedData;
             Random::AnyRNG<uint32_t> rng;
@@ -49,10 +47,10 @@ void* BrendanCUDA::Fields::FieldInstance3_Construct(void* Object, void* Settings
     Random::AnyRNG<uint32_t>& rng = settings.rng;
 
     DField3<_T>& f = *_CreateField(settings.createField_sharedData);
-    details::FieldInstance3_CurrentInstance<_T>* p_rv = new details::FieldInstance3_CurrentInstance<_T>{ f, 0, settings.inputCount, 0, settings.outputCount, Object, settings.objectRunner_sharedData, rng };
+    details::FieldInstance3_CurrentInstance<_T>* p_rv = new details::FieldInstance3_CurrentInstance<_T>{ f, ArrayV<uint32_3>(settings.inputCount), ArrayV<uint32_3>(settings.outputCount), Object, settings.objectRunner_sharedData, rng };
     details::FieldInstance3_CurrentInstance<_T>& rv = *p_rv;
-    uint32_3*& il = rv.inputs;
-    uint32_3*& ol = rv.outputs;
+    ArrayV<uint32_3> il = rv.inputs;
+    ArrayV<uint32_3> ol = rv.outputs;
 
     std::uniform_int_distribution<uint64_t> disU64(0, std::numeric_limits<uint64_t>::max());
 
@@ -60,12 +58,10 @@ void* BrendanCUDA::Fields::FieldInstance3_Construct(void* Object, void* Settings
     std::uniform_int_distribution<uint32_t> disY(0, f.LengthY() - 1);
     std::uniform_int_distribution<uint32_t> disZ(0, f.LengthZ() - 1);
 
-    il = new uint32_3[settings.inputCount];
     for (size_t i = 0; i < settings.inputCount; ++i) {
         il[i] = uint32_3{ disX(rng), disY(rng), disZ(rng) };
     }
 
-    ol = new uint32_3[settings.outputCount];
     for (size_t i = 0; i < settings.outputCount; ++i) {
         ol[i] = uint32_3{ disX(rng), disY(rng), disZ(rng) };
     }
@@ -76,17 +72,17 @@ template <typename _T, BrendanCUDA::Fields::fieldInstance3_objectRunner_t<_T> _O
 _T* BrendanCUDA::Fields::FieldInstance3_Iterate(void* CurrentInstance, _T* Inputs) {
     details::FieldInstance3_CurrentInstance<_T> c = *(details::FieldInstance3_CurrentInstance<_T>*)CurrentInstance;
     DField3<_T>& f = c.field;
-    uint32_3* il = c.inputs;
-    uint32_3* ol = c.outputs;
+    ArrayV<uint32_3> il = c.inputs;
+    ArrayV<uint32_3> ol = c.outputs;
 
     if (Inputs) {
-        for (size_t i = 0; i < c.inputCount; ++i) {
+        for (size_t i = 0; i < il.size; ++i) {
             f.FFront().SetValueAt(il[i], Inputs[i]);
         }
     }
     _ObjectRunner(c.obj, f, c.objectRunner_sharedData);
-    _T* opts = new _T[c.outputCount];
-    for (size_t i = 0; i < c.outputCount; ++i) {
+    _T* opts = new _T[ol.size];
+    for (size_t i = 0; i < ol.size; ++i) {
         opts[i] = f.FFront().GetValueAt(ol[i]);
     }
     return opts;
@@ -99,8 +95,8 @@ void BrendanCUDA::Fields::FieldInstance3_Destruct(void* CurrentInstance) {
 
     f.Dispose();
     delete (&f);
-    delete[] c.inputs;
-    delete[] c.outputs;
+    c.inputs.Dispose();
+    c.outputs.Dispose();
     delete p_c;
 };
 

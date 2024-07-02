@@ -29,18 +29,18 @@ __device__ BrendanCUDA::AI::MLP::MLPL<_T>::MLPL(size_t InputLength, size_t Outpu
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLPL<_T>::ZeroOverwrite() {
-    InitZeroArray(wgts, iptLen * optLen);
-    InitZeroArray(bias, optLen);
+    InitZeroArray(Span<_T>(wgts, iptLen * optLen));
+    InitZeroArray(Span<_T>(bias, optLen));
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLPL<_T>::RandomOverwrite(Random::AnyRNG<uint64_t> RNG) {
-    InitRandomArray(wgts, iptLen * optLen, RNG);
-    InitRandomArray(bias, optLen, RNG);
+    InitRandomArray(Span<_T>(wgts, iptLen * optLen), RNG);
+    InitRandomArray(Span<_T>(bias, optLen), RNG);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLPL<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) {
-    InitRandomArray(wgts, iptLen * optLen, LowerBound, UpperBound, RNG);
-    InitRandomArray(bias, optLen, LowerBound, UpperBound, RNG);
+    InitRandomArray(Span<_T>(wgts, iptLen * optLen), LowerBound, UpperBound, RNG);
+    InitRandomArray(Span<_T>(bias, optLen), LowerBound, UpperBound, RNG);
 }
 template <typename _T>
 __host__ __device__ size_t BrendanCUDA::AI::MLP::MLPL<_T>::InputLength() const {
@@ -226,13 +226,13 @@ __host__ __device__ BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLPL<_T>::Randomize(_T Scalar, Random::AnyRNG<uint64_t> RNG) {
-    RandomizeArray(wgts, iptLen * optLen, Scalar, RNG);
-    RandomizeArray(bias, optLen, Scalar, RNG);
+    RandomizeArray(Span<_T>(wgts, iptLen * optLen), Scalar, RNG);
+    RandomizeArray(Span<_T>(bias, optLen), Scalar, RNG);
 }
 template <typename _T>
 __host__ __device__ void BrendanCUDA::AI::MLP::MLPL<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) {
-    RandomizeArray(wgts, iptLen * optLen, Scalar, LowerBound, UpperBound, RNG);
-    RandomizeArray(bias, optLen, Scalar, LowerBound, UpperBound, RNG);
+    RandomizeArray(Span<_T>(wgts, iptLen * optLen), Scalar, LowerBound, UpperBound, RNG);
+    RandomizeArray(Span<_T>(bias, optLen), Scalar, LowerBound, UpperBound, RNG);
 }
 template <typename _T>
 __host__ __device__ BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T>::Reproduce(_T Scalar, Random::AnyRNG<uint64_t> RNG) const {

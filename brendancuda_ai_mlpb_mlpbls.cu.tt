@@ -433,8 +433,8 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::A
     return n;
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) {
-    RandomizeArray(weights, 64, WeightsFlipProb, RNG);
-    RandomizeArray(bias, 1, BiasFlipProb, RNG);
+    RandomizeArray(Span<uint<#= i #>_t>(weights, 64), WeightsFlipProb, RNG);
+    RandomizeArray(Span<uint<#= j #>_t>(bias, 1), BiasFlipProb, RNG);
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const {
     MLPBL<#= i #>T<#= j #> n = Clone();
@@ -443,7 +443,7 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::A
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) {
     applyTargetFlipsOnArray(weights, 64, WeightsEachFlipProb, RNG);
-    RandomizeArray(bias, 1, BiasFlipProb, RNG);
+    RandomizeArray(Span<uint<#= j #>_t>(bias, 1), BiasFlipProb, RNG);
 }
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const {
     MLPBL<#= i #>T<#= j #> n = Clone();

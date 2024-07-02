@@ -2,6 +2,26 @@
 #include "brendancuda_cudaerrorhelpers.h"
 #include "brendancuda_devicecopy.cuh"
 
+__global__ void runActivationFunctionOnArrayKernel(float* Array, BrendanCUDA::AI::activationFunction_t<float> ActivationFunction) {
+    float& p(Array[blockIdx.x]);
+    p = ActivationFunction(p);
+}
+__global__ void runActivationFunctionOnArrayKernel(double* Array, BrendanCUDA::AI::activationFunction_t<double> ActivationFunction) {
+    double& p(Array[blockIdx.x]);
+    p = ActivationFunction(p);
+}
+template <typename _T>
+__host__ __device__ void BrendanCUDA::details::RunActivationFunctionOnArray(Span<_T> Array, AI::activationFunction_t<_T> ActivationFunction) {
+#if __CUDA_ARCH__
+    for (size_t i = 0; i < Array.size; ++i) {
+        _T& p(Array[i]);
+        p = ActivationFunction(p);
+    }
+#else
+    runActivationFunctionOnArrayKernel<<<Array.size, 1>>>(Array.ptr, ActivationFunction);
+#endif
+}
+
 template <typename _T>
 __host__ __device__ BrendanCUDA::AI::MLP::MLP<_T>::MLP(size_t Length, activationFunction_t<_T> ActivationFunction) {
     len = Length;
@@ -38,34 +58,34 @@ __host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::Dispose() {
 #endif
 }
 template <typename _T>
-__host__ std::pair<_T*, size_t> BrendanCUDA::AI::MLP::MLP<_T>::Run(_T* Input) {
-    if (len == 0) {
-        return std::pair<_T*, size_t>(0, 0);
+__host__ _T* BrendanCUDA::AI::MLP::MLP<_T>::Run(_T* Input) const {
+    if (!len) {
+        return 0;
     }
 #if __CUDA_ARCH__
     MLPL<_T>* l = Layer(0);
     Input = l->Run(Input);
-    RunActivationFunctionOnArray(Input, l->OutputLength());
+    details::RunActivationFunctionOnArray(Span<_T>(Input, l->OutputLength()), actnFunc);
 #else
     MLPL<_T> l = GetLayer(0);
     Input = l.Run(Input);
-    RunActivationFunctionOnArray(Input, l.OutputLength());
+    details::RunActivationFunctionOnArray(Span<_T>(Input, l.OutputLength()), actnFunc);
 #endif
     for (size_t i = 1; i < len; ++i) {
 #if __CUDA_ARCH__
         l = Layer(i);
         _T* nxt = l->Run(Input);
-        RunActivationFunctionOnArray(nxt, l->OutputLength());
+        details::RunActivationFunctionOnArray(Span<_T>(nxt, l->OutputLength()), actnFunc);
         delete[] Input;
 #else
         l = GetLayer(i);
         _T* nxt = l.Run(Input);
-        RunActivationFunctionOnArray(nxt, l.OutputLength());
+        details::RunActivationFunctionOnArray(Span<_T>(nxt, l.OutputLength()), actnFunc);
         ThrowIfBad(cudaFree(Input));
 #endif
         Input = nxt;
     }
-    return std::pair<_T*, size_t>(Input, OutputLength());
+    return Input;
 }
 template <typename _T>
 __host__ __device__ BrendanCUDA::AI::MLP::MLPL<_T>* BrendanCUDA::AI::MLP::MLP<_T>::Layers() const {
@@ -150,26 +170,6 @@ __host__ __device__ size_t BrendanCUDA::AI::MLP::MLP<_T>::OutputLength() {
     return GetLayer(len - 1).OutputLength();
 #endif
 }
-__global__ void runActivationFunctionOnArrayKernel(float* Array, BrendanCUDA::AI::activationFunction_t<float> ActivationFunction) {
-    float& p(Array[blockIdx.x]);
-    p = ActivationFunction(p);
-}
-__global__ void runActivationFunctionOnArrayKernel(double* Array, BrendanCUDA::AI::activationFunction_t<double> ActivationFunction) {
-    double& p(Array[blockIdx.x]);
-    p = ActivationFunction(p);
-}
-template <typename _T>
-__host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::RunActivationFunctionOnArray(_T* Array, size_t Length) {
-    activationFunction_t<_T> af = actnFunc;
-#if __CUDA_ARCH__
-    for (size_t i = 0; i < Length; ++i) {
-        _T& p(Array[i]);
-        p = af(p);
-    }
-#else
-    runActivationFunctionOnArrayKernel<<<Length, 1>>>(Array, af);
-#endif
-}
 template <typename _T>
 __host__ __device__ BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Clone() const {
     MLP<_T> m(len, actnFunc);
@@ -245,7 +245,7 @@ __host__ __device__ void BrendanCUDA::AI::MLP::MLP<_T>::RandomOverwrite(_T Lower
     }
 }
 template <typename _T>
-__host__ void BrendanCUDA::AI::MLP::MLP<_T>::Serialize(std::basic_ostream<char>& Stream) {
+__host__ void BrendanCUDA::AI::MLP::MLP<_T>::Serialize(std::basic_ostream<char>& Stream) const {
     Stream.write((char*)&len, sizeof(size_t) / sizeof(char));
 
     for (size_t i = 0; i < len; ++i) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "brendancuda_ai_mlp.h"
+#include "brendancuda_arrays.h"
 #include <vector>
 
 namespace BrendanCUDA {
@@ -10,9 +11,9 @@ namespace BrendanCUDA {
             class GeneMLP final {
             public:
                 GeneMLP() = default;
-                GeneMLP(std::pair<_T*, size_t> Base, MLP::MLP<_T> Intermediate);
+                GeneMLP(_T* Base, MLP::MLP<_T> Intermediate);
 
-                std::pair<_T*, size_t> Base();
+                _T* Base();
                 MLP::MLP<_T> intermediate;
 
                 void Dispose();
@@ -21,7 +22,7 @@ namespace BrendanCUDA {
                 void RandomOverwrite(Random::AnyRNG<uint64_t> RNG);
                 void RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG);
 
-                std::pair<_T*, size_t> Run();
+                ArrayV<_T> Run();
 
                 GeneMLP<_T> Clone();
                 void Randomize(_T Scalar, Random::AnyRNG<uint64_t> RNG);
@@ -33,7 +34,7 @@ namespace BrendanCUDA {
                 GeneMLP<_T> Reproduce(_T Scalar_Base, _T Scalar_Intermediate, Random::AnyRNG<uint64_t> RNG);
                 GeneMLP<_T> Reproduce(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG);
             private:
-                std::pair<_T*, size_t> base;
+                _T* base;
             };
         }
     }
