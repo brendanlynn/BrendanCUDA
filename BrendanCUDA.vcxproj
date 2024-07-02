@@ -98,6 +98,7 @@
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h" />
+    <ClInclude Include="brendancuda_arrays.h" />
     <ClInclude Include="brendancuda_crossassignment.h" />
     <ClInclude Include="brendancuda_cudaerrorhelpers.h" />
     <ClInclude Include="brendancuda_fields_dfield2.cuh" />
