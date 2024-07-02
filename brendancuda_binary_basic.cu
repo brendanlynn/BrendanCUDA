@@ -1,4 +1,4 @@
-#include "brendancuda_binary_basic.cuh"
+#include "brendancuda_binary_basic.h"
 
 __host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsF(uint64_t n) {
     if (n >> 32) {

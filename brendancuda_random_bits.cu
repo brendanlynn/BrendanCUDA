@@ -1,4 +1,4 @@
-#include "brendancuda_random_bits.cuh"
+#include "brendancuda_random_bits.h"
 
 __host__ __device__ uint64_t BrendanCUDA::Random::Get64Bits(uint32_t ProbabilityOf1, AnyRNG<uint64_t> RNG) {
     uint32_t ct = BrendanCUDA::Binary::CountBitsB(ProbabilityOf1);

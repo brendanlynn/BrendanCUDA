@@ -1,6 +1,8 @@
-#include "brendancuda_ai.cuh"
-#include "brendancuda_random_bits.cuh"
+#include "brendancuda_ai.h"
+#include "brendancuda_random_bits.h"
 #include "brendancuda_cudaerrorhelpers.h"
+#include "brendancuda_random_devicerandom.cuh"
+#include "brendancuda_random_sseed.cuh"
 
 using BrendanCUDA::Random::GetSeedOnKernel;
 using BrendanCUDA::Random::DeviceRandom;

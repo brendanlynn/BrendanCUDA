@@ -1,5 +1,6 @@
-#include "brendancuda_ai_mlp.cuh"
+#include "brendancuda_ai_mlp.h"
 #include "brendancuda_cudaerrorhelpers.h"
+#include "brendancuda_devicecopy.cuh"
 
 template <typename _T>
 __host__ __device__ BrendanCUDA::AI::MLP::MLP<_T>::MLP(size_t Length, activationFunction_t<_T> ActivationFunction) {

@@ -1,7 +1,12 @@
-#include "brendancuda_ai_mlpb_mlpbls.cuh"
-#include "brendancuda_binary_basic.cuh"
-#include "brendancuda_random_bits.cuh"
+#include "brendancuda_ai_mlpb_mlpbls.h"
+#include "brendancuda_binary_basic.h"
+#include "brendancuda_random_bits.h"
 #include "brendancuda_cudaerrorhelpers.h"
+#include "brendancuda_devicecopy.cuh"
+#include "brendancuda_random_sseed.cuh"
+#include "brendancuda_ai.h"
+
+#include <device_launch_parameters.h>
 
 __host__ __device__ uint64_t applyTargetFlipsTo1s_getEdits(uint64_t Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t rn1, uint32_t rn2) {
     if (rn1 < FlipProb) {

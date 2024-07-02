@@ -6,7 +6,7 @@
 #include <thrust/device_ptr.h>
 
 #include "brendancuda_devicecopy.cuh"
-#include "brendancuda_points.cuh"
+#include "brendancuda_points.h"
 #include "brendancuda_cudaerrorhelpers.h"
 
 namespace BrendanCUDA {

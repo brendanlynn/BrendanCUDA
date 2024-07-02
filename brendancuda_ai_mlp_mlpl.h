@@ -6,9 +6,8 @@
 #include <limits>
 #include <random>
 #include "brendancuda_devicecopy.cuh"
-#include "brendancuda_ai.cuh"
-#include "brendancuda_random_devicerandom.cuh"
-#include "brendancuda_random_anyrng.cuh"
+#include "brendancuda_ai.h"
+#include "brendancuda_random_anyrng.h"
 #include <iostream>
 
 namespace BrendanCUDA {

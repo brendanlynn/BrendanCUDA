@@ -2,7 +2,7 @@
 
 #include <cuda_runtime.h>
 #include <cstdint>
-#include "brendancuda_fixedvectors.cuh"
+#include "brendancuda_fixedvectors.h"
 
 namespace BrendanCUDA {
     __host__ __device__ uint32_t Coordinates32_2ToIndex32_RM(uint32_2 Dimensions, uint32_2 Coordinates);

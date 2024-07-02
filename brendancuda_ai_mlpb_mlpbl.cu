@@ -1,4 +1,4 @@
-#include "brendancuda_ai_mlpb_mlpbl.cuh"
+#include "brendancuda_ai_mlpb_mlpbl.h"
 
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL::MLPBL() {
     type = networkType_t::eNull;

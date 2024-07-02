@@ -1,7 +1,7 @@
 #pragma once
 
 #include "brendancuda_fields_dfield2.cuh"
-#include "brendancuda_random_anyrng.cuh"
+#include "brendancuda_random_anyrng.h"
 #include <tuple>
 #include "brendancuda_random_sseed.cuh"
 #include "brendancuda_ai_evolution_evaluation_output.h"

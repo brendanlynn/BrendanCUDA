@@ -1,4 +1,4 @@
-#include "brendancuda_math.cuh"
+#include "brendancuda_math.h"
 
 #include <cmath>
 

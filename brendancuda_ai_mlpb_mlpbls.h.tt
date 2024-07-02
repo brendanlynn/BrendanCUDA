@@ -2,9 +2,8 @@
 
 #include <cuda_runtime.h>
 #include <memory>
-#include "brendancuda_devicecopy.cuh"
-#include "brendancuda_random_anyrng.cuh"
-#include "brendancuda_ai.cuh"
+#include "brendancuda_random_anyrng.h"
+#include "brendancuda_ai.h"
 
 namespace BrendanCUDA {
     namespace AI {

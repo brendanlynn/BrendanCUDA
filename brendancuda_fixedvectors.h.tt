@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <cuda_runtime.h>
-#include "brendancuda_math.cuh"
+#include "brendancuda_math.h"
 
 namespace BrendanCUDA {
 <# string[] ts = {"float", "double", "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64"}; #>

@@ -1,7 +1,7 @@
-#include "brendancuda_points.cuh"
+#include "brendancuda_points.h"
 #include <cuda_runtime.h>
 #include <cstdint>
-#include "brendancuda_fixedvectors.cuh"
+#include "brendancuda_fixedvectors.h"
 
 using BrendanCUDA::uint32_2;
 using BrendanCUDA::uint32_3;

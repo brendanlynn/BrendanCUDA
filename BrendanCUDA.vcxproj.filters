@@ -2,13 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="brendancuda_devicecopy.cuh" />
-    <ClInclude Include="brendancuda_ai_mlpb.cuh">
+    <ClInclude Include="brendancuda_ai_mlpb.h">
       <Filter>AI\MLPB</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlpb_mlpbl.cuh">
+    <ClInclude Include="brendancuda_ai_mlpb_mlpbl.h">
       <Filter>AI\MLPB</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlpb_mlpbls.cuh">
+    <ClInclude Include="brendancuda_ai_mlpb_mlpbls.h">
       <Filter>AI\MLPB</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_fields_field3.cuh">
@@ -17,16 +17,16 @@
     <ClInclude Include="brendancuda_ai_evolution_evolver.h">
       <Filter>AI\Evolution</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlp.cuh">
+    <ClInclude Include="brendancuda_ai_mlp.h">
       <Filter>AI\MLP</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlp_mlpl.cuh">
+    <ClInclude Include="brendancuda_ai_mlp_mlpl.h">
       <Filter>AI\MLP</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_genetics_genemlp.cuh">
+    <ClInclude Include="brendancuda_ai_genetics_genemlp.h">
       <Filter>AI\Genetics</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai.cuh">
+    <ClInclude Include="brendancuda_ai.h">
       <Filter>AI</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_fields_dfield3.cuh">
@@ -38,10 +38,10 @@
     <ClInclude Include="brendancuda_random_sseed.cuh">
       <Filter>Random</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_random_bits.cuh">
+    <ClInclude Include="brendancuda_random_bits.h">
       <Filter>Random</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_binary_basic.cuh" />
+    <ClInclude Include="brendancuda_binary_basic.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output.h">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClInclude>
@@ -51,14 +51,14 @@
     <ClInclude Include="brendancuda_ai_evolution.h">
       <Filter>AI\Evolution</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_random_anyrng.cuh">
+    <ClInclude Include="brendancuda_random_anyrng.h">
       <Filter>Random</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_nets_net.h">
       <Filter>Nets</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_fixedvectors.cuh" />
-    <ClInclude Include="brendancuda_math.cuh" />
+    <ClInclude Include="brendancuda_fixedvectors.h" />
+    <ClInclude Include="brendancuda_math.h" />
     <ClInclude Include="brendancuda_cudaerrorhelpers.h" />
     <ClInclude Include="brendancuda_crossassignment.h" />
     <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h">
@@ -73,30 +73,30 @@
     <ClInclude Include="brendancuda_fields_dfield2.cuh">
       <Filter>Fields</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_points.cuh" />
+    <ClInclude Include="brendancuda_points.h" />
     <ClInclude Include="brendancuda_nets_makenet.h">
       <Filter>Nets</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_fields_instance3.cuh">
+    <ClInclude Include="brendancuda_fields_instance3.h">
       <Filter>Fields</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_fields_instance2.cuh">
+    <ClInclude Include="brendancuda_fields_instance2.h">
       <Filter>Fields</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlp_fixedmlp.cuh">
+    <ClInclude Include="brendancuda_ai_mlp_fixedmlp.h">
       <Filter>AI\MLP</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cuh.tt">
+    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.h.tt">
       <Filter>AI\MLPB</Filter>
     </CustomBuild>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cu.tt">
       <Filter>AI\MLPB</Filter>
     </CustomBuild>
-    <CustomBuild Include="brendancuda_fixedvectors.cuh.tt" />
+    <CustomBuild Include="brendancuda_fixedvectors.h.tt" />
     <CustomBuild Include="brendancuda_points.cu.tt" />
-    <CustomBuild Include="brendancuda_points.cuh.tt" />
+    <CustomBuild Include="brendancuda_points.h.tt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">
@@ -133,9 +133,6 @@
   <ItemGroup>
     <CudaCompile Include="brendancuda_ai_evolution_evolver.cpp">
       <Filter>AI\Evolution</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_ai_genetics_genemlp.cu">
-      <Filter>AI\Genetics</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_ai_mlpb.cu">
       <Filter>AI\MLPB</Filter>
@@ -182,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
+    </ClCompile>
+    <ClCompile Include="brendancuda_ai_genetics_genemlp.cpp">
+      <Filter>AI\Genetics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "brendancuda_ai_mlpb_mlpbl.cuh"
-#include "brendancuda_random_anyrng.cuh"
+#include "brendancuda_ai_mlpb_mlpbl.h"
+#include "brendancuda_random_anyrng.h"
 
 namespace BrendanCUDA {
     namespace AI {

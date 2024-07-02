@@ -2,10 +2,8 @@
 
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include "brendancuda_random_devicerandom.cuh"
-#include "brendancuda_random_sseed.cuh"
-#include "brendancuda_random_bits.cuh"
-#include "brendancuda_random_anyrng.cuh"
+#include "brendancuda_random_bits.h"
+#include "brendancuda_random_anyrng.h"
 #include <limits>
 
 namespace BrendanCUDA {

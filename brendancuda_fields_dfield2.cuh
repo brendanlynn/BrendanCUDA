@@ -1,7 +1,7 @@
 #pragma once
 
 #include "brendancuda_fields_field2.cuh"
-#include "brendancuda_points.cuh"
+#include "brendancuda_points.h"
 #include "brendancuda_cudaerrorhelpers.h"
 #include <stdexcept>
 #include <string>

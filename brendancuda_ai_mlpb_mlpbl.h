@@ -3,8 +3,8 @@
 #include <cuda_runtime.h>
 #include <memory>
 
-#include "brendancuda_ai_mlpb_mlpbls.cuh"
-#include "brendancuda_random_anyrng.cuh"
+#include "brendancuda_ai_mlpb_mlpbls.h"
+#include "brendancuda_random_anyrng.h"
 
 namespace BrendanCUDA {
     namespace AI {

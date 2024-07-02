@@ -1,5 +1,5 @@
-#include "brendancuda_ai_genetics_genemlp.cuh"
-#include "brendancuda_random_anyrng.cuh"
+#include "brendancuda_ai_genetics_genemlp.h"
+#include "brendancuda_random_anyrng.h"
 #include "cuda_runtime.h"
 #include "brendancuda_cudaerrorhelpers.h"
 

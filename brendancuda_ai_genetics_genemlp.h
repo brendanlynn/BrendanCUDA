@@ -1,6 +1,6 @@
 #pragma once
 
-#include "brendancuda_ai_mlp.cuh"
+#include "brendancuda_ai_mlp.h"
 #include <vector>
 
 namespace BrendanCUDA {
