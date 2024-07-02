@@ -32,9 +32,6 @@
     <ClInclude Include="brendancuda_fields_dfield3.cuh">
       <Filter>Fields</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_serialization_arrays.cuh">
-      <Filter>Serialization</Filter>
-    </ClInclude>
     <ClInclude Include="brendancuda_random_devicerandom.cuh">
       <Filter>Random</Filter>
     </ClInclude>
@@ -120,9 +117,6 @@
     <Filter Include="AI\Genetics">
       <UniqueIdentifier>{ce47f0e1-0ba0-4a74-978d-297a10635a19}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Serialization">
-      <UniqueIdentifier>{935cd872-ac50-40a9-8efb-8a9f32e3c3e3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Random">
       <UniqueIdentifier>{0bd788c8-6a74-49a0-96b9-dbc38b4bedb3}</UniqueIdentifier>
     </Filter>
@@ -169,9 +163,6 @@
     </CudaCompile>
     <CudaCompile Include="brendancuda_random_sseed.cu">
       <Filter>Random</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_serialization_arrays.cu">
-      <Filter>Serialization</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_binary_basic.cu" />
     <CudaCompile Include="brendancuda_devicecopy.cu" />

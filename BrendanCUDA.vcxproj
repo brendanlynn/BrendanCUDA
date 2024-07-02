@@ -134,7 +134,6 @@
     <ClInclude Include="brendancuda_math.cuh" />
     <ClInclude Include="brendancuda_nets_net.h" />
     <ClInclude Include="brendancuda_random_anyrng.cuh" />
-    <ClInclude Include="brendancuda_serialization_arrays.cuh" />
     <ClInclude Include="brendancuda_binary_basic.cuh" />
     <ClInclude Include="brendancuda_devicecopy.cuh" />
     <ClInclude Include="brendancuda_random_devicerandom.cuh" />
@@ -196,7 +195,6 @@
     <CudaCompile Include="brendancuda_random_bits.cu" />
     <CudaCompile Include="brendancuda_random_devicerandom.cu" />
     <CudaCompile Include="brendancuda_random_sseed.cu" />
-    <CudaCompile Include="brendancuda_serialization_arrays.cu" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cu.tt">
