@@ -65,18 +65,18 @@ __host__ __device__ inline _T& BrendanCUDA::ArrayF<_T, _Size>::operator[](size_t
 }
 
 template <typename _T, size_t _Size>
-__host__ __device__ inline BrendanCUDA::ArrayF<_T, _Size>::operator Span<_T>() const {
+__host__ __device__ inline BrendanCUDA::ArrayF<_T, _Size>::operator BrendanCUDA::Span<_T>() const {
     return Span<_T>((_T*)this, _Size);
 }
 
 template <typename _T, size_t _Size>
-__host__ __device__ inline BrendanCUDA::ArrayF<_T, _Size>::operator Span_ReadOnly<_T>() const {
+__host__ __device__ inline BrendanCUDA::ArrayF<_T, _Size>::operator BrendanCUDA::Span_ReadOnly<_T>() const {
     return Span_ReadOnly<_T>((_T*)this, _Size);
 }
 
 template <typename _T, size_t _Size>
 __host__ __device__ inline BrendanCUDA::Span<_T> BrendanCUDA::ArrayF<_T, _Size>::Split(size_t Start, size_t NewSize) const {
-    return Span<_T>((_T*)this + Start, Size);
+    return Span<_T>((_T*)this + Start, NewSize);
 }
 
 template <typename _T>
@@ -102,12 +102,12 @@ __host__ __device__ inline void BrendanCUDA::ArrayV<_T>::Dispose() {
 }
 
 template <typename _T>
-__host__ __device__ inline BrendanCUDA::ArrayV<_T>::operator Span<_T>() const {
+__host__ __device__ inline BrendanCUDA::ArrayV<_T>::operator BrendanCUDA::Span<_T>() const {
     return Span<_T>(ptr, size);
 }
 
 template <typename _T>
-__host__ __device__ inline BrendanCUDA::ArrayV<_T>::operator Span_ReadOnly<_T>() const {
+__host__ __device__ inline BrendanCUDA::ArrayV<_T>::operator BrendanCUDA::Span_ReadOnly<_T>() const {
     return Span_ReadOnly<_T>(ptr, size);
 }
 
@@ -118,7 +118,7 @@ __host__ __device__ inline BrendanCUDA::Span<_T> BrendanCUDA::ArrayV<_T>::Split(
 
 template <typename _T>
 template <size_t _Size>
-__host__ __device__ inline BrendanCUDA::Span<_T>::Span<_Size>(ArrayF<_T, _Size>& Array) {
+__host__ __device__ inline BrendanCUDA::Span<_T>::Span(ArrayF<_T, _Size>& Array) {
     ptr = (_T*)&Array;
     size = _Size;
 }
@@ -146,7 +146,7 @@ __host__ __device__ inline BrendanCUDA::Span<_T> BrendanCUDA::Span<_T>::Split(si
 }
 
 template <typename _T>
-__host__ __device__ inline BrendanCUDA::Span<_T>::operator Span_ReadOnly<_T>() const {
+__host__ __device__ inline BrendanCUDA::Span<_T>::operator BrendanCUDA::Span_ReadOnly<_T>() const {
     return Span_ReadOnly<_T>(ptr, size);
 }
 
