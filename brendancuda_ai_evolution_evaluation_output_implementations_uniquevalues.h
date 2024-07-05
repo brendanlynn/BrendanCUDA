@@ -9,7 +9,7 @@ namespace BrendanCUDA {
                 namespace Output {
                     template <typename _T>
                     struct Evaluate_UniqueValues_SD final {
-                        InstanceFunctions<_T> instanceFunctions;
+                        InstanceFunctions<_T*, _T*> instanceFunctions;
                         uint64_t iterationCount;
                         size_t outputCount;
                         bool individual;

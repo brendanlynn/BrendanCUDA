@@ -10,7 +10,7 @@ namespace BrendanCUDA {
                 namespace Output {
                     template <typename _T>
                     struct Evaluate_Proliferation_SD final {
-                        InstanceFunctions<_T> instanceFunctions;
+                        InstanceFunctions<_T*, _T*> instanceFunctions;
                         uint64_t iterationsPerRound;
                         uint64_t roundCount;
                         size_t inputCount;
@@ -30,7 +30,7 @@ namespace BrendanCUDA {
                     };
                     template <>
                     struct Evaluate_Proliferation_SD<float> final {
-                        InstanceFunctions<float> instanceFunctions;
+                        InstanceFunctions<float*, float*> instanceFunctions;
                         uint64_t iterationsPerRound;
                         uint64_t roundCount;
                         size_t inputCount;
@@ -48,7 +48,7 @@ namespace BrendanCUDA {
                     };
                     template <>
                     struct Evaluate_Proliferation_SD<double> final {
-                        InstanceFunctions<double> instanceFunctions;
+                        InstanceFunctions<double*, double*> instanceFunctions;
                         uint64_t iterationsPerRound;
                         uint64_t roundCount;
                         size_t inputCount;

@@ -4,7 +4,7 @@
 
 template <typename _T>
 float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues(void* Object, Evaluate_UniqueValues_SD<_T>& Settings) {
-    Instance_V<_T> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
+    Instance_V<_T*, _T*> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
     if (Settings.individual) {
         std::unordered_set<_T>* s = new std::unordered_set<_T>[Settings.outputCount];
         for (size_t i = 0; i < Settings.outputCount; ++i) {

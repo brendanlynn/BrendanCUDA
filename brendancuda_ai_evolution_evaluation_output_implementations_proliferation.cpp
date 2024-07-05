@@ -11,7 +11,7 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<flo
     if (!Settings.inputCount) {
         throw std::runtime_error("'Settings.inputCount' cannot be zero.");
     }
-    Instance_V<float> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
+    Instance_V<float*, float*> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
     float t = 0.f;
     for (size_t i = 0; i < Settings.roundCount; ++i) {
         float* vs = new float[Settings.inputCount];
@@ -41,7 +41,7 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<dou
     if (!Settings.inputCount) {
         throw std::runtime_error("'Settings.inputCount' cannot be zero.");
     }
-    Instance_V<double> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
+    Instance_V<double*, double*> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
     double t = 0.;
     for (size_t i = 0; i < Settings.roundCount; ++i) {
         double* vs = new double[Settings.inputCount];
@@ -69,7 +69,7 @@ float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation(voi
     if (!Settings.inputCount) {
         throw std::runtime_error("'Settings.inputCount' cannot be zero.");
     }
-    Instance_V<_T> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
+    Instance_V<_T*, _T*> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
     uint64_t t = 0ui64;
     for (size_t i = 0; i < Settings.roundCount; ++i) {
         _T* vs = new _T[Settings.inputCount];
