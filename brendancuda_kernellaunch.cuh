@@ -1,0 +1,24 @@
+#pragma once
+
+#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
+#include "brendancuda_fixedvectors.h"
+
+namespace BrendanCUDA {
+    __device__ uint32_t GetCoordinates1() {
+        return blockIdx.x * blockDim.x + threadIdx.x;
+    }
+    __device__ uint32_2 GetCoordinates2() {
+        return uint32_2(
+            blockIdx.x * blockDim.x + threadIdx.x,
+            blockIdx.y * blockDim.y + threadIdx.y
+        );
+    }
+    __device__ uint32_3 GetCoordinates3() {
+        return uint32_3(
+            blockIdx.x * blockDim.x + threadIdx.x,
+            blockIdx.y * blockDim.y + threadIdx.y,
+            blockIdx.z * blockDim.z + threadIdx.z
+        );
+    }
+}

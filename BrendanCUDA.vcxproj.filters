@@ -87,6 +87,7 @@
       <Filter>AI\MLP</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_arrays.h" />
+    <ClInclude Include="brendancuda_kernellaunch.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.h.tt">
