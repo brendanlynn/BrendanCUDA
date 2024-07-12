@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cuda_runtime.h>
-#include "brendancuda_cudaerrorhelpers.h"
+#include "brendancuda_errorhelp.h"
 
 namespace BrendanCUDA {
     template <typename _T>

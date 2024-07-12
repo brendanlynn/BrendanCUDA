@@ -1,8 +1,8 @@
 #pragma once
 
 #include "brendancuda_nets_net.h"
-#include "brendancuda_points.cuh"
-#include "brendancuda_random_anyrng.cuh"
+#include "brendancuda_points.h"
+#include "brendancuda_rand_anyrng.h"
 
 namespace BrendanCUDA {
     namespace Nets {

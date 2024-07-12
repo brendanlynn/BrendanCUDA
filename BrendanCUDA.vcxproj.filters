@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="brendancuda_devicecopy.cuh" />
+    <ClInclude Include="brendancuda_dcopy.cuh" />
     <ClInclude Include="brendancuda_ai_mlpb.h">
       <Filter>AI\MLPB</Filter>
     </ClInclude>
@@ -14,7 +14,7 @@
     <ClInclude Include="brendancuda_fields_field3.cuh">
       <Filter>Fields</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_evolution_evolver.h">
+    <ClInclude Include="brendancuda_ai_evol_evolver.h">
       <Filter>AI\Evolution</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_ai_mlp.h">
@@ -32,39 +32,39 @@
     <ClInclude Include="brendancuda_fields_dfield3.cuh">
       <Filter>Fields</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_random_devicerandom.cuh">
+    <ClInclude Include="brendancuda_rand_drandom.cuh">
       <Filter>Random</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_random_sseed.cuh">
+    <ClInclude Include="brendancuda_rand_sseed.cuh">
       <Filter>Random</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_random_bits.h">
+    <ClInclude Include="brendancuda_rand_bits.h">
       <Filter>Random</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_binary_basic.h" />
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_output.h">
+    <ClInclude Include="brendancuda_ai_evol_eval_output.h">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_multipleevals.h">
+    <ClInclude Include="brendancuda_ai_evol_eval_multieval.h">
       <Filter>AI\Evolution\Evaluation</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_evolution.h">
+    <ClInclude Include="brendancuda_ai_evol.h">
       <Filter>AI\Evolution</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_random_anyrng.h">
+    <ClInclude Include="brendancuda_rand_anyrng.h">
       <Filter>Random</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_nets_net.h">
       <Filter>Nets</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_fixedvectors.h" />
-    <ClInclude Include="brendancuda_math.h" />
-    <ClInclude Include="brendancuda_cudaerrorhelpers.h" />
-    <ClInclude Include="brendancuda_crossassignment.h" />
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h">
+    <ClInclude Include="brendancuda_mathfuncs.h" />
+    <ClInclude Include="brendancuda_errorhelp.h" />
+    <ClInclude Include="brendancuda_crossassigns.h" />
+    <ClInclude Include="brendancuda_ai_evol_eval_output_impl_proliferation.h">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h">
+    <ClInclude Include="brendancuda_ai_evol_eval_output_impl_uniquevalues.h">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_fields_field2.cuh">
@@ -132,7 +132,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="brendancuda_ai_evolution_evolver.cpp">
+    <CudaCompile Include="brendancuda_ai_evol_evolver.cpp">
       <Filter>AI\Evolution</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_ai_mlpb.cu">
@@ -153,32 +153,32 @@
     <CudaCompile Include="brendancuda_ai.cu">
       <Filter>AI</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_random_bits.cu">
+    <CudaCompile Include="brendancuda_rand_bits.cu">
       <Filter>Random</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_random_devicerandom.cu">
+    <CudaCompile Include="brendancuda_rand_drandom.cu">
       <Filter>Random</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_random_sseed.cu">
+    <CudaCompile Include="brendancuda_rand_sseed.cu">
       <Filter>Random</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_binary_basic.cu" />
-    <CudaCompile Include="brendancuda_devicecopy.cu" />
+    <CudaCompile Include="brendancuda_dcopy.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu">
       <Filter>Nets</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_math.cu" />
-    <CudaCompile Include="brendancuda_cudaerrorhelpers.cpp" />
+    <CudaCompile Include="brendancuda_mathfuncs.cu" />
+    <CudaCompile Include="brendancuda_errorhelp.cpp" />
     <CudaCompile Include="brendancuda_points.cu" />
     <CudaCompile Include="brendancuda_nets_makenet.cu">
       <Filter>Nets</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.cpp">
+    <ClCompile Include="brendancuda_ai_evol_eval_output_impl_proliferation.cpp">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClCompile>
-    <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp">
+    <ClCompile Include="brendancuda_ai_evol_eval_output_impl_uniquevalues.cpp">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClCompile>
     <ClCompile Include="brendancuda_ai_genetics_genemlp.cpp">

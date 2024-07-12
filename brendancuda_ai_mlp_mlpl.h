@@ -5,9 +5,9 @@
 #include <cublas_v2.h>
 #include <limits>
 #include <random>
-#include "brendancuda_devicecopy.cuh"
+#include "brendancuda_dcopy.cuh"
 #include "brendancuda_ai.h"
-#include "brendancuda_random_anyrng.h"
+#include "brendancuda_rand_anyrng.h"
 #include <iostream>
 
 namespace BrendanCUDA {

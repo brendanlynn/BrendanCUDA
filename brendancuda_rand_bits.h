@@ -2,7 +2,7 @@
 
 #include <cuda_runtime.h>
 #include <cstdint>
-#include "brendancuda_random_anyrng.h"
+#include "brendancuda_rand_anyrng.h"
 #include "brendancuda_binary_basic.h"
 
 namespace BrendanCUDA {

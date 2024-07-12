@@ -1,8 +1,8 @@
 #include "brendancuda_nets_makenet.h"
-#include "brendancuda_random_devicerandom.cuh"
-#include "brendancuda_random_sseed.cuh"
-#include "brendancuda_cudaerrorhelpers.h"
-#include "brendancuda_points.cuh"
+#include "brendancuda_rand_drandom.cuh"
+#include "brendancuda_rand_sseed.cuh"
+#include "brendancuda_errorhelp.h"
+#include "brendancuda_points.h"
 #include <cuda_runtime.h>
 
 using BrendanCUDA::float_3;

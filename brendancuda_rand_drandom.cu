@@ -1,4 +1,4 @@
-#include "brendancuda_random_devicerandom.cuh"
+#include "brendancuda_rand_drandom.cuh"
 
 __device__ BrendanCUDA::Random::DeviceRandom::DeviceRandom(uint64_t Seed) {
     constexpr uint64_t ma0_0 = 13022122549310882779ui64;

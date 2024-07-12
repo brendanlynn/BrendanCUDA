@@ -2,7 +2,7 @@
 
 #include <cuda_runtime.h>
 #include <memory>
-#include "brendancuda_random_anyrng.h"
+#include "brendancuda_rand_anyrng.h"
 #include "brendancuda_ai.h"
 
 namespace BrendanCUDA {

@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "brendancuda_ai_mlpb_mlpbls.h"
-#include "brendancuda_random_anyrng.h"
+#include "brendancuda_rand_anyrng.h"
 
 namespace BrendanCUDA {
     namespace AI {

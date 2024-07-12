@@ -1,6 +1,6 @@
 #include "brendancuda_ai_mlpb.h"
-#include "brendancuda_cudaerrorhelpers.h"
-#include "brendancuda_devicecopy.cuh"
+#include "brendancuda_errorhelp.h"
+#include "brendancuda_dcopy.cuh"
 
 __host__ __device__ BrendanCUDA::AI::MLPB::MLPB::MLPB(size_t LayerCount) {
 #if __CUDA_ARCH__

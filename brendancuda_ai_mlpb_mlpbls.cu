@@ -1,9 +1,9 @@
 #include "brendancuda_ai_mlpb_mlpbls.h"
 #include "brendancuda_binary_basic.h"
-#include "brendancuda_random_bits.h"
-#include "brendancuda_cudaerrorhelpers.h"
-#include "brendancuda_devicecopy.cuh"
-#include "brendancuda_random_sseed.cuh"
+#include "brendancuda_rand_bits.h"
+#include "brendancuda_errorhelp.h"
+#include "brendancuda_dcopy.cuh"
+#include "brendancuda_rand_sseed.cuh"
 #include "brendancuda_ai.h"
 
 #include <device_launch_parameters.h>

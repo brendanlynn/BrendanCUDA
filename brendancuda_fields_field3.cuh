@@ -5,9 +5,9 @@
 #include <memory>
 #include <thrust/device_ptr.h>
 
-#include "brendancuda_devicecopy.cuh"
+#include "brendancuda_dcopy.cuh"
 #include "brendancuda_points.h"
-#include "brendancuda_cudaerrorhelpers.h"
+#include "brendancuda_errorhelp.h"
 
 namespace BrendanCUDA {
 #ifndef DEFINED_BrendanCUDA__details__fillWithKernel

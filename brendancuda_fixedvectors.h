@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <cuda_runtime.h>
-#include "brendancuda_math.h"
+#include "brendancuda_mathfuncs.h"
 
 namespace BrendanCUDA {
     struct float_2 final {

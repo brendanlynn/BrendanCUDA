@@ -1,10 +1,10 @@
 #pragma once
 
 #include "brendancuda_fields_dfield2.cuh"
-#include "brendancuda_random_anyrng.h"
+#include "brendancuda_rand_anyrng.h"
 #include <tuple>
-#include "brendancuda_random_sseed.cuh"
-#include "brendancuda_ai_evolution_evaluation_output.h"
+#include "brendancuda_rand_sseed.cuh"
+#include "brendancuda_ai_evol_eval_output.h"
 
 namespace BrendanCUDA {
     namespace details {

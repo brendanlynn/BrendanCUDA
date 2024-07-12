@@ -93,14 +93,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="brendancuda_ai.h" />
-    <ClInclude Include="brendancuda_ai_evolution.h" />
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_multipleevals.h" />
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_output.h" />
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.h" />
-    <ClInclude Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.h" />
+    <ClInclude Include="brendancuda_ai_evol.h" />
+    <ClInclude Include="brendancuda_ai_evol_eval_multieval.h" />
+    <ClInclude Include="brendancuda_ai_evol_eval_output.h" />
+    <ClInclude Include="brendancuda_ai_evol_eval_output_impl_proliferation.h" />
+    <ClInclude Include="brendancuda_ai_evol_eval_output_impl_uniquevalues.h" />
     <ClInclude Include="brendancuda_arrays.h" />
-    <ClInclude Include="brendancuda_crossassignment.h" />
-    <ClInclude Include="brendancuda_cudaerrorhelpers.h" />
+    <ClInclude Include="brendancuda_crossassigns.h" />
+    <ClInclude Include="brendancuda_errorhelp.h" />
     <ClInclude Include="brendancuda_fields_dfield2.cuh" />
     <ClInclude Include="brendancuda_fields_field2.cuh" />
     <ClInclude Include="brendancuda_fields_instance2.h" />
@@ -132,23 +132,23 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_fixedvectors.h</Outputs>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
     </CustomBuild>
-    <ClInclude Include="brendancuda_math.h" />
+    <ClInclude Include="brendancuda_mathfuncs.h" />
     <ClInclude Include="brendancuda_nets_net.h" />
-    <ClInclude Include="brendancuda_random_anyrng.h" />
+    <ClInclude Include="brendancuda_rand_anyrng.h" />
     <ClInclude Include="brendancuda_binary_basic.h" />
-    <ClInclude Include="brendancuda_devicecopy.cuh" />
-    <ClInclude Include="brendancuda_random_devicerandom.cuh" />
+    <ClInclude Include="brendancuda_dcopy.cuh" />
+    <ClInclude Include="brendancuda_rand_drandom.cuh" />
     <ClInclude Include="brendancuda_fields_dfield3.cuh" />
-    <ClInclude Include="brendancuda_ai_evolution_evolver.h" />
+    <ClInclude Include="brendancuda_ai_evol_evolver.h" />
     <ClInclude Include="brendancuda_fields_field3.cuh" />
     <ClInclude Include="brendancuda_ai_genetics_genemlp.h" />
-    <ClInclude Include="brendancuda_random_sseed.cuh" />
+    <ClInclude Include="brendancuda_rand_sseed.cuh" />
     <ClInclude Include="brendancuda_ai_mlp.h" />
     <ClInclude Include="brendancuda_ai_mlpb.h" />
     <ClInclude Include="brendancuda_ai_mlpb_mlpbl.h" />
     <ClInclude Include="brendancuda_ai_mlpb_mlpbls.h" />
     <ClInclude Include="brendancuda_ai_mlp_mlpl.h" />
-    <ClInclude Include="brendancuda_random_bits.h" />
+    <ClInclude Include="brendancuda_rand_bits.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.h.tt">
@@ -166,7 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="brendancuda_ai.cu" />
-    <CudaCompile Include="brendancuda_ai_evolution_evolver.cpp">
+    <CudaCompile Include="brendancuda_ai_evol_evolver.cpp">
       <FileType>CppCode</FileType>
     </CudaCompile>
     <ClCompile Include="brendancuda_ai_genetics_genemlp.cpp" />
@@ -176,8 +176,8 @@
     <CudaCompile Include="brendancuda_ai_mlp_mlpl.cu" />
     <CudaCompile Include="brendancuda_ai_mlpb.cu" />
     <CudaCompile Include="brendancuda_binary_basic.cu" />
-    <CudaCompile Include="brendancuda_cudaerrorhelpers.cpp" />
-    <CudaCompile Include="brendancuda_devicecopy.cu" />
+    <CudaCompile Include="brendancuda_errorhelp.cpp" />
+    <CudaCompile Include="brendancuda_dcopy.cu" />
     <CudaCompile Include="brendancuda_nets_makenet.cu" />
     <CudaCompile Include="brendancuda_points.cu" />
     <CustomBuild Include="brendancuda_points.cu.tt">
@@ -191,11 +191,11 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_points.cu</Outputs>
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
     </CustomBuild>
-    <CudaCompile Include="brendancuda_math.cu" />
+    <CudaCompile Include="brendancuda_mathfuncs.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu" />
-    <CudaCompile Include="brendancuda_random_bits.cu" />
-    <CudaCompile Include="brendancuda_random_devicerandom.cu" />
-    <CudaCompile Include="brendancuda_random_sseed.cu" />
+    <CudaCompile Include="brendancuda_rand_bits.cu" />
+    <CudaCompile Include="brendancuda_rand_drandom.cu" />
+    <CudaCompile Include="brendancuda_rand_sseed.cu" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cu.tt">
@@ -211,8 +211,8 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_proliferation.cpp" />
-    <ClCompile Include="brendancuda_ai_evolution_evaluation_output_implementations_uniquevalues.cpp" />
+    <ClCompile Include="brendancuda_ai_evol_eval_output_impl_proliferation.cpp" />
+    <ClCompile Include="brendancuda_ai_evol_eval_output_impl_uniquevalues.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

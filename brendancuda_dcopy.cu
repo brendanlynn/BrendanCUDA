@@ -1,4 +1,4 @@
-#include "brendancuda_devicecopy.cuh"
+#include "brendancuda_dcopy.cuh"
 
 __device__ void deviceMemcpy(void* Destination, const void* Source, size_t Count) {
     size_t c = Count;

@@ -2,7 +2,7 @@
 
 #include "brendancuda_fields_field3.cuh"
 #include "brendancuda_points.h"
-#include "brendancuda_cudaerrorhelpers.h"
+#include "brendancuda_errorhelp.h"
 #include <stdexcept>
 #include <string>
 

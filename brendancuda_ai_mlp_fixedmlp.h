@@ -2,10 +2,10 @@
 
 #include <cuda_runtime.h>
 #include <type_traits>
-#include "brendancuda_random_anyrng.h"
+#include "brendancuda_rand_anyrng.h"
 #include <random>
 #include "brendancuda_ai.h"
-#include "brendancuda_math.h"
+#include "brendancuda_mathfuncs.h"
 
 namespace BrendanCUDA {
     namespace AI {

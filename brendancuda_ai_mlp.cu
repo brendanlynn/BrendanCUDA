@@ -1,6 +1,6 @@
 #include "brendancuda_ai_mlp.h"
-#include "brendancuda_cudaerrorhelpers.h"
-#include "brendancuda_devicecopy.cuh"
+#include "brendancuda_errorhelp.h"
+#include "brendancuda_dcopy.cuh"
 
 __global__ void runActivationFunctionOnArrayKernel(float* Array, BrendanCUDA::AI::activationFunction_t<float> ActivationFunction) {
     float& p(Array[blockIdx.x]);

@@ -1,7 +1,7 @@
 #include "brendancuda_ai_genetics_genemlp.h"
-#include "brendancuda_random_anyrng.h"
+#include "brendancuda_rand_anyrng.h"
 #include "cuda_runtime.h"
-#include "brendancuda_cudaerrorhelpers.h"
+#include "brendancuda_errorhelp.h"
 
 template <typename _T>
 BrendanCUDA::AI::Genetics::GeneMLP<_T>::GeneMLP(_T* Base, MLP::MLP<_T> Intermediate) {

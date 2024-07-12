@@ -1,6 +1,6 @@
 #include "brendancuda_ai_mlp_mlpl.h"
-#include "brendancuda_cudaerrorhelpers.h"
-#include "brendancuda_random_devicerandom.cuh"
+#include "brendancuda_errorhelp.h"
+#include "brendancuda_rand_drandom.cuh"
 
 template <typename _T>
 __host__ __device__ BrendanCUDA::AI::MLP::MLPL<_T>::MLPL(size_t InputLength, size_t OutputLength) {
