@@ -3,7 +3,7 @@
 
 #include <cuda_runtime.h>
 #include <cstdint>
-#include "brendancuda_fixedvectors.cuh"
+#include "brendancuda_fixedvectors.h"
 
 namespace BrendanCUDA {
 <# foreach (int coordBitCount in bitCounts) { #>
