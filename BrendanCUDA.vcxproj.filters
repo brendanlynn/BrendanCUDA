@@ -88,6 +88,7 @@
     </ClInclude>
     <ClInclude Include="brendancuda_arrays.h" />
     <ClInclude Include="brendancuda_kernellaunch.cuh" />
+    <ClInclude Include="brendancuda_cudaconstexpr.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.h.tt">

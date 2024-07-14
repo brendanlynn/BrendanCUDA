@@ -8,6 +8,7 @@
 #include "brendancuda_dcopy.cuh"
 #include "brendancuda_points.h"
 #include "brendancuda_errorhelp.h"
+#include "brendancuda_cudaconstexpr.h"
 
 namespace BrendanCUDA {
 #ifndef DEFINED_BrendanCUDA__details__fillWithKernel
@@ -39,6 +40,8 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline uint32_3 Dimensions() const;
 
             __host__ __device__ __forceinline size_t SizeOnGPU() const;
+
+            __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> operator()(uint32_t X, uint32_t Y, uint32_t Z);
 
             __host__ __forceinline void CopyAllIn(_T* All, bool CopyFromHost);
             __device__ __forceinline void CopyAllIn(_T* All);
@@ -183,6 +186,15 @@ __host__ __device__ __forceinline BrendanCUDA::uint32_3 BrendanCUDA::Fields::Fie
 template <typename _T>
 __host__ __device__ __forceinline size_t BrendanCUDA::Fields::Field3<_T>::SizeOnGPU() const {
     return (((size_t)lengthX) * ((size_t)lengthY) * ((size_t)lengthZ)) * sizeof(_T);
+}
+template <typename _T>
+__host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, _T&, thrust::device_reference<_T>> BrendanCUDA::Fields::Field3<_T>::operator()(uint32_t X, uint32_t Y, uint32_t Z) {
+    uint64_t idx = Coordinates32_3ToIndex64_CM(Dimensions(), uint32_3(X, Y, Z));
+#ifdef __CUDA_ARCH__
+    return cudaArray[idx];
+#else
+    return *thrust::device_ptr<_T>(cudaArray + idx);
+#endif
 }
 template <typename _T>
 __host__ __forceinline void BrendanCUDA::Fields::Field3<_T>::CopyAllIn(_T* All, bool CopyFromHost) {
