@@ -1,0 +1,3 @@
+[submodule "BSerializer"]
+	path = BSerializer
+	url = https://github.com/brendanlynn/BSerializer.git
