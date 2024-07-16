@@ -451,3 +451,134 @@ __host__ __device__ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::R
         return MLPBL();
     }
 }
+
+size_t BrendanCUDA::AI::MLPB::MLPBL::SerializedSize() const {
+    switch (type) {
+    case eMLPBL8T8:
+        return sizeof(networkType_t) + d8t8.SerializedSize();
+    case eMLPBL8T16:
+        return sizeof(networkType_t) + d8t16.SerializedSize();
+    case eMLPBL8T32:
+        return sizeof(networkType_t) + d8t32.SerializedSize();
+    case eMLPBL8T64:
+        return sizeof(networkType_t) + d8t64.SerializedSize();
+    case eMLPBL16T8:
+        return sizeof(networkType_t) + d16t8.SerializedSize();
+    case eMLPBL16T16:
+        return sizeof(networkType_t) + d16t16.SerializedSize();
+    case eMLPBL16T32:
+        return sizeof(networkType_t) + d16t32.SerializedSize();
+    case eMLPBL16T64:
+        return sizeof(networkType_t) + d16t64.SerializedSize();
+    case eMLPBL32T8:
+        return sizeof(networkType_t) + d32t8.SerializedSize();
+    case eMLPBL32T16:
+        return sizeof(networkType_t) + d32t16.SerializedSize();
+    case eMLPBL32T32:
+        return sizeof(networkType_t) + d32t32.SerializedSize();
+    case eMLPBL32T64:
+        return sizeof(networkType_t) + d32t64.SerializedSize();
+    case eMLPBL64T8:
+        return sizeof(networkType_t) + d64t8.SerializedSize();
+    case eMLPBL64T16:
+        return sizeof(networkType_t) + d64t16.SerializedSize();
+    case eMLPBL64T32:
+        return sizeof(networkType_t) + d64t32.SerializedSize();
+    case eMLPBL64T64:
+        return sizeof(networkType_t) + d64t64.SerializedSize();
+    default:
+        return sizeof(networkType_t);
+    }
+}
+void BrendanCUDA::AI::MLPB::MLPBL::Serialize(void*& Data) const {
+    *(networkType_t*)Data = type;
+    Data = ((networkType_t*)Data) + 1;
+    switch (type) {
+    case eMLPBL8T8:
+        d8t8.Serialize(Data);
+        break;
+    case eMLPBL8T16:
+        d8t16.Serialize(Data);
+        break;
+    case eMLPBL8T32:
+        d8t32.Serialize(Data);
+        break;
+    case eMLPBL8T64:
+        d8t64.Serialize(Data);
+        break;
+    case eMLPBL16T8:
+        d16t8.Serialize(Data);
+        break;
+    case eMLPBL16T16:
+        d16t16.Serialize(Data);
+        break;
+    case eMLPBL16T32:
+        d16t32.Serialize(Data);
+        break;
+    case eMLPBL16T64:
+        d16t64.Serialize(Data);
+        break;
+    case eMLPBL32T8:
+        d32t8.Serialize(Data);
+        break;
+    case eMLPBL32T16:
+        d32t16.Serialize(Data);
+        break;
+    case eMLPBL32T32:
+        d32t32.Serialize(Data);
+        break;
+    case eMLPBL32T64:
+        d32t64.Serialize(Data);
+        break;
+    case eMLPBL64T8:
+        d64t8.Serialize(Data);
+        break;
+    case eMLPBL64T16:
+        d64t16.Serialize(Data);
+        break;
+    case eMLPBL64T32:
+        d64t32.Serialize(Data);
+        break;
+    case eMLPBL64T64:
+        d64t64.Serialize(Data);
+        break;
+    }
+}
+BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::Deserialize(const void*& Data) {
+    networkType_t type = *(networkType_t*)Data;
+    Data = ((networkType_t*)Data) + 1;
+    switch (type) {
+    case eMLPBL8T8:
+        return MLPBL(MLPBL8T8::Deserialize(Data));
+    case eMLPBL8T16:
+        return MLPBL(MLPBL8T16::Deserialize(Data));
+    case eMLPBL8T32:
+        return MLPBL(MLPBL8T32::Deserialize(Data));
+    case eMLPBL8T64:
+        return MLPBL(MLPBL8T64::Deserialize(Data));
+    case eMLPBL16T8:
+        return MLPBL(MLPBL16T8::Deserialize(Data));
+    case eMLPBL16T16:
+        return MLPBL(MLPBL16T16::Deserialize(Data));
+    case eMLPBL16T32:
+        return MLPBL(MLPBL16T32::Deserialize(Data));
+    case eMLPBL16T64:
+        return MLPBL(MLPBL16T64::Deserialize(Data));
+    case eMLPBL32T8:
+        return MLPBL(MLPBL32T8::Deserialize(Data));
+    case eMLPBL32T16:
+        return MLPBL(MLPBL32T16::Deserialize(Data));
+    case eMLPBL32T32:
+        return MLPBL(MLPBL32T32::Deserialize(Data));
+    case eMLPBL32T64:
+        return MLPBL(MLPBL32T64::Deserialize(Data));
+    case eMLPBL64T8:
+        return MLPBL(MLPBL64T8::Deserialize(Data));
+    case eMLPBL64T16:
+        return MLPBL(MLPBL64T16::Deserialize(Data));
+    case eMLPBL64T32:
+        return MLPBL(MLPBL64T32::Deserialize(Data));
+    case eMLPBL64T64:
+        return MLPBL(MLPBL64T64::Deserialize(Data));
+    }
+}

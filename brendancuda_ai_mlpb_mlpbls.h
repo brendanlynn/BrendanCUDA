@@ -37,6 +37,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL8T8 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL8T8 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL8T8 Deserialize(const void*& Data);
             private:
                 uint8_t* weights;
                 uint8_t* bias;
@@ -70,6 +74,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL8T16 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL8T16 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL8T16 Deserialize(const void*& Data);
             private:
                 uint8_t* weights;
                 uint16_t* bias;
@@ -103,6 +111,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL8T32 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL8T32 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL8T32 Deserialize(const void*& Data);
             private:
                 uint8_t* weights;
                 uint32_t* bias;
@@ -136,6 +148,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL8T64 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL8T64 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL8T64 Deserialize(const void*& Data);
             private:
                 uint8_t* weights;
                 uint64_t* bias;
@@ -169,6 +185,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL16T8 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL16T8 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL16T8 Deserialize(const void*& Data);
             private:
                 uint16_t* weights;
                 uint8_t* bias;
@@ -202,6 +222,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL16T16 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL16T16 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL16T16 Deserialize(const void*& Data);
             private:
                 uint16_t* weights;
                 uint16_t* bias;
@@ -235,6 +259,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL16T32 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL16T32 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL16T32 Deserialize(const void*& Data);
             private:
                 uint16_t* weights;
                 uint32_t* bias;
@@ -268,6 +296,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL16T64 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL16T64 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL16T64 Deserialize(const void*& Data);
             private:
                 uint16_t* weights;
                 uint64_t* bias;
@@ -301,6 +333,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL32T8 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL32T8 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL32T8 Deserialize(const void*& Data);
             private:
                 uint32_t* weights;
                 uint8_t* bias;
@@ -334,6 +370,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL32T16 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL32T16 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL32T16 Deserialize(const void*& Data);
             private:
                 uint32_t* weights;
                 uint16_t* bias;
@@ -367,6 +407,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL32T32 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL32T32 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL32T32 Deserialize(const void*& Data);
             private:
                 uint32_t* weights;
                 uint32_t* bias;
@@ -400,6 +444,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL32T64 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL32T64 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL32T64 Deserialize(const void*& Data);
             private:
                 uint32_t* weights;
                 uint64_t* bias;
@@ -433,6 +481,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL64T8 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL64T8 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL64T8 Deserialize(const void*& Data);
             private:
                 uint64_t* weights;
                 uint8_t* bias;
@@ -466,6 +518,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL64T16 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL64T16 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL64T16 Deserialize(const void*& Data);
             private:
                 uint64_t* weights;
                 uint16_t* bias;
@@ -499,6 +555,10 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL64T32 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL64T32 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL64T32 Deserialize(const void*& Data);
             private:
                 uint64_t* weights;
                 uint32_t* bias;
@@ -532,10 +592,287 @@ namespace BrendanCUDA {
                 __host__ __device__ MLPBL64T64 ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL64T64 ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
+
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL64T64 Deserialize(const void*& Data);
             private:
                 uint64_t* weights;
                 uint64_t* bias;
             };
         }
     }
+}
+
+size_t BrendanCUDA::AI::MLPB::MLPBL8T8::SerializedSize() const {
+    return sizeof(uint8_t) * 8 + sizeof(uint8_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL8T8::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint8_t) * 8, cudaMemcpyDeviceToHost);
+    Data = ((uint8_t*)Data) + 8;
+    cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+    Data = ((uint8_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL8T8 BrendanCUDA::AI::MLPB::MLPBL8T8::Deserialize(const void*& Data) {
+    MLPBL8T8 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 8, cudaMemcpyHostToDevice);
+    Data = ((uint8_t*)Data) + 8;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+    Data = ((uint8_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL8T16::SerializedSize() const {
+    return sizeof(uint8_t) * 16 + sizeof(uint16_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL8T16::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint8_t) * 16, cudaMemcpyDeviceToHost);
+    Data = ((uint8_t*)Data) + 16;
+    cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+    Data = ((uint16_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL8T16 BrendanCUDA::AI::MLPB::MLPBL8T16::Deserialize(const void*& Data) {
+    MLPBL8T16 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 16, cudaMemcpyHostToDevice);
+    Data = ((uint8_t*)Data) + 16;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+    Data = ((uint16_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL8T32::SerializedSize() const {
+    return sizeof(uint8_t) * 32 + sizeof(uint32_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL8T32::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint8_t) * 32, cudaMemcpyDeviceToHost);
+    Data = ((uint8_t*)Data) + 32;
+    cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+    Data = ((uint32_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL8T32 BrendanCUDA::AI::MLPB::MLPBL8T32::Deserialize(const void*& Data) {
+    MLPBL8T32 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 32, cudaMemcpyHostToDevice);
+    Data = ((uint8_t*)Data) + 32;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+    Data = ((uint32_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL8T64::SerializedSize() const {
+    return sizeof(uint8_t) * 64 + sizeof(uint64_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL8T64::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint8_t) * 64, cudaMemcpyDeviceToHost);
+    Data = ((uint8_t*)Data) + 64;
+    cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+    Data = ((uint64_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL8T64 BrendanCUDA::AI::MLPB::MLPBL8T64::Deserialize(const void*& Data) {
+    MLPBL8T64 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 64, cudaMemcpyHostToDevice);
+    Data = ((uint8_t*)Data) + 64;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+    Data = ((uint64_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL16T8::SerializedSize() const {
+    return sizeof(uint16_t) * 8 + sizeof(uint8_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL16T8::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint16_t) * 8, cudaMemcpyDeviceToHost);
+    Data = ((uint16_t*)Data) + 8;
+    cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+    Data = ((uint8_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL16T8 BrendanCUDA::AI::MLPB::MLPBL16T8::Deserialize(const void*& Data) {
+    MLPBL16T8 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 8, cudaMemcpyHostToDevice);
+    Data = ((uint16_t*)Data) + 8;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+    Data = ((uint8_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL16T16::SerializedSize() const {
+    return sizeof(uint16_t) * 16 + sizeof(uint16_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL16T16::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint16_t) * 16, cudaMemcpyDeviceToHost);
+    Data = ((uint16_t*)Data) + 16;
+    cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+    Data = ((uint16_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL16T16 BrendanCUDA::AI::MLPB::MLPBL16T16::Deserialize(const void*& Data) {
+    MLPBL16T16 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 16, cudaMemcpyHostToDevice);
+    Data = ((uint16_t*)Data) + 16;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+    Data = ((uint16_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL16T32::SerializedSize() const {
+    return sizeof(uint16_t) * 32 + sizeof(uint32_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL16T32::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint16_t) * 32, cudaMemcpyDeviceToHost);
+    Data = ((uint16_t*)Data) + 32;
+    cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+    Data = ((uint32_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL16T32 BrendanCUDA::AI::MLPB::MLPBL16T32::Deserialize(const void*& Data) {
+    MLPBL16T32 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 32, cudaMemcpyHostToDevice);
+    Data = ((uint16_t*)Data) + 32;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+    Data = ((uint32_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL16T64::SerializedSize() const {
+    return sizeof(uint16_t) * 64 + sizeof(uint64_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL16T64::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint16_t) * 64, cudaMemcpyDeviceToHost);
+    Data = ((uint16_t*)Data) + 64;
+    cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+    Data = ((uint64_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL16T64 BrendanCUDA::AI::MLPB::MLPBL16T64::Deserialize(const void*& Data) {
+    MLPBL16T64 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 64, cudaMemcpyHostToDevice);
+    Data = ((uint16_t*)Data) + 64;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+    Data = ((uint64_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL32T8::SerializedSize() const {
+    return sizeof(uint32_t) * 8 + sizeof(uint8_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL32T8::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint32_t) * 8, cudaMemcpyDeviceToHost);
+    Data = ((uint32_t*)Data) + 8;
+    cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+    Data = ((uint8_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL32T8 BrendanCUDA::AI::MLPB::MLPBL32T8::Deserialize(const void*& Data) {
+    MLPBL32T8 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 8, cudaMemcpyHostToDevice);
+    Data = ((uint32_t*)Data) + 8;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+    Data = ((uint8_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL32T16::SerializedSize() const {
+    return sizeof(uint32_t) * 16 + sizeof(uint16_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL32T16::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint32_t) * 16, cudaMemcpyDeviceToHost);
+    Data = ((uint32_t*)Data) + 16;
+    cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+    Data = ((uint16_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL32T16 BrendanCUDA::AI::MLPB::MLPBL32T16::Deserialize(const void*& Data) {
+    MLPBL32T16 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 16, cudaMemcpyHostToDevice);
+    Data = ((uint32_t*)Data) + 16;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+    Data = ((uint16_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL32T32::SerializedSize() const {
+    return sizeof(uint32_t) * 32 + sizeof(uint32_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL32T32::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint32_t) * 32, cudaMemcpyDeviceToHost);
+    Data = ((uint32_t*)Data) + 32;
+    cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+    Data = ((uint32_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL32T32 BrendanCUDA::AI::MLPB::MLPBL32T32::Deserialize(const void*& Data) {
+    MLPBL32T32 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 32, cudaMemcpyHostToDevice);
+    Data = ((uint32_t*)Data) + 32;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+    Data = ((uint32_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL32T64::SerializedSize() const {
+    return sizeof(uint32_t) * 64 + sizeof(uint64_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL32T64::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint32_t) * 64, cudaMemcpyDeviceToHost);
+    Data = ((uint32_t*)Data) + 64;
+    cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+    Data = ((uint64_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL32T64 BrendanCUDA::AI::MLPB::MLPBL32T64::Deserialize(const void*& Data) {
+    MLPBL32T64 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 64, cudaMemcpyHostToDevice);
+    Data = ((uint32_t*)Data) + 64;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+    Data = ((uint64_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL64T8::SerializedSize() const {
+    return sizeof(uint64_t) * 8 + sizeof(uint8_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL64T8::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint64_t) * 8, cudaMemcpyDeviceToHost);
+    Data = ((uint64_t*)Data) + 8;
+    cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+    Data = ((uint8_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL64T8 BrendanCUDA::AI::MLPB::MLPBL64T8::Deserialize(const void*& Data) {
+    MLPBL64T8 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 8, cudaMemcpyHostToDevice);
+    Data = ((uint64_t*)Data) + 8;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+    Data = ((uint8_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL64T16::SerializedSize() const {
+    return sizeof(uint64_t) * 16 + sizeof(uint16_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL64T16::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint64_t) * 16, cudaMemcpyDeviceToHost);
+    Data = ((uint64_t*)Data) + 16;
+    cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+    Data = ((uint16_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL64T16 BrendanCUDA::AI::MLPB::MLPBL64T16::Deserialize(const void*& Data) {
+    MLPBL64T16 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 16, cudaMemcpyHostToDevice);
+    Data = ((uint64_t*)Data) + 16;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+    Data = ((uint16_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL64T32::SerializedSize() const {
+    return sizeof(uint64_t) * 32 + sizeof(uint32_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL64T32::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint64_t) * 32, cudaMemcpyDeviceToHost);
+    Data = ((uint64_t*)Data) + 32;
+    cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+    Data = ((uint32_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL64T32 BrendanCUDA::AI::MLPB::MLPBL64T32::Deserialize(const void*& Data) {
+    MLPBL64T32 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 32, cudaMemcpyHostToDevice);
+    Data = ((uint64_t*)Data) + 32;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+    Data = ((uint32_t*)Data) + 1;
+    return mlpbl;
+}
+size_t BrendanCUDA::AI::MLPB::MLPBL64T64::SerializedSize() const {
+    return sizeof(uint64_t) * 64 + sizeof(uint64_t);
+}
+void BrendanCUDA::AI::MLPB::MLPBL64T64::Serialize(void*& Data) const {
+    cudaMemcpy(Data, weights, sizeof(uint64_t) * 64, cudaMemcpyDeviceToHost);
+    Data = ((uint64_t*)Data) + 64;
+    cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+    Data = ((uint64_t*)Data) + 1;
+}
+BrendanCUDA::AI::MLPB::MLPBL64T64 BrendanCUDA::AI::MLPB::MLPBL64T64::Deserialize(const void*& Data) {
+    MLPBL64T64 mlpbl;
+    cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 64, cudaMemcpyHostToDevice);
+    Data = ((uint64_t*)Data) + 64;
+    cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+    Data = ((uint64_t*)Data) + 1;
+    return mlpbl;
 }

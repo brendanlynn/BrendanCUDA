@@ -41,6 +41,10 @@ namespace BrendanCUDA {
                 __host__ __device__ void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPBL ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) const;
 
+                size_t SerializedSize() const;
+                void Serialize(void*& Data) const;
+                static MLPBL Deserialize(const void*& Data);
+
                 union {
                     MLPBL8T8 d8t8;
                     MLPBL8T16 d8t16;
@@ -59,7 +63,7 @@ namespace BrendanCUDA {
                     MLPBL64T32 d64t32;
                     MLPBL64T64 d64t64;
                 };
-                enum networkType_t {
+                enum networkType_t : int32_t {
                     eNull = -1,
                     eMLPBL8T8,
                     eMLPBL8T16,
