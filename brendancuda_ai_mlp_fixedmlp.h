@@ -6,7 +6,6 @@
 #include <random>
 #include "brendancuda_ai.h"
 #include "brendancuda_mathfuncs.h"
-#include "BSerializer/Serializable.h"
 
 namespace BrendanCUDA {
     namespace AI {
