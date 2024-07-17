@@ -41,6 +41,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL8T8 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL8T8& Value);
             private:
                 uint8_t* weights;
                 uint8_t* bias;
@@ -78,6 +79,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL8T16 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL8T16& Value);
             private:
                 uint8_t* weights;
                 uint16_t* bias;
@@ -115,6 +117,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL8T32 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL8T32& Value);
             private:
                 uint8_t* weights;
                 uint32_t* bias;
@@ -152,6 +155,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL8T64 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL8T64& Value);
             private:
                 uint8_t* weights;
                 uint64_t* bias;
@@ -189,6 +193,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL16T8 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL16T8& Value);
             private:
                 uint16_t* weights;
                 uint8_t* bias;
@@ -226,6 +231,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL16T16 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL16T16& Value);
             private:
                 uint16_t* weights;
                 uint16_t* bias;
@@ -263,6 +269,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL16T32 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL16T32& Value);
             private:
                 uint16_t* weights;
                 uint32_t* bias;
@@ -300,6 +307,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL16T64 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL16T64& Value);
             private:
                 uint16_t* weights;
                 uint64_t* bias;
@@ -337,6 +345,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL32T8 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL32T8& Value);
             private:
                 uint32_t* weights;
                 uint8_t* bias;
@@ -374,6 +383,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL32T16 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL32T16& Value);
             private:
                 uint32_t* weights;
                 uint16_t* bias;
@@ -411,6 +421,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL32T32 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL32T32& Value);
             private:
                 uint32_t* weights;
                 uint32_t* bias;
@@ -448,6 +459,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL32T64 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL32T64& Value);
             private:
                 uint32_t* weights;
                 uint64_t* bias;
@@ -485,6 +497,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL64T8 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL64T8& Value);
             private:
                 uint64_t* weights;
                 uint8_t* bias;
@@ -522,6 +535,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL64T16 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL64T16& Value);
             private:
                 uint64_t* weights;
                 uint16_t* bias;
@@ -559,6 +573,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL64T32 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL64T32& Value);
             private:
                 uint64_t* weights;
                 uint32_t* bias;
@@ -596,6 +611,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL64T64 Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL64T64& Value);
             private:
                 uint64_t* weights;
                 uint64_t* bias;
@@ -621,6 +637,9 @@ BrendanCUDA::AI::MLPB::MLPBL8T8 BrendanCUDA::AI::MLPB::MLPBL8T8::Deserialize(con
     Data = ((uint8_t*)Data) + 1;
     return mlpbl;
 }
+void BrendanCUDA::AI::MLPB::MLPBL8T8::Deserialize(const void*& Data, MLPBL8T8& Value) {
+    Value = Deserialize(Data);
+}
 size_t BrendanCUDA::AI::MLPB::MLPBL8T16::SerializedSize() const {
     return sizeof(uint8_t) * 16 + sizeof(uint16_t);
 }
@@ -637,6 +656,9 @@ BrendanCUDA::AI::MLPB::MLPBL8T16 BrendanCUDA::AI::MLPB::MLPBL8T16::Deserialize(c
     cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
     Data = ((uint16_t*)Data) + 1;
     return mlpbl;
+}
+void BrendanCUDA::AI::MLPB::MLPBL8T16::Deserialize(const void*& Data, MLPBL8T16& Value) {
+    Value = Deserialize(Data);
 }
 size_t BrendanCUDA::AI::MLPB::MLPBL8T32::SerializedSize() const {
     return sizeof(uint8_t) * 32 + sizeof(uint32_t);
@@ -655,6 +677,9 @@ BrendanCUDA::AI::MLPB::MLPBL8T32 BrendanCUDA::AI::MLPB::MLPBL8T32::Deserialize(c
     Data = ((uint32_t*)Data) + 1;
     return mlpbl;
 }
+void BrendanCUDA::AI::MLPB::MLPBL8T32::Deserialize(const void*& Data, MLPBL8T32& Value) {
+    Value = Deserialize(Data);
+}
 size_t BrendanCUDA::AI::MLPB::MLPBL8T64::SerializedSize() const {
     return sizeof(uint8_t) * 64 + sizeof(uint64_t);
 }
@@ -671,6 +696,9 @@ BrendanCUDA::AI::MLPB::MLPBL8T64 BrendanCUDA::AI::MLPB::MLPBL8T64::Deserialize(c
     cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
     Data = ((uint64_t*)Data) + 1;
     return mlpbl;
+}
+void BrendanCUDA::AI::MLPB::MLPBL8T64::Deserialize(const void*& Data, MLPBL8T64& Value) {
+    Value = Deserialize(Data);
 }
 size_t BrendanCUDA::AI::MLPB::MLPBL16T8::SerializedSize() const {
     return sizeof(uint16_t) * 8 + sizeof(uint8_t);
@@ -689,6 +717,9 @@ BrendanCUDA::AI::MLPB::MLPBL16T8 BrendanCUDA::AI::MLPB::MLPBL16T8::Deserialize(c
     Data = ((uint8_t*)Data) + 1;
     return mlpbl;
 }
+void BrendanCUDA::AI::MLPB::MLPBL16T8::Deserialize(const void*& Data, MLPBL16T8& Value) {
+    Value = Deserialize(Data);
+}
 size_t BrendanCUDA::AI::MLPB::MLPBL16T16::SerializedSize() const {
     return sizeof(uint16_t) * 16 + sizeof(uint16_t);
 }
@@ -705,6 +736,9 @@ BrendanCUDA::AI::MLPB::MLPBL16T16 BrendanCUDA::AI::MLPB::MLPBL16T16::Deserialize
     cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
     Data = ((uint16_t*)Data) + 1;
     return mlpbl;
+}
+void BrendanCUDA::AI::MLPB::MLPBL16T16::Deserialize(const void*& Data, MLPBL16T16& Value) {
+    Value = Deserialize(Data);
 }
 size_t BrendanCUDA::AI::MLPB::MLPBL16T32::SerializedSize() const {
     return sizeof(uint16_t) * 32 + sizeof(uint32_t);
@@ -723,6 +757,9 @@ BrendanCUDA::AI::MLPB::MLPBL16T32 BrendanCUDA::AI::MLPB::MLPBL16T32::Deserialize
     Data = ((uint32_t*)Data) + 1;
     return mlpbl;
 }
+void BrendanCUDA::AI::MLPB::MLPBL16T32::Deserialize(const void*& Data, MLPBL16T32& Value) {
+    Value = Deserialize(Data);
+}
 size_t BrendanCUDA::AI::MLPB::MLPBL16T64::SerializedSize() const {
     return sizeof(uint16_t) * 64 + sizeof(uint64_t);
 }
@@ -739,6 +776,9 @@ BrendanCUDA::AI::MLPB::MLPBL16T64 BrendanCUDA::AI::MLPB::MLPBL16T64::Deserialize
     cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
     Data = ((uint64_t*)Data) + 1;
     return mlpbl;
+}
+void BrendanCUDA::AI::MLPB::MLPBL16T64::Deserialize(const void*& Data, MLPBL16T64& Value) {
+    Value = Deserialize(Data);
 }
 size_t BrendanCUDA::AI::MLPB::MLPBL32T8::SerializedSize() const {
     return sizeof(uint32_t) * 8 + sizeof(uint8_t);
@@ -757,6 +797,9 @@ BrendanCUDA::AI::MLPB::MLPBL32T8 BrendanCUDA::AI::MLPB::MLPBL32T8::Deserialize(c
     Data = ((uint8_t*)Data) + 1;
     return mlpbl;
 }
+void BrendanCUDA::AI::MLPB::MLPBL32T8::Deserialize(const void*& Data, MLPBL32T8& Value) {
+    Value = Deserialize(Data);
+}
 size_t BrendanCUDA::AI::MLPB::MLPBL32T16::SerializedSize() const {
     return sizeof(uint32_t) * 16 + sizeof(uint16_t);
 }
@@ -773,6 +816,9 @@ BrendanCUDA::AI::MLPB::MLPBL32T16 BrendanCUDA::AI::MLPB::MLPBL32T16::Deserialize
     cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
     Data = ((uint16_t*)Data) + 1;
     return mlpbl;
+}
+void BrendanCUDA::AI::MLPB::MLPBL32T16::Deserialize(const void*& Data, MLPBL32T16& Value) {
+    Value = Deserialize(Data);
 }
 size_t BrendanCUDA::AI::MLPB::MLPBL32T32::SerializedSize() const {
     return sizeof(uint32_t) * 32 + sizeof(uint32_t);
@@ -791,6 +837,9 @@ BrendanCUDA::AI::MLPB::MLPBL32T32 BrendanCUDA::AI::MLPB::MLPBL32T32::Deserialize
     Data = ((uint32_t*)Data) + 1;
     return mlpbl;
 }
+void BrendanCUDA::AI::MLPB::MLPBL32T32::Deserialize(const void*& Data, MLPBL32T32& Value) {
+    Value = Deserialize(Data);
+}
 size_t BrendanCUDA::AI::MLPB::MLPBL32T64::SerializedSize() const {
     return sizeof(uint32_t) * 64 + sizeof(uint64_t);
 }
@@ -807,6 +856,9 @@ BrendanCUDA::AI::MLPB::MLPBL32T64 BrendanCUDA::AI::MLPB::MLPBL32T64::Deserialize
     cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
     Data = ((uint64_t*)Data) + 1;
     return mlpbl;
+}
+void BrendanCUDA::AI::MLPB::MLPBL32T64::Deserialize(const void*& Data, MLPBL32T64& Value) {
+    Value = Deserialize(Data);
 }
 size_t BrendanCUDA::AI::MLPB::MLPBL64T8::SerializedSize() const {
     return sizeof(uint64_t) * 8 + sizeof(uint8_t);
@@ -825,6 +877,9 @@ BrendanCUDA::AI::MLPB::MLPBL64T8 BrendanCUDA::AI::MLPB::MLPBL64T8::Deserialize(c
     Data = ((uint8_t*)Data) + 1;
     return mlpbl;
 }
+void BrendanCUDA::AI::MLPB::MLPBL64T8::Deserialize(const void*& Data, MLPBL64T8& Value) {
+    Value = Deserialize(Data);
+}
 size_t BrendanCUDA::AI::MLPB::MLPBL64T16::SerializedSize() const {
     return sizeof(uint64_t) * 16 + sizeof(uint16_t);
 }
@@ -841,6 +896,9 @@ BrendanCUDA::AI::MLPB::MLPBL64T16 BrendanCUDA::AI::MLPB::MLPBL64T16::Deserialize
     cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
     Data = ((uint16_t*)Data) + 1;
     return mlpbl;
+}
+void BrendanCUDA::AI::MLPB::MLPBL64T16::Deserialize(const void*& Data, MLPBL64T16& Value) {
+    Value = Deserialize(Data);
 }
 size_t BrendanCUDA::AI::MLPB::MLPBL64T32::SerializedSize() const {
     return sizeof(uint64_t) * 32 + sizeof(uint32_t);
@@ -859,6 +917,9 @@ BrendanCUDA::AI::MLPB::MLPBL64T32 BrendanCUDA::AI::MLPB::MLPBL64T32::Deserialize
     Data = ((uint32_t*)Data) + 1;
     return mlpbl;
 }
+void BrendanCUDA::AI::MLPB::MLPBL64T32::Deserialize(const void*& Data, MLPBL64T32& Value) {
+    Value = Deserialize(Data);
+}
 size_t BrendanCUDA::AI::MLPB::MLPBL64T64::SerializedSize() const {
     return sizeof(uint64_t) * 64 + sizeof(uint64_t);
 }
@@ -875,4 +936,7 @@ BrendanCUDA::AI::MLPB::MLPBL64T64 BrendanCUDA::AI::MLPB::MLPBL64T64::Deserialize
     cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
     Data = ((uint64_t*)Data) + 1;
     return mlpbl;
+}
+void BrendanCUDA::AI::MLPB::MLPBL64T64::Deserialize(const void*& Data, MLPBL64T64& Value) {
+    Value = Deserialize(Data);
 }

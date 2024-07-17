@@ -44,6 +44,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL& Value);
 
                 union {
                     MLPBL8T8 d8t8;

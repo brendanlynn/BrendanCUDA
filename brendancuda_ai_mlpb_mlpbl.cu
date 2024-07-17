@@ -582,3 +582,6 @@ BrendanCUDA::AI::MLPB::MLPBL BrendanCUDA::AI::MLPB::MLPBL::Deserialize(const voi
         return MLPBL(MLPBL64T64::Deserialize(Data));
     }
 }
+void BrendanCUDA::AI::MLPB::MLPBL::Deserialize(const void*& Data, MLPBL& Value) {
+    Value = Deserialize(Data);
+}

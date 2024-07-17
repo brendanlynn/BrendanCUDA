@@ -43,6 +43,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBL<#= i #>T<#= j #> Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, MLPBL<#= i #>T<#= j #>& Value);
             private:
                 uint<#= i #>_t* weights;
                 uint<#= j #>_t* bias;
@@ -70,5 +71,8 @@ BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i 
     cudaMemcpy(mlpbl.bias, Data, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice);
     Data = ((uint<#= j #>_t*)Data) + 1;
     return mlpbl;
+}
+void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Deserialize(const void*& Data, MLPBL<#= i #>T<#= j #>& Value) {
+    Value = Deserialize(Data);
 }
 <# } } #>
