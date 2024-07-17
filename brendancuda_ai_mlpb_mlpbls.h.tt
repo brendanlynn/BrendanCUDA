@@ -2,6 +2,8 @@
 
 #include <cuda_runtime.h>
 #include <memory>
+#include <bit>
+#include "BSerializer/Serializer.h"
 #include "brendancuda_rand_anyrng.h"
 #include "brendancuda_ai.h"
 
@@ -59,18 +61,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::SerializedSize() const {
     return sizeof(uint<#= i #>_t) * <#= j #> + sizeof(uint<#= j #>_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToHost);
-    Data = ((uint<#= i #>_t*)Data) + <#= j #>;
-    cudaMemcpy(Data, bias, sizeof(uint<#= j #>_t), cudaMemcpyDeviceToHost);
-    Data = ((uint<#= j #>_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToHost);
+        Data = ((uint<#= i #>_t*)Data) + <#= j #>;
+        cudaMemcpy(Data, bias, sizeof(uint<#= j #>_t), cudaMemcpyDeviceToHost);
+        Data = ((uint<#= j #>_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyDeviceToHost);
+        void* nd = ((uint<#= i #>_t*)Data) + <#= j #>;
+        BSerializer::ToFromLittleEndian((uint<#= i #>_t*)Data, (uint<#= i #>_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint<#= j #>_t), cudaMemcpyDeviceToHost);
+        uint<#= j #>_t& bref = *(uint<#= j #>_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint<#= j #>_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #> BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Deserialize(const void*& Data) {
-    MLPBL<#= i #>T<#= j #> mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyHostToDevice);
-    Data = ((uint<#= i #>_t*)Data) + <#= j #>;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice);
-    Data = ((uint<#= j #>_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL<#= i #>T<#= j #> mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyHostToDevice);
+        Data = ((uint<#= i #>_t*)Data) + <#= j #>;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice);
+        Data = ((uint<#= j #>_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL<#= i #>T<#= j #> mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint<#= i #>_t) * <#= j #>, cudaMemcpyHostToDevice);
+        void* nd = ((uint<#= i #>_t*)Data) + <#= j #>;
+        BSerializer::ToFromLittleEndian((uint<#= i #>_t*)Data, (uint<#= i #>_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint<#= j #>_t), cudaMemcpyHostToDevice);
+        uint<#= j #>_t& bref = *(uint<#= j #>_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint<#= j #>_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL<#= i #>T<#= j #>::Deserialize(const void*& Data, MLPBL<#= i #>T<#= j #>& Value) {
     Value = Deserialize(Data);

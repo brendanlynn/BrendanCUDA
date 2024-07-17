@@ -2,6 +2,8 @@
 
 #include <cuda_runtime.h>
 #include <memory>
+#include <bit>
+#include "BSerializer/Serializer.h"
 #include "brendancuda_rand_anyrng.h"
 #include "brendancuda_ai.h"
 
@@ -624,18 +626,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL8T8::SerializedSize() const {
     return sizeof(uint8_t) * 8 + sizeof(uint8_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL8T8::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint8_t) * 8, cudaMemcpyDeviceToHost);
-    Data = ((uint8_t*)Data) + 8;
-    cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
-    Data = ((uint8_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint8_t) * 8, cudaMemcpyDeviceToHost);
+        Data = ((uint8_t*)Data) + 8;
+        cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+        Data = ((uint8_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint8_t) * 8, cudaMemcpyDeviceToHost);
+        void* nd = ((uint8_t*)Data) + 8;
+        BSerializer::ToFromLittleEndian((uint8_t*)Data, (uint8_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+        uint8_t& bref = *(uint8_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint8_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL8T8 BrendanCUDA::AI::MLPB::MLPBL8T8::Deserialize(const void*& Data) {
-    MLPBL8T8 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 8, cudaMemcpyHostToDevice);
-    Data = ((uint8_t*)Data) + 8;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
-    Data = ((uint8_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL8T8 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 8, cudaMemcpyHostToDevice);
+        Data = ((uint8_t*)Data) + 8;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+        Data = ((uint8_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL8T8 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 8, cudaMemcpyHostToDevice);
+        void* nd = ((uint8_t*)Data) + 8;
+        BSerializer::ToFromLittleEndian((uint8_t*)Data, (uint8_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+        uint8_t& bref = *(uint8_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint8_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL8T8::Deserialize(const void*& Data, MLPBL8T8& Value) {
     Value = Deserialize(Data);
@@ -644,18 +672,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL8T16::SerializedSize() const {
     return sizeof(uint8_t) * 16 + sizeof(uint16_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL8T16::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint8_t) * 16, cudaMemcpyDeviceToHost);
-    Data = ((uint8_t*)Data) + 16;
-    cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
-    Data = ((uint16_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint8_t) * 16, cudaMemcpyDeviceToHost);
+        Data = ((uint8_t*)Data) + 16;
+        cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+        Data = ((uint16_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint8_t) * 16, cudaMemcpyDeviceToHost);
+        void* nd = ((uint8_t*)Data) + 16;
+        BSerializer::ToFromLittleEndian((uint8_t*)Data, (uint8_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+        uint16_t& bref = *(uint16_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint16_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL8T16 BrendanCUDA::AI::MLPB::MLPBL8T16::Deserialize(const void*& Data) {
-    MLPBL8T16 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 16, cudaMemcpyHostToDevice);
-    Data = ((uint8_t*)Data) + 16;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
-    Data = ((uint16_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL8T16 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 16, cudaMemcpyHostToDevice);
+        Data = ((uint8_t*)Data) + 16;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+        Data = ((uint16_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL8T16 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 16, cudaMemcpyHostToDevice);
+        void* nd = ((uint8_t*)Data) + 16;
+        BSerializer::ToFromLittleEndian((uint8_t*)Data, (uint8_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+        uint16_t& bref = *(uint16_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint16_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL8T16::Deserialize(const void*& Data, MLPBL8T16& Value) {
     Value = Deserialize(Data);
@@ -664,18 +718,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL8T32::SerializedSize() const {
     return sizeof(uint8_t) * 32 + sizeof(uint32_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL8T32::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint8_t) * 32, cudaMemcpyDeviceToHost);
-    Data = ((uint8_t*)Data) + 32;
-    cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
-    Data = ((uint32_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint8_t) * 32, cudaMemcpyDeviceToHost);
+        Data = ((uint8_t*)Data) + 32;
+        cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+        Data = ((uint32_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint8_t) * 32, cudaMemcpyDeviceToHost);
+        void* nd = ((uint8_t*)Data) + 32;
+        BSerializer::ToFromLittleEndian((uint8_t*)Data, (uint8_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+        uint32_t& bref = *(uint32_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint32_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL8T32 BrendanCUDA::AI::MLPB::MLPBL8T32::Deserialize(const void*& Data) {
-    MLPBL8T32 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 32, cudaMemcpyHostToDevice);
-    Data = ((uint8_t*)Data) + 32;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
-    Data = ((uint32_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL8T32 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 32, cudaMemcpyHostToDevice);
+        Data = ((uint8_t*)Data) + 32;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+        Data = ((uint32_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL8T32 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 32, cudaMemcpyHostToDevice);
+        void* nd = ((uint8_t*)Data) + 32;
+        BSerializer::ToFromLittleEndian((uint8_t*)Data, (uint8_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+        uint32_t& bref = *(uint32_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint32_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL8T32::Deserialize(const void*& Data, MLPBL8T32& Value) {
     Value = Deserialize(Data);
@@ -684,18 +764,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL8T64::SerializedSize() const {
     return sizeof(uint8_t) * 64 + sizeof(uint64_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL8T64::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint8_t) * 64, cudaMemcpyDeviceToHost);
-    Data = ((uint8_t*)Data) + 64;
-    cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
-    Data = ((uint64_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint8_t) * 64, cudaMemcpyDeviceToHost);
+        Data = ((uint8_t*)Data) + 64;
+        cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+        Data = ((uint64_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint8_t) * 64, cudaMemcpyDeviceToHost);
+        void* nd = ((uint8_t*)Data) + 64;
+        BSerializer::ToFromLittleEndian((uint8_t*)Data, (uint8_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+        uint64_t& bref = *(uint64_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint64_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL8T64 BrendanCUDA::AI::MLPB::MLPBL8T64::Deserialize(const void*& Data) {
-    MLPBL8T64 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 64, cudaMemcpyHostToDevice);
-    Data = ((uint8_t*)Data) + 64;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
-    Data = ((uint64_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL8T64 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 64, cudaMemcpyHostToDevice);
+        Data = ((uint8_t*)Data) + 64;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+        Data = ((uint64_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL8T64 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint8_t) * 64, cudaMemcpyHostToDevice);
+        void* nd = ((uint8_t*)Data) + 64;
+        BSerializer::ToFromLittleEndian((uint8_t*)Data, (uint8_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+        uint64_t& bref = *(uint64_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint64_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL8T64::Deserialize(const void*& Data, MLPBL8T64& Value) {
     Value = Deserialize(Data);
@@ -704,18 +810,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL16T8::SerializedSize() const {
     return sizeof(uint16_t) * 8 + sizeof(uint8_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL16T8::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint16_t) * 8, cudaMemcpyDeviceToHost);
-    Data = ((uint16_t*)Data) + 8;
-    cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
-    Data = ((uint8_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint16_t) * 8, cudaMemcpyDeviceToHost);
+        Data = ((uint16_t*)Data) + 8;
+        cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+        Data = ((uint8_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint16_t) * 8, cudaMemcpyDeviceToHost);
+        void* nd = ((uint16_t*)Data) + 8;
+        BSerializer::ToFromLittleEndian((uint16_t*)Data, (uint16_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+        uint8_t& bref = *(uint8_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint8_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL16T8 BrendanCUDA::AI::MLPB::MLPBL16T8::Deserialize(const void*& Data) {
-    MLPBL16T8 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 8, cudaMemcpyHostToDevice);
-    Data = ((uint16_t*)Data) + 8;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
-    Data = ((uint8_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL16T8 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 8, cudaMemcpyHostToDevice);
+        Data = ((uint16_t*)Data) + 8;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+        Data = ((uint8_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL16T8 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 8, cudaMemcpyHostToDevice);
+        void* nd = ((uint16_t*)Data) + 8;
+        BSerializer::ToFromLittleEndian((uint16_t*)Data, (uint16_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+        uint8_t& bref = *(uint8_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint8_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL16T8::Deserialize(const void*& Data, MLPBL16T8& Value) {
     Value = Deserialize(Data);
@@ -724,18 +856,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL16T16::SerializedSize() const {
     return sizeof(uint16_t) * 16 + sizeof(uint16_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL16T16::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint16_t) * 16, cudaMemcpyDeviceToHost);
-    Data = ((uint16_t*)Data) + 16;
-    cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
-    Data = ((uint16_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint16_t) * 16, cudaMemcpyDeviceToHost);
+        Data = ((uint16_t*)Data) + 16;
+        cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+        Data = ((uint16_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint16_t) * 16, cudaMemcpyDeviceToHost);
+        void* nd = ((uint16_t*)Data) + 16;
+        BSerializer::ToFromLittleEndian((uint16_t*)Data, (uint16_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+        uint16_t& bref = *(uint16_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint16_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL16T16 BrendanCUDA::AI::MLPB::MLPBL16T16::Deserialize(const void*& Data) {
-    MLPBL16T16 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 16, cudaMemcpyHostToDevice);
-    Data = ((uint16_t*)Data) + 16;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
-    Data = ((uint16_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL16T16 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 16, cudaMemcpyHostToDevice);
+        Data = ((uint16_t*)Data) + 16;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+        Data = ((uint16_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL16T16 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 16, cudaMemcpyHostToDevice);
+        void* nd = ((uint16_t*)Data) + 16;
+        BSerializer::ToFromLittleEndian((uint16_t*)Data, (uint16_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+        uint16_t& bref = *(uint16_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint16_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL16T16::Deserialize(const void*& Data, MLPBL16T16& Value) {
     Value = Deserialize(Data);
@@ -744,18 +902,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL16T32::SerializedSize() const {
     return sizeof(uint16_t) * 32 + sizeof(uint32_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL16T32::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint16_t) * 32, cudaMemcpyDeviceToHost);
-    Data = ((uint16_t*)Data) + 32;
-    cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
-    Data = ((uint32_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint16_t) * 32, cudaMemcpyDeviceToHost);
+        Data = ((uint16_t*)Data) + 32;
+        cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+        Data = ((uint32_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint16_t) * 32, cudaMemcpyDeviceToHost);
+        void* nd = ((uint16_t*)Data) + 32;
+        BSerializer::ToFromLittleEndian((uint16_t*)Data, (uint16_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+        uint32_t& bref = *(uint32_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint32_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL16T32 BrendanCUDA::AI::MLPB::MLPBL16T32::Deserialize(const void*& Data) {
-    MLPBL16T32 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 32, cudaMemcpyHostToDevice);
-    Data = ((uint16_t*)Data) + 32;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
-    Data = ((uint32_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL16T32 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 32, cudaMemcpyHostToDevice);
+        Data = ((uint16_t*)Data) + 32;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+        Data = ((uint32_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL16T32 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 32, cudaMemcpyHostToDevice);
+        void* nd = ((uint16_t*)Data) + 32;
+        BSerializer::ToFromLittleEndian((uint16_t*)Data, (uint16_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+        uint32_t& bref = *(uint32_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint32_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL16T32::Deserialize(const void*& Data, MLPBL16T32& Value) {
     Value = Deserialize(Data);
@@ -764,18 +948,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL16T64::SerializedSize() const {
     return sizeof(uint16_t) * 64 + sizeof(uint64_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL16T64::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint16_t) * 64, cudaMemcpyDeviceToHost);
-    Data = ((uint16_t*)Data) + 64;
-    cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
-    Data = ((uint64_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint16_t) * 64, cudaMemcpyDeviceToHost);
+        Data = ((uint16_t*)Data) + 64;
+        cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+        Data = ((uint64_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint16_t) * 64, cudaMemcpyDeviceToHost);
+        void* nd = ((uint16_t*)Data) + 64;
+        BSerializer::ToFromLittleEndian((uint16_t*)Data, (uint16_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+        uint64_t& bref = *(uint64_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint64_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL16T64 BrendanCUDA::AI::MLPB::MLPBL16T64::Deserialize(const void*& Data) {
-    MLPBL16T64 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 64, cudaMemcpyHostToDevice);
-    Data = ((uint16_t*)Data) + 64;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
-    Data = ((uint64_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL16T64 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 64, cudaMemcpyHostToDevice);
+        Data = ((uint16_t*)Data) + 64;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+        Data = ((uint64_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL16T64 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint16_t) * 64, cudaMemcpyHostToDevice);
+        void* nd = ((uint16_t*)Data) + 64;
+        BSerializer::ToFromLittleEndian((uint16_t*)Data, (uint16_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+        uint64_t& bref = *(uint64_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint64_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL16T64::Deserialize(const void*& Data, MLPBL16T64& Value) {
     Value = Deserialize(Data);
@@ -784,18 +994,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL32T8::SerializedSize() const {
     return sizeof(uint32_t) * 8 + sizeof(uint8_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL32T8::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint32_t) * 8, cudaMemcpyDeviceToHost);
-    Data = ((uint32_t*)Data) + 8;
-    cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
-    Data = ((uint8_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint32_t) * 8, cudaMemcpyDeviceToHost);
+        Data = ((uint32_t*)Data) + 8;
+        cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+        Data = ((uint8_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint32_t) * 8, cudaMemcpyDeviceToHost);
+        void* nd = ((uint32_t*)Data) + 8;
+        BSerializer::ToFromLittleEndian((uint32_t*)Data, (uint32_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+        uint8_t& bref = *(uint8_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint8_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL32T8 BrendanCUDA::AI::MLPB::MLPBL32T8::Deserialize(const void*& Data) {
-    MLPBL32T8 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 8, cudaMemcpyHostToDevice);
-    Data = ((uint32_t*)Data) + 8;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
-    Data = ((uint8_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL32T8 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 8, cudaMemcpyHostToDevice);
+        Data = ((uint32_t*)Data) + 8;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+        Data = ((uint8_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL32T8 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 8, cudaMemcpyHostToDevice);
+        void* nd = ((uint32_t*)Data) + 8;
+        BSerializer::ToFromLittleEndian((uint32_t*)Data, (uint32_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+        uint8_t& bref = *(uint8_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint8_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL32T8::Deserialize(const void*& Data, MLPBL32T8& Value) {
     Value = Deserialize(Data);
@@ -804,18 +1040,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL32T16::SerializedSize() const {
     return sizeof(uint32_t) * 16 + sizeof(uint16_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL32T16::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint32_t) * 16, cudaMemcpyDeviceToHost);
-    Data = ((uint32_t*)Data) + 16;
-    cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
-    Data = ((uint16_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint32_t) * 16, cudaMemcpyDeviceToHost);
+        Data = ((uint32_t*)Data) + 16;
+        cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+        Data = ((uint16_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint32_t) * 16, cudaMemcpyDeviceToHost);
+        void* nd = ((uint32_t*)Data) + 16;
+        BSerializer::ToFromLittleEndian((uint32_t*)Data, (uint32_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+        uint16_t& bref = *(uint16_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint16_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL32T16 BrendanCUDA::AI::MLPB::MLPBL32T16::Deserialize(const void*& Data) {
-    MLPBL32T16 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 16, cudaMemcpyHostToDevice);
-    Data = ((uint32_t*)Data) + 16;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
-    Data = ((uint16_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL32T16 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 16, cudaMemcpyHostToDevice);
+        Data = ((uint32_t*)Data) + 16;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+        Data = ((uint16_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL32T16 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 16, cudaMemcpyHostToDevice);
+        void* nd = ((uint32_t*)Data) + 16;
+        BSerializer::ToFromLittleEndian((uint32_t*)Data, (uint32_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+        uint16_t& bref = *(uint16_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint16_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL32T16::Deserialize(const void*& Data, MLPBL32T16& Value) {
     Value = Deserialize(Data);
@@ -824,18 +1086,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL32T32::SerializedSize() const {
     return sizeof(uint32_t) * 32 + sizeof(uint32_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL32T32::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint32_t) * 32, cudaMemcpyDeviceToHost);
-    Data = ((uint32_t*)Data) + 32;
-    cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
-    Data = ((uint32_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint32_t) * 32, cudaMemcpyDeviceToHost);
+        Data = ((uint32_t*)Data) + 32;
+        cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+        Data = ((uint32_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint32_t) * 32, cudaMemcpyDeviceToHost);
+        void* nd = ((uint32_t*)Data) + 32;
+        BSerializer::ToFromLittleEndian((uint32_t*)Data, (uint32_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+        uint32_t& bref = *(uint32_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint32_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL32T32 BrendanCUDA::AI::MLPB::MLPBL32T32::Deserialize(const void*& Data) {
-    MLPBL32T32 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 32, cudaMemcpyHostToDevice);
-    Data = ((uint32_t*)Data) + 32;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
-    Data = ((uint32_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL32T32 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 32, cudaMemcpyHostToDevice);
+        Data = ((uint32_t*)Data) + 32;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+        Data = ((uint32_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL32T32 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 32, cudaMemcpyHostToDevice);
+        void* nd = ((uint32_t*)Data) + 32;
+        BSerializer::ToFromLittleEndian((uint32_t*)Data, (uint32_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+        uint32_t& bref = *(uint32_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint32_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL32T32::Deserialize(const void*& Data, MLPBL32T32& Value) {
     Value = Deserialize(Data);
@@ -844,18 +1132,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL32T64::SerializedSize() const {
     return sizeof(uint32_t) * 64 + sizeof(uint64_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL32T64::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint32_t) * 64, cudaMemcpyDeviceToHost);
-    Data = ((uint32_t*)Data) + 64;
-    cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
-    Data = ((uint64_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint32_t) * 64, cudaMemcpyDeviceToHost);
+        Data = ((uint32_t*)Data) + 64;
+        cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+        Data = ((uint64_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint32_t) * 64, cudaMemcpyDeviceToHost);
+        void* nd = ((uint32_t*)Data) + 64;
+        BSerializer::ToFromLittleEndian((uint32_t*)Data, (uint32_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+        uint64_t& bref = *(uint64_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint64_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL32T64 BrendanCUDA::AI::MLPB::MLPBL32T64::Deserialize(const void*& Data) {
-    MLPBL32T64 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 64, cudaMemcpyHostToDevice);
-    Data = ((uint32_t*)Data) + 64;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
-    Data = ((uint64_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL32T64 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 64, cudaMemcpyHostToDevice);
+        Data = ((uint32_t*)Data) + 64;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+        Data = ((uint64_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL32T64 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint32_t) * 64, cudaMemcpyHostToDevice);
+        void* nd = ((uint32_t*)Data) + 64;
+        BSerializer::ToFromLittleEndian((uint32_t*)Data, (uint32_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+        uint64_t& bref = *(uint64_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint64_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL32T64::Deserialize(const void*& Data, MLPBL32T64& Value) {
     Value = Deserialize(Data);
@@ -864,18 +1178,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL64T8::SerializedSize() const {
     return sizeof(uint64_t) * 8 + sizeof(uint8_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL64T8::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint64_t) * 8, cudaMemcpyDeviceToHost);
-    Data = ((uint64_t*)Data) + 8;
-    cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
-    Data = ((uint8_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint64_t) * 8, cudaMemcpyDeviceToHost);
+        Data = ((uint64_t*)Data) + 8;
+        cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+        Data = ((uint8_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint64_t) * 8, cudaMemcpyDeviceToHost);
+        void* nd = ((uint64_t*)Data) + 8;
+        BSerializer::ToFromLittleEndian((uint64_t*)Data, (uint64_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint8_t), cudaMemcpyDeviceToHost);
+        uint8_t& bref = *(uint8_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint8_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL64T8 BrendanCUDA::AI::MLPB::MLPBL64T8::Deserialize(const void*& Data) {
-    MLPBL64T8 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 8, cudaMemcpyHostToDevice);
-    Data = ((uint64_t*)Data) + 8;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
-    Data = ((uint8_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL64T8 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 8, cudaMemcpyHostToDevice);
+        Data = ((uint64_t*)Data) + 8;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+        Data = ((uint8_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL64T8 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 8, cudaMemcpyHostToDevice);
+        void* nd = ((uint64_t*)Data) + 8;
+        BSerializer::ToFromLittleEndian((uint64_t*)Data, (uint64_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint8_t), cudaMemcpyHostToDevice);
+        uint8_t& bref = *(uint8_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint8_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL64T8::Deserialize(const void*& Data, MLPBL64T8& Value) {
     Value = Deserialize(Data);
@@ -884,18 +1224,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL64T16::SerializedSize() const {
     return sizeof(uint64_t) * 16 + sizeof(uint16_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL64T16::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint64_t) * 16, cudaMemcpyDeviceToHost);
-    Data = ((uint64_t*)Data) + 16;
-    cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
-    Data = ((uint16_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint64_t) * 16, cudaMemcpyDeviceToHost);
+        Data = ((uint64_t*)Data) + 16;
+        cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+        Data = ((uint16_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint64_t) * 16, cudaMemcpyDeviceToHost);
+        void* nd = ((uint64_t*)Data) + 16;
+        BSerializer::ToFromLittleEndian((uint64_t*)Data, (uint64_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint16_t), cudaMemcpyDeviceToHost);
+        uint16_t& bref = *(uint16_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint16_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL64T16 BrendanCUDA::AI::MLPB::MLPBL64T16::Deserialize(const void*& Data) {
-    MLPBL64T16 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 16, cudaMemcpyHostToDevice);
-    Data = ((uint64_t*)Data) + 16;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
-    Data = ((uint16_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL64T16 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 16, cudaMemcpyHostToDevice);
+        Data = ((uint64_t*)Data) + 16;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+        Data = ((uint16_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL64T16 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 16, cudaMemcpyHostToDevice);
+        void* nd = ((uint64_t*)Data) + 16;
+        BSerializer::ToFromLittleEndian((uint64_t*)Data, (uint64_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint16_t), cudaMemcpyHostToDevice);
+        uint16_t& bref = *(uint16_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint16_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL64T16::Deserialize(const void*& Data, MLPBL64T16& Value) {
     Value = Deserialize(Data);
@@ -904,18 +1270,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL64T32::SerializedSize() const {
     return sizeof(uint64_t) * 32 + sizeof(uint32_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL64T32::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint64_t) * 32, cudaMemcpyDeviceToHost);
-    Data = ((uint64_t*)Data) + 32;
-    cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
-    Data = ((uint32_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint64_t) * 32, cudaMemcpyDeviceToHost);
+        Data = ((uint64_t*)Data) + 32;
+        cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+        Data = ((uint32_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint64_t) * 32, cudaMemcpyDeviceToHost);
+        void* nd = ((uint64_t*)Data) + 32;
+        BSerializer::ToFromLittleEndian((uint64_t*)Data, (uint64_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+        uint32_t& bref = *(uint32_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint32_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL64T32 BrendanCUDA::AI::MLPB::MLPBL64T32::Deserialize(const void*& Data) {
-    MLPBL64T32 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 32, cudaMemcpyHostToDevice);
-    Data = ((uint64_t*)Data) + 32;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
-    Data = ((uint32_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL64T32 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 32, cudaMemcpyHostToDevice);
+        Data = ((uint64_t*)Data) + 32;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+        Data = ((uint32_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL64T32 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 32, cudaMemcpyHostToDevice);
+        void* nd = ((uint64_t*)Data) + 32;
+        BSerializer::ToFromLittleEndian((uint64_t*)Data, (uint64_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint32_t), cudaMemcpyHostToDevice);
+        uint32_t& bref = *(uint32_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint32_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL64T32::Deserialize(const void*& Data, MLPBL64T32& Value) {
     Value = Deserialize(Data);
@@ -924,18 +1316,44 @@ size_t BrendanCUDA::AI::MLPB::MLPBL64T64::SerializedSize() const {
     return sizeof(uint64_t) * 64 + sizeof(uint64_t);
 }
 void BrendanCUDA::AI::MLPB::MLPBL64T64::Serialize(void*& Data) const {
-    cudaMemcpy(Data, weights, sizeof(uint64_t) * 64, cudaMemcpyDeviceToHost);
-    Data = ((uint64_t*)Data) + 64;
-    cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
-    Data = ((uint64_t*)Data) + 1;
+    if (std::endian::native == std::endian::little) {
+        cudaMemcpy(Data, weights, sizeof(uint64_t) * 64, cudaMemcpyDeviceToHost);
+        Data = ((uint64_t*)Data) + 64;
+        cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+        Data = ((uint64_t*)Data) + 1;
+    }
+    else {
+        cudaMemcpy(Data, weights, sizeof(uint64_t) * 64, cudaMemcpyDeviceToHost);
+        void* nd = ((uint64_t*)Data) + 64;
+        BSerializer::ToFromLittleEndian((uint64_t*)Data, (uint64_t*)nd);
+        Data = nd;
+        cudaMemcpy(Data, bias, sizeof(uint64_t), cudaMemcpyDeviceToHost);
+        uint64_t& bref = *(uint64_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint64_t*)Data) + 1;
+    }
 }
 BrendanCUDA::AI::MLPB::MLPBL64T64 BrendanCUDA::AI::MLPB::MLPBL64T64::Deserialize(const void*& Data) {
-    MLPBL64T64 mlpbl;
-    cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 64, cudaMemcpyHostToDevice);
-    Data = ((uint64_t*)Data) + 64;
-    cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
-    Data = ((uint64_t*)Data) + 1;
-    return mlpbl;
+    if (std::endian::native == std::endian::little) {
+        MLPBL64T64 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 64, cudaMemcpyHostToDevice);
+        Data = ((uint64_t*)Data) + 64;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+        Data = ((uint64_t*)Data) + 1;
+        return mlpbl;
+    }
+    else {
+        MLPBL64T64 mlpbl;
+        cudaMemcpy(mlpbl.weights, Data, sizeof(uint64_t) * 64, cudaMemcpyHostToDevice);
+        void* nd = ((uint64_t*)Data) + 64;
+        BSerializer::ToFromLittleEndian((uint64_t*)Data, (uint64_t*)nd);
+        Data = nd;
+        cudaMemcpy(mlpbl.bias, Data, sizeof(uint64_t), cudaMemcpyHostToDevice);
+        uint64_t& bref = *(uint64_t*)Data;
+        bref = BSerializer::ToFromLittleEndian(bref);
+        Data = ((uint64_t*)Data) + 1;
+        return mlpbl;
+    }
 }
 void BrendanCUDA::AI::MLPB::MLPBL64T64::Deserialize(const void*& Data, MLPBL64T64& Value) {
     Value = Deserialize(Data);
