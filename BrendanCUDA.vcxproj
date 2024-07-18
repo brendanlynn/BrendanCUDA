@@ -122,18 +122,6 @@
       <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
     </CustomBuild>
     <ClInclude Include="brendancuda_fixedvectors.h" />
-    <CustomBuild Include="brendancuda_fixedvectors.h.tt">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.h" "$(ProjectDir)brendancuda_fixedvectors.h.tt"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_fixedvectors.h</Outputs>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_fixedvectors.h" "$(ProjectDir)brendancuda_fixedvectors.h.tt"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_fixedvectors.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_fixedvectors.h</Outputs>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
-    </CustomBuild>
     <ClInclude Include="brendancuda_mathfuncs.h" />
     <ClInclude Include="brendancuda_nets_net.h" />
     <ClInclude Include="brendancuda_rand_anyrng.h" />

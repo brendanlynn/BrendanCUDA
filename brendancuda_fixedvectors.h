@@ -2,1928 +2,598 @@
 
 #include <cstdint>
 #include <cuda_runtime.h>
+#include <cstdarg>
+#include <concepts>
+#include <cmath>
 #include "brendancuda_mathfuncs.h"
 
 namespace BrendanCUDA {
-    struct float_2 final {
-        union {
-            struct { float x, y; };
-            float v[2];
-        };
-        __host__ __device__ inline constexpr float_2();
-        __host__ __device__ inline constexpr float_2(float x, float y);
-        __host__ __device__ inline constexpr float_2(const float v[2]);
-        __host__ __device__ inline constexpr float_2 operator+(float_2 other) const;
-        __host__ __device__ inline void operator+=(float_2 other);
-        __host__ __device__ inline constexpr float_2 operator-(float_2 other) const;
-        __host__ __device__ inline void operator-=(float_2 other);
-        __host__ __device__ inline constexpr float_2 operator*(float other) const;
-        __host__ __device__ inline void operator*=(float other);
-        __host__ __device__ inline constexpr float_2 operator/(float other) const;
-        __host__ __device__ inline void operator/=(float other);
-        __host__ __device__ static inline constexpr float Dot(float_2 left, float_2 right);
-        __host__ __device__ inline constexpr float MagnatudeSquared() const;
-        __host__ __device__ inline float Magnatude() const;
+    template <typename _T, size_t _Size>
+    struct FixedVector final {
+        static_assert(_Size, "_Size must be positive.");
+
+        _T v[_Size];
+
+        __host__ __device__ __forceinline constexpr FixedVector();
+        __host__ __device__ __forceinline constexpr FixedVector(_T V...);
+        __host__ __device__ __forceinline constexpr FixedVector(const _T V[_Size]);
+
+        __host__ __device__ __forceinline constexpr _T& operator[](size_t Index);
+        __host__ __device__ __forceinline constexpr const _T& operator[](size_t Index) const;
+
+        __host__ __device__ __forceinline constexpr FixedVector<_T, _Size> operator+(FixedVector<_T, _Size> Other) const;
+        __host__ __device__ __forceinline void operator+=(FixedVector<_T, _Size> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, _Size> operator-(FixedVector<_T, _Size> Other) const;
+        __host__ __device__ __forceinline void operator-=(FixedVector<_T, _Size> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, _Size> operator*(_T Other) const;
+        __host__ __device__ __forceinline void operator*=(_T Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, _Size> operator/(_T Other) const;
+        __host__ __device__ __forceinline void operator/=(_T Other);
+
+        __host__ __device__ static __forceinline constexpr _T Dot(FixedVector<_T, _Size> Left, FixedVector<_T, _Size> Right);
+        
+        __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
-    struct float_3 final {
+    template <typename _T>
+    struct FixedVector<_T, 1> final {
         union {
-            struct { float x, y, z; };
-            float v[3];
+            _T x;
+            _T v[1];
         };
-        __host__ __device__ inline constexpr float_3();
-        __host__ __device__ inline constexpr float_3(float x, float y, float z);
-        __host__ __device__ inline constexpr float_3(const float v[3]);
-        __host__ __device__ inline constexpr float_3 operator+(float_3 other) const;
-        __host__ __device__ inline void operator+=(float_3 other);
-        __host__ __device__ inline constexpr float_3 operator-(float_3 other) const;
-        __host__ __device__ inline void operator-=(float_3 other);
-        __host__ __device__ inline constexpr float_3 operator*(float other) const;
-        __host__ __device__ inline void operator*=(float other);
-        __host__ __device__ inline constexpr float_3 operator/(float other) const;
-        __host__ __device__ inline void operator/=(float other);
-        __host__ __device__ static inline constexpr float Dot(float_3 left, float_3 right);
-        __host__ __device__ inline constexpr float MagnatudeSquared() const;
-        __host__ __device__ inline float Magnatude() const;
+
+        __host__ __device__ __forceinline constexpr FixedVector();
+        __host__ __device__ __forceinline constexpr FixedVector(_T X);
+        __host__ __device__ __forceinline constexpr FixedVector(const _T V[1]);
+
+        __host__ __device__ __forceinline constexpr _T& operator[](size_t Index);
+        __host__ __device__ __forceinline constexpr const _T& operator[](size_t Index) const;
+
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 1> operator+(FixedVector<_T, 1> Other) const;
+        __host__ __device__ __forceinline void operator+=(FixedVector<_T, 1> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 1> operator-(FixedVector<_T, 1> Other) const;
+        __host__ __device__ __forceinline void operator-=(FixedVector<_T, 1> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 1> operator*(_T Other) const;
+        __host__ __device__ __forceinline void operator*=(_T Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 1> operator/(_T Other) const;
+        __host__ __device__ __forceinline void operator/=(_T Other);
+
+        __host__ __device__ static __forceinline constexpr _T Dot(FixedVector<_T, 1> Left, FixedVector<_T, 1> Right);
+        
+        __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
-    struct float_4 final {
+    template <typename _T>
+    struct FixedVector<_T, 2> final {
         union {
-            struct { float x, y, z, w; };
-            float v[4];
+            struct { _T x, y; };
+            _T v[2];
         };
-        __host__ __device__ inline constexpr float_4();
-        __host__ __device__ inline constexpr float_4(float x, float y, float z, float w);
-        __host__ __device__ inline constexpr float_4(const float v[4]);
-        __host__ __device__ inline constexpr float_4 operator+(float_4 other) const;
-        __host__ __device__ inline void operator+=(float_4 other);
-        __host__ __device__ inline constexpr float_4 operator-(float_4 other) const;
-        __host__ __device__ inline void operator-=(float_4 other);
-        __host__ __device__ inline constexpr float_4 operator*(float other) const;
-        __host__ __device__ inline void operator*=(float other);
-        __host__ __device__ inline constexpr float_4 operator/(float other) const;
-        __host__ __device__ inline void operator/=(float other);
-        __host__ __device__ static inline constexpr float Dot(float_4 left, float_4 right);
-        __host__ __device__ inline constexpr float MagnatudeSquared() const;
-        __host__ __device__ inline float Magnatude() const;
+
+        __host__ __device__ __forceinline constexpr FixedVector();
+        __host__ __device__ __forceinline constexpr FixedVector(_T X, _T Y);
+        __host__ __device__ __forceinline constexpr FixedVector(const _T V[2]);
+
+        __host__ __device__ __forceinline constexpr _T& operator[](size_t Index);
+        __host__ __device__ __forceinline constexpr const _T& operator[](size_t Index) const;
+
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 2> operator+(FixedVector<_T, 2> Other) const;
+        __host__ __device__ __forceinline void operator+=(FixedVector<_T, 2> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 2> operator-(FixedVector<_T, 2> Other) const;
+        __host__ __device__ __forceinline void operator-=(FixedVector<_T, 2> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 2> operator*(_T Other) const;
+        __host__ __device__ __forceinline void operator*=(_T Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 2> operator/(_T Other) const;
+        __host__ __device__ __forceinline void operator/=(_T Other);
+
+        __host__ __device__ static __forceinline constexpr _T Dot(FixedVector<_T, 2> Left, FixedVector<_T, 2> Right);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 2> Cross() const;
+        __host__ __device__ static __forceinline constexpr FixedVector<_T, 2> Cross(FixedVector<_T, 2> Value);
+        __host__ __device__ static __forceinline constexpr _T Cross(FixedVector<_T, 2> Left, FixedVector<_T, 2> Right);
+        
+        __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
-    struct double_2 final {
+    template <typename _T>
+    struct FixedVector<_T, 3> final {
         union {
-            struct { double x, y; };
-            double v[2];
+            struct { _T x, y, z; };
+            _T v[3];
         };
-        __host__ __device__ inline constexpr double_2();
-        __host__ __device__ inline constexpr double_2(double x, double y);
-        __host__ __device__ inline constexpr double_2(const double v[2]);
-        __host__ __device__ inline constexpr double_2 operator+(double_2 other) const;
-        __host__ __device__ inline void operator+=(double_2 other);
-        __host__ __device__ inline constexpr double_2 operator-(double_2 other) const;
-        __host__ __device__ inline void operator-=(double_2 other);
-        __host__ __device__ inline constexpr double_2 operator*(double other) const;
-        __host__ __device__ inline void operator*=(double other);
-        __host__ __device__ inline constexpr double_2 operator/(double other) const;
-        __host__ __device__ inline void operator/=(double other);
-        __host__ __device__ static inline constexpr double Dot(double_2 left, double_2 right);
-        __host__ __device__ inline constexpr double MagnatudeSquared() const;
-        __host__ __device__ inline double Magnatude() const;
+
+        __host__ __device__ __forceinline constexpr FixedVector();
+        __host__ __device__ __forceinline constexpr FixedVector(_T X, _T Y, _T Z);
+        __host__ __device__ __forceinline constexpr FixedVector(const _T V[3]);
+
+        __host__ __device__ __forceinline constexpr _T& operator[](size_t Index);
+        __host__ __device__ __forceinline constexpr const _T& operator[](size_t Index) const;
+
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 3> operator+(FixedVector<_T, 3> Other) const;
+        __host__ __device__ __forceinline void operator+=(FixedVector<_T, 3> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 3> operator-(FixedVector<_T, 3> Other) const;
+        __host__ __device__ __forceinline void operator-=(FixedVector<_T, 3> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 3> operator*(_T Other) const;
+        __host__ __device__ __forceinline void operator*=(_T Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 3> operator/(_T Other) const;
+        __host__ __device__ __forceinline void operator/=(_T Other);
+
+        __host__ __device__ static __forceinline constexpr _T Dot(FixedVector<_T, 3> Left, FixedVector<_T, 3> Right);
+        __host__ __device__ static __forceinline constexpr FixedVector<_T, 3> Cross(FixedVector<_T, 3> Left, FixedVector<_T, 3> Right);
+        
+        __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
-    struct double_3 final {
+    template <typename _T>
+    struct FixedVector<_T, 4> final {
         union {
-            struct { double x, y, z; };
-            double v[3];
+            struct { _T x, y, z, w; };
+            _T v[4];
         };
-        __host__ __device__ inline constexpr double_3();
-        __host__ __device__ inline constexpr double_3(double x, double y, double z);
-        __host__ __device__ inline constexpr double_3(const double v[3]);
-        __host__ __device__ inline constexpr double_3 operator+(double_3 other) const;
-        __host__ __device__ inline void operator+=(double_3 other);
-        __host__ __device__ inline constexpr double_3 operator-(double_3 other) const;
-        __host__ __device__ inline void operator-=(double_3 other);
-        __host__ __device__ inline constexpr double_3 operator*(double other) const;
-        __host__ __device__ inline void operator*=(double other);
-        __host__ __device__ inline constexpr double_3 operator/(double other) const;
-        __host__ __device__ inline void operator/=(double other);
-        __host__ __device__ static inline constexpr double Dot(double_3 left, double_3 right);
-        __host__ __device__ inline constexpr double MagnatudeSquared() const;
-        __host__ __device__ inline double Magnatude() const;
+
+        __host__ __device__ __forceinline constexpr FixedVector();
+        __host__ __device__ __forceinline constexpr FixedVector(_T X, _T Y, _T Z, _T W);
+        __host__ __device__ __forceinline constexpr FixedVector(const _T V[4]);
+
+        __host__ __device__ __forceinline constexpr _T& operator[](size_t Index);
+        __host__ __device__ __forceinline constexpr const _T& operator[](size_t Index) const;
+
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 4> operator+(FixedVector<_T, 4> Other) const;
+        __host__ __device__ __forceinline void operator+=(FixedVector<_T, 4> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 4> operator-(FixedVector<_T, 4> Other) const;
+        __host__ __device__ __forceinline void operator-=(FixedVector<_T, 4> Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 4> operator*(_T Other) const;
+        __host__ __device__ __forceinline void operator*=(_T Other);
+        __host__ __device__ __forceinline constexpr FixedVector<_T, 4> operator/(_T Other) const;
+        __host__ __device__ __forceinline void operator/=(_T Other);
+
+        __host__ __device__ static __forceinline constexpr _T Dot(FixedVector<_T, 4> Left, FixedVector<_T, 4> Right);
+        
+        __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
+        template <typename _T2 = _T>
+        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
-    struct double_4 final {
-        union {
-            struct { double x, y, z, w; };
-            double v[4];
-        };
-        __host__ __device__ inline constexpr double_4();
-        __host__ __device__ inline constexpr double_4(double x, double y, double z, double w);
-        __host__ __device__ inline constexpr double_4(const double v[4]);
-        __host__ __device__ inline constexpr double_4 operator+(double_4 other) const;
-        __host__ __device__ inline void operator+=(double_4 other);
-        __host__ __device__ inline constexpr double_4 operator-(double_4 other) const;
-        __host__ __device__ inline void operator-=(double_4 other);
-        __host__ __device__ inline constexpr double_4 operator*(double other) const;
-        __host__ __device__ inline void operator*=(double other);
-        __host__ __device__ inline constexpr double_4 operator/(double other) const;
-        __host__ __device__ inline void operator/=(double other);
-        __host__ __device__ static inline constexpr double Dot(double_4 left, double_4 right);
-        __host__ __device__ inline constexpr double MagnatudeSquared() const;
-        __host__ __device__ inline double Magnatude() const;
-    };
-    struct int8_2 final {
-        union {
-            struct { int8_t x, y; };
-            int8_t v[2];
-        };
-        __host__ __device__ inline constexpr int8_2();
-        __host__ __device__ inline constexpr int8_2(int8_t x, int8_t y);
-        __host__ __device__ inline constexpr int8_2(const int8_t v[2]);
-        __host__ __device__ inline constexpr int8_2 operator+(int8_2 other) const;
-        __host__ __device__ inline void operator+=(int8_2 other);
-        __host__ __device__ inline constexpr int8_2 operator-(int8_2 other) const;
-        __host__ __device__ inline void operator-=(int8_2 other);
-        __host__ __device__ inline constexpr int8_2 operator*(int8_t other) const;
-        __host__ __device__ inline void operator*=(int8_t other);
-        __host__ __device__ inline constexpr int8_2 operator/(int8_t other) const;
-        __host__ __device__ inline void operator/=(int8_t other);
-        __host__ __device__ static inline constexpr int8_t Dot(int8_2 left, int8_2 right);
-        __host__ __device__ inline constexpr int8_t MagnatudeSquared() const;
-        __host__ __device__ inline int8_t Magnatude() const;
-    };
-    struct int8_3 final {
-        union {
-            struct { int8_t x, y, z; };
-            int8_t v[3];
-        };
-        __host__ __device__ inline constexpr int8_3();
-        __host__ __device__ inline constexpr int8_3(int8_t x, int8_t y, int8_t z);
-        __host__ __device__ inline constexpr int8_3(const int8_t v[3]);
-        __host__ __device__ inline constexpr int8_3 operator+(int8_3 other) const;
-        __host__ __device__ inline void operator+=(int8_3 other);
-        __host__ __device__ inline constexpr int8_3 operator-(int8_3 other) const;
-        __host__ __device__ inline void operator-=(int8_3 other);
-        __host__ __device__ inline constexpr int8_3 operator*(int8_t other) const;
-        __host__ __device__ inline void operator*=(int8_t other);
-        __host__ __device__ inline constexpr int8_3 operator/(int8_t other) const;
-        __host__ __device__ inline void operator/=(int8_t other);
-        __host__ __device__ static inline constexpr int8_t Dot(int8_3 left, int8_3 right);
-        __host__ __device__ inline constexpr int8_t MagnatudeSquared() const;
-        __host__ __device__ inline int8_t Magnatude() const;
-    };
-    struct int8_4 final {
-        union {
-            struct { int8_t x, y, z, w; };
-            int8_t v[4];
-        };
-        __host__ __device__ inline constexpr int8_4();
-        __host__ __device__ inline constexpr int8_4(int8_t x, int8_t y, int8_t z, int8_t w);
-        __host__ __device__ inline constexpr int8_4(const int8_t v[4]);
-        __host__ __device__ inline constexpr int8_4 operator+(int8_4 other) const;
-        __host__ __device__ inline void operator+=(int8_4 other);
-        __host__ __device__ inline constexpr int8_4 operator-(int8_4 other) const;
-        __host__ __device__ inline void operator-=(int8_4 other);
-        __host__ __device__ inline constexpr int8_4 operator*(int8_t other) const;
-        __host__ __device__ inline void operator*=(int8_t other);
-        __host__ __device__ inline constexpr int8_4 operator/(int8_t other) const;
-        __host__ __device__ inline void operator/=(int8_t other);
-        __host__ __device__ static inline constexpr int8_t Dot(int8_4 left, int8_4 right);
-        __host__ __device__ inline constexpr int8_t MagnatudeSquared() const;
-        __host__ __device__ inline int8_t Magnatude() const;
-    };
-    struct uint8_2 final {
-        union {
-            struct { uint8_t x, y; };
-            uint8_t v[2];
-        };
-        __host__ __device__ inline constexpr uint8_2();
-        __host__ __device__ inline constexpr uint8_2(uint8_t x, uint8_t y);
-        __host__ __device__ inline constexpr uint8_2(const uint8_t v[2]);
-        __host__ __device__ inline constexpr uint8_2 operator+(uint8_2 other) const;
-        __host__ __device__ inline void operator+=(uint8_2 other);
-        __host__ __device__ inline constexpr uint8_2 operator-(uint8_2 other) const;
-        __host__ __device__ inline void operator-=(uint8_2 other);
-        __host__ __device__ inline constexpr uint8_2 operator*(uint8_t other) const;
-        __host__ __device__ inline void operator*=(uint8_t other);
-        __host__ __device__ inline constexpr uint8_2 operator/(uint8_t other) const;
-        __host__ __device__ inline void operator/=(uint8_t other);
-        __host__ __device__ static inline constexpr uint8_t Dot(uint8_2 left, uint8_2 right);
-        __host__ __device__ inline constexpr uint8_t MagnatudeSquared() const;
-        __host__ __device__ inline uint8_t Magnatude() const;
-    };
-    struct uint8_3 final {
-        union {
-            struct { uint8_t x, y, z; };
-            uint8_t v[3];
-        };
-        __host__ __device__ inline constexpr uint8_3();
-        __host__ __device__ inline constexpr uint8_3(uint8_t x, uint8_t y, uint8_t z);
-        __host__ __device__ inline constexpr uint8_3(const uint8_t v[3]);
-        __host__ __device__ inline constexpr uint8_3 operator+(uint8_3 other) const;
-        __host__ __device__ inline void operator+=(uint8_3 other);
-        __host__ __device__ inline constexpr uint8_3 operator-(uint8_3 other) const;
-        __host__ __device__ inline void operator-=(uint8_3 other);
-        __host__ __device__ inline constexpr uint8_3 operator*(uint8_t other) const;
-        __host__ __device__ inline void operator*=(uint8_t other);
-        __host__ __device__ inline constexpr uint8_3 operator/(uint8_t other) const;
-        __host__ __device__ inline void operator/=(uint8_t other);
-        __host__ __device__ static inline constexpr uint8_t Dot(uint8_3 left, uint8_3 right);
-        __host__ __device__ inline constexpr uint8_t MagnatudeSquared() const;
-        __host__ __device__ inline uint8_t Magnatude() const;
-    };
-    struct uint8_4 final {
-        union {
-            struct { uint8_t x, y, z, w; };
-            uint8_t v[4];
-        };
-        __host__ __device__ inline constexpr uint8_4();
-        __host__ __device__ inline constexpr uint8_4(uint8_t x, uint8_t y, uint8_t z, uint8_t w);
-        __host__ __device__ inline constexpr uint8_4(const uint8_t v[4]);
-        __host__ __device__ inline constexpr uint8_4 operator+(uint8_4 other) const;
-        __host__ __device__ inline void operator+=(uint8_4 other);
-        __host__ __device__ inline constexpr uint8_4 operator-(uint8_4 other) const;
-        __host__ __device__ inline void operator-=(uint8_4 other);
-        __host__ __device__ inline constexpr uint8_4 operator*(uint8_t other) const;
-        __host__ __device__ inline void operator*=(uint8_t other);
-        __host__ __device__ inline constexpr uint8_4 operator/(uint8_t other) const;
-        __host__ __device__ inline void operator/=(uint8_t other);
-        __host__ __device__ static inline constexpr uint8_t Dot(uint8_4 left, uint8_4 right);
-        __host__ __device__ inline constexpr uint8_t MagnatudeSquared() const;
-        __host__ __device__ inline uint8_t Magnatude() const;
-    };
-    struct int16_2 final {
-        union {
-            struct { int16_t x, y; };
-            int16_t v[2];
-        };
-        __host__ __device__ inline constexpr int16_2();
-        __host__ __device__ inline constexpr int16_2(int16_t x, int16_t y);
-        __host__ __device__ inline constexpr int16_2(const int16_t v[2]);
-        __host__ __device__ inline constexpr int16_2 operator+(int16_2 other) const;
-        __host__ __device__ inline void operator+=(int16_2 other);
-        __host__ __device__ inline constexpr int16_2 operator-(int16_2 other) const;
-        __host__ __device__ inline void operator-=(int16_2 other);
-        __host__ __device__ inline constexpr int16_2 operator*(int16_t other) const;
-        __host__ __device__ inline void operator*=(int16_t other);
-        __host__ __device__ inline constexpr int16_2 operator/(int16_t other) const;
-        __host__ __device__ inline void operator/=(int16_t other);
-        __host__ __device__ static inline constexpr int16_t Dot(int16_2 left, int16_2 right);
-        __host__ __device__ inline constexpr int16_t MagnatudeSquared() const;
-        __host__ __device__ inline int16_t Magnatude() const;
-    };
-    struct int16_3 final {
-        union {
-            struct { int16_t x, y, z; };
-            int16_t v[3];
-        };
-        __host__ __device__ inline constexpr int16_3();
-        __host__ __device__ inline constexpr int16_3(int16_t x, int16_t y, int16_t z);
-        __host__ __device__ inline constexpr int16_3(const int16_t v[3]);
-        __host__ __device__ inline constexpr int16_3 operator+(int16_3 other) const;
-        __host__ __device__ inline void operator+=(int16_3 other);
-        __host__ __device__ inline constexpr int16_3 operator-(int16_3 other) const;
-        __host__ __device__ inline void operator-=(int16_3 other);
-        __host__ __device__ inline constexpr int16_3 operator*(int16_t other) const;
-        __host__ __device__ inline void operator*=(int16_t other);
-        __host__ __device__ inline constexpr int16_3 operator/(int16_t other) const;
-        __host__ __device__ inline void operator/=(int16_t other);
-        __host__ __device__ static inline constexpr int16_t Dot(int16_3 left, int16_3 right);
-        __host__ __device__ inline constexpr int16_t MagnatudeSquared() const;
-        __host__ __device__ inline int16_t Magnatude() const;
-    };
-    struct int16_4 final {
-        union {
-            struct { int16_t x, y, z, w; };
-            int16_t v[4];
-        };
-        __host__ __device__ inline constexpr int16_4();
-        __host__ __device__ inline constexpr int16_4(int16_t x, int16_t y, int16_t z, int16_t w);
-        __host__ __device__ inline constexpr int16_4(const int16_t v[4]);
-        __host__ __device__ inline constexpr int16_4 operator+(int16_4 other) const;
-        __host__ __device__ inline void operator+=(int16_4 other);
-        __host__ __device__ inline constexpr int16_4 operator-(int16_4 other) const;
-        __host__ __device__ inline void operator-=(int16_4 other);
-        __host__ __device__ inline constexpr int16_4 operator*(int16_t other) const;
-        __host__ __device__ inline void operator*=(int16_t other);
-        __host__ __device__ inline constexpr int16_4 operator/(int16_t other) const;
-        __host__ __device__ inline void operator/=(int16_t other);
-        __host__ __device__ static inline constexpr int16_t Dot(int16_4 left, int16_4 right);
-        __host__ __device__ inline constexpr int16_t MagnatudeSquared() const;
-        __host__ __device__ inline int16_t Magnatude() const;
-    };
-    struct uint16_2 final {
-        union {
-            struct { uint16_t x, y; };
-            uint16_t v[2];
-        };
-        __host__ __device__ inline constexpr uint16_2();
-        __host__ __device__ inline constexpr uint16_2(uint16_t x, uint16_t y);
-        __host__ __device__ inline constexpr uint16_2(const uint16_t v[2]);
-        __host__ __device__ inline constexpr uint16_2 operator+(uint16_2 other) const;
-        __host__ __device__ inline void operator+=(uint16_2 other);
-        __host__ __device__ inline constexpr uint16_2 operator-(uint16_2 other) const;
-        __host__ __device__ inline void operator-=(uint16_2 other);
-        __host__ __device__ inline constexpr uint16_2 operator*(uint16_t other) const;
-        __host__ __device__ inline void operator*=(uint16_t other);
-        __host__ __device__ inline constexpr uint16_2 operator/(uint16_t other) const;
-        __host__ __device__ inline void operator/=(uint16_t other);
-        __host__ __device__ static inline constexpr uint16_t Dot(uint16_2 left, uint16_2 right);
-        __host__ __device__ inline constexpr uint16_t MagnatudeSquared() const;
-        __host__ __device__ inline uint16_t Magnatude() const;
-    };
-    struct uint16_3 final {
-        union {
-            struct { uint16_t x, y, z; };
-            uint16_t v[3];
-        };
-        __host__ __device__ inline constexpr uint16_3();
-        __host__ __device__ inline constexpr uint16_3(uint16_t x, uint16_t y, uint16_t z);
-        __host__ __device__ inline constexpr uint16_3(const uint16_t v[3]);
-        __host__ __device__ inline constexpr uint16_3 operator+(uint16_3 other) const;
-        __host__ __device__ inline void operator+=(uint16_3 other);
-        __host__ __device__ inline constexpr uint16_3 operator-(uint16_3 other) const;
-        __host__ __device__ inline void operator-=(uint16_3 other);
-        __host__ __device__ inline constexpr uint16_3 operator*(uint16_t other) const;
-        __host__ __device__ inline void operator*=(uint16_t other);
-        __host__ __device__ inline constexpr uint16_3 operator/(uint16_t other) const;
-        __host__ __device__ inline void operator/=(uint16_t other);
-        __host__ __device__ static inline constexpr uint16_t Dot(uint16_3 left, uint16_3 right);
-        __host__ __device__ inline constexpr uint16_t MagnatudeSquared() const;
-        __host__ __device__ inline uint16_t Magnatude() const;
-    };
-    struct uint16_4 final {
-        union {
-            struct { uint16_t x, y, z, w; };
-            uint16_t v[4];
-        };
-        __host__ __device__ inline constexpr uint16_4();
-        __host__ __device__ inline constexpr uint16_4(uint16_t x, uint16_t y, uint16_t z, uint16_t w);
-        __host__ __device__ inline constexpr uint16_4(const uint16_t v[4]);
-        __host__ __device__ inline constexpr uint16_4 operator+(uint16_4 other) const;
-        __host__ __device__ inline void operator+=(uint16_4 other);
-        __host__ __device__ inline constexpr uint16_4 operator-(uint16_4 other) const;
-        __host__ __device__ inline void operator-=(uint16_4 other);
-        __host__ __device__ inline constexpr uint16_4 operator*(uint16_t other) const;
-        __host__ __device__ inline void operator*=(uint16_t other);
-        __host__ __device__ inline constexpr uint16_4 operator/(uint16_t other) const;
-        __host__ __device__ inline void operator/=(uint16_t other);
-        __host__ __device__ static inline constexpr uint16_t Dot(uint16_4 left, uint16_4 right);
-        __host__ __device__ inline constexpr uint16_t MagnatudeSquared() const;
-        __host__ __device__ inline uint16_t Magnatude() const;
-    };
-    struct int32_2 final {
-        union {
-            struct { int32_t x, y; };
-            int32_t v[2];
-        };
-        __host__ __device__ inline constexpr int32_2();
-        __host__ __device__ inline constexpr int32_2(int32_t x, int32_t y);
-        __host__ __device__ inline constexpr int32_2(const int32_t v[2]);
-        __host__ __device__ inline constexpr int32_2 operator+(int32_2 other) const;
-        __host__ __device__ inline void operator+=(int32_2 other);
-        __host__ __device__ inline constexpr int32_2 operator-(int32_2 other) const;
-        __host__ __device__ inline void operator-=(int32_2 other);
-        __host__ __device__ inline constexpr int32_2 operator*(int32_t other) const;
-        __host__ __device__ inline void operator*=(int32_t other);
-        __host__ __device__ inline constexpr int32_2 operator/(int32_t other) const;
-        __host__ __device__ inline void operator/=(int32_t other);
-        __host__ __device__ static inline constexpr int32_t Dot(int32_2 left, int32_2 right);
-        __host__ __device__ inline constexpr int32_t MagnatudeSquared() const;
-        __host__ __device__ inline int32_t Magnatude() const;
-    };
-    struct int32_3 final {
-        union {
-            struct { int32_t x, y, z; };
-            int32_t v[3];
-        };
-        __host__ __device__ inline constexpr int32_3();
-        __host__ __device__ inline constexpr int32_3(int32_t x, int32_t y, int32_t z);
-        __host__ __device__ inline constexpr int32_3(const int32_t v[3]);
-        __host__ __device__ inline constexpr int32_3 operator+(int32_3 other) const;
-        __host__ __device__ inline void operator+=(int32_3 other);
-        __host__ __device__ inline constexpr int32_3 operator-(int32_3 other) const;
-        __host__ __device__ inline void operator-=(int32_3 other);
-        __host__ __device__ inline constexpr int32_3 operator*(int32_t other) const;
-        __host__ __device__ inline void operator*=(int32_t other);
-        __host__ __device__ inline constexpr int32_3 operator/(int32_t other) const;
-        __host__ __device__ inline void operator/=(int32_t other);
-        __host__ __device__ static inline constexpr int32_t Dot(int32_3 left, int32_3 right);
-        __host__ __device__ inline constexpr int32_t MagnatudeSquared() const;
-        __host__ __device__ inline int32_t Magnatude() const;
-    };
-    struct int32_4 final {
-        union {
-            struct { int32_t x, y, z, w; };
-            int32_t v[4];
-        };
-        __host__ __device__ inline constexpr int32_4();
-        __host__ __device__ inline constexpr int32_4(int32_t x, int32_t y, int32_t z, int32_t w);
-        __host__ __device__ inline constexpr int32_4(const int32_t v[4]);
-        __host__ __device__ inline constexpr int32_4 operator+(int32_4 other) const;
-        __host__ __device__ inline void operator+=(int32_4 other);
-        __host__ __device__ inline constexpr int32_4 operator-(int32_4 other) const;
-        __host__ __device__ inline void operator-=(int32_4 other);
-        __host__ __device__ inline constexpr int32_4 operator*(int32_t other) const;
-        __host__ __device__ inline void operator*=(int32_t other);
-        __host__ __device__ inline constexpr int32_4 operator/(int32_t other) const;
-        __host__ __device__ inline void operator/=(int32_t other);
-        __host__ __device__ static inline constexpr int32_t Dot(int32_4 left, int32_4 right);
-        __host__ __device__ inline constexpr int32_t MagnatudeSquared() const;
-        __host__ __device__ inline int32_t Magnatude() const;
-    };
-    struct uint32_2 final {
-        union {
-            struct { uint32_t x, y; };
-            uint32_t v[2];
-        };
-        __host__ __device__ inline constexpr uint32_2();
-        __host__ __device__ inline constexpr uint32_2(uint32_t x, uint32_t y);
-        __host__ __device__ inline constexpr uint32_2(const uint32_t v[2]);
-        __host__ __device__ inline constexpr uint32_2 operator+(uint32_2 other) const;
-        __host__ __device__ inline void operator+=(uint32_2 other);
-        __host__ __device__ inline constexpr uint32_2 operator-(uint32_2 other) const;
-        __host__ __device__ inline void operator-=(uint32_2 other);
-        __host__ __device__ inline constexpr uint32_2 operator*(uint32_t other) const;
-        __host__ __device__ inline void operator*=(uint32_t other);
-        __host__ __device__ inline constexpr uint32_2 operator/(uint32_t other) const;
-        __host__ __device__ inline void operator/=(uint32_t other);
-        __host__ __device__ static inline constexpr uint32_t Dot(uint32_2 left, uint32_2 right);
-        __host__ __device__ inline constexpr uint32_t MagnatudeSquared() const;
-        __host__ __device__ inline uint32_t Magnatude() const;
-    };
-    struct uint32_3 final {
-        union {
-            struct { uint32_t x, y, z; };
-            uint32_t v[3];
-        };
-        __host__ __device__ inline constexpr uint32_3();
-        __host__ __device__ inline constexpr uint32_3(uint32_t x, uint32_t y, uint32_t z);
-        __host__ __device__ inline constexpr uint32_3(const uint32_t v[3]);
-        __host__ __device__ inline constexpr uint32_3 operator+(uint32_3 other) const;
-        __host__ __device__ inline void operator+=(uint32_3 other);
-        __host__ __device__ inline constexpr uint32_3 operator-(uint32_3 other) const;
-        __host__ __device__ inline void operator-=(uint32_3 other);
-        __host__ __device__ inline constexpr uint32_3 operator*(uint32_t other) const;
-        __host__ __device__ inline void operator*=(uint32_t other);
-        __host__ __device__ inline constexpr uint32_3 operator/(uint32_t other) const;
-        __host__ __device__ inline void operator/=(uint32_t other);
-        __host__ __device__ static inline constexpr uint32_t Dot(uint32_3 left, uint32_3 right);
-        __host__ __device__ inline constexpr uint32_t MagnatudeSquared() const;
-        __host__ __device__ inline uint32_t Magnatude() const;
-    };
-    struct uint32_4 final {
-        union {
-            struct { uint32_t x, y, z, w; };
-            uint32_t v[4];
-        };
-        __host__ __device__ inline constexpr uint32_4();
-        __host__ __device__ inline constexpr uint32_4(uint32_t x, uint32_t y, uint32_t z, uint32_t w);
-        __host__ __device__ inline constexpr uint32_4(const uint32_t v[4]);
-        __host__ __device__ inline constexpr uint32_4 operator+(uint32_4 other) const;
-        __host__ __device__ inline void operator+=(uint32_4 other);
-        __host__ __device__ inline constexpr uint32_4 operator-(uint32_4 other) const;
-        __host__ __device__ inline void operator-=(uint32_4 other);
-        __host__ __device__ inline constexpr uint32_4 operator*(uint32_t other) const;
-        __host__ __device__ inline void operator*=(uint32_t other);
-        __host__ __device__ inline constexpr uint32_4 operator/(uint32_t other) const;
-        __host__ __device__ inline void operator/=(uint32_t other);
-        __host__ __device__ static inline constexpr uint32_t Dot(uint32_4 left, uint32_4 right);
-        __host__ __device__ inline constexpr uint32_t MagnatudeSquared() const;
-        __host__ __device__ inline uint32_t Magnatude() const;
-    };
-    struct int64_2 final {
-        union {
-            struct { int64_t x, y; };
-            int64_t v[2];
-        };
-        __host__ __device__ inline constexpr int64_2();
-        __host__ __device__ inline constexpr int64_2(int64_t x, int64_t y);
-        __host__ __device__ inline constexpr int64_2(const int64_t v[2]);
-        __host__ __device__ inline constexpr int64_2 operator+(int64_2 other) const;
-        __host__ __device__ inline void operator+=(int64_2 other);
-        __host__ __device__ inline constexpr int64_2 operator-(int64_2 other) const;
-        __host__ __device__ inline void operator-=(int64_2 other);
-        __host__ __device__ inline constexpr int64_2 operator*(int64_t other) const;
-        __host__ __device__ inline void operator*=(int64_t other);
-        __host__ __device__ inline constexpr int64_2 operator/(int64_t other) const;
-        __host__ __device__ inline void operator/=(int64_t other);
-        __host__ __device__ static inline constexpr int64_t Dot(int64_2 left, int64_2 right);
-        __host__ __device__ inline constexpr int64_t MagnatudeSquared() const;
-        __host__ __device__ inline int64_t Magnatude() const;
-    };
-    struct int64_3 final {
-        union {
-            struct { int64_t x, y, z; };
-            int64_t v[3];
-        };
-        __host__ __device__ inline constexpr int64_3();
-        __host__ __device__ inline constexpr int64_3(int64_t x, int64_t y, int64_t z);
-        __host__ __device__ inline constexpr int64_3(const int64_t v[3]);
-        __host__ __device__ inline constexpr int64_3 operator+(int64_3 other) const;
-        __host__ __device__ inline void operator+=(int64_3 other);
-        __host__ __device__ inline constexpr int64_3 operator-(int64_3 other) const;
-        __host__ __device__ inline void operator-=(int64_3 other);
-        __host__ __device__ inline constexpr int64_3 operator*(int64_t other) const;
-        __host__ __device__ inline void operator*=(int64_t other);
-        __host__ __device__ inline constexpr int64_3 operator/(int64_t other) const;
-        __host__ __device__ inline void operator/=(int64_t other);
-        __host__ __device__ static inline constexpr int64_t Dot(int64_3 left, int64_3 right);
-        __host__ __device__ inline constexpr int64_t MagnatudeSquared() const;
-        __host__ __device__ inline int64_t Magnatude() const;
-    };
-    struct int64_4 final {
-        union {
-            struct { int64_t x, y, z, w; };
-            int64_t v[4];
-        };
-        __host__ __device__ inline constexpr int64_4();
-        __host__ __device__ inline constexpr int64_4(int64_t x, int64_t y, int64_t z, int64_t w);
-        __host__ __device__ inline constexpr int64_4(const int64_t v[4]);
-        __host__ __device__ inline constexpr int64_4 operator+(int64_4 other) const;
-        __host__ __device__ inline void operator+=(int64_4 other);
-        __host__ __device__ inline constexpr int64_4 operator-(int64_4 other) const;
-        __host__ __device__ inline void operator-=(int64_4 other);
-        __host__ __device__ inline constexpr int64_4 operator*(int64_t other) const;
-        __host__ __device__ inline void operator*=(int64_t other);
-        __host__ __device__ inline constexpr int64_4 operator/(int64_t other) const;
-        __host__ __device__ inline void operator/=(int64_t other);
-        __host__ __device__ static inline constexpr int64_t Dot(int64_4 left, int64_4 right);
-        __host__ __device__ inline constexpr int64_t MagnatudeSquared() const;
-        __host__ __device__ inline int64_t Magnatude() const;
-    };
-    struct uint64_2 final {
-        union {
-            struct { uint64_t x, y; };
-            uint64_t v[2];
-        };
-        __host__ __device__ inline constexpr uint64_2();
-        __host__ __device__ inline constexpr uint64_2(uint64_t x, uint64_t y);
-        __host__ __device__ inline constexpr uint64_2(const uint64_t v[2]);
-        __host__ __device__ inline constexpr uint64_2 operator+(uint64_2 other) const;
-        __host__ __device__ inline void operator+=(uint64_2 other);
-        __host__ __device__ inline constexpr uint64_2 operator-(uint64_2 other) const;
-        __host__ __device__ inline void operator-=(uint64_2 other);
-        __host__ __device__ inline constexpr uint64_2 operator*(uint64_t other) const;
-        __host__ __device__ inline void operator*=(uint64_t other);
-        __host__ __device__ inline constexpr uint64_2 operator/(uint64_t other) const;
-        __host__ __device__ inline void operator/=(uint64_t other);
-        __host__ __device__ static inline constexpr uint64_t Dot(uint64_2 left, uint64_2 right);
-        __host__ __device__ inline constexpr uint64_t MagnatudeSquared() const;
-        __host__ __device__ inline uint64_t Magnatude() const;
-    };
-    struct uint64_3 final {
-        union {
-            struct { uint64_t x, y, z; };
-            uint64_t v[3];
-        };
-        __host__ __device__ inline constexpr uint64_3();
-        __host__ __device__ inline constexpr uint64_3(uint64_t x, uint64_t y, uint64_t z);
-        __host__ __device__ inline constexpr uint64_3(const uint64_t v[3]);
-        __host__ __device__ inline constexpr uint64_3 operator+(uint64_3 other) const;
-        __host__ __device__ inline void operator+=(uint64_3 other);
-        __host__ __device__ inline constexpr uint64_3 operator-(uint64_3 other) const;
-        __host__ __device__ inline void operator-=(uint64_3 other);
-        __host__ __device__ inline constexpr uint64_3 operator*(uint64_t other) const;
-        __host__ __device__ inline void operator*=(uint64_t other);
-        __host__ __device__ inline constexpr uint64_3 operator/(uint64_t other) const;
-        __host__ __device__ inline void operator/=(uint64_t other);
-        __host__ __device__ static inline constexpr uint64_t Dot(uint64_3 left, uint64_3 right);
-        __host__ __device__ inline constexpr uint64_t MagnatudeSquared() const;
-        __host__ __device__ inline uint64_t Magnatude() const;
-    };
-    struct uint64_4 final {
-        union {
-            struct { uint64_t x, y, z, w; };
-            uint64_t v[4];
-        };
-        __host__ __device__ inline constexpr uint64_4();
-        __host__ __device__ inline constexpr uint64_4(uint64_t x, uint64_t y, uint64_t z, uint64_t w);
-        __host__ __device__ inline constexpr uint64_4(const uint64_t v[4]);
-        __host__ __device__ inline constexpr uint64_4 operator+(uint64_4 other) const;
-        __host__ __device__ inline void operator+=(uint64_4 other);
-        __host__ __device__ inline constexpr uint64_4 operator-(uint64_4 other) const;
-        __host__ __device__ inline void operator-=(uint64_4 other);
-        __host__ __device__ inline constexpr uint64_4 operator*(uint64_t other) const;
-        __host__ __device__ inline void operator*=(uint64_t other);
-        __host__ __device__ inline constexpr uint64_4 operator/(uint64_t other) const;
-        __host__ __device__ inline void operator/=(uint64_t other);
-        __host__ __device__ static inline constexpr uint64_t Dot(uint64_4 left, uint64_4 right);
-        __host__ __device__ inline constexpr uint64_t MagnatudeSquared() const;
-        __host__ __device__ inline uint64_t Magnatude() const;
-    };
+
+    using float_1 = FixedVector<float, 1>;
+    using float_2 = FixedVector<float, 2>;
+    using float_3 = FixedVector<float, 3>;
+    using float_4 = FixedVector<float, 4>;
+    using double_1 = FixedVector<double, 1>;
+    using double_2 = FixedVector<double, 2>;
+    using double_3 = FixedVector<double, 3>;
+    using double_4 = FixedVector<double, 4>;
+    using int8_1 = FixedVector<int8_t, 1>;
+    using int8_2 = FixedVector<int8_t, 2>;
+    using int8_3 = FixedVector<int8_t, 3>;
+    using int8_4 = FixedVector<int8_t, 4>;
+    using uint8_1 = FixedVector<uint8_t, 1>;
+    using uint8_2 = FixedVector<uint8_t, 2>;
+    using uint8_3 = FixedVector<uint8_t, 3>;
+    using uint8_4 = FixedVector<uint8_t, 4>;
+    using int16_1 = FixedVector<int16_t, 1>;
+    using int16_2 = FixedVector<int16_t, 2>;
+    using int16_3 = FixedVector<int16_t, 3>;
+    using int16_4 = FixedVector<int16_t, 4>;
+    using uint16_1 = FixedVector<uint16_t, 1>;
+    using uint16_2 = FixedVector<uint16_t, 2>;
+    using uint16_3 = FixedVector<uint16_t, 3>;
+    using uint16_4 = FixedVector<uint16_t, 4>;
+    using int32_1 = FixedVector<int32_t, 1>;
+    using int32_2 = FixedVector<int32_t, 2>;
+    using int32_3 = FixedVector<int32_t, 3>;
+    using int32_4 = FixedVector<int32_t, 4>;
+    using uint32_1 = FixedVector<uint32_t, 1>;
+    using uint32_2 = FixedVector<uint32_t, 2>;
+    using uint32_3 = FixedVector<uint32_t, 3>;
+    using uint32_4 = FixedVector<uint32_t, 4>;
+    using int64_1 = FixedVector<int64_t, 1>;
+    using int64_2 = FixedVector<int64_t, 2>;
+    using int64_3 = FixedVector<int64_t, 3>;
+    using int64_4 = FixedVector<int64_t, 4>;
+    using uint64_1 = FixedVector<uint64_t, 1>;
+    using uint64_2 = FixedVector<uint64_t, 2>;
+    using uint64_3 = FixedVector<uint64_t, 3>;
+    using uint64_4 = FixedVector<uint64_t, 4>;
 }
 
-__host__ __device__ inline constexpr BrendanCUDA::float_2::float_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::float_2::float_2(const float x, const float y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::float_2::float_2(const float v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::float_2 BrendanCUDA::float_2::operator+(float_2 other) const {
-    return float_2(x + other.x, y + other.y);
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, _Size>::FixedVector() {
+    for (size_t i = 0; i < _Size; ++i) {
+        v[i] = 0;
+    }
 }
-__host__ __device__ inline void BrendanCUDA::float_2::operator+=(float_2 other) {
-    x += other.x;
-    y += other.y;
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, _Size>::FixedVector(_T V...) {
+    va_list args;
+    va_start(args, V);
+    v[0] = V;
+    for (size_t i = 1; i < _Size; ++i) {
+        v[i] = va_arg(args, _T);
+    }
+    va_end(args);
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_2 BrendanCUDA::float_2::operator-(float_2 other) const {
-    return float_2(x - other.x, y - other.y);
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, _Size>::FixedVector(const _T V[_Size]) {
+    for (size_t i = 0; i < _Size; ++i) {
+        v[i] = V[i];
+    }
 }
-__host__ __device__ inline void BrendanCUDA::float_2::operator-=(float_2 other) {
-    x -= other.x;
-    y -= other.y;
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr _T& BrendanCUDA::FixedVector<_T, _Size>::operator[](size_t Index) {
+    return v[Index];
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_2 BrendanCUDA::float_2::operator*(float other) const {
-    return float_2(x * other, y * other);
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr const _T& BrendanCUDA::FixedVector<_T, _Size>::operator[](size_t Index) const {
+    return v[Index];
 }
-__host__ __device__ inline void BrendanCUDA::float_2::operator*=(float other) {
-    x *= other;
-    y *= other;
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, _Size>::operator+(FixedVector<_T, _Size> Other) const -> FixedVector<_T, _Size> {
+    FixedVector<_T, _Size> r;
+    for (size_t i = 0; i < _Size; ++i) {
+        r[i] = v[i] + Other[i];
+    }
+    return r;
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_2 BrendanCUDA::float_2::operator/(float other) const {
-    return float_2(x / other, y / other);
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, _Size>::operator+=(FixedVector<_T, _Size> Other) {
+    for (size_t i = 0; i < _Size; ++i) {
+        v[i] += Other[i];
+    }
 }
-__host__ __device__ inline void BrendanCUDA::float_2::operator/=(float other) {
-    x /= other;
-    y /= other;
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, _Size>::operator-(FixedVector<_T, _Size> Other) const -> FixedVector<_T, _Size> {
+    FixedVector<_T, _Size> r;
+    for (size_t i = 0; i < _Size; ++i) {
+        r[i] = v[i] - Other[i];
+    }
+    return r;
 }
-__host__ __device__ inline constexpr float BrendanCUDA::float_2::Dot(float_2 left, float_2 right) {
-    return left.x * right.x + left.y * right.y;
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, _Size>::operator-=(FixedVector<_T, _Size> Other) {
+    for (size_t i = 0; i < _Size; ++i) {
+        v[i] -= Other[i];
+    }
 }
-__host__ __device__ inline constexpr float BrendanCUDA::float_2::MagnatudeSquared() const {
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, _Size>::operator*(_T Other) const -> FixedVector<_T, _Size> {
+    FixedVector<_T, _Size> r;
+    for (size_t i = 0; i < _Size; ++i) {
+        r[i] = v[i] * Other;
+    }
+    return r;
+}
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, _Size>::operator*=(_T Other) {
+    for (size_t i = 0; i < _Size; ++i) {
+        v[i] *= Other;
+    }
+}
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, _Size>::operator/(_T Other) const -> FixedVector<_T, _Size> {
+    FixedVector<_T, _Size> r;
+    for (size_t i = 0; i < _Size; ++i) {
+        r[i] = v[i] / Other;
+    }
+    return r;
+}
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, _Size>::operator/=(_T Other) {
+    for (size_t i = 0; i < _Size; ++i) {
+        v[i] /= Other;
+    }
+}
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, _Size>::Dot(FixedVector<_T, _Size> Left, FixedVector<_T, _Size> Right) {
+    _T t = 0;
+    for (size_t i = 0; i < _Size; ++i) {
+        t += Left[i] * Right[i];
+    }
+    return t;
+}
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, _Size>::MagnatudeSquared() const {
+    _T t = 0;
+    for (size_t i = 0; i < _Size; ++i) {
+        t += v[i] * v[i];
+    }
+    return t;
+}
+template <typename _T, size_t _Size>
+template <typename _T2>
+__host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> BrendanCUDA::FixedVector<_T, _Size>::MagnatudeI() const {
+    return Math::sqrt(MagnatudeSquared());
+}
+template <typename _T, size_t _Size>
+template <typename _T2>
+__host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> BrendanCUDA::FixedVector<_T, _Size>::MagnatudeF() const {
+    return sqrt((float)MagnatudeSquared());
+}
+template <typename _T, size_t _Size>
+__host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> BrendanCUDA::FixedVector<_T, _Size>::Magnatude() const {
+    if constexpr (std::floating_point<_T>) {
+        return sqrt(MagnatudeSquared());
+    }
+    else {
+        return sqrt((double)MagnatudeSquared());
+    }
+}
+
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 1>::FixedVector()
+    : x(0) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 1>::FixedVector(_T x)
+    : x(x) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 1>::FixedVector(const _T v[1])
+    : x(v[0]) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 1>::operator+(FixedVector<_T, 1> Other) const -> BrendanCUDA::FixedVector<_T, 1> {
+    return FixedVector<_T, 1>(x + Other.x);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 1>::operator+=(FixedVector<_T, 1> Other) {
+    x += Other.x;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 1>::operator-(FixedVector<_T, 1> Other) const -> BrendanCUDA::FixedVector<_T, 1> {
+    return FixedVector<_T, 1>(x - Other.x);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 1>::operator-=(FixedVector<_T, 1> Other) {
+    x -= Other.x;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 1>::operator*(_T Other) const -> BrendanCUDA::FixedVector<_T, 1> {
+    return FixedVector<_T, 1>(x * Other);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 1>::operator*=(_T Other) {
+    x *= Other;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 1>::operator/(_T Other) const -> BrendanCUDA::FixedVector<_T, 1> {
+    return FixedVector<_T, 1>(x / Other);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 1>::operator/=(_T Other) {
+    x /= Other;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 1>::Dot(FixedVector<_T, 1> Left, FixedVector<_T, 1> Right) {
+    return Left.x * Right.x;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 1>::MagnatudeSquared() const {
+    return x * x;
+}
+
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 2>::FixedVector()
+    : x(0),
+      y(0) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 2>::FixedVector(_T X, _T Y)
+    : x(X),
+      y(Y) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 2>::FixedVector(const _T V[2])
+    : x(V[0]),
+      y(V[1]) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 2>::operator+(FixedVector<_T, 2> Other) const -> BrendanCUDA::FixedVector<_T, 2> {
+    return FixedVector<_T, 2>(x + Other.x, y + Other.y);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 2>::operator+=(FixedVector<_T, 2> Other) {
+    x += Other.x;
+    y += Other.y;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 2>::operator-(FixedVector<_T, 2> Other) const -> BrendanCUDA::FixedVector<_T, 2> {
+    return FixedVector<_T, 2>(x - Other.x, y - Other.y);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 2>::operator-=(FixedVector<_T, 2> Other) {
+    x -= Other.x;
+    y -= Other.y;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 2>::operator*(_T Other) const -> BrendanCUDA::FixedVector<_T, 2> {
+    return FixedVector<_T, 2>(x * Other, y * Other);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 2>::operator*=(_T Other) {
+    x *= Other;
+    y *= Other;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 2>::operator/(_T Other) const -> BrendanCUDA::FixedVector<_T, 2> {
+    return FixedVector<_T, 2>(x / Other, y / Other);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 2>::operator/=(_T Other) {
+    x /= Other;
+    y /= Other;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 2>::Dot(FixedVector<_T, 2> Left, FixedVector<_T, 2> Right) {
+    return Left.x * Right.x + Left.y * Right.y;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 2> BrendanCUDA::FixedVector<_T, 2>::Cross() const {
+    return FixedVector<_T, 2>(-y, x);
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 2> BrendanCUDA::FixedVector<_T, 2>::Cross(FixedVector<_T, 2> Value) {
+    return Value.Cross();
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 2>::Cross(FixedVector<_T, 2> Left, FixedVector<_T, 2> Right) {
+    return Left.x * Right.y - Left.y * Right.x;
+}
+template <typename _T>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 2>::MagnatudeSquared() const {
     return x * x + y * y;
 }
-__host__ __device__ inline float BrendanCUDA::float_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
+
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3>::FixedVector()
+    : x(0),
+      y(0),
+      z(0) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3>::FixedVector(_T X, _T Y, _T Z)
+    : x(X),
+      y(Y),
+      z(Z) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3>::FixedVector(const _T V[3])
+    : x(V[0]),
+      y(V[1]),
+      z(V[2]) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::operator+(FixedVector<_T, 3> Other) const {
+    return FixedVector<_T, 3>(x + Other.x, y + Other.y, z + Other.z);
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_3::float_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::float_3::float_3(const float x, const float y, const float z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::float_3::float_3(const float v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::float_3 BrendanCUDA::float_3::operator+(float_3 other) const {
-    return float_3(x + other.x, y + other.y, z + other.z);
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 3>::operator+=(FixedVector<_T, 3> Other) {
+    x += Other.x;
+    y += Other.y;
+    z += Other.z;
 }
-__host__ __device__ inline void BrendanCUDA::float_3::operator+=(float_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::operator-(FixedVector<_T, 3> Other) const {
+    return FixedVector<_T, 3>(x - Other.x, y - Other.y, z - Other.z);
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_3 BrendanCUDA::float_3::operator-(float_3 other) const {
-    return float_3(x - other.x, y - other.y, z - other.z);
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 3>::operator-=(FixedVector<_T, 3> Other) {
+    x -= Other.x;
+    y -= Other.y;
+    z -= Other.z;
 }
-__host__ __device__ inline void BrendanCUDA::float_3::operator-=(float_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::operator*(_T Other) const {
+    return FixedVector<_T, 3>(x * Other, y * Other, z * Other);
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_3 BrendanCUDA::float_3::operator*(float other) const {
-    return float_3(x * other, y * other, z * other);
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 3>::operator*=(_T Other) {
+    x *= Other;
+    y *= Other;
+    z *= Other;
 }
-__host__ __device__ inline void BrendanCUDA::float_3::operator*=(float other) {
-    x *= other;
-    y *= other;
-    z *= other;
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::operator/(_T Other) const {
+    return FixedVector<_T, 3>(x / Other, y / Other, z / Other);
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_3 BrendanCUDA::float_3::operator/(float other) const {
-    return float_3(x / other, y / other, z / other);
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 3>::operator/=(_T Other) {
+    x /= Other;
+    y /= Other;
+    z /= Other;
 }
-__host__ __device__ inline void BrendanCUDA::float_3::operator/=(float other) {
-    x /= other;
-    y /= other;
-    z /= other;
+template <typename _T>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 3>::Dot(FixedVector<_T, 3> Left, FixedVector<_T, 3> Right) {
+    return Left.x * Right.x + Left.y * Right.y + Left.z * Right.z;
 }
-__host__ __device__ inline constexpr float BrendanCUDA::float_3::Dot(float_3 left, float_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::Cross(FixedVector<_T, 3> Left, FixedVector<_T, 3> Right) {
+    return FixedVector<_T, 3>(
+        Left.y * Right.z - Left.z * Right.y,
+        Left.z * Right.x - Left.x * Right.z,
+        Left.x * Right.y - Left.y * Right.x
+    );
 }
-__host__ __device__ inline constexpr float BrendanCUDA::float_3::MagnatudeSquared() const {
+template <typename _T>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 3>::MagnatudeSquared() const {
     return x * x + y * y + z * z;
 }
-__host__ __device__ inline float BrendanCUDA::float_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
+
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4>::FixedVector()
+    : x(0),
+      y(0),
+      z(0),
+      w(0) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4>::FixedVector(_T X, _T Y, _T Z, _T W)
+    : x(X),
+      y(Y),
+      z(Z),
+      w(W) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4>::FixedVector(const _T V[4])
+    : x(V[0]),
+      y(V[1]),
+      z(V[2]),
+      w(V[3]) { }
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4> BrendanCUDA::FixedVector<_T, 4>::operator+(FixedVector<_T, 4> Other) const {
+    return FixedVector<_T, 4>(x + Other.x, y + Other.y, z + Other.z, w + Other.w);
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_4::float_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::float_4::float_4(const float x, const float y, const float z, const float w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::float_4::float_4(const float v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::float_4 BrendanCUDA::float_4::operator+(float_4 other) const {
-    return float_4(x + other.x, y + other.y, z + other.z, w + other.w);
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 4>::operator+=(FixedVector<_T, 4> Other) {
+    x += Other.x;
+    y += Other.y;
+    z += Other.z;
+    w += Other.w;
 }
-__host__ __device__ inline void BrendanCUDA::float_4::operator+=(float_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4> BrendanCUDA::FixedVector<_T, 4>::operator-(FixedVector<_T, 4> Other) const {
+    return FixedVector<_T, 4>(x - Other.x, y - Other.y, z - Other.z, w - Other.w);
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_4 BrendanCUDA::float_4::operator-(float_4 other) const {
-    return float_4(x - other.x, y - other.y, z - other.z, w - other.w);
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 4>::operator-=(FixedVector<_T, 4> Other) {
+    x -= Other.x;
+    y -= Other.y;
+    z -= Other.z;
+    w -= Other.w;
 }
-__host__ __device__ inline void BrendanCUDA::float_4::operator-=(float_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4> BrendanCUDA::FixedVector<_T, 4>::operator*(_T Other) const {
+    return FixedVector<_T, 4>(x * Other, y * Other, z * Other, w * Other);
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_4 BrendanCUDA::float_4::operator*(float other) const {
-    return float_4(x * other, y * other, z * other, w * other);
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 4>::operator*=(_T Other) {
+    x *= Other;
+    y *= Other;
+    z *= Other;
+    w *= Other;
 }
-__host__ __device__ inline void BrendanCUDA::float_4::operator*=(float other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
+template <typename _T>
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4> BrendanCUDA::FixedVector<_T, 4>::operator/(_T Other) const {
+    return FixedVector<_T, 4>(x / Other, y / Other, z / Other, w / Other);
 }
-__host__ __device__ inline constexpr BrendanCUDA::float_4 BrendanCUDA::float_4::operator/(float other) const {
-    return float_4(x / other, y / other, z / other, w / other);
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::FixedVector<_T, 4>::operator/=(_T Other) {
+    x /= Other;
+    y /= Other;
+    z /= Other;
+    w /= Other;
 }
-__host__ __device__ inline void BrendanCUDA::float_4::operator/=(float other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
+template <typename _T>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 4>::Dot(FixedVector<_T, 4> Left, FixedVector<_T, 4> Right) {
+    return Left.x * Right.x + Left.y * Right.y + Left.z * Right.z + Left.w * Right.w;
 }
-__host__ __device__ inline constexpr float BrendanCUDA::float_4::Dot(float_4 left, float_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr float BrendanCUDA::float_4::MagnatudeSquared() const {
+template <typename _T>
+__host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 4>::MagnatudeSquared() const {
     return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline float BrendanCUDA::float_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_2::double_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::double_2::double_2(const double x, const double y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::double_2::double_2(const double v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::double_2 BrendanCUDA::double_2::operator+(double_2 other) const {
-    return double_2(x + other.x, y + other.y);
-}
-__host__ __device__ inline void BrendanCUDA::double_2::operator+=(double_2 other) {
-    x += other.x;
-    y += other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_2 BrendanCUDA::double_2::operator-(double_2 other) const {
-    return double_2(x - other.x, y - other.y);
-}
-__host__ __device__ inline void BrendanCUDA::double_2::operator-=(double_2 other) {
-    x -= other.x;
-    y -= other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_2 BrendanCUDA::double_2::operator*(double other) const {
-    return double_2(x * other, y * other);
-}
-__host__ __device__ inline void BrendanCUDA::double_2::operator*=(double other) {
-    x *= other;
-    y *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_2 BrendanCUDA::double_2::operator/(double other) const {
-    return double_2(x / other, y / other);
-}
-__host__ __device__ inline void BrendanCUDA::double_2::operator/=(double other) {
-    x /= other;
-    y /= other;
-}
-__host__ __device__ inline constexpr double BrendanCUDA::double_2::Dot(double_2 left, double_2 right) {
-    return left.x * right.x + left.y * right.y;
-}
-__host__ __device__ inline constexpr double BrendanCUDA::double_2::MagnatudeSquared() const {
-    return x * x + y * y;
-}
-__host__ __device__ inline double BrendanCUDA::double_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_3::double_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::double_3::double_3(const double x, const double y, const double z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::double_3::double_3(const double v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::double_3 BrendanCUDA::double_3::operator+(double_3 other) const {
-    return double_3(x + other.x, y + other.y, z + other.z);
-}
-__host__ __device__ inline void BrendanCUDA::double_3::operator+=(double_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_3 BrendanCUDA::double_3::operator-(double_3 other) const {
-    return double_3(x - other.x, y - other.y, z - other.z);
-}
-__host__ __device__ inline void BrendanCUDA::double_3::operator-=(double_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_3 BrendanCUDA::double_3::operator*(double other) const {
-    return double_3(x * other, y * other, z * other);
-}
-__host__ __device__ inline void BrendanCUDA::double_3::operator*=(double other) {
-    x *= other;
-    y *= other;
-    z *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_3 BrendanCUDA::double_3::operator/(double other) const {
-    return double_3(x / other, y / other, z / other);
-}
-__host__ __device__ inline void BrendanCUDA::double_3::operator/=(double other) {
-    x /= other;
-    y /= other;
-    z /= other;
-}
-__host__ __device__ inline constexpr double BrendanCUDA::double_3::Dot(double_3 left, double_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
-}
-__host__ __device__ inline constexpr double BrendanCUDA::double_3::MagnatudeSquared() const {
-    return x * x + y * y + z * z;
-}
-__host__ __device__ inline double BrendanCUDA::double_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_4::double_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::double_4::double_4(const double x, const double y, const double z, const double w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::double_4::double_4(const double v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::double_4 BrendanCUDA::double_4::operator+(double_4 other) const {
-    return double_4(x + other.x, y + other.y, z + other.z, w + other.w);
-}
-__host__ __device__ inline void BrendanCUDA::double_4::operator+=(double_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_4 BrendanCUDA::double_4::operator-(double_4 other) const {
-    return double_4(x - other.x, y - other.y, z - other.z, w - other.w);
-}
-__host__ __device__ inline void BrendanCUDA::double_4::operator-=(double_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_4 BrendanCUDA::double_4::operator*(double other) const {
-    return double_4(x * other, y * other, z * other, w * other);
-}
-__host__ __device__ inline void BrendanCUDA::double_4::operator*=(double other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::double_4 BrendanCUDA::double_4::operator/(double other) const {
-    return double_4(x / other, y / other, z / other, w / other);
-}
-__host__ __device__ inline void BrendanCUDA::double_4::operator/=(double other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
-}
-__host__ __device__ inline constexpr double BrendanCUDA::double_4::Dot(double_4 left, double_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr double BrendanCUDA::double_4::MagnatudeSquared() const {
-    return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline double BrendanCUDA::double_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_2::int8_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int8_2::int8_2(const int8_t x, const int8_t y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::int8_2::int8_2(const int8_t v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int8_2 BrendanCUDA::int8_2::operator+(int8_2 other) const {
-    return int8_2(x + other.x, y + other.y);
-}
-__host__ __device__ inline void BrendanCUDA::int8_2::operator+=(int8_2 other) {
-    x += other.x;
-    y += other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_2 BrendanCUDA::int8_2::operator-(int8_2 other) const {
-    return int8_2(x - other.x, y - other.y);
-}
-__host__ __device__ inline void BrendanCUDA::int8_2::operator-=(int8_2 other) {
-    x -= other.x;
-    y -= other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_2 BrendanCUDA::int8_2::operator*(int8_t other) const {
-    return int8_2(x * other, y * other);
-}
-__host__ __device__ inline void BrendanCUDA::int8_2::operator*=(int8_t other) {
-    x *= other;
-    y *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_2 BrendanCUDA::int8_2::operator/(int8_t other) const {
-    return int8_2(x / other, y / other);
-}
-__host__ __device__ inline void BrendanCUDA::int8_2::operator/=(int8_t other) {
-    x /= other;
-    y /= other;
-}
-__host__ __device__ inline constexpr int8_t BrendanCUDA::int8_2::Dot(int8_2 left, int8_2 right) {
-    return left.x * right.x + left.y * right.y;
-}
-__host__ __device__ inline constexpr int8_t BrendanCUDA::int8_2::MagnatudeSquared() const {
-    return x * x + y * y;
-}
-__host__ __device__ inline int8_t BrendanCUDA::int8_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_3::int8_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int8_3::int8_3(const int8_t x, const int8_t y, const int8_t z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::int8_3::int8_3(const int8_t v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int8_3 BrendanCUDA::int8_3::operator+(int8_3 other) const {
-    return int8_3(x + other.x, y + other.y, z + other.z);
-}
-__host__ __device__ inline void BrendanCUDA::int8_3::operator+=(int8_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_3 BrendanCUDA::int8_3::operator-(int8_3 other) const {
-    return int8_3(x - other.x, y - other.y, z - other.z);
-}
-__host__ __device__ inline void BrendanCUDA::int8_3::operator-=(int8_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_3 BrendanCUDA::int8_3::operator*(int8_t other) const {
-    return int8_3(x * other, y * other, z * other);
-}
-__host__ __device__ inline void BrendanCUDA::int8_3::operator*=(int8_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_3 BrendanCUDA::int8_3::operator/(int8_t other) const {
-    return int8_3(x / other, y / other, z / other);
-}
-__host__ __device__ inline void BrendanCUDA::int8_3::operator/=(int8_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-}
-__host__ __device__ inline constexpr int8_t BrendanCUDA::int8_3::Dot(int8_3 left, int8_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
-}
-__host__ __device__ inline constexpr int8_t BrendanCUDA::int8_3::MagnatudeSquared() const {
-    return x * x + y * y + z * z;
-}
-__host__ __device__ inline int8_t BrendanCUDA::int8_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_4::int8_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int8_4::int8_4(const int8_t x, const int8_t y, const int8_t z, const int8_t w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::int8_4::int8_4(const int8_t v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int8_4 BrendanCUDA::int8_4::operator+(int8_4 other) const {
-    return int8_4(x + other.x, y + other.y, z + other.z, w + other.w);
-}
-__host__ __device__ inline void BrendanCUDA::int8_4::operator+=(int8_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_4 BrendanCUDA::int8_4::operator-(int8_4 other) const {
-    return int8_4(x - other.x, y - other.y, z - other.z, w - other.w);
-}
-__host__ __device__ inline void BrendanCUDA::int8_4::operator-=(int8_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_4 BrendanCUDA::int8_4::operator*(int8_t other) const {
-    return int8_4(x * other, y * other, z * other, w * other);
-}
-__host__ __device__ inline void BrendanCUDA::int8_4::operator*=(int8_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int8_4 BrendanCUDA::int8_4::operator/(int8_t other) const {
-    return int8_4(x / other, y / other, z / other, w / other);
-}
-__host__ __device__ inline void BrendanCUDA::int8_4::operator/=(int8_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
-}
-__host__ __device__ inline constexpr int8_t BrendanCUDA::int8_4::Dot(int8_4 left, int8_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr int8_t BrendanCUDA::int8_4::MagnatudeSquared() const {
-    return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline int8_t BrendanCUDA::int8_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_2::uint8_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint8_2::uint8_2(const uint8_t x, const uint8_t y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint8_2::uint8_2(const uint8_t v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint8_2 BrendanCUDA::uint8_2::operator+(uint8_2 other) const {
-    return uint8_2(x + other.x, y + other.y);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_2::operator+=(uint8_2 other) {
-    x += other.x;
-    y += other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_2 BrendanCUDA::uint8_2::operator-(uint8_2 other) const {
-    return uint8_2(x - other.x, y - other.y);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_2::operator-=(uint8_2 other) {
-    x -= other.x;
-    y -= other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_2 BrendanCUDA::uint8_2::operator*(uint8_t other) const {
-    return uint8_2(x * other, y * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_2::operator*=(uint8_t other) {
-    x *= other;
-    y *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_2 BrendanCUDA::uint8_2::operator/(uint8_t other) const {
-    return uint8_2(x / other, y / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_2::operator/=(uint8_t other) {
-    x /= other;
-    y /= other;
-}
-__host__ __device__ inline constexpr uint8_t BrendanCUDA::uint8_2::Dot(uint8_2 left, uint8_2 right) {
-    return left.x * right.x + left.y * right.y;
-}
-__host__ __device__ inline constexpr uint8_t BrendanCUDA::uint8_2::MagnatudeSquared() const {
-    return x * x + y * y;
-}
-__host__ __device__ inline uint8_t BrendanCUDA::uint8_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_3::uint8_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint8_3::uint8_3(const uint8_t x, const uint8_t y, const uint8_t z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint8_3::uint8_3(const uint8_t v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint8_3 BrendanCUDA::uint8_3::operator+(uint8_3 other) const {
-    return uint8_3(x + other.x, y + other.y, z + other.z);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_3::operator+=(uint8_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_3 BrendanCUDA::uint8_3::operator-(uint8_3 other) const {
-    return uint8_3(x - other.x, y - other.y, z - other.z);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_3::operator-=(uint8_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_3 BrendanCUDA::uint8_3::operator*(uint8_t other) const {
-    return uint8_3(x * other, y * other, z * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_3::operator*=(uint8_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_3 BrendanCUDA::uint8_3::operator/(uint8_t other) const {
-    return uint8_3(x / other, y / other, z / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_3::operator/=(uint8_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-}
-__host__ __device__ inline constexpr uint8_t BrendanCUDA::uint8_3::Dot(uint8_3 left, uint8_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
-}
-__host__ __device__ inline constexpr uint8_t BrendanCUDA::uint8_3::MagnatudeSquared() const {
-    return x * x + y * y + z * z;
-}
-__host__ __device__ inline uint8_t BrendanCUDA::uint8_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_4::uint8_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint8_4::uint8_4(const uint8_t x, const uint8_t y, const uint8_t z, const uint8_t w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint8_4::uint8_4(const uint8_t v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint8_4 BrendanCUDA::uint8_4::operator+(uint8_4 other) const {
-    return uint8_4(x + other.x, y + other.y, z + other.z, w + other.w);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_4::operator+=(uint8_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_4 BrendanCUDA::uint8_4::operator-(uint8_4 other) const {
-    return uint8_4(x - other.x, y - other.y, z - other.z, w - other.w);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_4::operator-=(uint8_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_4 BrendanCUDA::uint8_4::operator*(uint8_t other) const {
-    return uint8_4(x * other, y * other, z * other, w * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_4::operator*=(uint8_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint8_4 BrendanCUDA::uint8_4::operator/(uint8_t other) const {
-    return uint8_4(x / other, y / other, z / other, w / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint8_4::operator/=(uint8_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
-}
-__host__ __device__ inline constexpr uint8_t BrendanCUDA::uint8_4::Dot(uint8_4 left, uint8_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr uint8_t BrendanCUDA::uint8_4::MagnatudeSquared() const {
-    return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline uint8_t BrendanCUDA::uint8_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_2::int16_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int16_2::int16_2(const int16_t x, const int16_t y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::int16_2::int16_2(const int16_t v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int16_2 BrendanCUDA::int16_2::operator+(int16_2 other) const {
-    return int16_2(x + other.x, y + other.y);
-}
-__host__ __device__ inline void BrendanCUDA::int16_2::operator+=(int16_2 other) {
-    x += other.x;
-    y += other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_2 BrendanCUDA::int16_2::operator-(int16_2 other) const {
-    return int16_2(x - other.x, y - other.y);
-}
-__host__ __device__ inline void BrendanCUDA::int16_2::operator-=(int16_2 other) {
-    x -= other.x;
-    y -= other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_2 BrendanCUDA::int16_2::operator*(int16_t other) const {
-    return int16_2(x * other, y * other);
-}
-__host__ __device__ inline void BrendanCUDA::int16_2::operator*=(int16_t other) {
-    x *= other;
-    y *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_2 BrendanCUDA::int16_2::operator/(int16_t other) const {
-    return int16_2(x / other, y / other);
-}
-__host__ __device__ inline void BrendanCUDA::int16_2::operator/=(int16_t other) {
-    x /= other;
-    y /= other;
-}
-__host__ __device__ inline constexpr int16_t BrendanCUDA::int16_2::Dot(int16_2 left, int16_2 right) {
-    return left.x * right.x + left.y * right.y;
-}
-__host__ __device__ inline constexpr int16_t BrendanCUDA::int16_2::MagnatudeSquared() const {
-    return x * x + y * y;
-}
-__host__ __device__ inline int16_t BrendanCUDA::int16_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_3::int16_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int16_3::int16_3(const int16_t x, const int16_t y, const int16_t z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::int16_3::int16_3(const int16_t v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int16_3 BrendanCUDA::int16_3::operator+(int16_3 other) const {
-    return int16_3(x + other.x, y + other.y, z + other.z);
-}
-__host__ __device__ inline void BrendanCUDA::int16_3::operator+=(int16_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_3 BrendanCUDA::int16_3::operator-(int16_3 other) const {
-    return int16_3(x - other.x, y - other.y, z - other.z);
-}
-__host__ __device__ inline void BrendanCUDA::int16_3::operator-=(int16_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_3 BrendanCUDA::int16_3::operator*(int16_t other) const {
-    return int16_3(x * other, y * other, z * other);
-}
-__host__ __device__ inline void BrendanCUDA::int16_3::operator*=(int16_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_3 BrendanCUDA::int16_3::operator/(int16_t other) const {
-    return int16_3(x / other, y / other, z / other);
-}
-__host__ __device__ inline void BrendanCUDA::int16_3::operator/=(int16_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-}
-__host__ __device__ inline constexpr int16_t BrendanCUDA::int16_3::Dot(int16_3 left, int16_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
-}
-__host__ __device__ inline constexpr int16_t BrendanCUDA::int16_3::MagnatudeSquared() const {
-    return x * x + y * y + z * z;
-}
-__host__ __device__ inline int16_t BrendanCUDA::int16_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_4::int16_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int16_4::int16_4(const int16_t x, const int16_t y, const int16_t z, const int16_t w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::int16_4::int16_4(const int16_t v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int16_4 BrendanCUDA::int16_4::operator+(int16_4 other) const {
-    return int16_4(x + other.x, y + other.y, z + other.z, w + other.w);
-}
-__host__ __device__ inline void BrendanCUDA::int16_4::operator+=(int16_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_4 BrendanCUDA::int16_4::operator-(int16_4 other) const {
-    return int16_4(x - other.x, y - other.y, z - other.z, w - other.w);
-}
-__host__ __device__ inline void BrendanCUDA::int16_4::operator-=(int16_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_4 BrendanCUDA::int16_4::operator*(int16_t other) const {
-    return int16_4(x * other, y * other, z * other, w * other);
-}
-__host__ __device__ inline void BrendanCUDA::int16_4::operator*=(int16_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int16_4 BrendanCUDA::int16_4::operator/(int16_t other) const {
-    return int16_4(x / other, y / other, z / other, w / other);
-}
-__host__ __device__ inline void BrendanCUDA::int16_4::operator/=(int16_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
-}
-__host__ __device__ inline constexpr int16_t BrendanCUDA::int16_4::Dot(int16_4 left, int16_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr int16_t BrendanCUDA::int16_4::MagnatudeSquared() const {
-    return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline int16_t BrendanCUDA::int16_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_2::uint16_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint16_2::uint16_2(const uint16_t x, const uint16_t y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint16_2::uint16_2(const uint16_t v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint16_2 BrendanCUDA::uint16_2::operator+(uint16_2 other) const {
-    return uint16_2(x + other.x, y + other.y);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_2::operator+=(uint16_2 other) {
-    x += other.x;
-    y += other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_2 BrendanCUDA::uint16_2::operator-(uint16_2 other) const {
-    return uint16_2(x - other.x, y - other.y);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_2::operator-=(uint16_2 other) {
-    x -= other.x;
-    y -= other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_2 BrendanCUDA::uint16_2::operator*(uint16_t other) const {
-    return uint16_2(x * other, y * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_2::operator*=(uint16_t other) {
-    x *= other;
-    y *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_2 BrendanCUDA::uint16_2::operator/(uint16_t other) const {
-    return uint16_2(x / other, y / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_2::operator/=(uint16_t other) {
-    x /= other;
-    y /= other;
-}
-__host__ __device__ inline constexpr uint16_t BrendanCUDA::uint16_2::Dot(uint16_2 left, uint16_2 right) {
-    return left.x * right.x + left.y * right.y;
-}
-__host__ __device__ inline constexpr uint16_t BrendanCUDA::uint16_2::MagnatudeSquared() const {
-    return x * x + y * y;
-}
-__host__ __device__ inline uint16_t BrendanCUDA::uint16_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_3::uint16_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint16_3::uint16_3(const uint16_t x, const uint16_t y, const uint16_t z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint16_3::uint16_3(const uint16_t v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint16_3 BrendanCUDA::uint16_3::operator+(uint16_3 other) const {
-    return uint16_3(x + other.x, y + other.y, z + other.z);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_3::operator+=(uint16_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_3 BrendanCUDA::uint16_3::operator-(uint16_3 other) const {
-    return uint16_3(x - other.x, y - other.y, z - other.z);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_3::operator-=(uint16_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_3 BrendanCUDA::uint16_3::operator*(uint16_t other) const {
-    return uint16_3(x * other, y * other, z * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_3::operator*=(uint16_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_3 BrendanCUDA::uint16_3::operator/(uint16_t other) const {
-    return uint16_3(x / other, y / other, z / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_3::operator/=(uint16_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-}
-__host__ __device__ inline constexpr uint16_t BrendanCUDA::uint16_3::Dot(uint16_3 left, uint16_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
-}
-__host__ __device__ inline constexpr uint16_t BrendanCUDA::uint16_3::MagnatudeSquared() const {
-    return x * x + y * y + z * z;
-}
-__host__ __device__ inline uint16_t BrendanCUDA::uint16_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_4::uint16_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint16_4::uint16_4(const uint16_t x, const uint16_t y, const uint16_t z, const uint16_t w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint16_4::uint16_4(const uint16_t v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint16_4 BrendanCUDA::uint16_4::operator+(uint16_4 other) const {
-    return uint16_4(x + other.x, y + other.y, z + other.z, w + other.w);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_4::operator+=(uint16_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_4 BrendanCUDA::uint16_4::operator-(uint16_4 other) const {
-    return uint16_4(x - other.x, y - other.y, z - other.z, w - other.w);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_4::operator-=(uint16_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_4 BrendanCUDA::uint16_4::operator*(uint16_t other) const {
-    return uint16_4(x * other, y * other, z * other, w * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_4::operator*=(uint16_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint16_4 BrendanCUDA::uint16_4::operator/(uint16_t other) const {
-    return uint16_4(x / other, y / other, z / other, w / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint16_4::operator/=(uint16_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
-}
-__host__ __device__ inline constexpr uint16_t BrendanCUDA::uint16_4::Dot(uint16_4 left, uint16_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr uint16_t BrendanCUDA::uint16_4::MagnatudeSquared() const {
-    return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline uint16_t BrendanCUDA::uint16_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_2::int32_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int32_2::int32_2(const int32_t x, const int32_t y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::int32_2::int32_2(const int32_t v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int32_2 BrendanCUDA::int32_2::operator+(int32_2 other) const {
-    return int32_2(x + other.x, y + other.y);
-}
-__host__ __device__ inline void BrendanCUDA::int32_2::operator+=(int32_2 other) {
-    x += other.x;
-    y += other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_2 BrendanCUDA::int32_2::operator-(int32_2 other) const {
-    return int32_2(x - other.x, y - other.y);
-}
-__host__ __device__ inline void BrendanCUDA::int32_2::operator-=(int32_2 other) {
-    x -= other.x;
-    y -= other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_2 BrendanCUDA::int32_2::operator*(int32_t other) const {
-    return int32_2(x * other, y * other);
-}
-__host__ __device__ inline void BrendanCUDA::int32_2::operator*=(int32_t other) {
-    x *= other;
-    y *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_2 BrendanCUDA::int32_2::operator/(int32_t other) const {
-    return int32_2(x / other, y / other);
-}
-__host__ __device__ inline void BrendanCUDA::int32_2::operator/=(int32_t other) {
-    x /= other;
-    y /= other;
-}
-__host__ __device__ inline constexpr int32_t BrendanCUDA::int32_2::Dot(int32_2 left, int32_2 right) {
-    return left.x * right.x + left.y * right.y;
-}
-__host__ __device__ inline constexpr int32_t BrendanCUDA::int32_2::MagnatudeSquared() const {
-    return x * x + y * y;
-}
-__host__ __device__ inline int32_t BrendanCUDA::int32_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_3::int32_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int32_3::int32_3(const int32_t x, const int32_t y, const int32_t z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::int32_3::int32_3(const int32_t v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int32_3 BrendanCUDA::int32_3::operator+(int32_3 other) const {
-    return int32_3(x + other.x, y + other.y, z + other.z);
-}
-__host__ __device__ inline void BrendanCUDA::int32_3::operator+=(int32_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_3 BrendanCUDA::int32_3::operator-(int32_3 other) const {
-    return int32_3(x - other.x, y - other.y, z - other.z);
-}
-__host__ __device__ inline void BrendanCUDA::int32_3::operator-=(int32_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_3 BrendanCUDA::int32_3::operator*(int32_t other) const {
-    return int32_3(x * other, y * other, z * other);
-}
-__host__ __device__ inline void BrendanCUDA::int32_3::operator*=(int32_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_3 BrendanCUDA::int32_3::operator/(int32_t other) const {
-    return int32_3(x / other, y / other, z / other);
-}
-__host__ __device__ inline void BrendanCUDA::int32_3::operator/=(int32_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-}
-__host__ __device__ inline constexpr int32_t BrendanCUDA::int32_3::Dot(int32_3 left, int32_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
-}
-__host__ __device__ inline constexpr int32_t BrendanCUDA::int32_3::MagnatudeSquared() const {
-    return x * x + y * y + z * z;
-}
-__host__ __device__ inline int32_t BrendanCUDA::int32_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_4::int32_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int32_4::int32_4(const int32_t x, const int32_t y, const int32_t z, const int32_t w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::int32_4::int32_4(const int32_t v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int32_4 BrendanCUDA::int32_4::operator+(int32_4 other) const {
-    return int32_4(x + other.x, y + other.y, z + other.z, w + other.w);
-}
-__host__ __device__ inline void BrendanCUDA::int32_4::operator+=(int32_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_4 BrendanCUDA::int32_4::operator-(int32_4 other) const {
-    return int32_4(x - other.x, y - other.y, z - other.z, w - other.w);
-}
-__host__ __device__ inline void BrendanCUDA::int32_4::operator-=(int32_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_4 BrendanCUDA::int32_4::operator*(int32_t other) const {
-    return int32_4(x * other, y * other, z * other, w * other);
-}
-__host__ __device__ inline void BrendanCUDA::int32_4::operator*=(int32_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int32_4 BrendanCUDA::int32_4::operator/(int32_t other) const {
-    return int32_4(x / other, y / other, z / other, w / other);
-}
-__host__ __device__ inline void BrendanCUDA::int32_4::operator/=(int32_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
-}
-__host__ __device__ inline constexpr int32_t BrendanCUDA::int32_4::Dot(int32_4 left, int32_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr int32_t BrendanCUDA::int32_4::MagnatudeSquared() const {
-    return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline int32_t BrendanCUDA::int32_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_2::uint32_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint32_2::uint32_2(const uint32_t x, const uint32_t y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint32_2::uint32_2(const uint32_t v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint32_2 BrendanCUDA::uint32_2::operator+(uint32_2 other) const {
-    return uint32_2(x + other.x, y + other.y);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_2::operator+=(uint32_2 other) {
-    x += other.x;
-    y += other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_2 BrendanCUDA::uint32_2::operator-(uint32_2 other) const {
-    return uint32_2(x - other.x, y - other.y);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_2::operator-=(uint32_2 other) {
-    x -= other.x;
-    y -= other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_2 BrendanCUDA::uint32_2::operator*(uint32_t other) const {
-    return uint32_2(x * other, y * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_2::operator*=(uint32_t other) {
-    x *= other;
-    y *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_2 BrendanCUDA::uint32_2::operator/(uint32_t other) const {
-    return uint32_2(x / other, y / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_2::operator/=(uint32_t other) {
-    x /= other;
-    y /= other;
-}
-__host__ __device__ inline constexpr uint32_t BrendanCUDA::uint32_2::Dot(uint32_2 left, uint32_2 right) {
-    return left.x * right.x + left.y * right.y;
-}
-__host__ __device__ inline constexpr uint32_t BrendanCUDA::uint32_2::MagnatudeSquared() const {
-    return x * x + y * y;
-}
-__host__ __device__ inline uint32_t BrendanCUDA::uint32_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_3::uint32_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint32_3::uint32_3(const uint32_t x, const uint32_t y, const uint32_t z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint32_3::uint32_3(const uint32_t v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint32_3 BrendanCUDA::uint32_3::operator+(uint32_3 other) const {
-    return uint32_3(x + other.x, y + other.y, z + other.z);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_3::operator+=(uint32_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_3 BrendanCUDA::uint32_3::operator-(uint32_3 other) const {
-    return uint32_3(x - other.x, y - other.y, z - other.z);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_3::operator-=(uint32_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_3 BrendanCUDA::uint32_3::operator*(uint32_t other) const {
-    return uint32_3(x * other, y * other, z * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_3::operator*=(uint32_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_3 BrendanCUDA::uint32_3::operator/(uint32_t other) const {
-    return uint32_3(x / other, y / other, z / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_3::operator/=(uint32_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-}
-__host__ __device__ inline constexpr uint32_t BrendanCUDA::uint32_3::Dot(uint32_3 left, uint32_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
-}
-__host__ __device__ inline constexpr uint32_t BrendanCUDA::uint32_3::MagnatudeSquared() const {
-    return x * x + y * y + z * z;
-}
-__host__ __device__ inline uint32_t BrendanCUDA::uint32_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_4::uint32_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint32_4::uint32_4(const uint32_t x, const uint32_t y, const uint32_t z, const uint32_t w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint32_4::uint32_4(const uint32_t v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint32_4 BrendanCUDA::uint32_4::operator+(uint32_4 other) const {
-    return uint32_4(x + other.x, y + other.y, z + other.z, w + other.w);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_4::operator+=(uint32_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_4 BrendanCUDA::uint32_4::operator-(uint32_4 other) const {
-    return uint32_4(x - other.x, y - other.y, z - other.z, w - other.w);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_4::operator-=(uint32_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_4 BrendanCUDA::uint32_4::operator*(uint32_t other) const {
-    return uint32_4(x * other, y * other, z * other, w * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_4::operator*=(uint32_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint32_4 BrendanCUDA::uint32_4::operator/(uint32_t other) const {
-    return uint32_4(x / other, y / other, z / other, w / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint32_4::operator/=(uint32_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
-}
-__host__ __device__ inline constexpr uint32_t BrendanCUDA::uint32_4::Dot(uint32_4 left, uint32_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr uint32_t BrendanCUDA::uint32_4::MagnatudeSquared() const {
-    return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline uint32_t BrendanCUDA::uint32_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_2::int64_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int64_2::int64_2(const int64_t x, const int64_t y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::int64_2::int64_2(const int64_t v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int64_2 BrendanCUDA::int64_2::operator+(int64_2 other) const {
-    return int64_2(x + other.x, y + other.y);
-}
-__host__ __device__ inline void BrendanCUDA::int64_2::operator+=(int64_2 other) {
-    x += other.x;
-    y += other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_2 BrendanCUDA::int64_2::operator-(int64_2 other) const {
-    return int64_2(x - other.x, y - other.y);
-}
-__host__ __device__ inline void BrendanCUDA::int64_2::operator-=(int64_2 other) {
-    x -= other.x;
-    y -= other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_2 BrendanCUDA::int64_2::operator*(int64_t other) const {
-    return int64_2(x * other, y * other);
-}
-__host__ __device__ inline void BrendanCUDA::int64_2::operator*=(int64_t other) {
-    x *= other;
-    y *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_2 BrendanCUDA::int64_2::operator/(int64_t other) const {
-    return int64_2(x / other, y / other);
-}
-__host__ __device__ inline void BrendanCUDA::int64_2::operator/=(int64_t other) {
-    x /= other;
-    y /= other;
-}
-__host__ __device__ inline constexpr int64_t BrendanCUDA::int64_2::Dot(int64_2 left, int64_2 right) {
-    return left.x * right.x + left.y * right.y;
-}
-__host__ __device__ inline constexpr int64_t BrendanCUDA::int64_2::MagnatudeSquared() const {
-    return x * x + y * y;
-}
-__host__ __device__ inline int64_t BrendanCUDA::int64_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_3::int64_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int64_3::int64_3(const int64_t x, const int64_t y, const int64_t z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::int64_3::int64_3(const int64_t v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int64_3 BrendanCUDA::int64_3::operator+(int64_3 other) const {
-    return int64_3(x + other.x, y + other.y, z + other.z);
-}
-__host__ __device__ inline void BrendanCUDA::int64_3::operator+=(int64_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_3 BrendanCUDA::int64_3::operator-(int64_3 other) const {
-    return int64_3(x - other.x, y - other.y, z - other.z);
-}
-__host__ __device__ inline void BrendanCUDA::int64_3::operator-=(int64_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_3 BrendanCUDA::int64_3::operator*(int64_t other) const {
-    return int64_3(x * other, y * other, z * other);
-}
-__host__ __device__ inline void BrendanCUDA::int64_3::operator*=(int64_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_3 BrendanCUDA::int64_3::operator/(int64_t other) const {
-    return int64_3(x / other, y / other, z / other);
-}
-__host__ __device__ inline void BrendanCUDA::int64_3::operator/=(int64_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-}
-__host__ __device__ inline constexpr int64_t BrendanCUDA::int64_3::Dot(int64_3 left, int64_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
-}
-__host__ __device__ inline constexpr int64_t BrendanCUDA::int64_3::MagnatudeSquared() const {
-    return x * x + y * y + z * z;
-}
-__host__ __device__ inline int64_t BrendanCUDA::int64_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_4::int64_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::int64_4::int64_4(const int64_t x, const int64_t y, const int64_t z, const int64_t w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::int64_4::int64_4(const int64_t v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::int64_4 BrendanCUDA::int64_4::operator+(int64_4 other) const {
-    return int64_4(x + other.x, y + other.y, z + other.z, w + other.w);
-}
-__host__ __device__ inline void BrendanCUDA::int64_4::operator+=(int64_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_4 BrendanCUDA::int64_4::operator-(int64_4 other) const {
-    return int64_4(x - other.x, y - other.y, z - other.z, w - other.w);
-}
-__host__ __device__ inline void BrendanCUDA::int64_4::operator-=(int64_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_4 BrendanCUDA::int64_4::operator*(int64_t other) const {
-    return int64_4(x * other, y * other, z * other, w * other);
-}
-__host__ __device__ inline void BrendanCUDA::int64_4::operator*=(int64_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::int64_4 BrendanCUDA::int64_4::operator/(int64_t other) const {
-    return int64_4(x / other, y / other, z / other, w / other);
-}
-__host__ __device__ inline void BrendanCUDA::int64_4::operator/=(int64_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
-}
-__host__ __device__ inline constexpr int64_t BrendanCUDA::int64_4::Dot(int64_4 left, int64_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr int64_t BrendanCUDA::int64_4::MagnatudeSquared() const {
-    return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline int64_t BrendanCUDA::int64_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_2::uint64_2() : x(0), y(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint64_2::uint64_2(const uint64_t x, const uint64_t y) : x(x), y(y) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint64_2::uint64_2(const uint64_t v[2]) : v{ v[0], v[1] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint64_2 BrendanCUDA::uint64_2::operator+(uint64_2 other) const {
-    return uint64_2(x + other.x, y + other.y);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_2::operator+=(uint64_2 other) {
-    x += other.x;
-    y += other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_2 BrendanCUDA::uint64_2::operator-(uint64_2 other) const {
-    return uint64_2(x - other.x, y - other.y);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_2::operator-=(uint64_2 other) {
-    x -= other.x;
-    y -= other.y;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_2 BrendanCUDA::uint64_2::operator*(uint64_t other) const {
-    return uint64_2(x * other, y * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_2::operator*=(uint64_t other) {
-    x *= other;
-    y *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_2 BrendanCUDA::uint64_2::operator/(uint64_t other) const {
-    return uint64_2(x / other, y / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_2::operator/=(uint64_t other) {
-    x /= other;
-    y /= other;
-}
-__host__ __device__ inline constexpr uint64_t BrendanCUDA::uint64_2::Dot(uint64_2 left, uint64_2 right) {
-    return left.x * right.x + left.y * right.y;
-}
-__host__ __device__ inline constexpr uint64_t BrendanCUDA::uint64_2::MagnatudeSquared() const {
-    return x * x + y * y;
-}
-__host__ __device__ inline uint64_t BrendanCUDA::uint64_2::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_3::uint64_3() : x(0), y(0), z(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint64_3::uint64_3(const uint64_t x, const uint64_t y, const uint64_t z) : x(x), y(y), z(z) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint64_3::uint64_3(const uint64_t v[3]) : v{ v[0], v[1], v[2] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint64_3 BrendanCUDA::uint64_3::operator+(uint64_3 other) const {
-    return uint64_3(x + other.x, y + other.y, z + other.z);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_3::operator+=(uint64_3 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_3 BrendanCUDA::uint64_3::operator-(uint64_3 other) const {
-    return uint64_3(x - other.x, y - other.y, z - other.z);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_3::operator-=(uint64_3 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_3 BrendanCUDA::uint64_3::operator*(uint64_t other) const {
-    return uint64_3(x * other, y * other, z * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_3::operator*=(uint64_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_3 BrendanCUDA::uint64_3::operator/(uint64_t other) const {
-    return uint64_3(x / other, y / other, z / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_3::operator/=(uint64_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-}
-__host__ __device__ inline constexpr uint64_t BrendanCUDA::uint64_3::Dot(uint64_3 left, uint64_3 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z;
-}
-__host__ __device__ inline constexpr uint64_t BrendanCUDA::uint64_3::MagnatudeSquared() const {
-    return x * x + y * y + z * z;
-}
-__host__ __device__ inline uint64_t BrendanCUDA::uint64_3::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_4::uint64_4() : x(0), y(0), z(0), w(0) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint64_4::uint64_4(const uint64_t x, const uint64_t y, const uint64_t z, const uint64_t w) : x(x), y(y), z(z), w(w) { }
-__host__ __device__ inline constexpr BrendanCUDA::uint64_4::uint64_4(const uint64_t v[4]) : v{ v[0], v[1], v[2], v[3] } { }
-__host__ __device__ inline constexpr BrendanCUDA::uint64_4 BrendanCUDA::uint64_4::operator+(uint64_4 other) const {
-    return uint64_4(x + other.x, y + other.y, z + other.z, w + other.w);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_4::operator+=(uint64_4 other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    w += other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_4 BrendanCUDA::uint64_4::operator-(uint64_4 other) const {
-    return uint64_4(x - other.x, y - other.y, z - other.z, w - other.w);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_4::operator-=(uint64_4 other) {
-    x -= other.x;
-    y -= other.y;
-    z -= other.z;
-    w -= other.w;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_4 BrendanCUDA::uint64_4::operator*(uint64_t other) const {
-    return uint64_4(x * other, y * other, z * other, w * other);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_4::operator*=(uint64_t other) {
-    x *= other;
-    y *= other;
-    z *= other;
-    w *= other;
-}
-__host__ __device__ inline constexpr BrendanCUDA::uint64_4 BrendanCUDA::uint64_4::operator/(uint64_t other) const {
-    return uint64_4(x / other, y / other, z / other, w / other);
-}
-__host__ __device__ inline void BrendanCUDA::uint64_4::operator/=(uint64_t other) {
-    x /= other;
-    y /= other;
-    z /= other;
-    w /= other;
-}
-__host__ __device__ inline constexpr uint64_t BrendanCUDA::uint64_4::Dot(uint64_4 left, uint64_4 right) {
-    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
-}
-__host__ __device__ inline constexpr uint64_t BrendanCUDA::uint64_4::MagnatudeSquared() const {
-    return x * x + y * y + z * z + w * w;
-}
-__host__ __device__ inline uint64_t BrendanCUDA::uint64_4::Magnatude() const {
-    return Math::sqrt(MagnatudeSquared());
 }
