@@ -153,20 +153,6 @@
     <ClInclude Include="brendancuda_rand_bits.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.h.tt">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.h" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.h.tt"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_ai_mlpb_mlpbls.h</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_ai_mlpb_mlpbls.h</Message>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_ai_mlpb_mlpbls.h</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.h" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.h.tt"</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_ai_mlpb_mlpbls.h</Outputs>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
     <CudaCompile Include="brendancuda_ai.cu" />
     <CudaCompile Include="brendancuda_ai_evol_evolver.cpp">
       <FileType>CppCode</FileType>
@@ -174,9 +160,7 @@
     <ClCompile Include="brendancuda_ai_genetics_genemlp.cpp" />
     <CudaCompile Include="brendancuda_ai_mlp.cu" />
     <CudaCompile Include="brendancuda_ai_mlpb_mlpbl.cu" />
-    <CudaCompile Include="brendancuda_ai_mlpb_mlpbls.cu" />
     <CudaCompile Include="brendancuda_ai_mlp_mlpl.cu" />
-    <CudaCompile Include="brendancuda_ai_mlpb.cu" />
     <CudaCompile Include="brendancuda_binary_basic.cu" />
     <CudaCompile Include="brendancuda_errorhelp.cpp" />
     <CudaCompile Include="brendancuda_dcopy.cu" />
@@ -198,19 +182,6 @@
     <CudaCompile Include="brendancuda_rand_bits.cu" />
     <CudaCompile Include="brendancuda_rand_drandom.cu" />
     <CudaCompile Include="brendancuda_rand_sseed.cu" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cu.tt">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu.tt"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu" "$(ProjectDir)brendancuda_ai_mlpb_mlpbls.cu.tt"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_ai_mlpb_mlpbls.cu</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_ai_mlpb_mlpbls.cu</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_ai_mlpb_mlpbls.cu</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_ai_mlpb_mlpbls.cu</Outputs>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="brendancuda_ai_evol_eval_output_impl_proliferation.cpp" />

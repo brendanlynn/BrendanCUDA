@@ -91,12 +91,6 @@
     <ClInclude Include="brendancuda_cudaconstexpr.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.h.tt">
-      <Filter>AI\MLPB</Filter>
-    </CustomBuild>
-    <CustomBuild Include="brendancuda_ai_mlpb_mlpbls.cu.tt">
-      <Filter>AI\MLPB</Filter>
-    </CustomBuild>
     <CustomBuild Include="brendancuda_fixedvectors.h.tt" />
     <CustomBuild Include="brendancuda_points.cu.tt" />
     <CustomBuild Include="brendancuda_points.h.tt" />
@@ -137,9 +131,6 @@
     <CudaCompile Include="brendancuda_ai_evol_evolver.cpp">
       <Filter>AI\Evolution</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_ai_mlpb.cu">
-      <Filter>AI\MLPB</Filter>
-    </CudaCompile>
     <CudaCompile Include="brendancuda_ai_mlp.cu">
       <Filter>AI\MLP</Filter>
     </CudaCompile>
@@ -147,9 +138,6 @@
       <Filter>AI\MLP</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_ai_mlpb_mlpbl.cu">
-      <Filter>AI\MLPB</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_ai_mlpb_mlpbls.cu">
       <Filter>AI\MLPB</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_ai.cu">
