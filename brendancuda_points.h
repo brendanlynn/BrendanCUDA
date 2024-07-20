@@ -5,52 +5,71 @@
 #include "brendancuda_fixedvectors.h"
 
 namespace BrendanCUDA {
-    __host__ __device__ uint32_t Coordinates32_2ToIndex32_RM(uint32_2 Dimensions, uint32_2 Coordinates);
-    __host__ __device__ uint32_2 Index32ToCoordinates32_2_RM(uint32_2 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates32_2ToIndex32_CM(uint32_2 Dimensions, uint32_2 Coordinates);
-    __host__ __device__ uint32_2 Index32ToCoordinates32_2_CM(uint32_2 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates32_3ToIndex32_RM(uint32_3 Dimensions, uint32_3 Coordinates);
-    __host__ __device__ uint32_3 Index32ToCoordinates32_3_RM(uint32_3 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates32_3ToIndex32_CM(uint32_3 Dimensions, uint32_3 Coordinates);
-    __host__ __device__ uint32_3 Index32ToCoordinates32_3_CM(uint32_3 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates32_4ToIndex32_RM(uint32_4 Dimensions, uint32_4 Coordinates);
-    __host__ __device__ uint32_4 Index32ToCoordinates32_4_RM(uint32_4 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates32_4ToIndex32_CM(uint32_4 Dimensions, uint32_4 Coordinates);
-    __host__ __device__ uint32_4 Index32ToCoordinates32_4_CM(uint32_4 Dimensions, uint32_t Index);
-    __host__ __device__ uint64_t Coordinates32_2ToIndex64_RM(uint32_2 Dimensions, uint32_2 Coordinates);
-    __host__ __device__ uint32_2 Index64ToCoordinates32_2_RM(uint32_2 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates32_2ToIndex64_CM(uint32_2 Dimensions, uint32_2 Coordinates);
-    __host__ __device__ uint32_2 Index64ToCoordinates32_2_CM(uint32_2 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates32_3ToIndex64_RM(uint32_3 Dimensions, uint32_3 Coordinates);
-    __host__ __device__ uint32_3 Index64ToCoordinates32_3_RM(uint32_3 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates32_3ToIndex64_CM(uint32_3 Dimensions, uint32_3 Coordinates);
-    __host__ __device__ uint32_3 Index64ToCoordinates32_3_CM(uint32_3 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates32_4ToIndex64_RM(uint32_4 Dimensions, uint32_4 Coordinates);
-    __host__ __device__ uint32_4 Index64ToCoordinates32_4_RM(uint32_4 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates32_4ToIndex64_CM(uint32_4 Dimensions, uint32_4 Coordinates);
-    __host__ __device__ uint32_4 Index64ToCoordinates32_4_CM(uint32_4 Dimensions, uint64_t Index);
-    __host__ __device__ uint32_t Coordinates64_2ToIndex32_RM(uint64_2 Dimensions, uint64_2 Coordinates);
-    __host__ __device__ uint64_2 Index32ToCoordinates64_2_RM(uint64_2 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates64_2ToIndex32_CM(uint64_2 Dimensions, uint64_2 Coordinates);
-    __host__ __device__ uint64_2 Index32ToCoordinates64_2_CM(uint64_2 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates64_3ToIndex32_RM(uint64_3 Dimensions, uint64_3 Coordinates);
-    __host__ __device__ uint64_3 Index32ToCoordinates64_3_RM(uint64_3 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates64_3ToIndex32_CM(uint64_3 Dimensions, uint64_3 Coordinates);
-    __host__ __device__ uint64_3 Index32ToCoordinates64_3_CM(uint64_3 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates64_4ToIndex32_RM(uint64_4 Dimensions, uint64_4 Coordinates);
-    __host__ __device__ uint64_4 Index32ToCoordinates64_4_RM(uint64_4 Dimensions, uint32_t Index);
-    __host__ __device__ uint32_t Coordinates64_4ToIndex32_CM(uint64_4 Dimensions, uint64_4 Coordinates);
-    __host__ __device__ uint64_4 Index32ToCoordinates64_4_CM(uint64_4 Dimensions, uint32_t Index);
-    __host__ __device__ uint64_t Coordinates64_2ToIndex64_RM(uint64_2 Dimensions, uint64_2 Coordinates);
-    __host__ __device__ uint64_2 Index64ToCoordinates64_2_RM(uint64_2 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates64_2ToIndex64_CM(uint64_2 Dimensions, uint64_2 Coordinates);
-    __host__ __device__ uint64_2 Index64ToCoordinates64_2_CM(uint64_2 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates64_3ToIndex64_RM(uint64_3 Dimensions, uint64_3 Coordinates);
-    __host__ __device__ uint64_3 Index64ToCoordinates64_3_RM(uint64_3 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates64_3ToIndex64_CM(uint64_3 Dimensions, uint64_3 Coordinates);
-    __host__ __device__ uint64_3 Index64ToCoordinates64_3_CM(uint64_3 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates64_4ToIndex64_RM(uint64_4 Dimensions, uint64_4 Coordinates);
-    __host__ __device__ uint64_4 Index64ToCoordinates64_4_RM(uint64_4 Dimensions, uint64_t Index);
-    __host__ __device__ uint64_t Coordinates64_4ToIndex64_CM(uint64_4 Dimensions, uint64_4 Coordinates);
-    __host__ __device__ uint64_4 Index64ToCoordinates64_4_CM(uint64_4 Dimensions, uint64_t Index);
+    namespace details {
+        template <typename _T>
+        concept isIntegralCoords32P =
+            std::same_as<_T, uint32_1> || std::same_as<_T, uint64_1> ||
+            std::same_as<_T, uint32_2> || std::same_as<_T, uint64_2> ||
+            std::same_as<_T, uint32_3> || std::same_as<_T, uint64_3>;
+        template <typename _T>
+        concept isIntegral32P = std::same_as<_T, uint32_t> || std::same_as<_T, uint64_t>;
+    }
+
+    template <details::isIntegral32P _TIndex, details::isIntegralCoords32P _TVector, bool _RowMajor>
+    __host__ __device__ constexpr __forceinline _TIndex CoordinatesToIndex(_TVector Dimensions, _TVector Coordinates);
+    template <details::isIntegral32P _TIndex, details::isIntegralCoords32P _TVector, bool _RowMajor>
+    __host__ __device__ constexpr __forceinline _TVector IndexToCoordinates(_TVector Dimensions, _TIndex Index);
+}
+
+template <BrendanCUDA::details::isIntegral32P _TIndex, BrendanCUDA::details::isIntegralCoords32P _TVector, bool _RowMajor>
+__host__ __device__ constexpr __forceinline _TIndex BrendanCUDA::CoordinatesToIndex(_TVector Dimensions, _TVector Coordinates) {
+    if constexpr (std::same_as<_TVector, uint32_1> || std::same_as<_TVector, uint64_1>) {
+        return (_TIndex)Coordinates.x;
+    }
+    else if constexpr (std::same_as<_TVector, uint32_2> || std::same_as<_TVector, uint64_2>) {
+        if constexpr (_RowMajor) return (_TIndex)Coordinates.y + (_TIndex)Dimensions.y * (_TIndex)Coordinates.x;
+        else return (_TIndex)Coordinates.x + (_TIndex)Dimensions.x * (_TIndex)Coordinates.y;
+    }
+    else if constexpr (std::same_as<_TVector, uint32_3> || std::same_as<_TVector, uint64_3>) {
+        if constexpr (_RowMajor) return (_TIndex)Coordinates.z + (_TIndex)Dimensions.z * ((_TIndex)Coordinates.y + (_TIndex)Dimensions.y * (_TIndex)Coordinates.x);
+        else return (_TIndex)Coordinates.x + (_TIndex)Dimensions.x * ((_TIndex)Coordinates.y + (_TIndex)Dimensions.y * (_TIndex)Coordinates.z);
+    }
+}
+template <BrendanCUDA::details::isIntegral32P _TIndex, BrendanCUDA::details::isIntegralCoords32P _TVector, bool _RowMajor>
+__host__ __device__ constexpr __forceinline _TVector BrendanCUDA::IndexToCoordinates(_TVector Dimensions, _TIndex Index) {
+    if constexpr (std::same_as<_TVector, uint32_1> || std::same_as<_TVector, uint64_1>) {
+        return _TVector((uint32_t)Index);
+    }
+    else if constexpr (std::same_as<_TVector, uint32_2> || std::same_as<_TVector, uint64_2>) {
+        _TVector r;
+        if constexpr (_RowMajor) {
+            r.y = Index % Dimensions.y;
+            Index /= Dimensions.y;
+            r.x = Index;
+        }
+        else {
+            r.x = Index % Dimensions.x;
+            Index /= Dimensions.x;
+            r.y = Index;
+        }
+        return r;
+    }
+    else if constexpr (std::same_as<_TVector, uint32_3> || std::same_as<_TVector, uint64_3>) {
+        _TVector r;
+        if constexpr (_RowMajor) {
+            r.z = Index % Dimensions.z;
+            Index /= Dimensions.z;
+            r.y = Index % Dimensions.y;
+            Index /= Dimensions.y;
+            r.x = Index;
+        }
+        else {
+            r.x = Index % Dimensions.x;
+            Index /= Dimensions.x;
+            r.y = Index % Dimensions.y;
+            Index /= Dimensions.y;
+            r.z = Index;
+        }
+        return r;
+    }
 }

@@ -110,17 +110,6 @@
     <ClInclude Include="brendancuda_kernellaunch.cuh" />
     <ClInclude Include="brendancuda_nets_makenet.h" />
     <ClInclude Include="brendancuda_points.h" />
-    <CustomBuild Include="brendancuda_points.h.tt">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_points.h" "$(ProjectDir)brendancuda_points.h.tt"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_points.h" "$(ProjectDir)brendancuda_points.h.tt"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_points.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_points.h</Outputs>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_points.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_points.h</Outputs>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
-    </CustomBuild>
     <ClInclude Include="brendancuda_fixedvectors.h" />
     <ClInclude Include="brendancuda_mathfuncs.h" />
     <ClInclude Include="brendancuda_nets_net.h" />
@@ -153,18 +142,6 @@
     <CudaCompile Include="brendancuda_errorhelp.cpp" />
     <CudaCompile Include="brendancuda_dcopy.cu" />
     <CudaCompile Include="brendancuda_nets_makenet.cu" />
-    <CudaCompile Include="brendancuda_points.cu" />
-    <CustomBuild Include="brendancuda_points.cu.tt">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_points.cu" "$(ProjectDir)brendancuda_points.cu.tt"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing Custom Build Tools to create brendancuda_points.cu</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">brendancuda_points.cu</Outputs>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaCompile</OutputItemType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(DevEnvDir)TextTransform.exe" -out "$(ProjectDir)brendancuda_points.cu" "$(ProjectDir)brendancuda_points.cu.tt"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing Custom Build Tools to create brendancuda_points.cu</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">brendancuda_points.cu</Outputs>
-      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaCompile</OutputItemType>
-    </CustomBuild>
     <CudaCompile Include="brendancuda_mathfuncs.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu" />
     <CudaCompile Include="brendancuda_rand_bits.cu" />

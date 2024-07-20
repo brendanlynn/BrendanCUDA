@@ -8,7 +8,7 @@
 using BrendanCUDA::float_3;
 using BrendanCUDA::Random::DeviceRandom;
 using BrendanCUDA::Random::GetSeedOnKernel;
-using BrendanCUDA::Coordinates32_3ToIndex64_RM;
+using BrendanCUDA::CoordinatesToIndex;
 using BrendanCUDA::uint32_3;
 using BrendanCUDA::ThrowIfBad;
 using BrendanCUDA::Nets::NetNode;
@@ -127,7 +127,7 @@ __global__ void fillBuckets1(BucketTS* bucketData, size_t bucketCountPerD, Brend
     
     uint32_3 bCs = whichBucket(p, bucketCountPerD);
 
-    size_t bI = Coordinates32_3ToIndex64_RM(uint32_3(bucketCountPerD, bucketCountPerD, bucketCountPerD), bCs);
+    size_t bI = CoordinatesToIndex<uint64_t, uint32_3, true>(uint32_3(bucketCountPerD, bucketCountPerD, bucketCountPerD), bCs);
 
     addToBucketTS(bucketData[bI], blockIdx.x);
 }
@@ -159,7 +159,7 @@ __global__ void fillBuckets2(Bucket* nodeData, BucketTS* bucketData, uint32_t bu
     for (uint32_t x = lX; x <= uX; ++x) {
         for (uint32_t y = lY; y <= uY; ++y) {
             for (uint32_t z = lZ; z <= uZ; ++z) {
-                size_t bucketIndex = Coordinates32_3ToIndex64_RM(uint32_3(bucketCountPerD, bucketCountPerD, bucketCountPerD), uint32_3(x, y, z));
+                size_t bucketIndex = CoordinatesToIndex<uint32_t, uint32_3, true>(uint32_3(bucketCountPerD, bucketCountPerD, bucketCountPerD), uint32_3(x, y, z));
                 BucketTS bucket = bucketData[bucketIndex];
                 for (size_t i = 0; i < bucket.size; ++i) {
                     size_t j = bucket.data[i];

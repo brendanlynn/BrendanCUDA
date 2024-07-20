@@ -91,10 +91,6 @@
     <ClInclude Include="brendancuda_cudaconstexpr.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="brendancuda_points.cu.tt" />
-    <CustomBuild Include="brendancuda_points.h.tt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Fields">
       <UniqueIdentifier>{b56075d7-9c2e-4d47-939d-10dcd496f493}</UniqueIdentifier>
     </Filter>
@@ -158,7 +154,6 @@
     </CudaCompile>
     <CudaCompile Include="brendancuda_mathfuncs.cu" />
     <CudaCompile Include="brendancuda_errorhelp.cpp" />
-    <CudaCompile Include="brendancuda_points.cu" />
     <CudaCompile Include="brendancuda_nets_makenet.cu">
       <Filter>Nets</Filter>
     </CudaCompile>
