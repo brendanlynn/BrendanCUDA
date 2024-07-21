@@ -12,7 +12,7 @@ namespace BrendanCUDA {
     template <typename _T, size_t _Size>
     struct ArrayF final {
         _T data[_Size];
-        __host__ __device__ inline ArrayF() = default;
+        inline ArrayF() = default;
         __host__ __device__ inline _T& operator[](size_t Index);
         __host__ __device__ inline const _T& operator[](size_t Index) const;
         __host__ __device__ inline operator Span<_T>() const;
