@@ -89,6 +89,9 @@
     <ClInclude Include="brendancuda_arrays.h" />
     <ClInclude Include="brendancuda_kernellaunch.cuh" />
     <ClInclude Include="brendancuda_cudaconstexpr.h" />
+    <ClInclude Include="brendancuda_rand_randomizer.h">
+      <Filter>Random</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">
