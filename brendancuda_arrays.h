@@ -14,6 +14,7 @@ namespace BrendanCUDA {
         _T data[_Size];
         __host__ __device__ inline ArrayF() = default;
         __host__ __device__ inline _T& operator[](size_t Index);
+        __host__ __device__ inline const _T& operator[](size_t Index) const;
         __host__ __device__ inline operator Span<_T>() const;
         __host__ __device__ inline operator Span_ReadOnly<_T>() const;
         __host__ __device__ inline Span<_T> Split(size_t Start, size_t NewSize) const;
@@ -26,6 +27,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline ArrayV(_T* Pointer, size_t Size);
         __host__ __device__ inline ArrayV(size_t Size);
         __host__ __device__ inline _T& operator[](size_t Index);
+        __host__ __device__ inline const _T& operator[](size_t Index) const;
         __host__ __device__ inline void Dispose();
         __host__ __device__ inline operator Span<_T>() const;
         __host__ __device__ inline operator Span_ReadOnly<_T>() const;
@@ -41,6 +43,7 @@ namespace BrendanCUDA {
         __host__ __device__ inline Span(ArrayV<_T> Array);
         __host__ __device__ inline Span(_T* Pointer, size_t Size);
         __host__ __device__ inline _T& operator[](size_t Index);
+        __host__ __device__ inline const _T& operator[](size_t Index) const;
         __host__ __device__ inline Span<_T> Split(size_t Start, size_t NewSize) const;
         __host__ __device__ inline operator Span_ReadOnly<_T>() const;
     };
@@ -54,13 +57,18 @@ namespace BrendanCUDA {
         __host__ __device__ inline Span_ReadOnly(ArrayV<_T> Array);
         __host__ __device__ inline Span_ReadOnly(Span<_T> Span);
         __host__ __device__ inline Span_ReadOnly(_T* Pointer, size_t Size);
-        __host__ __device__ inline const _T& operator[](size_t Index);
+        __host__ __device__ inline const _T& operator[](size_t Index) const;
         __host__ __device__ inline Span_ReadOnly<_T> Split(size_t Start, size_t NewSize) const;
     };
 }
 
 template <typename _T, size_t _Size>
 __host__ __device__ inline _T& BrendanCUDA::ArrayF<_T, _Size>::operator[](size_t Index) {
+    return data[Index];
+}
+
+template <typename _T, size_t _Size>
+__host__ __device__ inline const _T& BrendanCUDA::ArrayF<_T, _Size>::operator[](size_t Index) const {
     return data[Index];
 }
 
@@ -93,6 +101,11 @@ __host__ __device__ inline BrendanCUDA::ArrayV<_T>::ArrayV(size_t Size) {
 
 template <typename _T>
 __host__ __device__ inline _T& BrendanCUDA::ArrayV<_T>::operator[](size_t Index) {
+    return ptr[Index];
+}
+
+template <typename _T>
+__host__ __device__ inline const _T& BrendanCUDA::ArrayV<_T>::operator[](size_t Index) const {
     return ptr[Index];
 }
 
@@ -141,6 +154,11 @@ __host__ __device__ inline _T& BrendanCUDA::Span<_T>::operator[](size_t Index) {
 }
 
 template <typename _T>
+__host__ __device__ inline const _T& BrendanCUDA::Span<_T>::operator[](size_t Index) const {
+    return ptr[Index];
+}
+
+template <typename _T>
 __host__ __device__ inline BrendanCUDA::Span<_T> BrendanCUDA::Span<_T>::Split(size_t Start, size_t NewSize) const {
     return Span<_T>(ptr + Start, NewSize);
 }
@@ -176,7 +194,7 @@ __host__ __device__ inline BrendanCUDA::Span_ReadOnly<_T>::Span_ReadOnly(_T* Poi
 }
 
 template <typename _T>
-__host__ __device__ inline const _T& BrendanCUDA::Span_ReadOnly<_T>::operator[](size_t Index) {
+__host__ __device__ inline const _T& BrendanCUDA::Span_ReadOnly<_T>::operator[](size_t Index) const {
     return ptr[Index];
 }
 
