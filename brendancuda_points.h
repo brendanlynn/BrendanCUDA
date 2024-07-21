@@ -15,13 +15,13 @@ template <std::unsigned_integral _TIndex, std::unsigned_integral _TVectorElement
 __host__ __device__ constexpr __forceinline _TIndex BrendanCUDA::CoordinatesToIndex(FixedVector<_TVectorElement, _VectorLength> Dimensions, FixedVector<_TVectorElement, _VectorLength> Coordinates) {
     _TIndex idx = 0;
     if constexpr (_RowMajor) {
-        for (size_t i = 0; i < _VectorLength; ++i) {
+        for (size_t i = _VectorLength - 1; i != (size_t)-1; --i) {
             idx *= Dimensions[i];
             idx += Coordinates[i];
         }
     }
     else {
-        for (size_t i = _VectorLength - 1; i != (size_t)-1; --i) {
+        for (size_t i = 0; i < _VectorLength; ++i) {
             idx *= Dimensions[i];
             idx += Coordinates[i];
         }
@@ -32,7 +32,7 @@ template <std::unsigned_integral _TIndex, std::unsigned_integral _TVectorElement
 __host__ __device__ constexpr __forceinline BrendanCUDA::FixedVector<_TVectorElement, _VectorLength> BrendanCUDA::IndexToCoordinates(FixedVector<_TVectorElement, _VectorLength> Dimensions, _TIndex Index) {
     FixedVector<_TVectorElement, _VectorLength> r;
     if constexpr (_RowMajor) {
-        for (size_t i = _VectorLength - 1; i < 0; ++i) {
+        for (size_t i = _VectorLength - 1; i != (size_t)-1; ++i) {
             r[i] = Index % Dimensions[i];
             Index /= Dimensions[i];
         }
