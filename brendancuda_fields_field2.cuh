@@ -123,7 +123,7 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::Field2<_T>::Field2(uint32
 }
 template <typename _T>
 __device__ __forceinline BrendanCUDA::Fields::Field2<_T>::Field2(uint32_2 Dimensions, _T* All)
-    : Field2(Dimensions.x, Dimensions.y, All, CopyFromHost) { }
+    : Field2(Dimensions.x, Dimensions.y, All) { }
 template <typename _T>
 __device__ __forceinline BrendanCUDA::Fields::Field2<_T>::Field2(uint32_t LengthX, uint32_t LengthY, _T* All)
     : Field2(LengthX, LengthY) {
@@ -155,7 +155,7 @@ __host__ __device__ __forceinline size_t BrendanCUDA::Fields::Field2<_T>::SizeOn
 }
 template <typename _T>
 __host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, _T&, thrust::device_reference<_T>> BrendanCUDA::Fields::Field2<_T>::operator()(uint32_t X, uint32_t Y) {
-    uint64_t idx = Coordinates32_2ToIndex64_CM(Dimensions(), uint32_2(X, Y));
+    uint64_t idx = BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, 2, true>(Dimensions(), uint32_2(X, Y));
 #ifdef __CUDA_ARCH__
     return cudaArray[idx];
 #else
@@ -230,7 +230,7 @@ template <typename _T>
 __host__ __forceinline _T* BrendanCUDA::Fields::Field2<_T>::GetAll(bool CopyToHost) const {
     _T* a;
     if (CopyToHost) {
-        a = new _T[lengthX * lengthY * lengthZ * lengthD];
+        a = new _T[lengthX * lengthY * lengthZ];
     }
     else {
         ThrowIfBad(cudaMalloc(&a, SizeOnGPU()));
@@ -240,7 +240,7 @@ __host__ __forceinline _T* BrendanCUDA::Fields::Field2<_T>::GetAll(bool CopyToHo
 }
 template <typename _T>
 __device__ __forceinline _T* BrendanCUDA::Fields::Field2<_T>::GetAll() const {
-    _T* a = new _T[lengthX * lengthY * lengthZ * lengthD];
+    _T* a = new _T[lengthX * lengthY * lengthZ];
     CopyAllOut(a, false);
     return a;
 }
@@ -302,15 +302,15 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::Dispose(
 }
 template <typename _T>
 __host__ __device__ __forceinline uint64_t BrendanCUDA::Fields::Field2<_T>::CoordinatesToIndex(uint32_2 Coordinates) const {
-    return Coordinates32_2ToIndex64_RM(Dimensions(), Coordinates);
+    return BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, 2, true>(Dimensions(), Coordinates);
 }
 template <typename _T>
 __host__ __device__ __forceinline uint64_t BrendanCUDA::Fields::Field2<_T>::CoordinatesToIndex(uint32_t X, uint32_t Y) const {
-    return Coordinates32_2ToIndex64_RM(Dimensions(), uint32_2(X, Y));
+    return BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, 2, true>(Dimensions(), uint32_2(X, Y));
 }
 template <typename _T>
 __host__ __device__ __forceinline BrendanCUDA::uint32_2 BrendanCUDA::Fields::Field2<_T>::IndexToCoordinates(uint64_t Index) const {
-    return Index64ToCoordinates32_2_RM(Dimensions(), Index);
+    return BrendanCUDA::IndexToCoordinates<uint64_t, uint32_t, 2, true>(Dimensions(), Index);
 }
 template <typename _T>
 __host__ __device__ __forceinline _T* BrendanCUDA::Fields::Field2<_T>::IndexToPointer(uint64_t Index) const {
