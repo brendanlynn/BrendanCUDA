@@ -124,8 +124,8 @@
     <ClInclude Include="brendancuda_rand_sseed.cuh" />
     <ClInclude Include="brendancuda_ai_mlp.h" />
     <ClInclude Include="brendancuda_ai_mlpb.h" />
+    <ClInclude Include="brendancuda_ai_mlpb_mlpblw.h" />
     <ClInclude Include="brendancuda_ai_mlpb_mlpbl.h" />
-    <ClInclude Include="brendancuda_ai_mlpb_mlpbls.h" />
     <ClInclude Include="brendancuda_ai_mlp_mlpl.h" />
     <ClInclude Include="brendancuda_rand_bits.h" />
   </ItemGroup>
@@ -136,7 +136,7 @@
     </CudaCompile>
     <ClCompile Include="brendancuda_ai_genetics_genemlp.cpp" />
     <CudaCompile Include="brendancuda_ai_mlp.cu" />
-    <CudaCompile Include="brendancuda_ai_mlpb_mlpbl.cu" />
+    <CudaCompile Include="brendancuda_ai_mlpb_mlpblw.cu" />
     <CudaCompile Include="brendancuda_ai_mlp_mlpl.cu" />
     <CudaCompile Include="brendancuda_binary_basic.cu" />
     <CudaCompile Include="brendancuda_errorhelp.cpp" />

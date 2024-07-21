@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "brendancuda_ai_mlpb_mlpbl.h"
+#include "brendancuda_ai_mlpb_mlpblw.h"
 #include "brendancuda_rand_anyrng.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_dcopy.cuh"

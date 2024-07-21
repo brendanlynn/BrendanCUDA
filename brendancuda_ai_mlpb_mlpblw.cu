@@ -1,4 +1,4 @@
-#include "brendancuda_ai_mlpb_mlpbl.h"
+#include "brendancuda_ai_mlpb_mlpblw.h"
 
 __host__ __device__ uint64_t BrendanCUDA::AI::MLPB::MLPBLW::Run(uint64_t Input) const {
     switch (type) {

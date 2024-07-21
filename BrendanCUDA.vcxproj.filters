@@ -5,10 +5,10 @@
     <ClInclude Include="brendancuda_ai_mlpb.h">
       <Filter>AI\MLPB</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlpb_mlpbl.h">
+    <ClInclude Include="brendancuda_ai_mlpb_mlpblw.h">
       <Filter>AI\MLPB</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlpb_mlpbls.h">
+    <ClInclude Include="brendancuda_ai_mlpb_mlpbl.h">
       <Filter>AI\MLPB</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_fields_field3.cuh">
@@ -132,7 +132,7 @@
     <CudaCompile Include="brendancuda_ai_mlp_mlpl.cu">
       <Filter>AI\MLP</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_ai_mlpb_mlpbl.cu">
+    <CudaCompile Include="brendancuda_ai_mlpb_mlpblw.cu">
       <Filter>AI\MLPB</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_ai.cu">
