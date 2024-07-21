@@ -365,23 +365,8 @@ __host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 1>::Fix
     : x(X) { }
 template <typename _T>
     requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 1>::operator+(FixedVector<_T, 1> Other) const -> BrendanCUDA::FixedVector<_T, 1> {
-    return FixedVector<_T, 1>(x + Other.x);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 1>::operator-(FixedVector<_T, 1> Other) const -> BrendanCUDA::FixedVector<_T, 1> {
-    return FixedVector<_T, 1>(x - Other.x);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 1>::operator*(_T Other) const -> BrendanCUDA::FixedVector<_T, 1> {
-    return FixedVector<_T, 1>(x * Other);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 1>::operator/(_T Other) const -> BrendanCUDA::FixedVector<_T, 1> {
-    return FixedVector<_T, 1>(x / Other);
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 1>::FixedVector(const _T V[1]) {
+    v[0] = V[0];
 }
 
 template <typename _T>
@@ -391,23 +376,9 @@ __host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 2>::Fix
       y(Y) { }
 template <typename _T>
     requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 2>::operator+(FixedVector<_T, 2> Other) const -> BrendanCUDA::FixedVector<_T, 2> {
-    return FixedVector<_T, 2>(x + Other.x, y + Other.y);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 2>::operator-(FixedVector<_T, 2> Other) const -> BrendanCUDA::FixedVector<_T, 2> {
-    return FixedVector<_T, 2>(x - Other.x, y - Other.y);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 2>::operator*(_T Other) const -> BrendanCUDA::FixedVector<_T, 2> {
-    return FixedVector<_T, 2>(x * Other, y * Other);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto BrendanCUDA::FixedVector<_T, 2>::operator/(_T Other) const -> BrendanCUDA::FixedVector<_T, 2> {
-    return FixedVector<_T, 2>(x / Other, y / Other);
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 2>::FixedVector(const _T V[2]) {
+    v[0] = V[0];
+    v[1] = V[1];
 }
 template <typename _T>
     requires std::is_arithmetic_v<_T>
@@ -433,23 +404,10 @@ __host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3>::Fix
       z(Z) { }
 template <typename _T>
     requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::operator+(FixedVector<_T, 3> Other) const {
-    return FixedVector<_T, 3>(x + Other.x, y + Other.y, z + Other.z);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::operator-(FixedVector<_T, 3> Other) const {
-    return FixedVector<_T, 3>(x - Other.x, y - Other.y, z - Other.z);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::operator*(_T Other) const {
-    return FixedVector<_T, 3>(x * Other, y * Other, z * Other);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::operator/(_T Other) const {
-    return FixedVector<_T, 3>(x / Other, y / Other, z / Other);
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 3>::FixedVector(const _T V[3]) {
+    v[0] = V[0];
+    v[1] = V[1];
+    v[2] = V[2];
 }
 template <typename _T>
     requires std::is_arithmetic_v<_T>
@@ -470,21 +428,9 @@ __host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4>::Fix
       w(W) { }
 template <typename _T>
     requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4> BrendanCUDA::FixedVector<_T, 4>::operator+(FixedVector<_T, 4> Other) const {
-    return FixedVector<_T, 4>(x + Other.x, y + Other.y, z + Other.z, w + Other.w);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4> BrendanCUDA::FixedVector<_T, 4>::operator-(FixedVector<_T, 4> Other) const {
-    return FixedVector<_T, 4>(x - Other.x, y - Other.y, z - Other.z, w - Other.w);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4> BrendanCUDA::FixedVector<_T, 4>::operator*(_T Other) const {
-    return FixedVector<_T, 4>(x * Other, y * Other, z * Other, w * Other);
-}
-template <typename _T>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4> BrendanCUDA::FixedVector<_T, 4>::operator/(_T Other) const {
-    return FixedVector<_T, 4>(x / Other, y / Other, z / Other, w / Other);
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, 4>::FixedVector(const _T V[4]) {
+    v[0] = V[0];
+    v[1] = V[1];
+    v[2] = V[2];
+    v[3] = V[3];
 }
