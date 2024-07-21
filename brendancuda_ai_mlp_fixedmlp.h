@@ -17,23 +17,23 @@ namespace BrendanCUDA {
     }
     namespace details {
         template <size_t _Index, typename _T, AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
-        struct LayerType;
+        struct MLPLayerType;
         template <size_t _Index, typename _T, AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-        struct LayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
-            using type = typename LayerType<_Index - 1, _T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::type;
+        struct MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
+            using type = typename MLPLayerType<_Index - 1, _T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::type;
         };
         template <typename _T, AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-        struct LayerType<0, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
+        struct MLPLayerType<0, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
             using type = AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
         };
         template <size_t _Index, typename _T, AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
-        struct LayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count> {
+        struct MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count> {
             static_assert(!_Index, "_Index is out of bounds.");
             using type = AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
         };
 
         template <size_t _Index, typename _T, AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
-        using layerType_t = LayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _ContinuedOutputCounts...>;
+        using mlpLayerType_t = MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _ContinuedOutputCounts...>;
     }
     namespace AI {
         namespace MLP {
@@ -63,7 +63,7 @@ namespace BrendanCUDA {
                 static_assert(std::is_same<_T, float>::value || std::is_same<_T, double>::value, "_T must be either float or double.");
 
                 template <size_t _Index>
-                using layerType_t = details::layerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
+                using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
                 
                 FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
                 FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...> nextLayers;
@@ -92,7 +92,7 @@ namespace BrendanCUDA {
                 static_assert(std::is_same<_T, float>::value || std::is_same<_T, double>::value, "_T must be either float or double.");
 
                 template <size_t _Index>
-                using layerType_t = details::layerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count>;
+                using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count>;
 
                 FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
 
