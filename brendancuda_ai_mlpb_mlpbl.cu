@@ -513,5 +513,7 @@ auto BrendanCUDA::AI::MLPB::MLPBLW::Deserialize(const void*& Data) -> MLPBLW {
         return MLPBLW(mlpbl64T32_t::Deserialize(Data));
     case eMLPBL64T64:
         return MLPBLW(mlpbl64T64_t::Deserialize(Data));
+    default:
+        return MLPBLW();
     }
 }
