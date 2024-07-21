@@ -15,9 +15,13 @@ namespace BrendanCUDA {
         __host__ __device__ uint32_t CountBitsB(uint16_t Value);
         __host__ __device__ uint32_t CountBitsB(uint8_t Value);
 
+        [[deprecated("Use std::popcount(...) in header <bit> instead.")]]
         __host__ __device__ uint32_t Count1s(uint64_t Value);
+        [[deprecated("Use std::popcount(...) in header <bit> instead.")]]
         __host__ __device__ uint32_t Count1s(uint32_t Value);
+        [[deprecated("Use std::popcount(...) in header <bit> instead.")]]
         __host__ __device__ uint32_t Count1s(uint16_t Value);
+        [[deprecated("Use std::popcount(...) in header <bit> instead.")]]
         __host__ __device__ uint32_t Count1s(uint8_t Value);
     }
 }
