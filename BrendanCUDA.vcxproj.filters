@@ -152,7 +152,6 @@
     <CudaCompile Include="brendancuda_nets_net.cu">
       <Filter>Nets</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_mathfuncs.cu" />
     <CudaCompile Include="brendancuda_errorhelp.cpp" />
     <CudaCompile Include="brendancuda_nets_makenet.cu">
       <Filter>Nets</Filter>

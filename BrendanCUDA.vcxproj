@@ -142,7 +142,6 @@
     <CudaCompile Include="brendancuda_errorhelp.cpp" />
     <CudaCompile Include="brendancuda_dcopy.cu" />
     <CudaCompile Include="brendancuda_nets_makenet.cu" />
-    <CudaCompile Include="brendancuda_mathfuncs.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu" />
     <CudaCompile Include="brendancuda_rand_bits.cu" />
     <CudaCompile Include="brendancuda_rand_drandom.cu" />
