@@ -541,7 +541,6 @@ __host__ __device__ __forceinline _TOutput BrendanCUDA::AI::MLPB::MLPBL<_TInput,
     for (size_t i = 0; i < (sizeof(_TOutput) << 3); ++i) {
         if (Input & hWeights[i]) o |= ((_TOutput)1) << i;
     }
-    delete[] hWeights;
     return o;
 #endif
 }
