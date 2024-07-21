@@ -103,7 +103,7 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::DField3<_T>::DField3(uint
         lengthX = LengthX;
         lengthY = LengthY;
         lengthZ = LengthZ;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
         size_t l = (size_t)LengthX * (size_t)LengthY * (size_t)LengthZ;
         cudaArrayF = new _T[l];
         cudaArrayB = new _T[l];
@@ -132,7 +132,7 @@ __host__ __forceinline BrendanCUDA::Fields::DField3<_T>::DField3(uint32_t Length
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::Dispose() {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     delete[] cudaArrayF;
     delete[] cudaArrayB;
 #else
@@ -307,7 +307,7 @@ __host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::SetAll(_T* All, bo
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField3<_T>::GetValueAt(uint64_t Index) const {
     _T v;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueOut(Index, &v);
 #else
     CopyValueOut(Index, &v, true);
@@ -321,7 +321,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField3<_T>::GetValueA
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField3<_T>::GetValueAt(uint32_t X, uint32_t Y, uint32_t Z) const {
     _T v;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueOut(X, Y, Z, &v);
 #else
     CopyValueOut(X, Y, Z, &v, true);
@@ -330,7 +330,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField3<_T>::GetValueA
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::SetValueAt(uint64_t Index, _T Value) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueIn(Index, &Value);
 #else
     CopyValueIn(Index, &Value, true);
@@ -342,7 +342,7 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::SetValu
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::SetValueAt(uint32_t X, uint32_t Y, uint32_t Z, _T Value) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueIn(X, Y, Z, &Value);
 #else
     CopyValueIn(X, Y, Z, &Value, true);

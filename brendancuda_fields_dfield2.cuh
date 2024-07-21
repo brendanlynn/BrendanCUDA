@@ -99,7 +99,7 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::DField2<_T>::DField2(uint
     else {
         lengthX = LengthX;
         lengthY = LengthY;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
         size_t l = (size_t)LengthX * (size_t)LengthY;
         cudaArrayF = new _T[l];
         cudaArrayB = new _T[l];
@@ -128,7 +128,7 @@ __host__ __forceinline BrendanCUDA::Fields::DField2<_T>::DField2(uint32_t Length
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField2<_T>::Dispose() {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     delete[] cudaArrayF;
     delete[] cudaArrayB;
 #else
@@ -299,7 +299,7 @@ __host__ __forceinline void BrendanCUDA::Fields::DField2<_T>::SetAll(_T* All, bo
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField2<_T>::GetValueAt(uint64_t Index) const {
     _T v;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueOut(Index, &v);
 #else
     CopyValueOut(Index, &v, true);
@@ -313,7 +313,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField2<_T>::GetValueA
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField2<_T>::GetValueAt(uint32_t X, uint32_t Y) const {
     _T v;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueOut(X, Y, &v);
 #else
     CopyValueOut(X, Y, &v, true);
@@ -322,7 +322,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField2<_T>::GetValueA
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField2<_T>::SetValueAt(uint64_t Index, _T Value) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueIn(Index, &Value);
 #else
     CopyValueIn(Index, &Value, true);
@@ -334,7 +334,7 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::DField2<_T>::SetValu
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField2<_T>::SetValueAt(uint32_t X, uint32_t Y, _T Value) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueIn(X, Y, &Value);
 #else
     CopyValueIn(X, Y, &Value, true);

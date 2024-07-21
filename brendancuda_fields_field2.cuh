@@ -114,7 +114,7 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::Field2<_T>::Field2(uint32
     else {
         lengthX = LengthX;
         lengthY = LengthY;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
         cudaArray = new _T[LengthX * LengthY];
 #else
         ThrowIfBad(cudaMalloc(&cudaArray, SizeOnGPU()));
@@ -251,7 +251,7 @@ __host__ __forceinline void BrendanCUDA::Fields::Field2<_T>::SetAll(_T* All, boo
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field2<_T>::GetValueAt(uint64_t Index) const {
     _T v;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueOut(Index, &v);
 #else
     CopyValueOut(Index, &v, true);
@@ -265,7 +265,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field2<_T>::GetValueAt
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field2<_T>::GetValueAt(uint32_t X, uint32_t Y) const {
     _T v;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueOut(X, Y, &v);
 #else
     CopyValueOut(X, Y, &v, true);
@@ -274,7 +274,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field2<_T>::GetValueAt
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::SetValueAt(uint64_t Index, _T Value) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueIn(Index, &Value);
 #else
     CopyValueIn(Index, &Value, true);
@@ -286,7 +286,7 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::SetValue
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::SetValueAt(uint32_t X, uint32_t Y, _T Value) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueIn(X, Y, &Value);
 #else
     CopyValueIn(X, Y, &Value, true);
@@ -294,7 +294,7 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::SetValue
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::Dispose() {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     delete[] cudaArray;
 #else
     ThrowIfBad(cudaFree(cudaArray));

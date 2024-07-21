@@ -61,7 +61,7 @@ namespace BrendanCUDA {
 }
 
 __host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPB::MLPB(size_t LayerCount) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     layers = new MLPBLW[LayerCount];
 #else
     ThrowIfBad(cudaMalloc(&layers, sizeof(MLPBLW) * LayerCount));
@@ -75,13 +75,13 @@ __host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPB::MLPB(MLPBLW* Laye
 
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::Dispose() {
     for (size_t i = 0; i < layerCount; ++i) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
         layers[i].Dispose();
 #else
         GetLayer(i).Dispose();
 #endif
     }
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     delete[] layers;
 #else
     ThrowIfBad(cudaFree(layers));
@@ -119,7 +119,7 @@ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::CopyInLayers(MLPBLW* 
 }
 
 __host__ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::GetLayer(size_t Index) const -> MLPBLW {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     return layers[Index];
 #else
     MLPBLW r;
@@ -128,7 +128,7 @@ __host__ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::GetLayer(siz
 #endif
 }
 __host__ __device__ void BrendanCUDA::AI::MLPB::MLPB::SetLayer(size_t Index, MLPBLW Layer) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     layers[Index] = Layer;
 #else
     ThrowIfBad(cudaMemcpy(layers + Index, &Layer, sizeof(MLPBLW), cudaMemcpyHostToDevice));
@@ -157,7 +157,7 @@ __host__ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::operator+(co
     MLPB r = MLPB(layerCount + Value.layerCount);
     MLPB a = Clone();
     MLPB b = Value.Clone();
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     deviceMemcpy(r.layers, a.layers, sizeof(MLPBLW) * layerCount);
     deviceMemcpy(r.layers + layerCount, b.layers, sizeof(MLPBLW) * Value.layerCount);
 #else
@@ -170,7 +170,7 @@ __host__ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::operator+(co
     MLPB r = MLPB(layerCount + 1);
     MLPB a = Clone();
     MLPBLW b = Value.Clone();
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     deviceMemcpy(r.layers, a.layers, sizeof(MLPBLW) * layerCount);
     deviceMemcpy(r.layers + layerCount, &b, sizeof(MLPBLW));
 #else
@@ -188,7 +188,7 @@ __host__ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::Clone() cons
 }
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < layerCount; ++i) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
         Layer(i)->RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
 #else
         GetLayer(i).RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
@@ -202,7 +202,7 @@ __host__ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::ReproduceWFl
 }
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < layerCount; ++i) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
         Layer(i)->RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, RNG);
 #else
         GetLayer(i).RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, RNG);
@@ -216,7 +216,7 @@ __host__ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::ReproduceWTa
 }
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, Random::AnyRNG<uint64_t> RNG) {
     for (size_t i = 0; i < layerCount; ++i) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
         Layer(i)->RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
 #else
         GetLayer(i).RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);

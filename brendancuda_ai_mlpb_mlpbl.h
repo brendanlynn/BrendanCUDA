@@ -316,7 +316,7 @@ __global__ void BrendanCUDA::details::applyTargetFlipsOnArray_kernel(uint8_t* ar
 }
 
 __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint64_t& v(arr[i]);
 
@@ -335,7 +335,7 @@ __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnA
 #endif
 }
 __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint32_t& v(arr[i]);
 
@@ -354,7 +354,7 @@ __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnA
 #endif
 }
 __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint16_t& v(arr[i]);
 
@@ -373,7 +373,7 @@ __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnA
 #endif
 }
 __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint8_t& v(arr[i]);
 
@@ -394,7 +394,7 @@ __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnA
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::MLPBL() {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     weights = new _TInput[sizeof(_TOutput) << 3];
     bias = new _TOutput;
 #else
@@ -429,7 +429,7 @@ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::C
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::Dispose() {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     delete[] weights;
     delete bias;
 #else
@@ -490,7 +490,7 @@ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::C
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline _TInput BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::GetWeight(size_t Index) const {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     return weights[Index];
 #else
     _TInput output;
@@ -500,7 +500,7 @@ __host__ __device__ __forceinline _TInput BrendanCUDA::AI::MLPB::MLPBL<_TInput, 
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::SetWeight(size_t Index, _TInput Weight) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     weights[Index] = Weight;
 #else
     ThrowIfBad(cudaMemcpy(weights + Index, &Weight, sizeof(_TInput), cudaMemcpyHostToDevice));
@@ -508,7 +508,7 @@ __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TO
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline _TOutput BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::GetBias() const {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     return *bias;
 #else
     _TOutput output;
@@ -518,7 +518,7 @@ __host__ __device__ __forceinline _TOutput BrendanCUDA::AI::MLPB::MLPBL<_TInput,
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::SetBias(_TOutput Bias) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     * bias = Bias;
 #else
     ThrowIfBad(cudaMemcpy(bias, &Bias, sizeof(_TOutput), cudaMemcpyHostToDevice));
@@ -526,7 +526,7 @@ __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TO
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline _TOutput BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::Run(_TInput Input) const {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     _TOutput o = 0;
     for (size_t i = 0; i < (sizeof(_TOutput) << 3); ++i) {
         if (Input & weights[i]) o |= ((_TOutput)1) << i;
@@ -549,7 +549,7 @@ __host__ __device__ __forceinline uint64_t BrendanCUDA::AI::MLPB::MLPBL<_TInput,
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::CopyTo(MLPBL<_TInput, _TOutput> Other) const {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     deviceMemcpy(Other.weights, weights, sizeof(_TInput) * (sizeof(_TOutput) << 3));
     deviceMemcpy(Other.bias, bias, sizeof(_TOutput));
 #else

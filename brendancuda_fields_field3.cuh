@@ -117,7 +117,7 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::Field3<_T>::Field3(uint32
         lengthX = LengthX;
         lengthY = LengthY;
         lengthZ = LengthZ;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
         cudaArray = new _T[LengthX * LengthY * LengthZ];
 #else
         ThrowIfBad(cudaMalloc(&cudaArray, SizeOnGPU()));
@@ -258,7 +258,7 @@ __host__ __forceinline void BrendanCUDA::Fields::Field3<_T>::SetAll(_T* All, boo
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field3<_T>::GetValueAt(uint64_t Index) const {
     _T v;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueOut(Index, &v);
 #else
     CopyValueOut(Index, &v, true);
@@ -272,7 +272,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field3<_T>::GetValueAt
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field3<_T>::GetValueAt(uint32_t X, uint32_t Y, uint32_t Z) const {
     _T v;
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueOut(X, Y, Z, &v);
 #else
     CopyValueOut(X, Y, Z, &v, true);
@@ -281,7 +281,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field3<_T>::GetValueAt
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::Field3<_T>::SetValueAt(uint64_t Index, _T Value) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueIn(Index, &Value);
 #else
     CopyValueIn(Index, &Value, true);
@@ -293,7 +293,7 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::Field3<_T>::SetValue
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::Field3<_T>::SetValueAt(uint32_t X, uint32_t Y, uint32_t Z, _T Value) {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     CopyValueIn(X, Y, Z, &Value);
 #else
     CopyValueIn(X, Y, Z, &Value, true);
@@ -301,7 +301,7 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::Field3<_T>::SetValue
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::Field3<_T>::Dispose() {
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     delete[] cudaArray;
 #else
     ThrowIfBad(cudaFree(cudaArray));

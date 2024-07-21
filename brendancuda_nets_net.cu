@@ -18,7 +18,7 @@ void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t DataDestructor) const 
     if (DataDestructor) {
         DataDestructor(*this);
     }
-#if __CUDA_ARCH__
+#ifdef __CUDA_ARCH__
     delete[] inputs;
     delete[] outputs;
 #else
