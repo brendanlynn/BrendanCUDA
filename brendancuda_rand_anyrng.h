@@ -3,6 +3,7 @@
 #include <random>
 #include <limits>
 #include <cuda_runtime.h>
+#include <concepts>
 
 namespace BrendanCUDA {
     namespace details {
@@ -14,7 +15,7 @@ namespace BrendanCUDA {
         using runRNGFunc_t = _TOutputType(*)(void*);
     }
     namespace Random {
-        template <typename _TOutputType>
+        template <std::unsigned_integral _TOutputType>
         class AnyRNG final {
         public:
             template <typename _TRNG>
