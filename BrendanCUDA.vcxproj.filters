@@ -95,6 +95,8 @@
     <ClInclude Include="brendancuda_rand_randomizer.h">
       <Filter>Random</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_allheaders.h" />
+    <ClInclude Include="brendancuda_allheaders.cuh" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">
