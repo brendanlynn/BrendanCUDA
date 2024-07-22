@@ -137,9 +137,6 @@
     <CudaCompile Include="brendancuda_ai_mlp_mlp.cu">
       <Filter>AI\MLP</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_ai_mlp_mlpl.cu">
-      <Filter>AI\MLP</Filter>
-    </CudaCompile>
     <CudaCompile Include="brendancuda_ai_mlpb_mlpblw.cu">
       <Filter>AI\MLPB</Filter>
     </CudaCompile>
