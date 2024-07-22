@@ -1,3 +1,5 @@
+#pragma once
+
 #include "brendancuda_allheaders.h"
 
 #include "brendancuda_fields_dfield2.cuh"
