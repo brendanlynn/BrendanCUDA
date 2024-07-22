@@ -98,6 +98,7 @@
     <ClInclude Include="brendancuda_ai_evol_eval_output.h" />
     <ClInclude Include="brendancuda_ai_evol_eval_output_impl_proliferation.h" />
     <ClInclude Include="brendancuda_ai_evol_eval_output_impl_uniquevalues.h" />
+    <ClInclude Include="brendancuda_ai_mlpb_fixedmlpb.h" />
     <ClInclude Include="brendancuda_arrays.h" />
     <ClInclude Include="brendancuda_crossassigns.h" />
     <ClInclude Include="brendancuda_cudaconstexpr.h" />
