@@ -58,9 +58,6 @@ namespace BrendanCUDA {
                 __host__ __device__ void Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ MLPL<_T> Reproduce(_T Scalar, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ MLPL<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) const;
-
-                __host__ void Serialize(std::basic_ostream<char>& Stream);
-                __host__ static MLPL<_T> Deserialize(std::basic_istream<char>& Stream);
             private:
                 size_t iptLen;
                 size_t optLen;

@@ -246,51 +246,6 @@ __host__ __device__ BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T
     n.Randomize(Scalar, LowerBound, UpperBound, RNG);
     return n;
 }
-template <typename _T>
-__host__ void BrendanCUDA::AI::MLP::MLPL<_T>::Serialize(std::basic_ostream<char>& Stream) {
-    constexpr size_t s0 = sizeof(size_t) / sizeof(char);
-    static_assert(!(sizeof(size_t) % sizeof(char)), "The size (in bytes) of type std::size_t must be evenly divisible by the size (in bytes) of type char.");
-    constexpr size_t s1 = sizeof(_T) / sizeof(char);
-    static_assert(!(sizeof(_T) % sizeof(char)), "The size (in bytes) of type _T must be evenly divisible by the size (in bytes) of type char.");
-
-    _T* weights = GetWeights(true);
-    _T* bias = GetBias(true);
-
-    Stream.write((char*)&iptLen, s0);
-    Stream.write((char*)&optLen, s0);
-
-    Stream.write((char*)weights, iptLen * optLen * s1);
-    Stream.write((char*)bias, optLen * s1);
-
-    delete[] weights;
-    delete[] bias;
-}
-template <typename _T>
-__host__ BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T>::Deserialize(std::basic_istream<char>& Stream) {
-    constexpr size_t s0 = sizeof(size_t) / sizeof(char);
-    static_assert(!(sizeof(size_t) % sizeof(char)), "The size (in bytes) of type std::size_t must be evenly divisible by the size (in bytes) of type char.");
-    constexpr size_t s1 = sizeof(_T) / sizeof(char);
-    static_assert(!(sizeof(_T) % sizeof(char)), "The size (in bytes) of type _T must be evenly divisible by the size (in bytes) of type char.");
-
-    size_t n_iptLen;
-    size_t n_optLen;
-
-    Stream.read((char*)&n_iptLen, s0);
-    Stream.read((char*)&n_optLen, s0);
-
-    _T* n_weights = new _T[n_iptLen * n_optLen];
-    _T* n_bias = new _T[n_optLen];
-
-    Stream.read((char*)n_weights, n_iptLen * n_optLen * s1);
-    Stream.read((char*)n_bias, n_optLen * s1);
-
-    MLPL<_T> mlpl(n_iptLen, n_optLen, n_weights, n_bias, true);
-
-    delete[] n_weights;
-    delete[] n_bias;
-
-    return mlpl;
-}
 
 template BrendanCUDA::AI::MLP::MLPL<float>;
 template BrendanCUDA::AI::MLP::MLPL<double>;
