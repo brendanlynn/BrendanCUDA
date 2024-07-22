@@ -49,9 +49,6 @@ namespace BrendanCUDA {
                 __host__ __device__ __forceinline void Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG);
                 __host__ __device__ __forceinline MLP<_T> Reproduce(_T Scalar, Random::AnyRNG<uint64_t> RNG) const;
                 __host__ __device__ __forceinline MLP<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) const;
-
-                __host__ __forceinline void Serialize(std::basic_ostream<char>& Stream) const;
-                __host__ static __forceinline MLP<_T> Deserialize(std::basic_istream<char>& Stream, activationFunction_t<_T> ActivationFunction);
             private:
                 size_t len;
                 MLPL<_T>* lyrs;
@@ -280,29 +277,4 @@ __host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::RandomOver
         GetLayer(i).RandomOverwrite(LowerBound, UpperBound, RNG);
 #endif
     }
-}
-template <typename _T>
-__host__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::Serialize(std::basic_ostream<char>& Stream) const {
-    Stream.write((char*)&len, sizeof(size_t) / sizeof(char));
-
-    for (size_t i = 0; i < len; ++i) {
-        GetLayer(i).Serialize(Stream);
-    }
-}
-template <typename _T>
-__host__ __forceinline BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Deserialize(std::basic_istream<char>& Stream, activationFunction_t<_T> ActivationFunction) {
-    size_t n_len;
-    Stream.read((char*)&n_len, sizeof(size_t) / sizeof(char));
-
-    MLPL<_T>* n_lyrs = new MLPL<_T>[n_len];
-
-    for (size_t i = 0; i < n_len; ++i) {
-        n_lyrs[i] = MLPL<_T>::Deserialize(Stream);
-    }
-
-    MLP<_T> mlp(n_len, ActivationFunction, n_lyrs, true);
-
-    delete[] n_lyrs;
-
-    return mlp;
 }
