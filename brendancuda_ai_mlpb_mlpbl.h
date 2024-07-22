@@ -187,7 +187,7 @@ __host__ __device__ __forceinline uint64_t BrendanCUDA::details::applyTargetFlip
         return 0xFFFFFFFFFFFFFFFFui64;
     }
     else {
-        uint32_t v1c = BrendanCUDA::Binary::Count1s(Value);
+        uint32_t v1c = std::popcount(Value);
 
         return
             Value ^
@@ -209,7 +209,7 @@ __host__ __device__ __forceinline uint32_t BrendanCUDA::details::applyTargetFlip
         return 0xFFFFFFFFui32;
     }
     else {
-        uint32_t v1c = BrendanCUDA::Binary::Count1s(Value);
+        uint32_t v1c = std::popcount(Value);
 
         return
             Value ^
@@ -231,7 +231,7 @@ __host__ __device__ __forceinline uint16_t BrendanCUDA::details::applyTargetFlip
         return 0xFFFFui16;
     }
     else {
-        uint32_t v1c = BrendanCUDA::Binary::Count1s(Value);
+        uint32_t v1c = std::popcount(Value);
 
         return
             Value ^
@@ -253,7 +253,7 @@ __host__ __device__ __forceinline uint8_t BrendanCUDA::details::applyTargetFlips
         return 0xFFui8;
     }
     else {
-        uint32_t v1c = BrendanCUDA::Binary::Count1s(Value);
+        uint32_t v1c = std::popcount(Value);
 
         return
             Value ^
