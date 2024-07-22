@@ -1,4 +1,4 @@
-#include "brendancuda_ai_mlp.h"
+#include "brendancuda_ai_mlp_mlp.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_dcopy.cuh"
 

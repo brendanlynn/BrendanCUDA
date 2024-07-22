@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="brendancuda_dcopy.cuh" />
-    <ClInclude Include="brendancuda_ai_mlpb.h">
+    <ClInclude Include="brendancuda_ai_mlpb_mlpb.h">
       <Filter>AI\MLPB</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_ai_mlpb_mlpblw.h">
@@ -17,7 +17,7 @@
     <ClInclude Include="brendancuda_ai_evol_evolver.h">
       <Filter>AI\Evolution</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlp.h">
+    <ClInclude Include="brendancuda_ai_mlp_mlp.h">
       <Filter>AI\MLP</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_ai_mlp_mlpl.h">
@@ -134,7 +134,7 @@
     <CudaCompile Include="brendancuda_ai_evol_evolver.cpp">
       <Filter>AI\Evolution</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_ai_mlp.cu">
+    <CudaCompile Include="brendancuda_ai_mlp_mlp.cu">
       <Filter>AI\MLP</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_ai_mlp_mlpl.cu">

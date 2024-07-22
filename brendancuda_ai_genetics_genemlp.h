@@ -1,6 +1,6 @@
 #pragma once
 
-#include "brendancuda_ai_mlp.h"
+#include "brendancuda_ai_mlp_mlp.h"
 #include "brendancuda_arrays.h"
 #include <vector>
 
