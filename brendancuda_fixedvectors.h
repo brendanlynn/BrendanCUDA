@@ -34,10 +34,8 @@ namespace BrendanCUDA {
         __host__ __device__ static __forceinline constexpr _T Dot(FixedVector<_T, _Size> Left, FixedVector<_T, _Size> Right);
         
         __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
+        __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
     template <typename _T>
@@ -67,10 +65,8 @@ namespace BrendanCUDA {
         __host__ __device__ static __forceinline constexpr _T Dot(FixedVector<_T, 1> Left, FixedVector<_T, 1> Right);
         
         __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
+        __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
     template <typename _T>
@@ -103,10 +99,8 @@ namespace BrendanCUDA {
         __host__ __device__ static __forceinline constexpr _T Cross(FixedVector<_T, 2> Left, FixedVector<_T, 2> Right);
         
         __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
+        __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
     template <typename _T>
@@ -137,10 +131,8 @@ namespace BrendanCUDA {
         __host__ __device__ static __forceinline constexpr FixedVector<_T, 3> Cross(FixedVector<_T, 3> Left, FixedVector<_T, 3> Right);
         
         __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
+        __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
     template <typename _T>
@@ -170,10 +162,8 @@ namespace BrendanCUDA {
         __host__ __device__ static __forceinline constexpr _T Dot(FixedVector<_T, 4> Left, FixedVector<_T, 4> Right);
         
         __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> MagnatudeI() const;
-        template <std::same_as<_T> _T2 = _T>
-        __host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> MagnatudeF() const;
+        __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
+        __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
     };
 
@@ -338,14 +328,12 @@ __host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, _Siz
 }
 template <typename _T, size_t _Size>
     requires std::is_arithmetic_v<_T>
-template <std::same_as<_T> _T2>
-__host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, _T> BrendanCUDA::FixedVector<_T, _Size>::MagnatudeI() const {
+__host__ __device__ __forceinline _T BrendanCUDA::FixedVector<_T, _Size>::MagnatudeI() const requires std::integral<_T> {
     return Math::sqrt(MagnatudeSquared());
 }
 template <typename _T, size_t _Size>
     requires std::is_arithmetic_v<_T>
-template <std::same_as<_T> _T2>
-__host__ __device__ __forceinline std::enable_if_t<std::integral<_T2>, float> BrendanCUDA::FixedVector<_T, _Size>::MagnatudeF() const {
+__host__ __device__ __forceinline float BrendanCUDA::FixedVector<_T, _Size>::MagnatudeF() const requires std::integral<_T> {
     return sqrt((float)MagnatudeSquared());
 }
 template <typename _T, size_t _Size>
