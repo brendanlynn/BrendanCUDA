@@ -44,7 +44,9 @@ namespace BrendanCUDA {
                 __host__ __device__ __forceinline MLPBL();
                 __host__ __device__ __forceinline MLPBL(_TInput* Weights, _TOutput* Bias);
 
+#ifdef __CUDACC__
                 __device__ static __forceinline MLPBL<_TInput, _TOutput> CloneFrom(_TInput* Weights, _TOutput* Bias);
+#endif
                 template <bool _CopyFromHost>
                 __host__ static __forceinline MLPBL<_TInput, _TOutput> CloneFrom(_TInput* Weights, _TOutput* Bias);
 
@@ -59,11 +61,15 @@ namespace BrendanCUDA {
                 __host__ __forceinline _TInput* CopyOutWeights() const;
                 template <bool _CopyToHost>
                 __host__ __forceinline void CopyOutWeights(_TInput* Weights) const;
+#ifdef __CUDACC__
                 __device__ __forceinline _TInput* CopyOutWeights() const;
                 __device__ __forceinline void CopyOutWeights(_TInput* Weights) const;
+#endif
                 template <bool _CopyFromHost>
                 __host__ __forceinline void CopyInWeights(_TInput* Weights);
+#ifdef __CUDACC__
                 __device__ __forceinline void CopyInWeights(_TInput* Weights);
+#endif
                 __host__ __device__ __forceinline _TInput GetWeight(size_t Index) const;
                 __host__ __device__ __forceinline void SetWeight(size_t Index, _TInput Weight);
 
@@ -419,6 +425,7 @@ __host__ __forceinline auto BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::Clo
     ThrowIfBad(cudaMemcpy(bias, Bias, sizeof(_TOutput), t));
     return MLPBL(weights, bias);
 }
+#ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::CloneFrom(_TInput* Weights, _TOutput* Bias) -> MLPBL<_TInput, _TOutput> {
     _TInput* weights = new _TInput[sizeof(_TOutput) << 3];
@@ -427,6 +434,7 @@ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::C
     *bias = *Bias;
     return MLPBL(weights, bias);
 }
+#endif
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::Dispose() {
 #ifdef __CUDA_ARCH__
@@ -469,6 +477,7 @@ template <bool _CopyToHost>
 __host__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::CopyOutWeights(_TInput* Weights) const {
     cudaMemcpy(Weights, weights, sizeof(_TInput) * (sizeof(_TOutput) << 3), _CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
 }
+#ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __device__ __forceinline _TInput* BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::CopyOutWeights() const {
     _TInput* output = new _TInput[sizeof(_TOutput) << 3];
@@ -479,15 +488,18 @@ template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::CopyOutWeights(_TInput* Weights) const {
     deviceMemcpy(Weights, weights, sizeof(_TInput) * (sizeof(_TOutput) << 3));
 }
+#endif
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <bool _CopyFromHost>
 __host__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::CopyInWeights(_TInput* Weights) {
     ThrowIfBad(cudaMemcpy(weights, Weights, sizeof(_TInput) * (sizeof(_TOutput) << 3), _CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
+#ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::CopyInWeights(_TInput* Weights) {
     deviceMemcpy(weights, Weights, sizeof(_TInput) * (sizeof(_TOutput) << 3));
 }
+#endif
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 __host__ __device__ __forceinline _TInput BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::GetWeight(size_t Index) const {
 #ifdef __CUDA_ARCH__

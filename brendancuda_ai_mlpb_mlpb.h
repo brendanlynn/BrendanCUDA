@@ -26,11 +26,15 @@ namespace BrendanCUDA {
                 __host__ __forceinline MLPBLW* CopyOutLayers() const;
                 template <bool _CopyToHost>
                 __host__ __forceinline void CopyOutLayers(MLPBLW* Layers) const;
+#ifdef __CUDACC__
                 __device__ __forceinline MLPBLW* CopyOutLayers() const;
                 __device__ __forceinline void CopyOutLayers(MLPBLW* Layers) const;
+#endif
                 template <bool _CopyFromHost>
                 __host__ __forceinline void CopyInLayers(MLPBLW* Layers);
+#ifdef __CUDACC__
                 __device__ __forceinline void CopyInLayers(MLPBLW* Layers);
+#endif
 
                 __host__ __device__ __forceinline MLPBLW GetLayer(size_t Index) const;
                 __host__ __device__ __forceinline void SetLayer(size_t Index, MLPBLW Layer);

@@ -21,7 +21,9 @@ namespace BrendanCUDA {
                 __forceinline MLPL() = default;
                 __host__ __device__ __forceinline MLPL(size_t InputLength, size_t OutputLength);
                 __host__ __forceinline MLPL(size_t InputLength, size_t OutputLength, _T* Weights, _T* Bias, bool CopyFromHost);
+#ifdef __CUDACC__
                 __device__ __forceinline MLPL(size_t InputLength, size_t OutputLength, _T* Weights, _T* Bias);
+#endif
 
                 __host__ __device__ __forceinline void Dispose();
 
@@ -38,18 +40,26 @@ namespace BrendanCUDA {
                 __host__ __device__ __forceinline _T* Bias(size_t Index) const;
 
                 __host__ __forceinline _T* GetWeights(bool CopyToHost) const;
+#ifdef __CUDACC__
                 __device__ __forceinline _T* GetWeights() const;
+#endif
                 __host__ __device__ __forceinline _T GetWeight(size_t Index);
                 __host__ __device__ __forceinline _T GetWeight(size_t X, size_t Y);
                 __host__ __forceinline void SetWeights(_T* Values, bool CopyFromHost);
+#ifdef __CUDACC__
                 __device__ __forceinline void SetWeights(_T* Values);
+#endif
                 __host__ __device__ __forceinline void SetWeight(_T Value, size_t Index);
                 __host__ __device__ __forceinline void SetWeight(_T Value, size_t X, size_t Y);
                 __host__ __forceinline _T* GetBias(bool CopyToHost) const;
+#ifdef __CUDACC__
                 __device__ __forceinline _T* GetBias() const;
+#endif
                 __host__ __device__ __forceinline _T GetBias(size_t Index) const;
                 __host__ __forceinline void SetBias(_T* Values, bool CopyFromHost);
+#ifdef __CUDACC__
                 __device__ __forceinline void SetBias(_T* Values);
+#endif
                 __host__ __device__ __forceinline void SetBias(_T Value, size_t Index);
 
                 __host__ __forceinline _T* Run(_T* Input) const;
@@ -88,12 +98,14 @@ __host__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T>::MLPL(size_t InputLength, 
     ThrowIfBad(cudaMemcpy(wgts, Weights, InputLength * OutputLength * sizeof(_T), cmk));
     ThrowIfBad(cudaMemcpy(bias, Bias, OutputLength * sizeof(_T), cmk));
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T>::MLPL(size_t InputLength, size_t OutputLength, _T* Weights, _T* Bias)
     : MLPL(InputLength, OutputLength) {
     deviceMemcpy(wgts, Weights, InputLength * OutputLength * sizeof(_T));
     deviceMemcpy(bias, Bias, OutputLength * sizeof(_T));
 }
+#endif
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::ZeroOverwrite() {
     InitZeroArray(Span<_T>(wgts, iptLen * optLen));
@@ -184,6 +196,7 @@ __host__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetWeights(bool CopyT
         return output;
     }
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetWeights() const {
     size_t l = iptLen * optLen * sizeof(_T);
@@ -191,6 +204,7 @@ __device__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetWeights() const 
     deviceMemcpy(output, wgts, l);
     return output;
 }
+#endif
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::AI::MLP::MLPL<_T>::GetWeight(size_t Index) {
 #ifdef __CUDA_ARCH__
@@ -215,10 +229,12 @@ template <typename _T>
 __host__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::SetWeights(_T* Values, bool CopyFromHost) {
     ThrowIfBad(cudaMemcpy(wgts, Values, iptLen * optLen * sizeof(_T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::SetWeights(_T* Values) {
     deviceMemcpy(wgts, Values, iptLen * optLen * sizeof(_T));
 }
+#endif
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::SetWeight(_T Value, size_t Index) {
 #ifdef __CUDA_ARCH__
@@ -250,6 +266,7 @@ __host__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetBias(bool CopyToHo
         return output;
     }
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetBias() const {
     size_t l = optLen * sizeof(_T);
@@ -257,6 +274,7 @@ __device__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetBias() const {
     deviceMemcpy(output, bias, l);
     return output;
 }
+#endif
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::AI::MLP::MLPL<_T>::GetBias(size_t Index) const {
 #ifdef __CUDA_ARCH__
@@ -271,10 +289,12 @@ template <typename _T>
 __host__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::SetBias(_T* Values, bool CopyFromHost) {
     ThrowIfBad(cudaMemcpy(bias, Values, optLen * sizeof(_T), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::SetBias(_T* Values) {
     deviceMemcpy(bias, Values, optLen * sizeof(_T));
 }
+#endif
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::SetBias(_T Value, size_t Index) {
 #ifdef __CUDA_ARCH__

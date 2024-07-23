@@ -5,6 +5,7 @@
 #include "brendancuda_fixedvectors.h"
 
 namespace BrendanCUDA {
+#ifdef __CUDACC__
     __device__ uint32_t GetCoordinates1() {
         return blockIdx.x * blockDim.x + threadIdx.x;
     }
@@ -21,4 +22,5 @@ namespace BrendanCUDA {
             blockIdx.z * blockDim.z + threadIdx.z
         );
     }
+#endif
 }

@@ -96,27 +96,33 @@ namespace BrendanCUDA {
         __host__ void CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split, bool MemoryOnHost);
         //Converts an array of doubles (Doubles) to bools, writing the result to Bools. Each bool is true if its corresponding double is greater than Split, and false otherwise. MemoryOnHost specifies whether or not the pointers point to memory on the RAM or the VRAM (true being the RAM, false being the VRAM).
         __host__ void CopyDoublesToBools(float* Doubles, bool* Bools, size_t Length, float Split, bool MemoryOnHost);
+#ifdef __CUDACC__
         //Converts an array of floats (Floats) to bools, writing the result to Bools. Each bool is true if its corresponding float is greater than Split, and false otherwise. The pointers are expected to point to memory on the VRAM.
         __device__ void CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split);
         //Converts an array of doubles (Doubles) to bools, writing the result to Bools. Each bool is true if its corresponding double is greater than Split, and false otherwise. The pointers are expected to point to memory on the VRAM.
         __device__ void CopyDoublesToBools(double* Doubles, bool* Bools, size_t Length, double Split);
+#endif
 
         //Converts an array of floats (Floats) to an array of 32-bit unsigned integers (Int32s). There should be 32 times as many floats as 32-bit unsigned integers, with Int32Length representing the quantity of the integers. Each bit is true if its cooresponding double is greater than Split, and false otherwise. MemoryOnHost specifies whether or the pointers point to memory on the RAM or the VRAM (true being the RAM, false being the VRAM).
         __host__ void CopyFloatsToInt32s(float* Floats, uint32_t* Int32s, size_t Int32Length, float Split, bool MemoryOnHost);
         //Converts an array of doubles (Doubles) to an array of 32-bit unsigned integers (Int32s). There should be 32 times as many doubles as 32-bit unsigned integers, with Int32Length representing the quantity of the integers. Each bit is true if its cooresponding double is greater than Split, and false otherwise. MemoryOnHost specifies whether or the pointers point to memory on the RAM or the VRAM (true being the RAM, false being the VRAM).
         __host__ void CopyDoublesToInt32s(double* Doubles, uint32_t* Int32s, size_t Int32Length, double Split, bool MemoryOnHost);
+#ifdef __CUDACC__
         //Converts an array of floats (Floats) to an array of 32-bit unsigned integers (Int32s). There should be 32 times as many floats as 32-bit unsigned integers, with Int32Length representing the quantity of the integers. Each bit is true if its cooresponding double is greater than Split, and false otherwise. The pointers are expected to point to memory on the VRAM.
         __device__ void CopyFloatsToInt32s(float* Floats, uint32_t* Int32s, size_t Int32Length, float Split);
         //Converts an array of doubles (Doubles) to an array of 32-bit unsigned integers (Int32s). There should be 32 times as many doubles as 32-bit unsigned integers, with Int32Length representing the quantity of the integers. Each bit is true if its cooresponding double is greater than Split, and false otherwise. The pointers are expected to point to memory on the VRAM.
         __device__ void CopyDoublesToInt32s(double* Doubles, uint32_t* Int32s, size_t Int32Length, double Split);
+#endif
         //Converts an array of floats (Floats) to an array of 64-bit unsigned integers (Int64s). There should be 64 times as many floats as 64-bit unsigned integers, with Int64Length representing the quantity of the integers. Each bit is true if its cooresponding double is greater than Split, and false otherwise. MemoryOnHost specifies whether or the pointers point to memory on the RAM or the VRAM (true being the RAM, false being the VRAM).
         __host__ void CopyFloatsToInt64s(float* Floats, uint64_t* Int64s, size_t Int64Length, float Split, bool MemoryOnHost);
         //Converts an array of doubles (Doubles) to an array of 64-bit unsigned integers (Int64s). There should be 64 times as many doubles as 64-bit unsigned integers, with Int64Length representing the quantity of the integers. Each bit is true if its cooresponding double is greater than Split, and false otherwise. MemoryOnHost specifies whether or the pointers point to memory on the RAM or the VRAM (true being the RAM, false being the VRAM).
         __host__ void CopyDoublesToInt64s(double* Doubles, uint64_t* Int64s, size_t Int64Length, double Split, bool MemoryOnHost);
+#ifdef __CUDACC__
         //Converts an array of floats (Floats) to an array of 64-bit unsigned integers (Int64s). There should be 64 times as many floats as 64-bit unsigned integers, with Int64Length representing the quantity of the integers. Each bit is true if its cooresponding double is greater than Split, and false otherwise. The pointers are expected to point to memory on the VRAM.
         __device__ void CopyFloatsToInt64s(float* Floats, uint64_t* Int64s, size_t Int64Length, float Split);
         //Converts an array of doubles (Doubles) to an array of 64-bit unsigned integers (Int64s). There should be 64 times as many doubles as 64-bit unsigned integers, with Int64Length representing the quantity of the integers. Each bit is true if its cooresponding double is greater than Split, and false otherwise. The pointers are expected to point to memory on the VRAM.
         __device__ void CopyDoublesToInt64s(double* Doubles, uint64_t* Int64s, size_t Int64Length, double Split);
+#endif
     }
 }
 

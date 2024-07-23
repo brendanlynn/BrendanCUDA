@@ -19,7 +19,9 @@ namespace BrendanCUDA {
                 __forceinline MLP() = default;
                 __host__ __device__ __forceinline MLP(size_t Length, activationFunction_t<_T> ActivationFunction);
                 __host__ __forceinline MLP(size_t Length, activationFunction_t<_T> ActivationFunction, MLPL<_T>* Layers, bool CopyFromHost);
+#ifdef __CUDACC__
                 __device__ __forceinline MLP(size_t Length, activationFunction_t<_T> ActivationFunction, MLPL<_T>* Layers);
+#endif
 
                 __host__ __device__ __forceinline MLPL<_T>* Layers() const;
                 __host__ __device__ __forceinline size_t LayerCount() const;
@@ -33,9 +35,13 @@ namespace BrendanCUDA {
 
                 __host__ __device__ __forceinline MLPL<_T>* Layer(size_t LayerIndex) const;
                 __host__ __forceinline MLPL<_T>* GetLayers(bool CopyToHost) const;
+#ifdef __CUDACC__
                 __device__ __forceinline MLPL<_T>* GetLayers() const;
+#endif
                 __host__ __forceinline void SetLayers(MLPL<_T>* Layers, bool CopyFromHost);
+#ifdef __CUDACC__
                 __device__ __forceinline void SetLayers(MLPL<_T>* Layers);
+#endif
                 __host__ __device__ __forceinline MLPL<_T> GetLayer(size_t LayerIndex) const;
                 __host__ __device__ __forceinline void SetLayer(size_t LayerIndex, MLPL<_T> Layer);
 
@@ -73,11 +79,13 @@ __host__ __forceinline BrendanCUDA::AI::MLP::MLP<_T>::MLP(size_t Length, activat
     : MLP(Length, ActivationFunction) {
     ThrowIfBad(cudaMemcpy(lyrs, Layers, Length * sizeof(MLPL<_T>), CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline BrendanCUDA::AI::MLP::MLP<_T>::MLP(size_t Length, activationFunction_t<_T> ActivationFunction, MLPL<_T>* Layers)
     : MLP(Length, ActivationFunction) {
     deviceMemcpy(lyrs, Layers, Length * sizeof(MLPL<_T>));
 }
+#endif
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::Dispose() {
     for (size_t i = 0; i < len; ++i) {
@@ -150,20 +158,24 @@ __host__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T>* BrendanCUDA::AI::MLP::MLP
     }
     return p;
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T>* BrendanCUDA::AI::MLP::MLP<_T>::GetLayers() const {
     MLPL<_T>* p = new MLPL<_T>[len];
     deviceMemcpy(p, lyrs, sizeof(MLPL<_T>) * len);
     return p;
 }
+#endif
 template <typename _T>
 __host__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::SetLayers(MLPL<_T>* Layers, bool CopyFromHost) {
     ThrowIfBad(cudaMemcpy(lyrs, Layers, sizeof(MLPL<_T>) * len, CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::SetLayers(MLPL<_T>* Layers) {
     deviceMemcpy(lyrs, Layers, sizeof(MLPL<_T>) * len);
 }
+#endif
 template <typename _T>
 __host__ __device__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLP<_T>::GetLayer(size_t LayerIndex) const {
 #ifdef __CUDA_ARCH__
