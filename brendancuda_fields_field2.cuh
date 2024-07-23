@@ -9,6 +9,7 @@
 #include "brendancuda_points.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_cudaconstexpr.h"
+#include "brendancuda_copyblock.h"
 
 namespace BrendanCUDA {
 #ifndef DEFINED_BrendanCUDA__details__fillWithKernel
@@ -87,6 +88,9 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline void FillWith(_T Value);
 
             __host__ __device__ __forceinline std::pair<thrust::device_ptr<_T>, size_t> Data() const;
+
+            __host__ __device__ __forceinline void CopyBlockIn(_T* Input, uint32_2 InputDimensions, uint32_2 RangeDimensions, uint32_2 RangeInInputsCoordinates, uint32_2 RangeInOutputsCoordinates);
+            __host__ __device__ __forceinline void CopyBlockOut(_T* Output, uint32_2 OutputDimensions, uint32_2 RangeDimensions, uint32_2 RangeInInputsCoordinates, uint32_2 RangeInOutputsCoordinates);
         private:
             uint32_t lengthX;
             uint32_t lengthY;
@@ -335,4 +339,12 @@ __host__ __device__ __forceinline BrendanCUDA::uint32_2 BrendanCUDA::Fields::Fie
 template <typename _T>
 __host__ __device__ __forceinline std::pair<thrust::device_ptr<_T>, size_t> BrendanCUDA::Fields::Field2<_T>::Data() const {
     return { thrust::device_ptr<_T>(cudaArray), (size_t)lengthX * (size_t)lengthY };
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::CopyBlockIn(_T* Input, uint32_2 InputDimensions, uint32_2 RangeDimensions, uint32_2 RangeInInputsCoordinates, uint32_2 RangeInOutputsCoordinates) {
+    CopyBlock<_T, 2, true>(Input, cudaArray, InputDimensions, Dimensions(), RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::CopyBlockOut(_T* Output, uint32_2 OutputDimensions, uint32_2 RangeDimensions, uint32_2 RangeInInputsCoordinates, uint32_2 RangeInOutputsCoordinates) {
+    CopyBlock<_T, 2, true>(cudaArray, Output, Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
