@@ -135,6 +135,7 @@
     <ClInclude Include="brendancuda_rand_bits.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="brendancuda_copyblock.cpp" />
     <CudaCompile Include="brendancuda_ai.cu" />
     <CudaCompile Include="brendancuda_ai_evol_evolver.cpp">
       <FileType>CppCode</FileType>

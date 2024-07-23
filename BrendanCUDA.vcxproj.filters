@@ -173,5 +173,6 @@
     <ClCompile Include="brendancuda_ai_genetics_genemlp.cpp">
       <Filter>AI\Genetics</Filter>
     </ClCompile>
+    <ClCompile Include="brendancuda_copyblock.cpp" />
   </ItemGroup>
 </Project>
