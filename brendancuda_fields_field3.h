@@ -103,10 +103,6 @@ namespace BrendanCUDA {
 }
 
 template <typename _T>
-__host__ __device__ __forceinline void BrendanCUDA::Fields::Field3<_T>::FillWith(_T Value) {
-    details::fillWithKernel<_T><<<lengthX * lengthY * lengthZ, 1>>>(cudaArray, Value);
-}
-template <typename _T>
 __host__ __device__ __forceinline BrendanCUDA::Fields::Field3<_T>::Field3(uint32_3 Dimensions)
     : Field3(Dimensions.x, Dimensions.y, Dimensions.z) { }
 template <typename _T>

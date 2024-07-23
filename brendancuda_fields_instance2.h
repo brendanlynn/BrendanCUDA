@@ -1,6 +1,6 @@
 #pragma once
 
-#include "brendancuda_fields_dfield2.cuh"
+#include "brendancuda_fields_dfield2.h"
 #include "brendancuda_rand_anyrng.h"
 #include <tuple>
 #include "brendancuda_rand_sseed.cuh"

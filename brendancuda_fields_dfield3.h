@@ -1,6 +1,6 @@
 #pragma once
 
-#include "brendancuda_fields_field3.cuh"
+#include "brendancuda_fields_field3.h"
 #include "brendancuda_points.h"
 #include "brendancuda_errorhelp.h"
 #include <stdexcept>

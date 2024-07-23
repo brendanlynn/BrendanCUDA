@@ -106,8 +106,8 @@
     <ClInclude Include="brendancuda_crossassigns.h" />
     <ClInclude Include="brendancuda_cudaconstexpr.h" />
     <ClInclude Include="brendancuda_errorhelp.h" />
-    <ClInclude Include="brendancuda_fields_dfield2.cuh" />
-    <ClInclude Include="brendancuda_fields_field2.cuh" />
+    <ClInclude Include="brendancuda_fields_dfield2.h" />
+    <ClInclude Include="brendancuda_fields_field2.h" />
     <ClInclude Include="brendancuda_fields_instance2.h" />
     <ClInclude Include="brendancuda_fields_instance3.h" />
     <ClInclude Include="brendancuda_ai_mlp_fixedmlp.h" />
@@ -121,9 +121,9 @@
     <ClInclude Include="brendancuda_binary_basic.h" />
     <ClInclude Include="brendancuda_dcopy.cuh" />
     <ClInclude Include="brendancuda_rand_drandom.cuh" />
-    <ClInclude Include="brendancuda_fields_dfield3.cuh" />
+    <ClInclude Include="brendancuda_fields_dfield3.h" />
     <ClInclude Include="brendancuda_ai_evol_evolver.h" />
-    <ClInclude Include="brendancuda_fields_field3.cuh" />
+    <ClInclude Include="brendancuda_fields_field3.h" />
     <ClInclude Include="brendancuda_ai_genetics_genemlp.h" />
     <ClInclude Include="brendancuda_rand_randomizer.h" />
     <ClInclude Include="brendancuda_rand_sseed.cuh" />
@@ -146,6 +146,8 @@
     <CudaCompile Include="brendancuda_binary_basic.cu" />
     <CudaCompile Include="brendancuda_errorhelp.cpp" />
     <CudaCompile Include="brendancuda_dcopy.cu" />
+    <CudaCompile Include="brendancuda_fields_field2.cu" />
+    <CudaCompile Include="brendancuda_fields_field3.cu" />
     <CudaCompile Include="brendancuda_nets_makenet.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu" />
     <CudaCompile Include="brendancuda_rand_bits.cu" />
