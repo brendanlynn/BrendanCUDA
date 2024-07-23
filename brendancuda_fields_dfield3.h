@@ -234,7 +234,7 @@ __host__ __device__ __forceinline BrendanCUDA::uint32_3 BrendanCUDA::Fields::DFi
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::FillWith(_T Value) {
-    details::fillWithKernel<_T><<<lengthX * lengthY * lengthZ, 1>>>(cudaArrayF, Value);
+    FFront().FillWith(Value);
 }
 template <typename _T>
 __host__ __device__ __forceinline std::pair<thrust::device_ptr<_T>, size_t> BrendanCUDA::Fields::DField3<_T>::Data() const {
