@@ -6,7 +6,6 @@
 
 using BrendanCUDA::Random::GetSeedOnKernel;
 using BrendanCUDA::Random::DeviceRandom;
-using BrendanCUDA::Random::HashI64;
 using BrendanCUDA::Random::Get64Bits;
 using BrendanCUDA::Random::AnyRNG;
 
