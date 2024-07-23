@@ -1,6 +1,6 @@
 #include "brendancuda_nets_makenet.h"
 #include "brendancuda_rand_drandom.cuh"
-#include "brendancuda_rand_sseed.cuh"
+#include "brendancuda_rand_sseed.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_points.h"
 #include <cuda_runtime.h>

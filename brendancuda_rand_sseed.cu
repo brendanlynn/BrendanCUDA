@@ -1,4 +1,4 @@
-#include "brendancuda_rand_sseed.cuh"
+#include "brendancuda_rand_sseed.h"
 
 __device__ uint32_t BrendanCUDA::Random::GetSeedOnKernel(uint32_t BaseSeed) {
     constexpr uint32_t m0 = 1172153037;

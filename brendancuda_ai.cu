@@ -2,7 +2,7 @@
 #include "brendancuda_rand_bits.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_rand_drandom.cuh"
-#include "brendancuda_rand_sseed.cuh"
+#include "brendancuda_rand_sseed.h"
 
 using BrendanCUDA::Random::GetSeedOnKernel;
 using BrendanCUDA::Random::DeviceRandom;

@@ -12,7 +12,7 @@
 #include "brendancuda_rand_bits.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_dcopy.cuh"
-#include "brendancuda_rand_sseed.cuh"
+#include "brendancuda_rand_sseed.h"
 
 namespace BrendanCUDA {
     namespace details {

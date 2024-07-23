@@ -35,7 +35,7 @@
     <ClInclude Include="brendancuda_rand_drandom.cuh">
       <Filter>Random</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_rand_sseed.cuh">
+    <ClInclude Include="brendancuda_rand_sseed.h">
       <Filter>Random</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_rand_bits.h">
