@@ -36,7 +36,8 @@ namespace BrendanCUDA {
                 __host__ __device__ __forceinline _T* Bias() const;
                 __host__ __device__ __forceinline _T* Bias(size_t Index) const;
 
-                __host__ __forceinline _T* GetWeights(bool CopyToHost) const;
+                template <bool _CopyToHost>
+                __host__ __forceinline _T* GetWeights() const;
 #ifdef __CUDACC__
                 __device__ __forceinline _T* GetWeights() const;
 #endif
@@ -45,7 +46,8 @@ namespace BrendanCUDA {
                 __host__ __device__ __forceinline void SetWeights(_T* Values);
                 __host__ __device__ __forceinline void SetWeight(_T Value, size_t Index);
                 __host__ __device__ __forceinline void SetWeight(_T Value, size_t X, size_t Y);
-                __host__ __forceinline _T* GetBias(bool CopyToHost) const;
+                template <bool _CopyToHost>
+                __host__ __forceinline _T* GetBias() const;
 #ifdef __CUDACC__
                 __device__ __forceinline _T* GetBias() const;
 #endif
@@ -169,9 +171,10 @@ __host__ __device__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::Bias(size_
     return &bias[Index];
 }
 template <typename _T>
-__host__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetWeights(bool CopyToHost) const {
+template <bool _CopyToHost>
+__host__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetWeights() const {
     size_t l = iptLen * optLen * sizeof(_T);
-    if (CopyToHost) {
+    if constexpr (_CopyToHost) {
         _T* output = (_T*)operator new[](l);
         ThrowIfBad(cudaMemcpy(output, wgts, l, cudaMemcpyDeviceToHost));
         return output;
@@ -237,9 +240,10 @@ __host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::SetWeight
 #endif
 }
 template <typename _T>
-__host__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetBias(bool CopyToHost) const {
+template <bool _CopyToHost>
+__host__ __forceinline _T* BrendanCUDA::AI::MLP::MLPL<_T>::GetBias() const {
     size_t l = optLen * sizeof(_T);
-    if (CopyToHost) {
+    if constexpr (_CopyToHost) {
         _T* output = (_T*)operator new[](l);
         ThrowIfBad(cudaMemcpy(output, bias, l, cudaMemcpyDeviceToHost));
         return output;

@@ -31,7 +31,8 @@ namespace BrendanCUDA {
                 __host__ __device__ __forceinline void RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG);
 
                 __host__ __device__ __forceinline MLPL<_T>* Layer(size_t LayerIndex) const;
-                __host__ __forceinline MLPL<_T>* GetLayers(bool CopyToHost) const;
+                template <bool _CopyToHost>
+                __host__ __forceinline MLPL<_T>* GetLayers() const;
 #ifdef __CUDACC__
                 __device__ __forceinline MLPL<_T>* GetLayers() const;
 #endif
@@ -133,9 +134,10 @@ __host__ __device__ __forceinline BrendanCUDA::AI::activationFunction_t<_T> Bren
     return actnFunc;
 }
 template <typename _T>
-__host__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T>* BrendanCUDA::AI::MLP::MLP<_T>::GetLayers(bool CopyToHost) const {
+template <bool _CopyToHost>
+__host__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T>* BrendanCUDA::AI::MLP::MLP<_T>::GetLayers() const {
     MLPL<_T>* p;
-    if (CopyToHost) {
+    if constexpr (_CopyToHost) {
         p = new MLPL<_T>[len];
         ThrowIfBad(cudaMemcpy(p, lyrs, sizeof(MLPL<_T>) * len, cudaMemcpyDeviceToHost));
     }
