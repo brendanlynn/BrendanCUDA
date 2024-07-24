@@ -14,13 +14,8 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline DField3(uint32_3 Dimensions);
             __host__ __device__ __forceinline DField3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ);
 
-#ifdef __CUDACC__
-            __device__ __forceinline DField3(uint32_3 Dimensions, _T* All);
-            __device__ __forceinline DField3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All);
-#endif
-
-            __host__ __forceinline DField3(uint32_3 Dimensions, _T* All, bool CopyFromHost);
-            __host__ __forceinline DField3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All, bool CopyFromHost);
+            __host__ __device__ __forceinline DField3(uint32_3 Dimensions, _T* All);
+            __host__ __device__ __forceinline DField3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All);
 
             __host__ __device__ __forceinline uint32_t LengthX() const;
             __host__ __device__ __forceinline uint32_t LengthY() const;
@@ -36,47 +31,20 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline Field3<_T> FBack() const;
             __host__ __device__ __forceinline void Reverse();
 
-            __host__ __forceinline void CopyAllIn(_T* All, bool CopyFromHost);
-#ifdef __CUDACC__
-            __device__ __forceinline void CopyAllIn(_T* All);
-#endif
-            __host__ __forceinline void CopyAllOut(_T* All, bool CopyToHost) const;
-#ifdef __CUDACC__
-            __device__ __forceinline void CopyAllOut(_T* All) const;
-#endif
-            __host__ __forceinline void CopyValueIn(uint64_t Index, _T* Value, bool CopyFromHost);
-#ifdef __CUDACC__
-            __device__ __forceinline void CopyValueIn(uint64_t Index, _T* Value);
-#endif
-            __host__ __forceinline void CopyValueIn(uint32_3 Coordinates, _T* Value, bool CopyFromHost);
-#ifdef __CUDACC__
-            __device__ __forceinline void CopyValueIn(uint32_3 Coordinates, _T* Value);
-#endif
-            __host__ __forceinline void CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value, bool CopyFromHost);
-#ifdef __CUDACC__
-            __device__ __forceinline void CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value);
-#endif
-            __host__ __forceinline void CopyValueOut(uint64_t Index, _T* Value, bool CopyToHost) const;
-#ifdef __CUDACC__
-            __device__ __forceinline void CopyValueOut(uint64_t Index, _T* Value) const;
-#endif
-            __host__ __forceinline void CopyValueOut(uint32_3 Coordinates, _T* Value, bool CopyToHost) const;
-#ifdef __CUDACC__
-            __device__ __forceinline void CopyValueOut(uint32_3 Coordinates, _T* Value) const;
-#endif
-            __host__ __forceinline void CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value, bool CopyToHost) const;
-#ifdef __CUDACC__
-            __device__ __forceinline void CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) const;
-#endif
+            __host__ __device__ __forceinline void CopyAllIn(_T* All);
+            __host__ __device__ __forceinline void CopyAllOut(_T* All) const;
+            __host__ __device__ __forceinline void CopyValueIn(uint64_t Index, _T* Value);
+            __host__ __device__ __forceinline void CopyValueIn(uint32_3 Coordinates, _T* Value);
+            __host__ __device__ __forceinline void CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value);
+            __host__ __device__ __forceinline void CopyValueOut(uint64_t Index, _T* Value) const;
+            __host__ __device__ __forceinline void CopyValueOut(uint32_3 Coordinates, _T* Value) const;
+            __host__ __device__ __forceinline void CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) const;
 
             __host__ __forceinline _T* GetAll(bool CopyToHost) const;
 #ifdef __CUDACC__
             __device__ __forceinline _T* GetAll() const;
 #endif
-            __host__ __forceinline void SetAll(_T* All, bool CopyFromHost);
-#ifdef __CUDACC__
-            __device__ __forceinline void SetAll(_T* All);
-#endif
+            __host__ __device__ __forceinline void SetAll(_T* All);
 
             __host__ __device__ __forceinline _T GetValueAt(uint64_t Index) const;
             __host__ __device__ __forceinline _T GetValueAt(uint32_3 Coordinates) const;
@@ -131,23 +99,13 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::DField3<_T>::DField3(uint
 #endif
     }
 }
-#ifdef __CUDACC__
 template <typename _T>
-__device__ __forceinline BrendanCUDA::Fields::DField3<_T>::DField3(uint32_3 Dimensions, _T* All)
+__host__ __device__ __forceinline BrendanCUDA::Fields::DField3<_T>::DField3(uint32_3 Dimensions, _T* All)
     : DField3(Dimensions.x, Dimensions.y, Dimensions.z, All) { }
 template <typename _T>
-__device__ __forceinline BrendanCUDA::Fields::DField3<_T>::DField3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All)
+__host__ __device__ __forceinline BrendanCUDA::Fields::DField3<_T>::DField3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All)
     : DField3(LengthX, LengthY, LengthZ) {
     CopyAllIn(All);
-}
-#endif
-template <typename _T>
-__host__ __forceinline BrendanCUDA::Fields::DField3<_T>::DField3(uint32_3 Dimensions, _T* All, bool CopyFromHost)
-    : DField3(Dimensions.x, Dimensions.y, Dimensions.z, All, CopyFromHost) { }
-template <typename _T>
-__host__ __forceinline BrendanCUDA::Fields::DField3<_T>::DField3(uint32_t LengthX, uint32_t LengthY, uint32_t LengthZ, _T* All, bool CopyFromHost)
-    : DField3(LengthX, LengthY, LengthZ) {
-    CopyAllIn(All, CopyFromHost);
 }
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::Dispose() {
@@ -214,85 +172,37 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::FillWit
     FBack().FillWith(Value);
 }
 template <typename _T>
-__host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyAllIn(_T* All, bool CopyFromHost) {
-    FBack().CopyAllIn(All, CopyFromHost);
-}
-#ifdef __CUDACC__
-template <typename _T>
-__device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyAllIn(_T* All) {
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyAllIn(_T* All) {
     FBack().CopyAllIn(All);
 }
-#endif
 template <typename _T>
-__host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyAllOut(_T* All, bool CopyToHost) const {
-    FFront().CopyAllOut(All, CopyToHost);
-}
-#ifdef __CUDACC__
-template <typename _T>
-__device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyAllOut(_T* All) const {
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyAllOut(_T* All) const {
     FFront().CopyAllOut(All);
 }
-#endif
 template <typename _T>
-__host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueIn(uint64_t Index, _T* Value, bool CopyFromHost) {
-    FBack().CopyValueIn(Index, Value, CopyFromHost);
-}
-#ifdef __CUDACC__
-template <typename _T>
-__device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueIn(uint64_t Index, _T* Value) {
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueIn(uint64_t Index, _T* Value) {
     FBack().CopyValueIn(Index, Value);
 }
-#endif
 template <typename _T>
-__host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueIn(uint32_3 Coordinates, _T* Value, bool CopyFromHost) {
-    FBack().CopyValueIn(Coordinates, Value, CopyFromHost);
-}
-#ifdef __CUDACC__
-template <typename _T>
-__device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueIn(uint32_3 Coordinates, _T* Value) {
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueIn(uint32_3 Coordinates, _T* Value) {
     FBack().CopyValueIn(Coordinates, Value);
 }
-#endif
 template <typename _T>
-__host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value, bool CopyFromHost) {
-    FBack().CopyValueIn(X, Y, Z, Value, CopyFromHost);
-}
-#ifdef __CUDACC__
-template <typename _T>
-__device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) {
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueIn(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) {
     FBack().CopyValueIn(X, Y, Z, Value);
 }
-#endif
 template <typename _T>
-__host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueOut(uint64_t Index, _T* Value, bool CopyToHost) const {
-    FFront().CopyValueOut(Index, Value, CopyToHost);
-}
-#ifdef __CUDACC__
-template <typename _T>
-__device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueOut(uint64_t Index, _T* Value) const {
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueOut(uint64_t Index, _T* Value) const {
     FFront().CopyValueOut(Index, Value);
 }
-#endif
 template <typename _T>
-__host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueOut(uint32_3 Coordinates, _T* Value, bool CopyToHost) const {
-    FFront().CopyValueOut(Coordinates, Value, CopyToHost);
-}
-#ifdef __CUDACC__
-template <typename _T>
-__device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueOut(uint32_3 Coordinates, _T* Value) const {
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueOut(uint32_3 Coordinates, _T* Value) const {
     FFront().CopyValueOut(Coordinates, Value);
 }
-#endif
 template <typename _T>
-__host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value, bool CopyToHost) const {
-    FFront().CopyValueOut(X, Y, Z, Value, CopyToHost);
-}
-#ifdef __CUDACC__
-template <typename _T>
-__device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) const {
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) const {
     FFront().CopyValueOut(X, Y, Z, Value);
 }
-#endif
 template <typename _T>
 __host__ __forceinline _T* BrendanCUDA::Fields::DField3<_T>::GetAll(bool CopyToHost) const {
     return FFront().GetAll(CopyToHost);
@@ -304,15 +214,9 @@ __device__ __forceinline _T* BrendanCUDA::Fields::DField3<_T>::GetAll() const {
 }
 #endif
 template <typename _T>
-__host__ __forceinline void BrendanCUDA::Fields::DField3<_T>::SetAll(_T* All, bool CopyFromHost) {
-    FBack().SetAll(All, CopyFromHost);
-}
-#ifdef __CUDACC__
-template <typename _T>
-__device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::SetAll(_T* All) {
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::SetAll(_T* All) {
     FBack().SetAll(All);
 }
-#endif
 template <typename _T>
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField3<_T>::GetValueAt(uint64_t Index) const {
     return FFront().GetValueAt(Index);
