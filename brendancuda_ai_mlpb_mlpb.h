@@ -101,7 +101,7 @@ __host__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::CopyOutLayers() const -
 }
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::CopyOutLayers(MLPBLW* Layers) const {
 #ifdef __CUDA_ARCH__
-    deviceMemcpy(Layers, layres, sizeof(MLPBLW) * layerCount);
+    deviceMemcpy(Layers, layers, sizeof(MLPBLW) * layerCount);
 #else
     ThrowIfBad(cudaMemcpy(Layers, layers, sizeof(MLPBLW) * layerCount, cudaMemcpyDefault));
 #endif
