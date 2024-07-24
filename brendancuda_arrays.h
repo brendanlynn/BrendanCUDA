@@ -24,6 +24,7 @@ namespace BrendanCUDA {
     struct ArrayV final {
         _T* ptr;
         size_t size;
+        __host__ __device__ inline ArrayV();
         __host__ __device__ inline ArrayV(_T* Pointer, size_t Size);
         __host__ __device__ inline ArrayV(size_t Size);
         __host__ __device__ inline _T& operator[](size_t Index);
@@ -85,6 +86,12 @@ __host__ __device__ inline BrendanCUDA::ArrayF<_T, _Size>::operator BrendanCUDA:
 template <typename _T, size_t _Size>
 __host__ __device__ inline BrendanCUDA::Span<_T> BrendanCUDA::ArrayF<_T, _Size>::Split(size_t Start, size_t NewSize) const {
     return Span<_T>((_T*)this + Start, NewSize);
+}
+
+template <typename _T>
+__host__ __device__ inline BrendanCUDA::ArrayV<_T>::ArrayV() {
+    ptr = 0;
+    size = 0;
 }
 
 template <typename _T>
