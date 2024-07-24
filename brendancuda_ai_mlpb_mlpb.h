@@ -24,17 +24,11 @@ namespace BrendanCUDA {
 
                 template <bool _CopyToHost>
                 __host__ __forceinline MLPBLW* CopyOutLayers() const;
-                template <bool _CopyToHost>
-                __host__ __forceinline void CopyOutLayers(MLPBLW* Layers) const;
+                __host__ __device__ __forceinline void CopyOutLayers(MLPBLW* Layers) const;
 #ifdef __CUDACC__
                 __device__ __forceinline MLPBLW* CopyOutLayers() const;
-                __device__ __forceinline void CopyOutLayers(MLPBLW* Layers) const;
 #endif
-                template <bool _CopyFromHost>
-                __host__ __forceinline void CopyInLayers(MLPBLW* Layers);
-#ifdef __CUDACC__
-                __device__ __forceinline void CopyInLayers(MLPBLW* Layers);
-#endif
+                __host__ __device__ __forceinline void CopyInLayers(MLPBLW* Layers);
 
                 __host__ __device__ __forceinline MLPBLW GetLayer(size_t Index) const;
                 __host__ __device__ __forceinline void SetLayer(size_t Index, MLPBLW Layer);
@@ -95,7 +89,7 @@ __host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::Dispose() {
 template <bool _CopyToHost>
 __host__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::CopyOutLayers() const -> MLPBLW* {
     MLPBLW* p;
-    if (_CopyToHost) {
+    if constexpr (_CopyToHost) {
         p = new MLPBLW[layerCount];
         ThrowIfBad(cudaMemcpy(p, layers, sizeof(MLPBLW) * layerCount, cudaMemcpyDeviceToHost));
     }
@@ -105,21 +99,26 @@ __host__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::CopyOutLayers() const -
     }
     return p;
 }
-template <bool _CopyToHost>
-__host__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::CopyOutLayers(MLPBLW* Layers) const {
-    ThrowIfBad(cudaMemcpy(Layers, layers, sizeof(MLPBLW) * layerCount, _CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice));
+__host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::CopyOutLayers(MLPBLW* Layers) const {
+#ifdef __CUDA_ARCH__
+    deviceMemcpy(Layers, layres, sizeof(MLPBLW) * layerCount);
+#else
+    ThrowIfBad(cudaMemcpy(Layers, layers, sizeof(MLPBLW) * layerCount, cudaMemcpyDefault));
+#endif
 }
+#ifdef __CUDACC__
 __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::CopyOutLayers() const -> MLPBLW* {
     MLPBLW* p = new MLPBLW[layerCount];
     deviceMemcpy(p, layers, sizeof(MLPBLW) * layerCount);
     return p;
 }
-template <bool _CopyFromHost>
-__host__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::CopyInLayers(MLPBLW* Layers) {
-    ThrowIfBad(cudaMemcpy(layers, Layers, sizeof(MLPBLW) * layerCount, _CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice));
-}
-__device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::CopyInLayers(MLPBLW* Layers) {
+#endif
+__host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPB::CopyInLayers(MLPBLW* Layers) {
+#ifdef __CUDA_ARCH__
     deviceMemcpy(layers, Layers, sizeof(MLPBLW) * layerCount);
+#else
+    ThrowIfBad(cudaMemcpy(layers, Layers, sizeof(MLPBLW) * layerCount, cudaMemcpyDefault));
+#endif
 }
 
 __host__ __device__ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::GetLayer(size_t Index) const -> MLPBLW {
