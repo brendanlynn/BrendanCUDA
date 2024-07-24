@@ -91,6 +91,9 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline uint32_3 IndexToCoordinates(uint64_t Index) const;
 
             __host__ __device__ __forceinline void FillWith(_T Value);
+
+            __host__ __device__ __forceinline void CopyBlockIn(_T* Input, uint32_3 InputDimensions, uint32_3 RangeDimensions, uint32_3 RangeInInputsCoordinates, uint32_3 RangeInOutputsCoordinates);
+            __host__ __device__ __forceinline void CopyBlockOut(_T* Output, uint32_3 OutputDimensions, uint32_3 RangeDimensions, uint32_3 RangeInInputsCoordinates, uint32_3 RangeInOutputsCoordinates);
         private:
             uint32_t lengthX;
             uint32_t lengthY;
@@ -333,4 +336,12 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::SetValu
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::SetValueAt(uint32_t X, uint32_t Y, uint32_t Z, _T Value) {
     FBack().SetValueAt(X, Y, Z, Value);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyBlockIn(_T* Input, uint32_3 InputDimensions, uint32_3 RangeDimensions, uint32_3 RangeInInputsCoordinates, uint32_3 RangeInOutputsCoordinates) {
+    FBack().CopyBlockIn(Input, InputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::Fields::DField3<_T>::CopyBlockOut(_T* Output, uint32_3 OutputDimensions, uint32_3 RangeDimensions, uint32_3 RangeInInputsCoordinates, uint32_3 RangeInOutputsCoordinates) {
+    FFront().CopyBlockOut(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
