@@ -50,7 +50,8 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline void CopyValueOut(uint32_3 Coordinates, _T* Value) const;
             __host__ __device__ __forceinline void CopyValueOut(uint32_t X, uint32_t Y, uint32_t Z, _T* Value) const;
 
-            __host__ __forceinline _T* GetAll(bool CopyToHost) const;
+            template <bool _CopyToHost>
+            __host__ __forceinline _T* GetAll() const;
 #ifdef __CUDACC__
             __device__ __forceinline _T* GetAll() const;
 #endif
@@ -217,15 +218,16 @@ __host__ __forceinline void BrendanCUDA::Fields::Field3<_T>::CopyValueOut(uint32
 #endif
 }
 template <typename _T>
-__host__ __forceinline _T* BrendanCUDA::Fields::Field3<_T>::GetAll(bool CopyToHost) const {
+template <bool _CopyToHost>
+__host__ __forceinline _T* BrendanCUDA::Fields::Field3<_T>::GetAll() const {
     _T* a;
-    if (CopyToHost) {
+    if constexpr (_CopyToHost) {
         a = new _T[lengthX * lengthY * lengthZ];
     }
     else {
         ThrowIfBad(cudaMalloc(&a, SizeOnGPU()));
     }
-    CopyAllOut(a, CopyToHost);
+    CopyAllOut(a);
     return a;
 }
 #ifdef __CUDACC__

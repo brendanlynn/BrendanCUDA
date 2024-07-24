@@ -39,7 +39,8 @@ namespace BrendanCUDA {
             __host__ __forceinline void CopyValueOut(uint32_2 Coordinates, _T* Value) const;
             __host__ __forceinline void CopyValueOut(uint32_t X, uint32_t Y, _T* Value) const;
 
-            __host__ __forceinline _T* GetAll(bool CopyToHost) const;
+            template <bool _CopyToHost>
+            __host__ __forceinline _T* GetAll() const;
 #ifdef __CUDACC__
             __device__ __forceinline _T* GetAll() const;
 #endif
@@ -196,8 +197,9 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::DField2<_T>::CopyVal
     FFront().CopyValueOut(X, Y, Value);
 }
 template <typename _T>
-__host__ __forceinline _T* BrendanCUDA::Fields::DField2<_T>::GetAll(bool CopyToHost) const {
-    return FFront().GetAll(CopyToHost);
+template <bool _CopyToHost>
+__host__ __forceinline _T* BrendanCUDA::Fields::DField2<_T>::GetAll() const {
+    return FFront().GetAll<_CopyToHost>();
 }
 #ifdef __CUDACC__
 template <typename _T>
