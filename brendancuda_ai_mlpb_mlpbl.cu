@@ -203,7 +203,7 @@ __global__ void applyTargetFlipsOnArray_kernel(uint8_t* arr, uint32_t flipProb, 
     v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
 }
 
-__host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
+__host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
 #ifdef __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint64_t& v(arr[i]);
@@ -222,7 +222,7 @@ __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnA
     applyTargetFlipsOnArray_kernel << <sz, 1 >> > (arr, flipProb, RNG());
 #endif
 }
-__host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
+__host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
 #ifdef __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint32_t& v(arr[i]);
@@ -241,7 +241,7 @@ __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnA
     applyTargetFlipsOnArray_kernel << <sz, 1 >> > (arr, flipProb, RNG());
 #endif
 }
-__host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
+__host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
 #ifdef __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint16_t& v(arr[i]);
@@ -260,7 +260,7 @@ __host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnA
     applyTargetFlipsOnArray_kernel << <sz, 1 >> > (arr, flipProb, RNG());
 #endif
 }
-__host__ __device__ __forceinline void BrendanCUDA::details::applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
+__host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
 #ifdef __CUDA_ARCH__
     for (size_t i = 0; i < sz; ++i) {
         uint8_t& v(arr[i]);
