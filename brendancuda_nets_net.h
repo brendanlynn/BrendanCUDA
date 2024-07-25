@@ -2,6 +2,8 @@
 
 #include <thrust/device_vector.h>
 #include <ostream>
+#include <cuda_runtime.h>
+#include "brendancuda_errorhelp.h"
 
 namespace BrendanCUDA {
     namespace Nets {
@@ -24,25 +26,30 @@ namespace BrendanCUDA {
             size_t outputCount;
 
             //Constructs a BrendanCUDA::Nets::NetNode object.
-            __host__ __device__ NetNode();
+            __host__ __device__ __forceinline NetNode();
 
             //Disposes of a BrendanCUDA::Nets::NetNode object.
-            void Dispose(dataDestructor_t DataDestructor) const;
+            __forceinline void Dispose(dataDestructor_t DataDestructor) const;
         };
         //A directed graph.
         class Net final {
         public:
             //Creates a BrendanCUDA::Nets::Net object.
-            Net();
+            __forceinline Net();
             //Creates a BrendanCUDA::Nets::Net object, using Data as its vector of nodes without copying it.
-            Net(thrust::device_vector<NetNode>& Data);
+            __forceinline Net(thrust::device_vector<NetNode>& Data);
             //Disposes of a BrendanCUDA::Nets::Net object.
-            void Dispose(dataDestructor_t DataDestructor);
+            __forceinline void Dispose(dataDestructor_t DataDestructor);
             //Returns the vector of nodes, for external manipulation at the user's risk.
-            thrust::device_vector<NetNode>& DataVec() const;
+            __forceinline thrust::device_vector<NetNode>& DataVec();
+            //Returns the vector of nodes, for external manipulation at the user's risk.
+            __forceinline const thrust::device_vector<NetNode>& DataVec() const;
             //Returns a pointer to the first node in the vector of nodes, for external manipulation at the user's risk.
-            thrust::device_ptr<NetNode> DataPtr() const;
-            thrust::device_reference<NetNode> operator[](size_t i) const;
+            __forceinline thrust::device_ptr<NetNode> DataPtr();
+            //Returns a pointer to the first node in the vector of nodes, for external manipulation at the user's risk.
+            __forceinline thrust::device_ptr<const NetNode> DataPtr() const;
+            __forceinline thrust::device_reference<NetNode> operator[](size_t i);
+            __forceinline thrust::device_reference<const NetNode> operator[](size_t i) const;
             //Prints a list of nodes, their identifiers, and their inputs and outputs to the Output stream. IndentPre is the amount of spaces (not indents) before the left of the printout, and IndentSize is the amount of spaces in each indent afterward.
             void PrintTo(std::ostream& Output, size_t IndentPre = 0, size_t IndentSize = 4) const;
             //Makes a deep-copy of the BrendanCUDA::Nets::Net object.
@@ -66,4 +73,62 @@ namespace BrendanCUDA {
             thrust::device_vector<NetNode>& nodes;
         };
     }
+}
+
+__host__ __device__ __forceinline BrendanCUDA::Nets::NetNode::NetNode() {
+    data = 0;
+    inputs = 0;
+    inputCount = 0;
+    outputs = 0;
+    outputCount = 0;
+}
+
+__forceinline void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t DataDestructor) const {
+    if (DataDestructor) {
+        DataDestructor(*this);
+    }
+#ifdef __CUDA_ARCH__
+    delete[] inputs;
+    delete[] outputs;
+#else
+    ThrowIfBad(cudaFree(inputs));
+    ThrowIfBad(cudaFree(outputs));
+#endif
+}
+
+__forceinline BrendanCUDA::Nets::Net::Net()
+    : nodes(*(new thrust::device_vector<NetNode>())) {}
+
+__forceinline BrendanCUDA::Nets::Net::Net(thrust::device_vector<NetNode>& Data)
+    : nodes(Data) {}
+
+__forceinline void BrendanCUDA::Nets::Net::Dispose(dataDestructor_t DataDestructor) {
+    for (size_t i = 0; i < nodes.size(); ++i) {
+        ((NetNode)nodes[i]).Dispose(DataDestructor);
+    }
+    delete (&nodes);
+}
+
+__forceinline thrust::device_vector<BrendanCUDA::Nets::NetNode>& BrendanCUDA::Nets::Net::DataVec() {
+    return nodes;
+}
+
+__forceinline const thrust::device_vector<BrendanCUDA::Nets::NetNode>& BrendanCUDA::Nets::Net::DataVec() const {
+    return nodes;
+}
+
+__forceinline thrust::device_ptr<BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::DataPtr() {
+    return nodes.data();
+}
+
+__forceinline thrust::device_ptr<const BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::DataPtr() const {
+    return nodes.data();
+}
+
+__forceinline thrust::device_reference<BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::operator[](size_t i) {
+    return nodes[i];
+}
+
+__forceinline thrust::device_reference<const BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::operator[](size_t i) const {
+    return nodes[i];
 }

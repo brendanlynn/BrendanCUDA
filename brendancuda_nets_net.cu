@@ -6,51 +6,6 @@
 #include <cuda_runtime.h>
 #include <string>
 
-__host__ __device__ BrendanCUDA::Nets::NetNode::NetNode() {
-    data = 0;
-    inputs = 0;
-    inputCount = 0;
-    outputs = 0;
-    outputCount = 0;
-}
-
-void BrendanCUDA::Nets::NetNode::Dispose(dataDestructor_t DataDestructor) const {
-    if (DataDestructor) {
-        DataDestructor(*this);
-    }
-#ifdef __CUDA_ARCH__
-    delete[] inputs;
-    delete[] outputs;
-#else
-    ThrowIfBad(cudaFree(inputs));
-    ThrowIfBad(cudaFree(outputs));
-#endif
-}
-
-BrendanCUDA::Nets::Net::Net()
-    : nodes(*(new thrust::device_vector<NetNode>())) {}
-
-BrendanCUDA::Nets::Net::Net(thrust::device_vector<NetNode>& Data)
-    : nodes(Data) {}
-
-void BrendanCUDA::Nets::Net::Dispose(dataDestructor_t DataDestructor) {
-    for (size_t i = 0; i < nodes.size(); ++i) {
-        ((NetNode)nodes[i]).Dispose(DataDestructor);
-    }
-    delete (&nodes);
-}
-
-thrust::device_vector<BrendanCUDA::Nets::NetNode>& BrendanCUDA::Nets::Net::DataVec() const {
-    return nodes;
-}
-thrust::device_ptr<BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::DataPtr() const {
-    return nodes.data();
-}
-
-thrust::device_reference<BrendanCUDA::Nets::NetNode> BrendanCUDA::Nets::Net::operator[](size_t i) const {
-    return nodes[i];
-}
-
 __global__ void net_addConnection_checkForPreexistence(BrendanCUDA::Nets::NetNode** arr, BrendanCUDA::Nets::NetNode* v, bool* opt) {
     if (arr[blockIdx.x] == v) {
         *opt = true;
