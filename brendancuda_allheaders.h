@@ -26,6 +26,7 @@
 #include "brendancuda_rand_anyrng.h"
 #include "brendancuda_rand_bits.h"
 #include "brendancuda_rand_randomizer.h"
+#include "brendancuda_rand_sseed.h"
 #include "brendancuda_arrays.h"
 #include "brendancuda_binary_basic.h"
 #include "brendancuda_crossassigns.h"
