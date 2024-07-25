@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cmath>
 #include <cuda_runtime.h>
+#include <concepts>
 
 namespace BrendanCUDA {
     namespace Math {
