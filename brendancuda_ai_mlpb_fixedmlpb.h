@@ -43,6 +43,9 @@ namespace BrendanCUDA {
         namespace MLPB {
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
             struct FixedMLPBL final {
+            private:
+                using this_t = FixedMLPBL<_TInput, _TOutput>;
+            public:
                 _TInput weights[details::BitCount<_TOutput>];
                 _TOutput bias;
 
@@ -56,13 +59,16 @@ namespace BrendanCUDA {
 
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
-                static FixedMLPBL<_TInput, _TOutput> Deserialize(const void*& Data);
-                static void Deserialize(const void*& Data, FixedMLPBL<_TInput, _TOutput>& Value);
+                static this_t Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, void* ObjMem);
             };
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral... _LayerCounts>
             struct FixedMLPB;
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
             struct FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> final {
+            private:
+                using this_t = FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>;
+            public:
                 template <size_t _Index>
                 using layerType_t = details::mlpbLayerType_t<_Index, _TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>;
 
@@ -86,11 +92,14 @@ namespace BrendanCUDA {
 
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
-                static FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> Deserialize(const void*& Data);
-                static void Deserialize(const void*& Data, FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>& Value);
+                static this_t Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, void* ObjMem);
             };
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
             struct FixedMLPB<_TInput, _TOutput1> final {
+            private:
+                using this_t = FixedMLPB<_TInput, _TOutput1>;
+            public:
                 template <size_t _Index>
                 using layerType_t = details::mlpbLayerType_t<_Index, _TInput, _TOutput1>;
 
@@ -113,8 +122,8 @@ namespace BrendanCUDA {
 
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
-                static FixedMLPB<_TInput, _TOutput1> Deserialize(const void*& Data);
-                static void Deserialize(const void*& Data, FixedMLPB<_TInput, _TOutput1>& Value);
+                static this_t Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, void* ObjMem);
             };
         }
     }
@@ -173,22 +182,27 @@ __host__ __device__ uint64_t BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 size_t BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::SerializedSize() const {
-    return sizeof(FixedMLPBL<_TInput, _TOutput>);
+    return sizeof(this_t);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::Serialize(void*& Data) const {
-    BSerializer::SerializeRaw(Data, *this);
+    BSerializer::SerializeArray(Data, weights, details::BitCount<_TOutput>);
+    BSerializer::Serialize(Data, bias);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::Deserialize(const void*& Data) {
-    return BSerializer::DeserializeRaw<FixedMLPBL<_TInput, _TOutput>>(Data);
+    uint8_t bytes[sizeof(this_t)];
+    Deserialize(Data, &bytes);
+    return *(this_t*)&bytes;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::Deserialize(const void*& Data, FixedMLPBL<_TInput, _TOutput>& Value) {
-    BSerializer::DeserializeRaw(Data, Value);
+void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::Deserialize(const void*& Data, void* ObjMem) {
+    this_t& obj = *(this_t*)ObjMem;
+    BSerializer::DeserializeArray(Data, obj.weights, details::BitCount<_TOutput>);
+    BSerializer::Deserialize(Data, &obj.bias);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
@@ -294,22 +308,27 @@ constexpr size_t BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2,
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 size_t BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::SerializedSize() const {
-    return sizeof(FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>);
+    return sizeof(this_t);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Serialize(void*& Data) const {
-    BSerializer::SerializeRaw(Data, *this);
+    layer.Serialize(Data);
+    nextLayers.Serialize(Data);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Deserialize(const void*& Data) {
-    return BSerializer::DeserializeRaw<FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>>(Data);
+    uint8_t bytes[sizeof(this_t)];
+    Deserialize(Data, &bytes);
+    return *(this_t*)&bytes;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Deserialize(const void*& Data, FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>& Value) {
-    BSerializer::DeserializeRaw(Data, Value);
+void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Deserialize(const void*& Data, void* ObjMem) {
+    this_t& obj = &(this_t*)ObjMem;
+    BSerializer::Deserialize(Data, &obj.layer);
+    BSerializer::Deserialize(Data, &obj.nextLayers);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
@@ -319,20 +338,23 @@ constexpr size_t BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::LayerCoun
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 size_t BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::SerializedSize() const {
-    return sizeof(FixedMLPB<_TInput, _TOutput1>);
+    return sizeof(this_t);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::Serialize(void*& Data) const {
-    BSerializer::SerializeRaw(*this, Data);
+    layer.Serialize(Data);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1> BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::Deserialize(const void*& Data) {
-    return BSerializer::DeserializeRaw<FixedMLPB<_TInput, _TOutput1>>(Data);
+    uint8_t bytes[sizeof(this_t)];
+    Deserialize(Data, &bytes);
+    return *(this_t*)&bytes;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::Deserialize(const void*& Data, FixedMLPB<_TInput, _TOutput1>& Value) {
-    BSerializer::DeserializeRaw(Data, Value);
+void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::Deserialize(const void*& Data, void* ObjMem) {
+    this_t& obj = &(this_t*)ObjMem;
+    BSerializer::Deserialize(Data, &obj.layer);
 }
