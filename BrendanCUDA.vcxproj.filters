@@ -98,6 +98,9 @@
     <ClInclude Include="brendancuda_allheaders.h" />
     <ClInclude Include="brendancuda_allheaders.cuh" />
     <ClInclude Include="brendancuda_copyblock.h" />
+    <ClInclude Include="brendancuda_details_fillwith.h">
+      <Filter>details</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">
@@ -129,6 +132,9 @@
     </Filter>
     <Filter Include="Nets">
       <UniqueIdentifier>{9dfa7c44-b669-40fb-a640-c89bd8ab5e22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="details">
+      <UniqueIdentifier>{db0a6dd5-f5c5-4e01-9a19-ff30d81d34be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +176,9 @@
     </CudaCompile>
     <CudaCompile Include="brendancuda_ai_mlpb_mlpbl.cu">
       <Filter>AI\MLPB</Filter>
+    </CudaCompile>
+    <CudaCompile Include="brendancuda_details_fillwith.cu">
+      <Filter>details</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

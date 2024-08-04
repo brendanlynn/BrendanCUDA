@@ -10,17 +10,9 @@
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_cudaconstexpr.h"
 #include "brendancuda_copyblock.h"
+#include "brendancuda_details_fillwith.h"
 
 namespace BrendanCUDA {
-#ifndef DEFINED_BrendanCUDA__details__fillWithKernel
-#define DEFINED_BrendanCUDA__details__fillWithKernel
-    namespace details {
-        template <typename _T>
-        __global__ void fillWithKernel(_T* arr, _T Value) {
-            arr[blockIdx.x] = Value;
-        }
-    }
-#endif
     namespace Fields {
         template <typename _T>
         class Field3 final {
@@ -321,6 +313,10 @@ __host__ __device__ __forceinline _T* BrendanCUDA::Fields::Field3<_T>::Coordinat
 template <typename _T>
 __host__ __device__ __forceinline BrendanCUDA::uint32_3 BrendanCUDA::Fields::Field3<_T>::PointerToCoordinates(_T* Pointer) const {
     return IndexToCoordinates(PointerToIndex(Pointer));
+}
+template <typename _T>
+__host__ __device__ __forceinline void BrendanCUDA::Fields::Field3<_T>::FillWith(_T Value) {
+    BrendanCUDA::FillWith(cudaArray, lengthX * lengthY * lengthZ, Value);
 }
 template <typename _T>
 __host__ __device__ __forceinline std::pair<thrust::device_ptr<_T>, size_t> BrendanCUDA::Fields::Field3<_T>::Data() const {
