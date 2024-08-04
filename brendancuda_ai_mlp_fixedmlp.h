@@ -39,6 +39,9 @@ namespace BrendanCUDA {
         namespace MLP {
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
             struct FixedMLPL final {
+            private:
+                using this_t = FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>;
+            public:
                 static_assert(_InputCount, "_InputCount must be greater than 0.");
                 static_assert(_OutputCount, "_OutputCount must be greater than 0.");
 
@@ -53,12 +56,16 @@ namespace BrendanCUDA {
 
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
-                static FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount> Deserialize(const void*& Data);
+                static this_t Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, void* ObjMem)
             };
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
             struct FixedMLP;
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
             struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> final {
+            private:
+                using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
+            public:
                 template <size_t _Index>
                 using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
                 
@@ -82,11 +89,14 @@ namespace BrendanCUDA {
 
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
-                static FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> Deserialize(const void*& Data);
-                static void Deserialize(const void*& Data, FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>& Value);
+                static this_t Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, void* ObjMem);
             };
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
             struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> final {
+            private:
+                using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>;
+            public:
                 template <size_t _Index>
                 using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count>;
 
@@ -109,7 +119,8 @@ namespace BrendanCUDA {
 
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
-                static FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> Deserialize(const void*& Data);
+                static this_t Deserialize(const void*& Data);
+                static void Deserialize(const void*& Data, void* ObjMem);
             };
         }
     }
@@ -176,23 +187,27 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
 size_t BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::SerializedSize() const {
-    return sizeof(FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>);
+    return sizeof(this_t);
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
 void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Serialize(void*& Data) const {
-    constexpr size_t s = sizeof(FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>);
-    memcpy(Data, this, s);
-    Data = ((uint8_t*)Data) + s;
+    BSerializer::SerializeArray(Data, weights, _InputCount * _OutputCount);
+    BSerializer::SerializeArray(Data, bias, _OutputCount);
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount> BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Deserialize(const void*& Data) {
-    constexpr size_t s = sizeof(FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>);
-    FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount> mlp;
-    memcpy(&mlp, Data, s);
-    Data = ((uint8_t*)Data) + s;
-    return mlp;
+auto BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Deserialize(const void*& Data) -> this_t {
+    uint8_t bytes[sizeof(this_t)];
+    Deserialize(Data, &bytes);
+    return *(this_t*)&bytes;
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Deserialize(const void*& Data, void* ObjMem) {
+    this_t& obj = &(this_t*)ObjMem;
+    BSerializer::DeserializeArray(Data, weights, _InputCount * _OutputCount);
+    BSerializer::DeserializeArray(Data, bias, _OutputCount);
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
@@ -327,22 +342,26 @@ constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputC
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
 size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::SerializedSize() const {
-    return sizeof(FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>);
+    return sizeof(this_t);
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
 void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Serialize(void*& Data) const {
-    BSerializer::SerializeRaw(Data, *this);
+    layer.Serialize(Data);
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Deserialize(const void*& Data) {
-    return BSerializer::DeserializeRaw<FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>>(Data);
+auto BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Deserialize(const void*& Data) -> this_t {
+    uint8_t bytes[sizeof(this_t)];
+    Deserialize(Data, &bytes);
+    return *(this_t*)&bytes;
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Deserialize(const void*& Data, FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>& Value) {
-    BSerializer::DeserializeRaw<FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>>(Data, Value);
+void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Deserialize(const void*& Data, void* ObjMem) {
+    this_t& obj = &(this_t*)ObjMem;
+    BSerializer::Deserialize(Data, &obj.layer);
+    BSerializer::Deserialize(Data, &obj.nextLayers);
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
@@ -357,21 +376,23 @@ constexpr size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputC
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
 size_t BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::SerializedSize() const {
-    return sizeof(FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>);
+    return sizeof(this_t);
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
 void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Serialize(void*& Data) const {
-    constexpr size_t s = sizeof(FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>);
-    memcpy(Data, this, s);
-    Data = ((uint8_t*)Data) + s;
+    layer.Serialize(Data);
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
-BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Deserialize(const void*& Data) {
-    constexpr size_t s = sizeof(FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>);
-    FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> mlp;
-    memcpy(&mlp, Data, s);
-    Data = ((uint8_t*)Data) + s;
-    return mlp;
+auto BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Deserialize(const void*& Data) -> this_t {
+    uint8_t bytes[sizeof(this_t)];
+    Deserialize(Data, &bytes);
+    return *(this_t*)&bytes;
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Deserialize(const void*& Data, void* ObjMem) {
+    this_t& obj = &(this_t*)ObjMem;
+    BSerializer::Deserialize(Data, &obj.layer);
 }
