@@ -75,6 +75,11 @@ namespace BrendanCUDA {
 
             __host__ __device__ __forceinline void CopyBlockIn(_T* Input, uint32_2 InputDimensions, uint32_2 RangeDimensions, uint32_2 RangeInInputsCoordinates, uint32_2 RangeInOutputsCoordinates);
             __host__ __device__ __forceinline void CopyBlockOut(_T* Output, uint32_2 OutputDimensions, uint32_2 RangeDimensions, uint32_2 RangeInInputsCoordinates, uint32_2 RangeInOutputsCoordinates);
+
+            __forceinline size_t SerializedSize() const requires BSerializer::Serializable<_T>;
+            __forceinline void Serialize(void*& Data) const requires BSerializer::Serializable<_T>;
+            static __forceinline Field2<_T> Deserialize(const void*& Data) requires BSerializer::Serializable<_T>;
+            static __forceinline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T>;
         private:
             uint32_t lengthX;
             uint32_t lengthY;
@@ -322,4 +327,34 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::CopyBloc
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::Field2<_T>::CopyBlockOut(_T* Output, uint32_2 OutputDimensions, uint32_2 RangeDimensions, uint32_2 RangeInInputsCoordinates, uint32_2 RangeInOutputsCoordinates) {
     CopyBlock<_T, 2, true>(cudaArray, Output, Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+}
+template <typename _T>
+__forceinline size_t BrendanCUDA::Fields::Field2<_T>::SerializedSize() const requires BSerializer::Serializable<_T> {
+    size_t t = sizeof(uint32_t) << 1;
+    size_t l = lengthX * lengthY;
+    for (size_t i = 0; i < l; ++i)
+        t += BSerializer::SerializedSize(GetValueAt(i));
+    return t;
+}
+template <typename _T>
+__forceinline void BrendanCUDA::Fields::Field2<_T>::Serialize(void*& Data) const requires BSerializer::Serializable<_T> {
+    BSerializer::Serialize(lengthX);
+    BSerializer::Serialize(lengthY);
+    size_t l = lengthX * lengthY;
+    for (size_t i = 0; i < l; ++i)
+        BSerializer::Serialize(Data, GetValueAt(i));
+}
+template <typename _T>
+__forceinline auto BrendanCUDA::Fields::Field2<_T>::Deserialize(const void*& Data) -> Field2<_T> requires BSerializer::Serializable<_T> {
+    uint32_t lengthX = BSerializer::Deserialize<uint32_t>(Data);
+    uint32_t lengthY = BSerializer::Deserialize<uint32_t>(Data);
+    Field2<_T> field(lengthX, lengthY);
+    size_t l = lengthX * lengthY;
+    for (size_t i = 0; i < l; ++i)
+        field.SetValueAt(i, BSerializer::Deserialize<_T>(Data));
+    return field;
+}
+template <typename _T>
+__forceinline void BrendanCUDA::Fields::Field2<_T>::Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> {
+    new (Value) Field2<_T>(Deserialize(Data));
 }
