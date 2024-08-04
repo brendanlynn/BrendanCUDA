@@ -67,7 +67,7 @@ namespace BrendanCUDA {
                 __forceinline size_t SerializedSize() const;
                 __forceinline void Serialize(void*& Data) const;
                 static __forceinline MLPBL<_TInput, _TOutput> Deserialize(const void*& Data);
-                static __forceinline void Deserialize(const void*& Data, MLPBL<_TInput, _TOutput>& Value);
+                static __forceinline void Deserialize(const void*& Data, void* ObjMem);
             private:
                 _TInput* weights;
                 _TOutput* bias;
@@ -348,6 +348,6 @@ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::M
     }
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-__forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::Deserialize(const void*& Data, MLPBL<_TInput, _TOutput>& Value) {
-    Value = Deserialize(Data);
+__forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::Deserialize(const void*& Data, void* ObjMem) {
+    new (ObjMem) MLPBL(Deserialize(Data));
 }

@@ -30,7 +30,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static MLPBLW Deserialize(const void*& Data);
-                static __forceinline void Deserialize(const void*& Data, MLPBLW& Value);
+                static __forceinline void Deserialize(const void*& Data, void* ObjMem);
 
                 union {
                     mlpbl8T8_t d8t8;
@@ -153,6 +153,6 @@ __host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPBLW::MLPBLW(MLPBL<_T
         }
     }
 }
-__forceinline void BrendanCUDA::AI::MLPB::MLPBLW::Deserialize(const void*& Data, MLPBLW& Value) {
-    Value = Deserialize(Data);
+__forceinline void BrendanCUDA::AI::MLPB::MLPBLW::Deserialize(const void*& Data, void* ObjMem) {
+    new (ObjMem) MLPBLW(Deserialize(Data));
 }

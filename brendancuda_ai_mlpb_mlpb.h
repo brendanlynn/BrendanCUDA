@@ -49,7 +49,7 @@ namespace BrendanCUDA {
                 __forceinline size_t SerializedSize() const;
                 __forceinline void Serialize(void*& Data) const;
                 static __forceinline MLPB Deserialize(const void*& Data);
-                static __forceinline void Deserialize(const void*& Data, MLPB& Value);
+                static __forceinline void Deserialize(const void*& Data, void* Value);
             private:
                 MLPBLW* layers;
                 size_t layerCount;
@@ -252,9 +252,10 @@ __forceinline auto BrendanCUDA::AI::MLPB::MLPB::Deserialize(const void*& Data) -
     }
     return mlpb;
 }
-__forceinline void BrendanCUDA::AI::MLPB::MLPB::Deserialize(const void*& Data, MLPB& Value) {
-    Value = MLPB(BSerializer::Deserialize<size_t>(Data));
-    for (size_t i = 0; i < Value.layerCount; ++i) {
-        Value.SetLayer(i, MLPBLW::Deserialize(Data));
+__forceinline void BrendanCUDA::AI::MLPB::MLPB::Deserialize(const void*& Data, void* ObjMem) {
+    new (ObjMem) MLPB(BSerializer::Deserialize<size_t>(Data));
+    MLPB& obj = *(MLPB*)ObjMem;
+    for (size_t i = 0; i < obj.layerCount; ++i) {
+        obj.SetLayer(i, MLPBLW::Deserialize(Data));
     }
 }
