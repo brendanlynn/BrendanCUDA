@@ -23,6 +23,11 @@ namespace BrendanCUDA {
                 i_rng = RNG;
                 r_rng = details::RunRNGFunc<_TOutputType, _TRNG>;
             }
+            template <typename _TRNG>
+            __host__ __device__ AnyRNG(_TRNG& RNG) {
+                i_rng = &RNG;
+                r_rng = details::RunRNGFunc<_TOutputType, _TRNG>;
+            }
             __host__ __device__ _TOutputType operator()() {
                 return r_rng(i_rng);
             }
