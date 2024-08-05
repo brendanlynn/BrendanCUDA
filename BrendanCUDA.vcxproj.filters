@@ -168,12 +168,6 @@
     <CudaCompile Include="brendancuda_nets_makenet.cu">
       <Filter>Nets</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_fields_field3.cu">
-      <Filter>Fields</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_fields_field2.cu">
-      <Filter>Fields</Filter>
-    </CudaCompile>
     <CudaCompile Include="brendancuda_ai_mlpb_mlpbl.cu">
       <Filter>AI\MLPB</Filter>
     </CudaCompile>

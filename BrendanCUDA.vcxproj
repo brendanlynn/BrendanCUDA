@@ -149,8 +149,6 @@
     <CudaCompile Include="brendancuda_details_fillwith.cu" />
     <CudaCompile Include="brendancuda_errorhelp.cpp" />
     <CudaCompile Include="brendancuda_dcopy.cu" />
-    <CudaCompile Include="brendancuda_fields_field2.cu" />
-    <CudaCompile Include="brendancuda_fields_field3.cu" />
     <CudaCompile Include="brendancuda_nets_makenet.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu" />
     <CudaCompile Include="brendancuda_rand_bits.cu" />
