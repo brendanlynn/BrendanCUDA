@@ -1,4 +1,5 @@
 #include "brendancuda_ai_mlpb_mlpbl.h"
+#include <curand_kernel.h>
 
 __host__ __device__ __forceinline uint64_t applyTargetFlipsTo1s_getEdits(uint64_t Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t rn1, uint32_t rn2) {
     if (rn1 < FlipProb) {
@@ -153,54 +154,34 @@ __host__ __device__ __forceinline uint8_t applyTargetFlips(uint8_t Value, uint32
 __global__ void applyTargetFlipsOnArray_kernel(uint64_t* arr, uint32_t flipProb, uint64_t bs) {
     uint64_t& v(arr[blockIdx.x]);
 
-    uint64_t rn64_1 = BrendanCUDA::Random::HashI64(BrendanCUDA::Random::GetSeedOnKernel(bs));
-    uint64_t rn64_2 = BrendanCUDA::Random::HashI64(rn64_1 ^ 12210506935820558677);
+    curandState state;
+    curand_init(bs, blockIdx.x, 0, &state);
 
-    uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
-    uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
-    uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
-    uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
-
-    v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+    v = applyTargetFlips(v, flipProb, curand(&state), curand(&state), curand(&state), curand(&state));
 }
 __global__ void applyTargetFlipsOnArray_kernel(uint32_t* arr, uint32_t flipProb, uint64_t bs) {
     uint32_t& v(arr[blockIdx.x]);
 
-    uint64_t rn64_1 = BrendanCUDA::Random::HashI64(BrendanCUDA::Random::GetSeedOnKernel(bs));
-    uint64_t rn64_2 = BrendanCUDA::Random::HashI64(rn64_1 ^ 484654973014905267);
+    curandState state;
+    curand_init(bs, blockIdx.x, 0, &state);
 
-    uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
-    uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
-    uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
-    uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
-
-    v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+    v = applyTargetFlips(v, flipProb, curand(&state), curand(&state), curand(&state), curand(&state));
 }
 __global__ void applyTargetFlipsOnArray_kernel(uint16_t* arr, uint32_t flipProb, uint64_t bs) {
     uint16_t& v(arr[blockIdx.x]);
 
-    uint64_t rn64_1 = BrendanCUDA::Random::HashI64(BrendanCUDA::Random::GetSeedOnKernel(bs));
-    uint64_t rn64_2 = BrendanCUDA::Random::HashI64(rn64_1 ^ 3123193471197220784);
+    curandState state;
+    curand_init(bs, blockIdx.x, 0, &state);
 
-    uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
-    uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
-    uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
-    uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
-
-    v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+    v = applyTargetFlips(v, flipProb, curand(&state), curand(&state), curand(&state), curand(&state));
 }
 __global__ void applyTargetFlipsOnArray_kernel(uint8_t* arr, uint32_t flipProb, uint64_t bs) {
     uint8_t& v(arr[blockIdx.x]);
 
-    uint64_t rn64_1 = BrendanCUDA::Random::HashI64(BrendanCUDA::Random::GetSeedOnKernel(bs));
-    uint64_t rn64_2 = BrendanCUDA::Random::HashI64(rn64_1 ^ 11199430323554825400);
+    curandState state;
+    curand_init(bs, blockIdx.x, 0, &state);
 
-    uint32_t rn1 = ((uint32_t*)&rn64_1)[0];
-    uint32_t rn2 = ((uint32_t*)&rn64_1)[1];
-    uint32_t rn3 = ((uint32_t*)&rn64_2)[0];
-    uint32_t rn4 = ((uint32_t*)&rn64_2)[1];
-
-    v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
+    v = applyTargetFlips(v, flipProb, curand(&state), curand(&state), curand(&state), curand(&state));
 }
 
 __host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint64_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
@@ -219,7 +200,7 @@ __host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint64_t*
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
 #else
-    applyTargetFlipsOnArray_kernel << <sz, 1 >> > (arr, flipProb, RNG());
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, RNG());
 #endif
 }
 __host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint32_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
@@ -238,7 +219,7 @@ __host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint32_t*
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
 #else
-    applyTargetFlipsOnArray_kernel << <sz, 1 >> > (arr, flipProb, RNG());
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, RNG());
 #endif
 }
 __host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint16_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
@@ -257,7 +238,7 @@ __host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint16_t*
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
 #else
-    applyTargetFlipsOnArray_kernel << <sz, 1 >> > (arr, flipProb, RNG());
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, RNG());
 #endif
 }
 __host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint8_t* arr, size_t sz, uint64_t flipProb, BrendanCUDA::Random::AnyRNG<uint64_t> RNG) {
@@ -276,6 +257,6 @@ __host__ __device__ void BrendanCUDA::details::applyTargetFlipsOnArray(uint8_t* 
         v = applyTargetFlips(v, flipProb, rn1, rn2, rn3, rn4);
     }
 #else
-    applyTargetFlipsOnArray_kernel << <sz, 1 >> > (arr, flipProb, RNG());
+    applyTargetFlipsOnArray_kernel<<<sz, 1>>>(arr, flipProb, RNG());
 #endif
 }

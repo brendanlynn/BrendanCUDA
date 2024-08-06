@@ -1,7 +1,7 @@
 #pragma once
 
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
+#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
 #include "brendancuda_rand_bits.h"
 #include "brendancuda_rand_anyrng.h"
 #include <limits>
@@ -15,16 +15,16 @@ namespace BrendanCUDA {
 
         //The ReLU activation function, compatible with activationFunction_t.
         template <typename _T>
-        __host__ __device__ _T ReLU(_T Value);
+        __host__ __device__ constexpr _T ReLU(_T Value);
         //The Leaky ReLU activation function, compatible with activationFunction_t.
         template <typename _T, _T _Slope>
-        __host__ __device__ _T LeakyReLU(_T Value);
+        __host__ __device__ constexpr _T LeakyReLU(_T Value);
         //The ReLU activation function, not maximized, but clamped, and compatible with activationFunction_t.
         template <typename _T, _T _Lower, _T _Upper>
-        __host__ __device__ _T BoundReLU(_T Value);
+        __host__ __device__ constexpr _T BoundReLU(_T Value);
         //The Leaky ReLU activation function, not maximized, but clamped, and compatible with activationFunction_t.
         template <typename _T, _T _Slope, _T _Lower, _T _Upper>
-        __host__ __device__ _T LeakyBoundReLU(_T Value);
+        __host__ __device__ constexpr _T LeakyBoundReLU(_T Value);
         //The TanH activation function, compatible with activationFunction_t.
         template <typename _T>
         __host__ __device__ _T TanH(_T Value);
@@ -126,19 +126,32 @@ namespace BrendanCUDA {
     }
 }
 
+template <typename _T>
+__host__ __device__ constexpr _T BrendanCUDA::AI::ReLU(_T Value) {
+    return (Value < (_T)0.) ? (_T)0. : Value;
+}
 template <typename _T, _T _Slope>
-__host__ __device__ _T BrendanCUDA::AI::LeakyReLU(_T Value) {
+__host__ __device__ constexpr _T BrendanCUDA::AI::LeakyReLU(_T Value) {
     return (Value < (_T)0.) ? Value * _Slope : Value;
 }
 template <typename _T, _T _Lower, _T _Upper>
-__host__ __device__ _T BrendanCUDA::AI::BoundReLU(_T Value) {
+__host__ __device__ constexpr _T BrendanCUDA::AI::BoundReLU(_T Value) {
     if (Value < _Lower) return (_T)0.;
     if (Value > _Upper) return (_T)1.;
     return Value;
 }
 template <typename _T, _T _Slope, _T _Lower, _T _Upper>
-__host__ __device__ _T BrendanCUDA::AI::LeakyBoundReLU(_T Value) {
+__host__ __device__ constexpr _T BrendanCUDA::AI::LeakyBoundReLU(_T Value) {
     if (Value < _Lower) return Value * _Slope;
     if (Value > _Upper) return (_T)1. + (Value - _Upper) * _Slope;
     return Value;
+}
+template <typename _T>
+__host__ __device__ _T BrendanCUDA::AI::TanH(_T Value) {
+    return std::tanh(Value);
+}
+template <typename _T>
+__host__ __device__ _T BrendanCUDA::AI::Sigmoid(_T Value) {
+    Value = std::exp(Value);
+    return Value / ((_T)1. + Value);
 }

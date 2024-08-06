@@ -2,102 +2,74 @@
 #include "brendancuda_rand_bits.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_rand_drandom.cuh"
-#include "brendancuda_rand_sseed.h"
+#include <curand_kernel.h>
 
-using BrendanCUDA::Random::GetSeedOnKernel;
 using BrendanCUDA::Random::DeviceRandom;
 using BrendanCUDA::Random::Get64Bits;
 using BrendanCUDA::Random::AnyRNG;
 
-template <typename _T>
-__host__ __device__ _T BrendanCUDA::AI::ReLU(_T Value) {
-    return (Value < (_T)0.) ? (_T)0. : Value;
-}
-template <typename _T>
-__host__ __device__ _T BrendanCUDA::AI::TanH(_T Value) {
-    return std::tanh(Value);
-}
-template <typename _T>
-__host__ __device__ _T BrendanCUDA::AI::Sigmoid(_T Value) {
-    Value = std::exp(Value);
-    return Value / ((_T)1. + Value);
-}
-
-template float BrendanCUDA::AI::ReLU<float>(float);
-template double BrendanCUDA::AI::ReLU<double>(double);
-template float BrendanCUDA::AI::TanH<float>(float);
-template double BrendanCUDA::AI::TanH<double>(double);
-template float BrendanCUDA::AI::Sigmoid<float>(float);
-template double BrendanCUDA::AI::Sigmoid<double>(double);
-
 __global__ void randomizeArrayKernel(float* Array, float Scalar, uint64_t Seed) {
     float& p(Array[blockIdx.x]);
-    uint64_t ts = GetSeedOnKernel(Seed);
-    float rd = (float)ts / (float)18446744073709551615;
+    curandState state;
+    curand_init(Seed, blockIdx.x, 0, &state);
+    float rd = curand_uniform(&state);
     p += Scalar * (rd - 0.5f);
 }
 __global__ void randomizeArrayKernel(double* Array, double Scalar, uint64_t Seed) {
     double& p(Array[blockIdx.x]);
-    uint64_t ts = GetSeedOnKernel(Seed);
-    double rd = (double)ts / (double)18446744073709551615;
+    curandState state;
+    curand_init(Seed, blockIdx.x, 0, &state);
+    double rd = curand_uniform_double(&state);
     p += Scalar * (rd - 0.5);
 }
 __global__ void randomizeArrayKernel(float* Array, float Scalar, float LowerBound, float UpperBound, uint64_t Seed) {
     float& p(Array[blockIdx.x]);
-    uint64_t ts = GetSeedOnKernel(Seed);
-    float rd = (float)ts / (float)18446744073709551615;
+    curandState state;
+    curand_init(Seed, blockIdx.x, 0, &state);
+    float rd = curand_uniform(&state);
     float v = p + Scalar * (rd - 0.5f);
-    if (v < LowerBound) {
-        p = LowerBound;
-}
-    else if (v > UpperBound) {
-        p = UpperBound;
-    }
-    else {
-        p = v;
-    }
+    if (v < LowerBound) p = LowerBound;
+    else if (v > UpperBound) p = UpperBound;
+    else p = v;
 }
 __global__ void randomizeArrayKernel(double* Array, double Scalar, double LowerBound, double UpperBound, uint64_t Seed) {
     double& p(Array[blockIdx.x]);
-    uint64_t ts = GetSeedOnKernel(Seed);
-    double rd = (double)ts / (double)18446744073709551615;
+    curandState state;
+    curand_init(Seed, blockIdx.x, 0, &state);
+    double rd = curand_uniform_double(&state);
     double v = p + Scalar * (rd - 0.5);
-    if (v < LowerBound) {
-        p = LowerBound;
-    }
-    else if (v > UpperBound) {
-        p = UpperBound;
-    }
-    else {
-        p = v;
-    }
+    if (v < LowerBound) p = LowerBound;
+    else if (v > UpperBound) p = UpperBound;
+    else p = v;
 }
 __global__ void initRandomArrayKernel(float* Array, uint64_t Seed) {
     float& p(Array[blockIdx.x]);
-    uint64_t ts = GetSeedOnKernel(Seed);
-    p = (float)ts / 18446744073709551615.f;
+    curandState state;
+    curand_init(Seed, blockIdx.x, 0, &state);
+    p = curand_uniform(&state);
 }
 __global__ void initRandomArrayKernel(double* Array, uint64_t Seed) {
     double& p(Array[blockIdx.x]);
-    uint64_t ts = GetSeedOnKernel(Seed);
-    p = (double)ts / 18446744073709551615.f;
+    curandState state;
+    curand_init(Seed, blockIdx.x, 0, &state);
+    p = curand_uniform_double(&state);
 }
 __global__ void initRandomArrayKernel(uint64_t* Array, uint64_t Seed) {
-    Array[blockIdx.x] = GetSeedOnKernel(Seed);
+    curandState state;
+    curand_init(Seed, blockIdx.x, 0, &state);
+    Array[blockIdx.x] = ((uint64_t)curand(&state) << 32) | curand(&state);
 }
 __global__ void initRandomArrayKernel(float* Array, float LowerBound, float Difference, uint64_t Seed) {
-    constexpr float bs = 1.f / 18446744073709551615.f;
-
     float& p(Array[blockIdx.x]);
-    uint64_t ts = GetSeedOnKernel(Seed);
-    p = (float)ts * bs * Difference + LowerBound;
+    curandState state;
+    curand_init(Seed, blockIdx.x, 0, &state);
+    p = curand_uniform(&state) * Difference + LowerBound;
 }
 __global__ void initRandomArrayKernel(double* Array, double LowerBound, double Difference, uint64_t Seed) {
-    constexpr double bs = 1. / 18446744073709551615.;
-
     double& p(Array[blockIdx.x]);
-    uint64_t ts = GetSeedOnKernel(Seed);
-    p = (double)ts * bs * Difference + LowerBound;
+    curandState state;
+    curand_init(Seed, blockIdx.x, 0, &state);
+    p = curand_uniform_double(&state) * Difference + LowerBound;
 }
 __host__ __device__ void copyFloatsToInt32Func(float* Floats, uint32_t* Int32, float Split) {
     uint32_t m = 0;
@@ -713,12 +685,11 @@ __global__ void copyDoublesToInt64sKernel(double* Floats, uint64_t* Int64s, doub
     copyDoublesToInt64Func(&Floats[blockIdx.x << 5], &Int64s[blockIdx.x], Split);
 }
 __global__ void randomizeArrayKernel(uint64_t* Array, uint32_t ProbabilityOf1, uint64_t Seed) {
-    Seed = GetSeedOnKernel(Seed);
-    DeviceRandom dr(Seed);
+    DeviceRandom dr(Seed ^ blockIdx.x);
     Array[blockIdx.x] ^= Get64Bits(ProbabilityOf1, AnyRNG<uint64_t>(&dr));
 }
 __global__ void initRandomArrayKernel(uint64_t* Array, uint32_t ProbabilityOf1, uint64_t Seed) {
-    DeviceRandom dr(GetSeedOnKernel(Seed));
+    DeviceRandom dr(Seed ^ blockIdx.x);
     Array[blockIdx.x] = Get64Bits(ProbabilityOf1, AnyRNG<uint64_t>(&dr));
 }
 __host__ __device__ void BrendanCUDA::AI::RandomizeArray(Span<float> Array, float Scalar, AnyRNG<uint64_t> RNG) {

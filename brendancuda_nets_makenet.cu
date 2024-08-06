@@ -1,13 +1,11 @@
 #include "brendancuda_nets_makenet.h"
 #include "brendancuda_rand_drandom.cuh"
-#include "brendancuda_rand_sseed.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_points.h"
 #include <cuda_runtime.h>
 
 using BrendanCUDA::float_3;
 using BrendanCUDA::Random::DeviceRandom;
-using BrendanCUDA::Random::GetSeedOnKernel;
 using BrendanCUDA::CoordinatesToIndex;
 using BrendanCUDA::uint32_3;
 using BrendanCUDA::ThrowIfBad;
