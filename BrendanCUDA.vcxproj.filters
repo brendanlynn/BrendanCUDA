@@ -35,9 +35,6 @@
     <ClInclude Include="brendancuda_rand_drandom.cuh">
       <Filter>Random</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_rand_sseed.h">
-      <Filter>Random</Filter>
-    </ClInclude>
     <ClInclude Include="brendancuda_rand_bits.h">
       <Filter>Random</Filter>
     </ClInclude>
@@ -101,6 +98,7 @@
     <ClInclude Include="brendancuda_details_fillwith.h">
       <Filter>details</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_threadid.cuh" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">
@@ -154,9 +152,6 @@
       <Filter>Random</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_rand_drandom.cu">
-      <Filter>Random</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_rand_sseed.cu">
       <Filter>Random</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_binary_basic.cu" />
