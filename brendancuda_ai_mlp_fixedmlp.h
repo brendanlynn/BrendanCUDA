@@ -219,8 +219,8 @@ auto BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _Outp
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
 void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Deserialize(const void*& Data, void* ObjMem) {
     this_t& obj = &(this_t*)ObjMem;
-    BSerializer::DeserializeArray(Data, weights, _InputCount * _OutputCount);
-    BSerializer::DeserializeArray(Data, bias, _OutputCount);
+    BSerializer::DeserializeArray(Data, obj.weights, _InputCount * _OutputCount);
+    BSerializer::DeserializeArray(Data, obj.bias, _OutputCount);
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
