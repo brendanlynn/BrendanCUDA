@@ -57,7 +57,7 @@ namespace BrendanCUDA {
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
                 static this_t Deserialize(const void*& Data);
-                static void Deserialize(const void*& Data, void* ObjMem)
+                static void Deserialize(const void*& Data, void* ObjMem);
             };
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
             struct FixedMLP;
