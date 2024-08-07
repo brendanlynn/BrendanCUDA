@@ -176,12 +176,25 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
 __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Run(const _T* Input, _T* Output) const {
-    for (size_t j = 0; j < _OutputCount; ++j) {
-        float v = bias[j];
-        for (size_t i = 0; i < _InputCount; ++i) {
-            v += weights[i][j] * Input[i];
+    if (Input == Output) {
+        _T* secondOutput = new _T[_OutputCount];
+        for (size_t j = 0; j < _OutputCount; ++j) {
+            float v = bias[j];
+            for (size_t i = 0; i < _InputCount; ++i) {
+                v += weights[i][j] * Input[i];
+            }
+            secondOutput[j] = _ActivationFunction(v);
         }
-        Output[j] = _ActivationFunction(v);
+        memcpy(Output, secondOutput, sizeof(_T) * _OutputCount);
+    }
+    else {
+        for (size_t j = 0; j < _OutputCount; ++j) {
+            float v = bias[j];
+            for (size_t i = 0; i < _InputCount; ++i) {
+                v += weights[i][j] * Input[i];
+            }
+            Output[j] = _ActivationFunction(v);
+        }
     }
 }
 
