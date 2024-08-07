@@ -11,6 +11,7 @@
 #include "brendancuda_cudaconstexpr.h"
 #include "brendancuda_copyblock.h"
 #include "brendancuda_details_fillwith.h"
+#include "BSerializer/Serializer.h"
 
 namespace BrendanCUDA {
     namespace Fields {
