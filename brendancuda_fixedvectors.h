@@ -6,6 +6,7 @@
 #include <concepts>
 #include <cmath>
 #include "brendancuda_mathfuncs.h"
+#include "BSerializer/Serializer.h"
 
 namespace BrendanCUDA {
     template <typename _T, size_t _Size>
@@ -16,7 +17,9 @@ namespace BrendanCUDA {
         _T v[_Size];
 
         __host__ __device__ __forceinline constexpr FixedVector();
-        __host__ __device__ __forceinline constexpr FixedVector(_T V...);
+        template <std::same_as<_T>... _Ts>
+            requires (sizeof...(_Ts) == _Size)
+        __host__ __device__ __forceinline constexpr FixedVector(_Ts... V);
         __host__ __device__ __forceinline constexpr FixedVector(const _T V[_Size]);
 
         __host__ __device__ __forceinline constexpr _T& operator[](size_t Index);
@@ -37,6 +40,11 @@ namespace BrendanCUDA {
         __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
         __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
+
+        __forceinline size_t SerializedSize() const;
+        __forceinline void Serialize(void*& Data) const;
+        static __forceinline FixedVector<_T, _Size> Deserialize(const void*& Data);
+        static __forceinline void Deserialize(const void*& Data, void* Value);
     };
     template <typename _T>
         requires std::is_arithmetic_v<_T>
@@ -68,6 +76,11 @@ namespace BrendanCUDA {
         __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
         __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
+
+        __forceinline size_t SerializedSize() const;
+        __forceinline void Serialize(void*& Data) const;
+        static __forceinline FixedVector<_T, 1> Deserialize(const void*& Data);
+        static __forceinline void Deserialize(const void*& Data, void* Value);
     };
     template <typename _T>
         requires std::is_arithmetic_v<_T>
@@ -102,6 +115,11 @@ namespace BrendanCUDA {
         __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
         __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
+
+        __forceinline size_t SerializedSize() const;
+        __forceinline void Serialize(void*& Data) const;
+        static __forceinline FixedVector<_T, 2> Deserialize(const void*& Data);
+        static __forceinline void Deserialize(const void*& Data, void* Value);
     };
     template <typename _T>
         requires std::is_arithmetic_v<_T>
@@ -134,6 +152,11 @@ namespace BrendanCUDA {
         __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
         __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
+
+        __forceinline size_t SerializedSize() const;
+        __forceinline void Serialize(void*& Data) const;
+        static __forceinline FixedVector<_T, 3> Deserialize(const void*& Data);
+        static __forceinline void Deserialize(const void*& Data, void* Value);
     };
     template <typename _T>
         requires std::is_arithmetic_v<_T>
@@ -165,6 +188,11 @@ namespace BrendanCUDA {
         __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
         __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
         __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
+
+        __forceinline size_t SerializedSize() const;
+        __forceinline void Serialize(void*& Data) const;
+        static __forceinline FixedVector<_T, 4> Deserialize(const void*& Data);
+        static __forceinline void Deserialize(const void*& Data, void* Value);
     };
 
     using float_1 = FixedVector<float, 1>;
@@ -218,14 +246,12 @@ __host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, _Size>:
 }
 template <typename _T, size_t _Size>
     requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, _Size>::FixedVector(_T V...) {
-    va_list args;
-    va_start(args, V);
-    v[0] = V;
-    for (size_t i = 1; i < _Size; ++i) {
-        v[i] = va_arg(args, _T);
-    }
-    va_end(args);
+template <std::same_as<_T>... _Ts>
+    requires (sizeof...(_Ts) == _Size)
+__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, _Size>::FixedVector(_Ts... V) {
+    _T tempVs[_Size] = { V... };
+    for (size_t i = 0; i < _Size; ++i)
+        v[i] = tempVs[i];
 }
 template <typename _T, size_t _Size>
     requires std::is_arithmetic_v<_T>
@@ -346,6 +372,33 @@ __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T
         return sqrt((double)MagnatudeSquared());
     }
 }
+template <typename _T, size_t _Size>
+    requires std::is_arithmetic_v<_T>
+__forceinline size_t BrendanCUDA::FixedVector<_T, _Size>::SerializedSize() const {
+    return sizeof(_T) * _Size;
+}
+template <typename _T, size_t _Size>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, _Size>::Serialize(void*& Data) const {
+    for (size_t i = 0; i < _Size; ++i)
+        BSerializer::Serialize(Data, v[i]);
+}
+template <typename _T, size_t _Size>
+    requires std::is_arithmetic_v<_T>
+__forceinline BrendanCUDA::FixedVector<_T, _Size> BrendanCUDA::FixedVector<_T, _Size>::Deserialize(const void*& Data) {
+    BrendanCUDA::FixedVector<_T, _Size> vec;
+    for (size_t i = 0; i < _Size; ++i)
+        vec[i] = BSerializer::Deserialize<_T>(Data);
+    return vec;
+}
+template <typename _T, size_t _Size>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, _Size>::Deserialize(const void*& Data, void* Value) {
+    FixedVector<_T, _Size>* p_vec = new (Value) FixedVector<_T, _Size>;
+    FixedVector<_T, _Size>& vec = *p_vec;
+    for (size_t i = 0; i < _Size; ++i)
+        vec[i] = BSerializer::Deserialize<_T>(Data);
+}
 
 template <typename _T>
     requires std::is_arithmetic_v<_T>
@@ -418,6 +471,28 @@ template <typename _T>
     requires std::is_arithmetic_v<_T>
 __host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 1>::MagnatudeSquared() const {
     return x * x;
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline size_t BrendanCUDA::FixedVector<_T, 1>::SerializedSize() const {
+    return sizeof(_T);
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, 1>::Serialize(void*& Data) const {
+    BSerializer::Serialize(Data, x);
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline BrendanCUDA::FixedVector<_T, 1> BrendanCUDA::FixedVector<_T, 1>::Deserialize(const void*& Data) {
+    _T x = BSerializer::Deserialize<_T>(Data);
+    return BrendanCUDA::FixedVector<_T, 1>(x);
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, 1>::Deserialize(const void*& Data, void* Value) {
+    _T x = BSerializer::Deserialize<_T>(Data);
+    new (Value) FixedVector<_T, 1>(x);
 }
 
 template <typename _T>
@@ -513,6 +588,31 @@ template <typename _T>
     requires std::is_arithmetic_v<_T>
 __host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 2>::MagnatudeSquared() const {
     return x * x + y * y;
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline size_t BrendanCUDA::FixedVector<_T, 2>::SerializedSize() const {
+    return sizeof(_T) << 1;
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, 2>::Serialize(void*& Data) const {
+    BSerializer::Serialize(Data, x);
+    BSerializer::Serialize(Data, y);
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline BrendanCUDA::FixedVector<_T, 2> BrendanCUDA::FixedVector<_T, 2>::Deserialize(const void*& Data) {
+    _T x = BSerializer::Deserialize<_T>(Data);
+    _T y = BSerializer::Deserialize<_T>(Data);
+    return BrendanCUDA::FixedVector<_T, 2>(x, y);
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, 2>::Deserialize(const void*& Data, void* Value) {
+    _T x = BSerializer::Deserialize<_T>(Data);
+    _T y = BSerializer::Deserialize<_T>(Data);
+    new (Value) FixedVector<_T, 2>(x, y);
 }
 
 template <typename _T>
@@ -610,6 +710,34 @@ template <typename _T>
 __host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 3>::MagnatudeSquared() const {
     return x * x + y * y + z * z;
 }
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline size_t BrendanCUDA::FixedVector<_T, 3>::SerializedSize() const {
+    return sizeof(_T) * 3;
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, 3>::Serialize(void*& Data) const {
+    BSerializer::Serialize(Data, x);
+    BSerializer::Serialize(Data, y);
+    BSerializer::Serialize(Data, z);
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline BrendanCUDA::FixedVector<_T, 3> BrendanCUDA::FixedVector<_T, 3>::Deserialize(const void*& Data) {
+    _T x = BSerializer::Deserialize<_T>(Data);
+    _T y = BSerializer::Deserialize<_T>(Data);
+    _T z = BSerializer::Deserialize<_T>(Data);
+    return BrendanCUDA::FixedVector<_T, 3>(x, y, z);
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, 3>::Deserialize(const void*& Data, void* Value) {
+    _T x = BSerializer::Deserialize<_T>(Data);
+    _T y = BSerializer::Deserialize<_T>(Data);
+    _T z = BSerializer::Deserialize<_T>(Data);
+    new (Value) FixedVector<_T, 3>(x, y, z);
+}
 
 template <typename _T>
     requires std::is_arithmetic_v<_T>
@@ -703,4 +831,35 @@ template <typename _T>
     requires std::is_arithmetic_v<_T>
 __host__ __device__ __forceinline constexpr _T BrendanCUDA::FixedVector<_T, 4>::MagnatudeSquared() const {
     return x * x + y * y + z * z + w * w;
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline size_t BrendanCUDA::FixedVector<_T, 4>::SerializedSize() const {
+    return sizeof(_T) << 2;
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, 4>::Serialize(void*& Data) const {
+    BSerializer::Serialize(Data, x);
+    BSerializer::Serialize(Data, y);
+    BSerializer::Serialize(Data, z);
+    BSerializer::Serialize(Data, w);
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline BrendanCUDA::FixedVector<_T, 4> BrendanCUDA::FixedVector<_T, 4>::Deserialize(const void*& Data) {
+    _T x = BSerializer::Deserialize<_T>(Data);
+    _T y = BSerializer::Deserialize<_T>(Data);
+    _T z = BSerializer::Deserialize<_T>(Data);
+    _T w = BSerializer::Deserialize<_T>(Data);
+    return BrendanCUDA::FixedVector<_T, 4>(x, y, z, w);
+}
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__forceinline void BrendanCUDA::FixedVector<_T, 4>::Deserialize(const void*& Data, void* Value) {
+    _T x = BSerializer::Deserialize<_T>(Data);
+    _T y = BSerializer::Deserialize<_T>(Data);
+    _T z = BSerializer::Deserialize<_T>(Data);
+    _T w = BSerializer::Deserialize<_T>(Data);
+    new (Value) FixedVector<_T, 4>(x, y, z, w);
 }

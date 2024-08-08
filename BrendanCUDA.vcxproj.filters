@@ -11,7 +11,7 @@
     <ClInclude Include="brendancuda_ai_mlpb_mlpbl.h">
       <Filter>AI\MLPB</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_fields_field3.h">
+    <ClInclude Include="brendancuda_fields_field.h">
       <Filter>Fields</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_ai_evol_evolver.h">
@@ -29,7 +29,7 @@
     <ClInclude Include="brendancuda_ai.h">
       <Filter>AI</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_fields_dfield3.h">
+    <ClInclude Include="brendancuda_fields_dfield.h">
       <Filter>Fields</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_rand_drandom.cuh">
@@ -64,20 +64,11 @@
     <ClInclude Include="brendancuda_ai_evol_eval_output_impl_uniquevalues.h">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_fields_field2.h">
-      <Filter>Fields</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_fields_dfield2.h">
-      <Filter>Fields</Filter>
-    </ClInclude>
     <ClInclude Include="brendancuda_points.h" />
     <ClInclude Include="brendancuda_nets_makenet.h">
       <Filter>Nets</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_fields_instance3.h">
-      <Filter>Fields</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_fields_instance2.h">
+    <ClInclude Include="brendancuda_fields_instance.h">
       <Filter>Fields</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_ai_mlp_fixedmlp.h">
