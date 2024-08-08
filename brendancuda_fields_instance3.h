@@ -3,7 +3,6 @@
 #include "brendancuda_fields_dfield3.h"
 #include "brendancuda_rand_anyrng.h"
 #include <tuple>
-#include "brendancuda_rand_sseed.h"
 #include "brendancuda_ai_evol_eval_output.h"
 
 namespace BrendanCUDA {
