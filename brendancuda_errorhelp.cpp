@@ -9,21 +9,21 @@
 template <>
 void BrendanCUDA::ThrowIfBad<cudaError_t>(cudaError_t e) {
     if (e) {
-        throw std::exception(("A CUDA error occured: cudaError_t #" + std::to_string(e) + ".").c_str());
+        throw std::exception(("A CUDA Runtime API error occured: cudaError_t #" + std::to_string(e) + ".").c_str());
     }
 }
 
 template <>
 void BrendanCUDA::ThrowIfBad<cublasStatus_t>(cublasStatus_t e) {
     if (e) {
-        throw std::exception(("A CUDA error occured: cublasStatus_t #" + std::to_string(e) + ".").c_str());
+        throw std::exception(("A CUBLAS API error occured: cublasStatus_t #" + std::to_string(e) + ".").c_str());
     }
 }
 
 template <>
 void BrendanCUDA::ThrowIfBad<CUresult>(CUresult e) {
     if (e) {
-        throw std::exception(("A CUDA error occured: CUresult #" + std::to_string(e) + ".").c_str());
+        throw std::exception(("A CUDA Driver API error occured: CUresult #" + std::to_string(e) + ".").c_str());
     }
 }
 
