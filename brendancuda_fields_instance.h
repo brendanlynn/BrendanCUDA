@@ -62,7 +62,7 @@ void* BrendanCUDA::Fields::FieldInstance_Construct(void* Object, void* Settings)
     ArrayV<size_t> il = rv.inputs;
     ArrayV<size_t> ol = rv.outputs;
 
-    std::uniform_int_distribution<uint32_t> dis(f.ValueCount());
+    std::uniform_int_distribution<uint32_t> dis(0, f.ValueCount());
 
     for (uint32_t i = 0; i < settings.inputCount; ++i) {
     ContinueInputs:
