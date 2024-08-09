@@ -21,11 +21,11 @@ namespace BrendanCUDA {
             using vector_t = FixedVector<uint32_t, _DimensionCount>;
         public:
             __host__ __device__ __forceinline Field(vector_t Dimensions);
-            template <std::same_as<_T>... _Ts>
+            template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline Field(_Ts... Dimensions);
             __host__ __device__ __forceinline Field(vector_t Dimensions, _T* All);
-            template <std::same_as<_T>... _Ts>
+            template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline Field(_Ts... Dimensions, _T* All);
 
@@ -44,7 +44,7 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline size_t SizeOnGPU() const;
 
             __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> operator()(vector_t Coordinates);
-            template <std::same_as<_T>... _Ts>
+            template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> operator()(_Ts... Coordinates);
 
@@ -52,12 +52,12 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline void CopyAllOut(_T* All) const;
             __host__ __device__ __forceinline void CopyValueIn(uint64_t Index, _T* Value);
             __host__ __device__ __forceinline void CopyValueIn(vector_t Coordinates, _T* Value);
-            template <std::same_as<_T>... _Ts>
+            template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline void CopyValueIn(_Ts... Coordinates, _T* Value);
             __host__ __device__ __forceinline void CopyValueOut(uint64_t Index, _T* Value) const;
             __host__ __device__ __forceinline void CopyValueOut(vector_t Coordinates, _T* Value) const;
-            template <std::same_as<_T>... _Ts>
+            template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline void CopyValueOut(_Ts... Coordinates, _T* Value) const;
 
@@ -70,20 +70,20 @@ namespace BrendanCUDA {
 
             __host__ __device__ __forceinline _T GetValueAt(uint64_t Index) const;
             __host__ __device__ __forceinline _T GetValueAt(vector_t Coordinates) const;
-            template <std::same_as<_T>... _Ts>
+            template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline _T GetValueAt(_Ts... Coordinates) const;
 
             __host__ __device__ __forceinline void SetValueAt(uint64_t Index, _T Value);
             __host__ __device__ __forceinline void SetValueAt(vector_t Coordinates, _T Value);
-            template <std::same_as<_T>... _Ts>
+            template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline void SetValueAt(_Ts... Coordinates, _T Value);
 
             __host__ __device__ __forceinline void Dispose();
 
             __host__ __device__ __forceinline uint64_t CoordinatesToIndex(vector_t Coordinates) const;
-            template <std::same_as<_T>... _Ts>
+            template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline uint64_t CoordinatesToIndex(_Ts... Coordinates) const;
             __host__ __device__ __forceinline vector_t IndexToCoordinates(uint64_t Index) const;
@@ -92,7 +92,7 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline uint64_t PointerToIndex(_T* Pointer) const;
 
             __host__ __device__ __forceinline _T* CoordinatesToPointer(vector_t Coordinates) const;
-            template <std::same_as<_T>... _Ts>
+            template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline _T* CoordinatesToPointer(_Ts... Coordinates) const;
             __host__ __device__ __forceinline vector_t PointerToCoordinates(_T* Pointer) const;
@@ -131,7 +131,7 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::Field<_T, _DimensionCount
 #endif
 }
 template <typename _T, size_t _DimensionCount>
-template <std::same_as<_T>... _Ts>
+template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 __host__ __device__ __forceinline BrendanCUDA::Fields::Field<_T, _DimensionCount>::Field(_Ts... Dimensions)
     : Field(vector_t(Dimensions...)) { }
@@ -141,7 +141,7 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::Field<_T, _DimensionCount
     CopyAllIn(All);
 }
 template <typename _T, size_t _DimensionCount>
-template <std::same_as<_T>... _Ts>
+template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 __host__ __device__ __forceinline BrendanCUDA::Fields::Field<_T, _DimensionCount>::Field(_Ts... Dimensions, _T* All)
     : Field(vector_t(Dimensions...), All) { }
@@ -192,7 +192,7 @@ __host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, _T&, t
 #endif
 }
 template <typename _T, size_t _DimensionCount>
-template <std::same_as<_T>... _Ts>
+template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 __host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, _T&, thrust::device_reference<_T>> BrendanCUDA::Fields::Field<_T, _DimensionCount>::operator()(_Ts... Coordinates) {
     uint64_t idx = BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), vector_t(Coordinates...));
@@ -235,7 +235,7 @@ __host__ __forceinline void BrendanCUDA::Fields::Field<_T, _DimensionCount>::Cop
 #endif
 }
 template <typename _T, size_t _DimensionCount>
-template <std::same_as<_T>... _Ts>
+template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 __host__ __forceinline void BrendanCUDA::Fields::Field<_T, _DimensionCount>::CopyValueIn(_Ts... Coordinates, _T* Value) {
     CopyValueIn(vector_t(Coordinates...), Value);
@@ -257,7 +257,7 @@ __host__ __forceinline void BrendanCUDA::Fields::Field<_T, _DimensionCount>::Cop
 #endif
 }
 template <typename _T, size_t _DimensionCount>
-template <std::same_as<_T>... _Ts>
+template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 __host__ __forceinline void BrendanCUDA::Fields::Field<_T, _DimensionCount>::CopyValueOut(_Ts... Coordinates, _T* Value) const {
     CopyValueOut(vector_t(Coordinates...), Value);
@@ -304,7 +304,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field<_T, _DimensionCo
     return v;
 }
 template <typename _T, size_t _DimensionCount>
-template <std::same_as<_T>... _Ts>
+template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 __host__ __device__ __forceinline _T BrendanCUDA::Fields::Field<_T, _DimensionCount>::GetValueAt(_Ts... Coordinates) const {
     return GetValueAt(vector_t(Coordinates...));
@@ -326,7 +326,7 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::Field<_T, _Dimension
 #endif
 }
 template <typename _T, size_t _DimensionCount>
-template <std::same_as<_T>... _Ts>
+template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 __host__ __device__ __forceinline void BrendanCUDA::Fields::Field<_T, _DimensionCount>::SetValueAt(_Ts... Coordinates, _T Value) {
     SetValueAt(vector_t(Coordinates...), Value);
@@ -344,7 +344,7 @@ __host__ __device__ __forceinline uint64_t BrendanCUDA::Fields::Field<_T, _Dimen
     return BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Coordinates);
 }
 template <typename _T, size_t _DimensionCount>
-template <std::same_as<_T>... _Ts>
+template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 __host__ __device__ __forceinline uint64_t BrendanCUDA::Fields::Field<_T, _DimensionCount>::CoordinatesToIndex(_Ts... Coordinates) const {
     return BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), vector_t(Coordinates...));
@@ -366,7 +366,7 @@ __host__ __device__ __forceinline _T* BrendanCUDA::Fields::Field<_T, _DimensionC
     return IndexToPointer(CoordinatesToIndex(Coordinates));
 }
 template <typename _T, size_t _DimensionCount>
-template <std::same_as<_T>... _Ts>
+template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 __host__ __device__ __forceinline _T* BrendanCUDA::Fields::Field<_T, _DimensionCount>::CoordinatesToPointer(_Ts... Coordinates) const {
     return IndexToPointer(CoordinatesToIndex(vector_t(Coordinates...)));
