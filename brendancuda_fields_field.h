@@ -417,5 +417,5 @@ __forceinline auto BrendanCUDA::Fields::Field<_T, _DimensionCount>::Deserialize(
 }
 template <typename _T, size_t _DimensionCount>
 __forceinline void BrendanCUDA::Fields::Field<_T, _DimensionCount>::Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> {
-    new (Value) Field<_T, _DimensionCount>(Deserialize<Field<_T, _DimensionCount>>(Data));
+    new (Value) Field<_T, _DimensionCount>(Deserialize(Data));
 }
