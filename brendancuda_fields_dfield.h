@@ -10,7 +10,8 @@ namespace BrendanCUDA {
     namespace Fields {
         template <typename _T, size_t _DimensionCount>
         class DField final {
-            using vector_t = FixedVector<_T, _DimensionCount>;
+            static_assert(_DimensionCount, "_DimensionCount may not be zero.");
+            using vector_t = FixedVector<uint32_t, _DimensionCount>;
         public:
             __host__ __device__ __forceinline DField(vector_t Dimensions);
             template <std::same_as<_T>... _Ts>
