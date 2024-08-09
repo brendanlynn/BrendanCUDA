@@ -16,11 +16,13 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline DField(vector_t Dimensions);
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline DField(_Ts... Dimensions);
+            __host__ __device__ __forceinline DField(_Ts... Dimensions)
+                : DField(vector_t(Dimensions...)) { }
             __host__ __device__ __forceinline DField(vector_t Dimensions, _T* All);
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline DField(_Ts... Dimensions, _T* All);
+            __host__ __device__ __forceinline DField(_Ts... Dimensions, _T* All)
+                : DField(vector_t(Dimensions...), All) { }
 
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4);
             __host__ __device__ __forceinline uint32_t LengthY() const requires (_DimensionCount >= 2 && _DimensionCount <= 4);
@@ -48,12 +50,16 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline void CopyValueIn(vector_t Coordinates, _T* Value);
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline void CopyValueIn(_Ts... Coordinates, _T* Value);
+            __host__ __device__ __forceinline void CopyValueIn(_Ts... Coordinates, _T* Value) {
+                FBack().CopyValueIn(vector_t(Coordinates...), Value);
+            }
             __host__ __device__ __forceinline void CopyValueOut(uint64_t Index, _T* Value) const;
             __host__ __device__ __forceinline void CopyValueOut(vector_t Coordinates, _T* Value) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline void CopyValueOut(_Ts... Coordinates, _T* Value) const;
+            __host__ __device__ __forceinline void CopyValueOut(_Ts... Coordinates, _T* Value) const {
+                FFront().CopyValueOut(vector_t(Coordinates...), Value);
+            }
 
             template <bool _CopyToHost>
             __host__ __forceinline _T* GetAll() const;
@@ -66,18 +72,24 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline _T GetValueAt(vector_t Coordinates) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline _T GetValueAt(_Ts... Coordinates) const;
+            __host__ __device__ __forceinline _T GetValueAt(_Ts... Coordinates) const {
+                return FFront().GetValueAt(vector_t(Coordinates...));
+            }
 
             __host__ __device__ __forceinline void SetValueAt(uint64_t Index, _T Value);
             __host__ __device__ __forceinline void SetValueAt(vector_t Coordinates, _T Value);
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline void SetValueAt(_Ts... Coordinates, _T Value);
+            __host__ __device__ __forceinline void SetValueAt(_Ts... Coordinates, _T Value) {
+                FBack().SetValueAt(vector_t(Coordinates...), Value);
+            }
 
             __host__ __device__ __forceinline uint64_t CoordinatesToIndex(vector_t Coordinates) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline uint64_t CoordinatesToIndex(_Ts... Coordinates) const;
+            __host__ __device__ __forceinline uint64_t CoordinatesToIndex(_Ts... Coordinates) const {
+                return BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), vector_t(Coordinates...));
+            }
             __host__ __device__ __forceinline vector_t IndexToCoordinates(uint64_t Index) const;
 
             __host__ __device__ __forceinline void FillWith(_T Value);
@@ -117,20 +129,10 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::DField<_T, _DimensionCoun
 #endif
 }
 template <typename _T, size_t _DimensionCount>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _DimensionCount)
-__host__ __device__ __forceinline BrendanCUDA::Fields::DField<_T, _DimensionCount>::DField(_Ts... Dimensions)
-    : DField(vector_t(Dimensions...)) { }
-template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline BrendanCUDA::Fields::DField<_T, _DimensionCount>::DField(vector_t Dimensions, _T* All)
     : DField(Dimensions) {
     FFront().CopyAllIn(All);
 }
-template <typename _T, size_t _DimensionCount>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _DimensionCount)
-__host__ __device__ __forceinline BrendanCUDA::Fields::DField<_T, _DimensionCount>::DField(_Ts... Dimensions, _T* All)
-    : DField(vector_t(Dimensions...), All) { }
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _DimensionCount>::Dispose() {
 #ifdef __CUDA_ARCH__
@@ -201,12 +203,6 @@ __host__ __device__ __forceinline uint64_t BrendanCUDA::Fields::DField<_T, _Dime
     return BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Coordinates);
 }
 template <typename _T, size_t _DimensionCount>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _DimensionCount)
-__host__ __device__ __forceinline uint64_t BrendanCUDA::Fields::DField<_T, _DimensionCount>::CoordinatesToIndex(_Ts... Coordinates) const {
-    return BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), vector_t(Coordinates...));
-}
-template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline auto BrendanCUDA::Fields::DField<_T, _DimensionCount>::IndexToCoordinates(uint64_t Index) const -> vector_t {
     return BrendanCUDA::IndexToCoordinates<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Index);
 }
@@ -231,24 +227,12 @@ __host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _Dimensio
     FBack().CopyValueIn(Coordinates, Value);
 }
 template <typename _T, size_t _DimensionCount>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _DimensionCount)
-__host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _DimensionCount>::CopyValueIn(_Ts... Coordinates, _T* Value) {
-    FBack().CopyValueIn(vector_t(Coordinates...), Value);
-}
-template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _DimensionCount>::CopyValueOut(uint64_t Index, _T* Value) const {
     FFront().CopyValueOut(Index, Value);
 }
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _DimensionCount>::CopyValueOut(vector_t Coordinates, _T* Value) const {
     FFront().CopyValueOut(Coordinates, Value);
-}
-template <typename _T, size_t _DimensionCount>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _DimensionCount)
-__host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _DimensionCount>::CopyValueOut(_Ts... Coordinates, _T* Value) const {
-    FFront().CopyValueOut(vector_t(Coordinates...), Value);
 }
 template <typename _T, size_t _DimensionCount>
 template <bool _CopyToHost>
@@ -274,24 +258,12 @@ __host__ __device__ __forceinline _T BrendanCUDA::Fields::DField<_T, _DimensionC
     return FFront().GetValueAt(Coordinates);
 }
 template <typename _T, size_t _DimensionCount>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _DimensionCount)
-__host__ __device__ __forceinline _T BrendanCUDA::Fields::DField<_T, _DimensionCount>::GetValueAt(_Ts... Coordinates) const {
-    return FFront().GetValueAt(vector_t(Coordinates...));
-}
-template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _DimensionCount>::SetValueAt(uint64_t Index, _T Value) {
     FBack().SetValueAt(Index, Value);
 }
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _DimensionCount>::SetValueAt(vector_t Coordinates, _T Value) {
     FBack().SetValueAt(Coordinates, Value);
-}
-template <typename _T, size_t _DimensionCount>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _DimensionCount)
-__host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _DimensionCount>::SetValueAt(_Ts... Coordinates, _T Value) {
-    FBack().SetValueAt(vector_t(Coordinates...), Value);
 }
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline void BrendanCUDA::Fields::DField<_T, _DimensionCount>::CopyBlockIn(_T* Input, vector_t InputDimensions, vector_t RangeDimensions, vector_t RangeInInputsCoordinates, vector_t RangeInOutputsCoordinates) {

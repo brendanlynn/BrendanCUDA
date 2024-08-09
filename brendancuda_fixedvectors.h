@@ -19,7 +19,11 @@ namespace BrendanCUDA {
         __host__ __device__ __forceinline constexpr FixedVector();
         template <std::convertible_to<uint32_t>... _Ts>
             requires (sizeof...(_Ts) == _Size)
-        __host__ __device__ __forceinline constexpr FixedVector(_Ts... V);
+        __host__ __device__ __forceinline constexpr FixedVector(_Ts... V) {
+            _T tempVs[_Size] = { V... };
+            for (size_t i = 0; i < _Size; ++i)
+                v[i] = tempVs[i];
+        }
         __host__ __device__ __forceinline constexpr FixedVector(const _T V[_Size]);
 
         __host__ __device__ __forceinline constexpr _T& operator[](size_t Index);
@@ -243,15 +247,6 @@ __host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, _Size>:
     for (size_t i = 0; i < _Size; ++i) {
         v[i] = 0;
     }
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _Size)
-__host__ __device__ __forceinline constexpr BrendanCUDA::FixedVector<_T, _Size>::FixedVector(_Ts... V) {
-    _T tempVs[_Size] = { V... };
-    for (size_t i = 0; i < _Size; ++i)
-        v[i] = tempVs[i];
 }
 template <typename _T, size_t _Size>
     requires std::is_arithmetic_v<_T>
