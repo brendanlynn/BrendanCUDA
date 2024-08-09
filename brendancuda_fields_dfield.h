@@ -109,8 +109,8 @@ __host__ __device__ __forceinline BrendanCUDA::Fields::DField<_T, _DimensionCoun
     dimensions = Dimensions;
     size_t dataSize = SizeOnGPU();
 #ifdef __CUDA_ARCH__
-    cudaArrayF = malloc(dataSize);
-    cudaArrayB = malloc(dataSize));
+    cudaArrayF = (_T*)malloc(dataSize);
+    cudaArrayB = (_T*)malloc(dataSize);
 #else
     ThrowIfBad(cudaMalloc(&cudaArrayF, dataSize));
     ThrowIfBad(cudaMalloc(&cudaArrayB, dataSize));
