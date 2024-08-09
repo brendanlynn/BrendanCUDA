@@ -267,7 +267,7 @@ template <bool _CopyToHost>
 __host__ __forceinline _T* BrendanCUDA::Fields::Field<_T, _DimensionCount>::GetAll() const {
     _T* a;
     if constexpr (_CopyToHost) {
-        a = new _T[lengthX * lengthY * lengthZ];
+        a = (_T*)malloc(SizeOnGPU());
     }
     else {
         ThrowIfBad(cudaMalloc(&a, SizeOnGPU()));
@@ -278,7 +278,7 @@ __host__ __forceinline _T* BrendanCUDA::Fields::Field<_T, _DimensionCount>::GetA
 #ifdef __CUDACC__
 template <typename _T, size_t _DimensionCount>
 __device__ __forceinline _T* BrendanCUDA::Fields::Field<_T, _DimensionCount>::GetAll() const {
-    _T* a = new _T[lengthX * lengthY * lengthZ];
+    _T* a = (_T*)malloc(SizeOnGPU());
     CopyAllOut(a, false);
     return a;
 }
