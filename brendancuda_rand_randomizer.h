@@ -120,7 +120,7 @@ template <std::integral _T, std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline _T BrendanCUDA::Random::RandomizeWMutations(_T Value, uint32_t MutationProbability, _TRNG& RNG) {
     std::uniform_int_distribution<uint32_t> dis32(0);
     if (dis32(RNG) < MutationProbability) {
-        if constexpr (std::is_same<_T, uint32_t>) return dis32(RNG);
+        if constexpr (std::same_as<_T, uint32_t>) return dis32(RNG);
         std::uniform_int_distribution<_T> disT(0);
         return disT(RNG);
     }
