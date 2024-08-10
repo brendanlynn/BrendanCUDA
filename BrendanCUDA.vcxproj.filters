@@ -139,9 +139,6 @@
     <CudaCompile Include="brendancuda_ai.cu">
       <Filter>AI</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_rand_bits.cu">
-      <Filter>Random</Filter>
-    </CudaCompile>
     <CudaCompile Include="brendancuda_rand_drandom.cu">
       <Filter>Random</Filter>
     </CudaCompile>
