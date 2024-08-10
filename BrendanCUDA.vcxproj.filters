@@ -89,7 +89,7 @@
     <ClInclude Include="brendancuda_details_fillwith.h">
       <Filter>details</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_threadid.cuh" />
+    <ClInclude Include="brendancuda_threadid.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">

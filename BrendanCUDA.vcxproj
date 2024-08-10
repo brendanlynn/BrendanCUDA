@@ -124,7 +124,7 @@
     <ClInclude Include="brendancuda_fields_field.h" />
     <ClInclude Include="brendancuda_ai_genetics_genemlp.h" />
     <ClInclude Include="brendancuda_rand_randomizer.h" />
-    <ClInclude Include="brendancuda_threadid.cuh" />
+    <ClInclude Include="brendancuda_threadid.h" />
     <ClInclude Include="brendancuda_ai_mlp_mlp.h" />
     <ClInclude Include="brendancuda_ai_mlpb_mlpb.h" />
     <ClInclude Include="brendancuda_ai_mlpb_mlpblw.h" />
