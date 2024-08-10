@@ -7,11 +7,27 @@
 
 #include "brendancuda_rand_anyrng.h"
 #include "brendancuda_rand_bits.h"
+#include "brendancuda_arrays.h"
 
 namespace BrendanCUDA {
     namespace details {
         template <std::integral _T>
         __host__ __device__ __forceinline _T RandomizeWTargets_GetEditsOf1s(_T Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t RN1, uint32_t RN2);
+        
+        void RandomizeArray_CallKernel(Span<float> Array, float Scalar, uint64_t Seed);
+        void RandomizeArray_CallKernel(Span<double> Array, double Scalar, uint64_t Seed);
+        void RandomizeArray_CallKernel(Span<float> Array, float Scalar, float LowerBound, float UpperBound, uint64_t Seed);
+        void RandomizeArray_CallKernel(Span<double> Array, double Scalar, double LowerBound, double UpperBound, uint64_t Seed);
+        void RandomizeArrayWFlips_CallKernel(Span<uint32_t> Array, uint32_t FlipProbability, uint64_t Seed);
+        void RandomizeArrayWTargets_CallKernel(Span<uint32_t> Array, uint32_t EachFlipProbability, uint64_t Seed);
+        void RandomizeArrayWMutations_CallKernel(Span<uint32_t> Array, uint32_t MutationProbability, uint64_t Seed);
+        void RandomizeArray_CallKernel(Span<uint32_t> Array, uint32_t FlipProbability, uint32_t TargetFlipProbability, uint32_t MutationProbability, uint64_t Seed);
+        void InitArray_CallKernel(Span<float> Array, uint64_t Seed);
+        void InitArray_CallKernel(Span<double> Array, uint64_t Seed);
+        void InitArray_CallKernel(Span<float> Array, float LowerBound, float UpperBound, uint64_t Seed);
+        void InitArray_CallKernel(Span<double> Array, double LowerBound, double UpperBound, uint64_t Seed);
+        void InitArray_CallKernel(Span<uint32_t> Array, uint64_t Seed);
+        void InitArray_CallKernel(Span<uint32_t> Array, uint32_t ProbabilityOf1, uint64_t Seed);
     }
     namespace Random {
         template <std::integral _T, std::uniform_random_bit_generator _TRNG>

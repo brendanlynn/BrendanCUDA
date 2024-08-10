@@ -149,6 +149,7 @@
     <CudaCompile Include="brendancuda_nets_makenet.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu" />
     <CudaCompile Include="brendancuda_rand_drandom.cu" />
+    <CudaCompile Include="brendancuda_rand_randomizer.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="brendancuda_ai_evol_eval_output_impl_proliferation.cpp" />

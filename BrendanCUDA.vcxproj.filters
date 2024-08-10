@@ -157,6 +157,9 @@
     <CudaCompile Include="brendancuda_details_fillwith.cu">
       <Filter>details</Filter>
     </CudaCompile>
+    <CudaCompile Include="brendancuda_rand_randomizer.cu">
+      <Filter>Random</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="brendancuda_ai_evol_eval_output_impl_proliferation.cpp">
