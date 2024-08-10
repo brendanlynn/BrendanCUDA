@@ -37,6 +37,7 @@ namespace BrendanCUDA {
             __host__ __device__ static constexpr _TOutputType max() {
                 return std::numeric_limits<_TOutputType>::max();
             }
+            using result_type = _TOutputType;
         private:
             void* i_rng;
             details::runRNGFunc_t<_TOutputType> r_rng;
