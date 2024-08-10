@@ -17,19 +17,19 @@ namespace BrendanCUDA {
         __host__ __forceinline _T RandomizeWFlips(_T Value, uint32_t FlipProbability, AnyRNG<uint64_t> RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ __forceinline _T RandomizeWFlips(_T Value, uint32_t FlipProbability, curandState State);
+        __device__ __forceinline _T RandomizeWFlips(_T Value, uint32_t FlipProbability, curandState& State);
 #endif
         template <std::integral _T>
         __host__ __forceinline _T RandomizeWTargets(_T Value, uint32_t EachFlipProbability, AnyRNG<uint64_t> RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ __forceinline _T RandomizeWTargets(_T Value, uint32_t EachFlipProbability, curandState State);
+        __device__ __forceinline _T RandomizeWTargets(_T Value, uint32_t EachFlipProbability, curandState& State);
 #endif
         template <std::integral _T>
         __host__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, AnyRNG<uint64_t> RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, curandState State);
+        __device__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, curandState& State);
 #endif
     }
 }
@@ -58,7 +58,7 @@ __host__ __forceinline _T BrendanCUDA::Random::RandomizeWFlips(_T Value, uint32_
 }
 #ifdef __CUDACC__
 template <std::integral _T>
-__device__ __forceinline _T BrendanCUDA::Random::RandomizeWFlips(_T Value, uint32_t FlipProbability, curandState RNG) {
+__device__ __forceinline _T BrendanCUDA::Random::RandomizeWFlips(_T Value, uint32_t FlipProbability, curandState& RNG) {
     if constexpr (sizeof(_T) > 4) Value ^= (_T)Get64Bits(FlipProbability, RNG);
     else Value ^= (_T)Get32Bits(FlipProbability, RNG);
 }
@@ -96,7 +96,7 @@ __host__ __forceinline _T BrendanCUDA::Random::RandomizeWTargets(_T Value, uint3
 }
 #ifdef __CUDACC__
 template <std::integral _T>
-__device__ __forceinline _T BrendanCUDA::Random::RandomizeWTargets(_T Value, uint32_t FlipProbability, curandState RNG) {
+__device__ __forceinline _T BrendanCUDA::Random::RandomizeWTargets(_T Value, uint32_t FlipProbability, curandState& RNG) {
     constexpr uint32_t shiftMask = (sizeof(_T) << 3) - 1;
 
     if (!Value) {
@@ -132,7 +132,7 @@ __host__ __forceinline _T BrendanCUDA::Random::RandomizeWMutations(_T Value, uin
 }
 #ifdef __CUDACC__
 template <std::integral _T>
-__device__ __forceinline _T BrendanCUDA::Random::RandomizeWMutations(_T Value, uint32_t MutationProbability, curandState RNG) {
+__device__ __forceinline _T BrendanCUDA::Random::RandomizeWMutations(_T Value, uint32_t MutationProbability, curandState& RNG) {
     if (curand(&RNG) < MutationProbability) {
         if constexpr (sizeof(_T) > 4) return (_T)(((uint64_t)curand(&RNG) << 32) | curand(&RNG));
         else return (_T)curand(&RNG);

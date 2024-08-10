@@ -12,8 +12,8 @@ namespace BrendanCUDA {
         __host__ __device__ __forceinline uint32_t Get32Bits(uint32_t ProbabilityOf1, _TRNG RNG);
         template <std::uniform_random_bit_generator _TRNG>
         __host__ __device__ __forceinline uint64_t Get64Bits(uint32_t ProbabilityOf1, _TRNG RNG);
-        __host__ __device__ __forceinline uint32_t Get32Bits(uint32_t ProbabilityOf1, curandState RNG);
-        __host__ __device__ __forceinline uint64_t Get64Bits(uint32_t ProbabilityOf1, curandState RNG);
+        __host__ __device__ __forceinline uint32_t Get32Bits(uint32_t ProbabilityOf1, curandState& RNG);
+        __host__ __device__ __forceinline uint64_t Get64Bits(uint32_t ProbabilityOf1, curandState& RNG);
     }
 }
 
@@ -55,7 +55,7 @@ __host__ __forceinline uint64_t BrendanCUDA::Random::Get64Bits(uint32_t Probabil
     }
     return cr;
 }
-__host__ __device__ __forceinline uint32_t BrendanCUDA::Random::Get32Bits(uint32_t ProbabilityOf1, curandState RNG) {
+__host__ __device__ __forceinline uint32_t BrendanCUDA::Random::Get32Bits(uint32_t ProbabilityOf1, curandState& RNG) {
     uint32_t ct = BrendanCUDA::Binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
@@ -72,7 +72,7 @@ __host__ __device__ __forceinline uint32_t BrendanCUDA::Random::Get32Bits(uint32
     }
     return cr;
 }
-__host__ __device__ __forceinline uint64_t BrendanCUDA::Random::Get64Bits(uint32_t ProbabilityOf1, curandState RNG) {
+__host__ __device__ __forceinline uint64_t BrendanCUDA::Random::Get64Bits(uint32_t ProbabilityOf1, curandState& RNG) {
     uint32_t ct = BrendanCUDA::Binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
