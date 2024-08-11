@@ -221,28 +221,28 @@ void BrendanCUDA::details::RandomizeArray_CallKernel(Span<float> Array, float Sc
     uint32_t threadsPerBlock;
     uint32_t blockCount;
     getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar, Seed, elementsPerThread);
+    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2.f, Seed, elementsPerThread);
 }
 void BrendanCUDA::details::RandomizeArray_CallKernel(Span<double> Array, double Scalar, uint64_t Seed) {
     uint32_t elementsPerThread;
     uint32_t threadsPerBlock;
     uint32_t blockCount;
     getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar, Seed, elementsPerThread);
+    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2., Seed, elementsPerThread);
 }
 void BrendanCUDA::details::RandomizeArray_CallKernel(Span<float> Array, float Scalar, float LowerBound, float UpperBound, uint64_t Seed) {
     uint32_t elementsPerThread;
     uint32_t threadsPerBlock;
     uint32_t blockCount;
     getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar, LowerBound, UpperBound, Seed, elementsPerThread);
+    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2.f, LowerBound, UpperBound, Seed, elementsPerThread);
 }
 void BrendanCUDA::details::RandomizeArray_CallKernel(Span<double> Array, double Scalar, double LowerBound, double UpperBound, uint64_t Seed) {
     uint32_t elementsPerThread;
     uint32_t threadsPerBlock;
     uint32_t blockCount;
     getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar, LowerBound, UpperBound, Seed, elementsPerThread);
+    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2., LowerBound, UpperBound, Seed, elementsPerThread);
 }
 void BrendanCUDA::details::RandomizeArrayWFlips_CallKernel(Span<uint32_t> Array, uint32_t FlipProbability, uint64_t Seed) {
     uint32_t elementsPerThread;
