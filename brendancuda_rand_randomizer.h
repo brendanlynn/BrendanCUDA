@@ -51,6 +51,22 @@ namespace BrendanCUDA {
         template <std::integral _T>
         __device__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, curandState& State);
 #endif
+        template <std::uniform_random_bit_generator _TRNG>
+        __host__ __forceinline float Randomize(float Value, float Scalar, _TRNG& RNG);
+        template <std::uniform_random_bit_generator _TRNG>
+        __host__ __forceinline double Randomize(double Value, double Scalar, _TRNG& RNG);
+#ifdef __CUDACC__
+        __device__ __forceinline float Randomize(float Value, float Scalar, curandState& State);
+        __device__ __forceinline double Randomize(double Value, double Scalar, curandState& State);
+#endif
+        template <std::uniform_random_bit_generator _TRNG>
+        __host__ __forceinline float Randomize(float Value, float Scalar, float LowerBound, float UpperBound, _TRNG& RNG);
+        template <std::uniform_random_bit_generator _TRNG>
+        __host__ __forceinline double Randomize(double Value, double Scalar, double LowerBound, double UpperBound, _TRNG& RNG);
+#ifdef __CUDACC__
+        __device__ __forceinline float Randomize(float Value, float Scalar, float LowerBound, float UpperBound, curandState& State);
+        __device__ __forceinline double Randomize(double Value, double Scalar, double LowerBound, double UpperBound, curandState& State);
+#endif
     }
 }
 
@@ -153,5 +169,41 @@ __device__ __forceinline _T BrendanCUDA::Random::RandomizeWMutations(_T Value, u
         else return (_T)curand(&RNG);
     }
     return Value;
+}
+#endif
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __forceinline float BrendanCUDA::Random::Randomize(float Value, float Scalar, _TRNG& RNG) {
+    std::uniform_real_distribution<float> dis(-Scalar, Scalar);
+    return Value + dis(RNG);
+}
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __forceinline double BrendanCUDA::Random::Randomize(double Value, double Scalar, _TRNG& RNG) {
+    std::uniform_real_distribution<double> dis(-Scalar, Scalar);
+    return Value + dis(RNG);
+}
+#ifdef __CUDACC__
+__device__ __forceinline float BrendanCUDA::Random::Randomize(float Value, float Scalar, curandState& State) {
+    return Value + Scalar * 2.f * (curand_uniform(&state) - 0.5f);
+}
+__device__ __forceinline double BrendanCUDA::Random::Randomize(double Value, double Scalar, curandState& State) {
+    return Value + Scalar * 2. * (curand_uniform_double(&state) - 0.5);
+}
+#endif
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __forceinline float BrendanCUDA::Random::Randomize(float Value, float Scalar, float LowerBound, float UpperBound, _TRNG& RNG) {
+    std::uniform_real_distribution<float> dis(-Scalar, Scalar);
+    return std::clamp(Value + dis(RNG), LowerBound, UpperBound);
+}
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __forceinline double BrendanCUDA::Random::Randomize(double Value, double Scalar, double LowerBound, double UpperBound, _TRNG& RNG) {
+    std::uniform_real_distribution<double> dis(-Scalar, Scalar);
+    return std::clamp(Value + dis(RNG), LowerBound, UpperBound);
+}
+#ifdef __CUDACC__
+__device__ __forceinline float BrendanCUDA::Random::Randomize(float Value, float Scalar, float LowerBound, float UpperBound, curandState& State) {
+    return std::clamp(Value + Scalar * 2.f * (curand_uniform(&state) - 0.5f), LowerBound, UpperBound);
+}
+__device__ __forceinline double BrendanCUDA::Random::Randomize(double Value, double Scalar, double LowerBound, double UpperBound, curandState& State) {
+    return std::clamp(Value + Scalar * 2. * (curand_uniform_double(&state) - 0.5), LowerBound, UpperBound);
 }
 #endif
