@@ -28,6 +28,9 @@ namespace BrendanCUDA {
         void InitArray_CallKernel(Span<double> Array, double LowerBound, double UpperBound, uint64_t Seed);
         void InitArray_CallKernel(Span<uint32_t> Array, uint64_t Seed);
         void InitArray_CallKernel(Span<uint32_t> Array, uint32_t ProbabilityOf1, uint64_t Seed);
+        void ClearArray_CallKernel(Span<float> Array);
+        void ClearArray_CallKernel(Span<double> Array);
+        void ClearArray_CallKernel(Span<uint64_t> Array);
     }
     namespace Random {
         template <std::integral _T, std::uniform_random_bit_generator _TRNG>

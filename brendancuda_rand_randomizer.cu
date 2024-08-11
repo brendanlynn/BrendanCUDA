@@ -161,6 +161,33 @@ __global__ void initArrayKernel(BrendanCUDA::Span<uint32_t> Array, uint32_t Prob
     for (; l < u; ++l)
         *l = BrendanCUDA::Random::Get32Bits(ProbOf1, state);
 }
+__global__ void clearArrayKernel(BrendanCUDA::Span<float> Array, uint64_t Count) {
+    uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
+    if (idx >= Array.size)
+        return;
+    float* l = Array.ptr + idx * Count;
+    float* u = std::min(l + Count, Array.ptr + Array.size);
+    for (; l < u; ++l)
+        *l = 0.f;
+}
+__global__ void clearArrayKernel(BrendanCUDA::Span<double> Array, uint64_t Count) {
+    uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
+    if (idx >= Array.size)
+        return;
+    double* l = Array.ptr + idx * Count;
+    double* u = std::min(l + Count, Array.ptr + Array.size);
+    for (; l < u; ++l)
+        *l = 0.;
+}
+__global__ void clearArrayKernel(BrendanCUDA::Span<uint64_t> Array, uint64_t Count) {
+    uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
+    if (idx >= Array.size)
+        return;
+    uint64_t* l = Array.ptr + idx * Count;
+    uint64_t* u = std::min(l + Count, Array.ptr + Array.size);
+    for (; l < u; ++l)
+        *l = 0;
+}
 
 void getKernelLaunchParams(uint64_t ElementCount, uint32_t& ElementsPerThread, uint32_t& ThreadsPerBlock, uint32_t& BlockCount) {
     int deviceIdx;
@@ -286,4 +313,25 @@ void BrendanCUDA::details::InitArray_CallKernel(Span<uint32_t> Array, uint32_t P
     uint32_t blockCount;
     getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
     initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, ProbabilityOf1, Seed, elementsPerThread);
+}
+void BrendanCUDA::details::ClearArray_CallKernel(Span<float> Array) {
+    uint32_t elementsPerThread;
+    uint32_t threadsPerBlock;
+    uint32_t blockCount;
+    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+    clearArrayKernel<<<blockCount, threadsPerBlock>>>(Array, elementsPerThread);
+}
+void BrendanCUDA::details::ClearArray_CallKernel(Span<double> Array) {
+    uint32_t elementsPerThread;
+    uint32_t threadsPerBlock;
+    uint32_t blockCount;
+    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+    clearArrayKernel<<<blockCount, threadsPerBlock>>>(Array, elementsPerThread);
+}
+void BrendanCUDA::details::ClearArray_CallKernel(Span<uint64_t> Array) {
+    uint32_t elementsPerThread;
+    uint32_t threadsPerBlock;
+    uint32_t blockCount;
+    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+    clearArrayKernel<<<blockCount, threadsPerBlock>>>(Array, elementsPerThread);
 }
