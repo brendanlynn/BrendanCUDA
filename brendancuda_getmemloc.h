@@ -12,10 +12,10 @@ namespace BrendanCUDA {
         MemoryLocationBoth,
         MemoryLocationUnknown
     };
-    MemoryLocationBasic GetMemLocAssumeHostIfNotDevice(const void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLocAssumeHostIfNotDevice(const void* Pointer) {
         return GetMemLocAssumeHostIfNotDevice(const_cast<void*>(Pointer));
     }
-    MemoryLocationBasic GetMemLocAssumeHostIfNotDevice(void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLocAssumeHostIfNotDevice(void* Pointer) {
         if (!Pointer) return MemoryLocationNull;
         ThrowIfBad(cudaGetLastError());
         uint8_t x;
@@ -26,10 +26,10 @@ namespace BrendanCUDA {
         }
         return MemoryLocationDevice;
     }
-    MemoryLocationBasic GetMemLocUnknownIfNotDevice(const void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLocUnknownIfNotDevice(const void* Pointer) {
         return GetMemLocUnknownIfNotDevice(const_cast<void*>(Pointer));
     }
-    MemoryLocationBasic GetMemLocUnknownIfNotDevice(void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLocUnknownIfNotDevice(void* Pointer) {
         if (!Pointer) return MemoryLocationNull;
         ThrowIfBad(cudaGetLastError());
         uint8_t x;
@@ -40,10 +40,10 @@ namespace BrendanCUDA {
         }
         return MemoryLocationDevice;
     }
-    MemoryLocationBasic GetMemLocAssumeDeviceIfNotHost(const void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLocAssumeDeviceIfNotHost(const void* Pointer) {
         return GetMemLocAssumeDeviceIfNotHost(const_cast<void*>(Pointer));
     }
-    MemoryLocationBasic GetMemLocAssumeDeviceIfNotHost(void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLocAssumeDeviceIfNotHost(void* Pointer) {
         if (!Pointer) return MemoryLocationNull;
         ThrowIfBad(cudaGetLastError());
         cudaError_t e = cudaMemcpy(Pointer, Pointer, 1, cudaMemcpyHostToHost);
@@ -53,10 +53,10 @@ namespace BrendanCUDA {
         }
         return MemoryLocationHost;
     }
-    MemoryLocationBasic GetMemLocUnknownIfNotHost(const void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLocUnknownIfNotHost(const void* Pointer) {
         return GetMemLocUnknownIfNotHost(const_cast<void*>(Pointer));
     }
-    MemoryLocationBasic GetMemLocUnknownIfNotHost(void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLocUnknownIfNotHost(void* Pointer) {
         if (!Pointer) return MemoryLocationNull;
         ThrowIfBad(cudaGetLastError());
         uint8_t x;
@@ -67,10 +67,10 @@ namespace BrendanCUDA {
         }
         return MemoryLocationHost;
     }
-    MemoryLocationBasic GetMemLoc(const void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLoc(const void* Pointer) {
         return GetMemLoc(const_cast<void*>(Pointer));
     }
-    MemoryLocationBasic GetMemLoc(void* Pointer) {
+    __forceinline MemoryLocationBasic GetMemLoc(void* Pointer) {
         if (!Pointer) return MemoryLocationNull;
         ThrowIfBad(cudaGetLastError());
 
