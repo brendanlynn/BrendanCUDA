@@ -80,6 +80,17 @@ __global__ void randomizeArrayWMutationsKernel(BrendanCUDA::Span<uint32_t> Array
     for (; l < u; ++l)
         *l = BrendanCUDA::Random::RandomizeWMutations(*l, MutationProb, state);
 }
+__global__ void randomizeArrayWMutationsKernel(BrendanCUDA::Span<uint32_t> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, uint64_t Seed, uint64_t Count) {
+    uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
+    if (idx >= Array.size)
+        return;
+    curandState state;
+    curand_init(Seed, idx, 0, &state);
+    uint32_t* l = Array.ptr + idx * Count;
+    uint32_t* u = l + Count;
+    for (; l < u; ++l)
+        *l = BrendanCUDA::Random::RandomizeWMutations(*l, MutationProb, ProbabilityOf1, state);
+}
 
 __global__ void initArrayKernel(BrendanCUDA::Span<float> Array, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
@@ -250,6 +261,13 @@ void BrendanCUDA::details::RandomizeArrayWMutations_CallKernel(Span<uint32_t> Ar
     uint32_t blockCount;
     getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
     randomizeArrayWMutationsKernel<<<blockCount, threadsPerBlock>>>(Array, MutationProbability, Seed, elementsPerThread);
+}
+void BrendanCUDA::details::RandomizeArrayWMutations_CallKernel(Span<uint32_t> Array, uint32_t MutationProbability, uint32_t ProbabilityOf1, uint64_t Seed) {
+    uint32_t elementsPerThread;
+    uint32_t threadsPerBlock;
+    uint32_t blockCount;
+    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+    randomizeArrayWMutationsKernel<<<blockCount, threadsPerBlock>>>(Array, MutationProbability, ProbabilityOf1, Seed, elementsPerThread);
 }
 void BrendanCUDA::details::InitArray_CallKernel(Span<float> Array, uint64_t Seed) {
     uint32_t elementsPerThread;

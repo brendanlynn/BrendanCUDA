@@ -21,6 +21,7 @@ namespace BrendanCUDA {
         void RandomizeArrayWFlips_CallKernel(Span<uint32_t> Array, uint32_t FlipProbability, uint64_t Seed);
         void RandomizeArrayWTargets_CallKernel(Span<uint32_t> Array, uint32_t EachFlipProbability, uint64_t Seed);
         void RandomizeArrayWMutations_CallKernel(Span<uint32_t> Array, uint32_t MutationProbability, uint64_t Seed);
+        void RandomizeArrayWMutations_CallKernel(Span<uint32_t> Array, uint32_t MutationProbability, uint32_t ProbabilityOf1, uint64_t Seed);
         void InitArray_CallKernel(Span<float> Array, uint64_t Seed);
         void InitArray_CallKernel(Span<double> Array, uint64_t Seed);
         void InitArray_CallKernel(Span<float> Array, float LowerBound, float UpperBound, uint64_t Seed);
@@ -49,6 +50,12 @@ namespace BrendanCUDA {
 #ifdef __CUDACC__
         template <std::integral _T>
         __device__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, curandState& RNG);
+#endif
+        template <std::integral _T, std::uniform_random_bit_generator _TRNG>
+        __host__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, uint32_t ProbabilityOf1, _TRNG& RNG);
+#ifdef __CUDACC__
+        template <std::integral _T>
+        __device__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, uint32_t ProbabilityOf1, curandState& RNG);
 #endif
         template <std::uniform_random_bit_generator _TRNG>
         __host__ __forceinline float Randomize(float Value, float Scalar, _TRNG& RNG);
@@ -97,6 +104,12 @@ namespace BrendanCUDA {
 #ifdef __CUDACC__
         template <std::integral _T>
         __device__ void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, curandState& RNG);
+#endif
+        template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+        __host__ void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, _TRNG& RNG);
+#ifdef __CUDACC__
+        template <std::integral _T>
+        __device__ void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, curandState& RNG);
 #endif
 
         template <bool _MemoryOnHost, typename _T, std::uniform_random_bit_generator _TRNG>
@@ -228,6 +241,25 @@ __device__ __forceinline _T BrendanCUDA::Random::RandomizeWMutations(_T Value, u
     if (curand(&RNG) < MutationProbability) {
         if constexpr (sizeof(_T) > 4) return (_T)(((uint64_t)curand(&RNG) << 32) | curand(&RNG));
         else return (_T)curand(&RNG);
+    }
+    return Value;
+}
+#endif
+template <std::integral _T, std::uniform_random_bit_generator _TRNG>
+__host__ __forceinline _T BrendanCUDA::Random::RandomizeWMutations(_T Value, uint32_t MutationProbability, uint32_t ProbabilityOf1, _TRNG& RNG) {
+    std::uniform_int_distribution<uint32_t> dis32(0);
+    if (dis32(RNG) < MutationProbability) {
+        if constexpr (sizeof(_T) > 4) return (_T)Get64Bits(ProbabilityOf1, RNG);
+        else return (_T)Get32Bits(ProbabilityOf1, RNG);
+    }
+    return Value;
+}
+#ifdef __CUDACC__
+template <std::integral _T>
+__device__ __forceinline _T BrendanCUDA::Random::RandomizeWMutations(_T Value, uint32_t MutationProbability, uint32_t ProbabilityOf1, curandState& RNG) {
+    if (curand(&RNG) < MutationProbability) {
+        if constexpr (sizeof(_T) > 4) return (_T)Get64Bits(ProbabilityOf1, RNG);
+        else return (_T)Get32Bits(ProbabilityOf1, RNG);
     }
     return Value;
 }
@@ -504,6 +536,65 @@ __device__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, ui
     }
     else {
         RandomizeArrayWMutations<uint8_t>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), MutationProb, RNG);
+    }
+}
+#endif
+template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+__host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
+        if constexpr (_MemoryOnHost) {
+            uint64_t* l64 = (uint64_t*)Array.ptr;
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+            for (; l64 < u64; ++l64) *l64 = RandomizeWMutations(*l64, MutationProb, ProbabilityOf1, RNG);
+
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            memcpy(&endV, u64, r);
+            if (r > 4) endV = RandomizeWMutations(endV, MutationProb, ProbabilityOf1, RNG);
+            else if (r > 2) endV = (uint64_t)RandomizeWMutations((uint32_t)endV, MutationProb, ProbabilityOf1, RNG);
+            else if (r > 1) endV = (uint64_t)RandomizeWMutations((uint16_t)endV, MutationProb, ProbabilityOf1, RNG);
+            else endV = (uint64_t)RandomizeWMutations((uint8_t)endV, MutationProb, ProbabilityOf1, RNG);
+            memcpy(u64, &endV, r);
+        }
+        else {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), MutationProb, ProbabilityOf1, dis64(RNG));
+
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
+            if (r > 4) endV = RandomizeWMutations(endV, MutationProb, ProbabilityOf1, RNG);
+            else if (r > 2) endV = (uint64_t)RandomizeWMutations((uint32_t)endV, MutationProb, ProbabilityOf1, RNG);
+            else if (r > 1) endV = (uint64_t)RandomizeWMutations((uint16_t)endV, MutationProb, ProbabilityOf1, RNG);
+            else endV = (uint64_t)RandomizeWMutations((uint8_t)endV, MutationProb, ProbabilityOf1, RNG);
+            cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+        }
+    }
+    else {
+        RandomizeArrayWMutations<_MemoryOnHost, uint8_t, _TRNG>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), MutationProb, ProbabilityOf1, RNG);
+    }
+}
+#ifdef __CUDACC__
+template <std::integral _T>
+__device__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, curandState& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
+        uint64_t* l64 = (uint64_t*)Array.ptr;
+        uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+        for (; l64 < u64; ++l64) *l64 = RandomizeWMutations(*l64, MutationProb, ProbabilityOf1, RNG);
+
+        uint64_t endV;
+        size_t r = Array.size & 7;
+        memcpy(&endV, u64, r);
+        if (r > 4) endV = RandomizeWMutations(endV, MutationProb, ProbabilityOf1, RNG);
+        else if (r > 2) endV = (uint64_t)RandomizeWMutations((uint32_t)endV, MutationProb, ProbabilityOf1, RNG);
+        else if (r > 1) endV = (uint64_t)RandomizeWMutations((uint16_t)endV, MutationProb, ProbabilityOf1, RNG);
+        else endV = (uint64_t)RandomizeWMutations((uint8_t)endV, MutationProb, ProbabilityOf1, RNG);
+        memcpy(u64, &endV, r);
+    }
+    else {
+        RandomizeArrayWMutations<uint8_t>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), MutationProb, ProbabilityOf1, RNG);
     }
 }
 #endif
