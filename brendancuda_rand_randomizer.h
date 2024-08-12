@@ -67,89 +67,66 @@ namespace BrendanCUDA {
         __device__ __forceinline double Randomize(double Value, double Scalar, double LowerBound, double UpperBound, curandState& RNG);
 #endif
 
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArray(Span<float> Array, float Scalar, _TRNG& RNG);
+        template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
+        __host__ void RandomizeArray(Span<_T> Array, _T Scalar, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ void RandomizeArray(Span<float> Array, float Scalar, curandState& RNG);
+        template <std::floating_point _T>
+        __device__ void RandomizeArray(Span<_T> Array, _T Scalar, curandState& RNG);
 #endif
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArray(Span<float> Array, float Scalar, float LowerBound, float UpperBound, _TRNG& RNG);
+        template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
+        __host__ void RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ void RandomizeArray(Span<float> Array, float Scalar, float LowerBound, float UpperBound, curandState& RNG);
-#endif
-
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArray(Span<double> Array, double Scalar, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArray(Span<double> Array, double Scalar, curandState& RNG);
-#endif
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArray(Span<double> Array, double Scalar, double LowerBound, double UpperBound, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArray(Span<double> Array, double Scalar, double LowerBound, double UpperBound, curandState& RNG);
+        template <std::floating_point _T>
+        __device__ void RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, curandState& RNG);
 #endif
 
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArrayWFlips(Span<uint8_t> Array, uint32_t FlipProb, _TRNG& RNG);
+        template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+        __host__ void RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ void RandomizeArrayWFlips(Span<uint8_t> Array, uint32_t FlipProb, curandState& RNG);
+        template <std::integral _T>
+        __device__ void RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, curandState& RNG);
 #endif
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArrayWTargets(Span<uint8_t> Array, uint32_t EachFlipProb, _TRNG& RNG);
+        template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+        __host__ void RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ void RandomizeArrayWTargets(Span<uint8_t> Array, uint32_t EachFlipProb, curandState& RNG);
+        template <std::integral _T>
+        __device__ void RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, curandState& RNG);
 #endif
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArrayWMutations(Span<uint8_t> Array, uint32_t MutationProb, _TRNG& RNG);
+        template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+        __host__ void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ void RandomizeArrayWMutations(Span<uint8_t> Array, uint32_t MutationProb, curandState& RNG);
-#endif
-
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void InitRandomArray(Span<float> Array, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<float> Array, curandState& RNG);
-#endif
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void InitRandomArray(Span<float> Array, float LowerBound, float UpperBound, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<float> Array, float LowerBound, float UpperBound, curandState& RNG);
+        template <std::integral _T>
+        __device__ void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, curandState& RNG);
 #endif
 
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void InitRandomArray(Span<double> Array, _TRNG& RNG);
+        template <bool _MemoryOnHost, typename _T, std::uniform_random_bit_generator _TRNG>
+            requires std::is_arithmetic_v<_T>
+        __host__ void InitRandomArray(Span<_T> Array, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<double> Array, curandState& RNG);
+        template <typename _T>
+            requires std::is_arithmetic_v<_T>
+        __device__ void InitRandomArray(Span<_T> Array, curandState& RNG);
 #endif
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void InitRandomArray(Span<double> Array, double LowerBound, double UpperBound, _TRNG& RNG);
+        template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
+        __host__ void InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<double> Array, double LowerBound, double UpperBound, curandState& RNG);
+        template <std::floating_point _T>
+        __device__ void InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, curandState& RNG);
 #endif
-
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void InitRandomArray(Span<uint8_t> Array, _TRNG& RNG);
+        template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+        __host__ void InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<uint8_t> Array, curandState& RNG);
-#endif
-
-        template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-        __host__ void InitRandomArray(Span<uint8_t> Array, uint32_t ProbabilityOf1, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<uint8_t> Array, uint32_t ProbabilityOf1, curandState& RNG);
+        template <std::integral _T>
+        __device__ void InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, curandState& RNG);
 #endif
 
-        template <bool _MemoryOnHost>
-        __host__ void ClearArray(Span<float> Array);
-        __device__ void ClearArray(Span<float> Array);
-        template <bool _MemoryOnHost>
-        __host__ void ClearArray(Span<double> Array);
-        __device__ void ClearArray(Span<double> Array);
-
-        template <bool _MemoryOnHost>
-        __host__ void ClearArray(Span<uint8_t> Array);
+        template <bool _MemoryOnHost, typename _T>
+            requires std::is_arithmetic_v<_T>
+        __host__ void ClearArray(Span<_T> Array);
 #ifdef __CUDACC__
-        __device__ void ClearArray(Span<uint8_t> Array);
+        template <typename _T>
+            requires std::is_arithmetic_v<_T>
+        __device__ void ClearArray(Span<_T> Array);
 #endif
     }
 }
@@ -292,13 +269,13 @@ __device__ __forceinline double BrendanCUDA::Random::Randomize(double Value, dou
 }
 #endif
 
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArray(Span<float> Array, float Scalar, _TRNG& RNG) {
+template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
+__host__ void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _TRNG& RNG) {
     if constexpr (_MemoryOnHost) {
         Scalar *= 2.f;
-        std::uniform_real_distribution<float> dis(-Scalar, Scalar);
-        float* l = Array.ptr;
-        float* u = Array.ptr + Array.size;
+        std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
+        _T* l = Array.ptr;
+        _T* u = Array.ptr + Array.size;
         for (; l < u; ++l) *l += dis(RNG);
     }
     else {
@@ -307,65 +284,28 @@ __host__ void BrendanCUDA::Random::RandomizeArray(Span<float> Array, float Scala
     }
 }
 #ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::RandomizeArray(Span<float> Array, float Scalar, curandState& RNG) {
+template <>
+__device__ void BrendanCUDA::Random::RandomizeArray<float>(Span<float> Array, float Scalar, curandState& RNG) {
     Scalar *= 2.f;
     float* l = Array.ptr;
     float* u = Array.ptr + Array.size;
     for (; l < u; ++l) *l += Scalar * (curand_uniform(&RNG) - 0.5f);
 }
-#endif
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArray(Span<float> Array, float Scalar, float LowerBound, float UpperBound, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
-        Scalar *= 2.f;
-        std::uniform_real_distribution<float> dis(-Scalar, Scalar);
-        float* l = Array.ptr;
-        float* u = Array.ptr + Array.size;
-        for (; l < u; ++l) *l = std::clamp(*l + dis(RNG), LowerBound, UpperBound);
-    }
-    else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::RandomizeArray_CallKernel(Array, Scalar, LowerBound, UpperBound, dis64(RNG));
-    }
-}
-#ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::RandomizeArray(Span<float> Array, float Scalar, float LowerBound, float UpperBound, curandState& RNG) {
-    Scalar *= 2.f;
-    float* l = Array.ptr;
-    float* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l = std::clamp(*l + Scalar * (curand_uniform(&RNG) - 0.5f), LowerBound, UpperBound);
-}
-#endif
-
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArray(Span<double> Array, double Scalar, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
-        Scalar *= 2.f;
-        std::uniform_real_distribution<double> dis(-Scalar, Scalar);
-        double* l = Array.ptr;
-        double* u = Array.ptr + Array.size;
-        for (; l < u; ++l) *l += dis(RNG);
-    }
-    else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::RandomizeArray_CallKernel(Array, Scalar, dis64(RNG));
-    }
-}
-#ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::RandomizeArray(Span<double> Array, double Scalar, curandState& RNG) {
-    Scalar *= 2.f;
+template <>
+__device__ void BrendanCUDA::Random::RandomizeArray<double>(Span<double> Array, double Scalar, curandState& RNG) {
+    Scalar *= 2.;
     double* l = Array.ptr;
     double* u = Array.ptr + Array.size;
     for (; l < u; ++l) *l += Scalar * (curand_uniform_double(&RNG) - 0.5);
 }
 #endif
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArray(Span<double> Array, double Scalar, double LowerBound, double UpperBound, _TRNG& RNG) {
+template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
+__host__ void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     if constexpr (_MemoryOnHost) {
         Scalar *= 2.f;
-        std::uniform_real_distribution<double> dis(-Scalar, Scalar);
-        double* l = Array.ptr;
-        double* u = Array.ptr + Array.size;
+        std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
+        _T* l = Array.ptr;
+        _T* u = Array.ptr + Array.size;
         for (; l < u; ++l) *l = std::clamp(*l + dis(RNG), LowerBound, UpperBound);
     }
     else {
@@ -374,21 +314,67 @@ __host__ void BrendanCUDA::Random::RandomizeArray(Span<double> Array, double Sca
     }
 }
 #ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::RandomizeArray(Span<double> Array, double Scalar, double LowerBound, double UpperBound, curandState& RNG) {
+template <>
+__device__ void BrendanCUDA::Random::RandomizeArray<float>(Span<float> Array, float Scalar, float LowerBound, float UpperBound, curandState& RNG) {
+    Scalar *= 2.f;
+    float* l = Array.ptr;
+    float* u = Array.ptr + Array.size;
+    for (; l < u; ++l) *l = std::clamp(*l + Scalar * (curand_uniform(&RNG) - 0.5f), LowerBound, UpperBound);
+}
+template <>
+__device__ void BrendanCUDA::Random::RandomizeArray<double>(Span<double> Array, double Scalar, double LowerBound, double UpperBound, curandState& RNG) {
     Scalar *= 2.f;
     double* l = Array.ptr;
     double* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l = std::clamp(*l + Scalar * (curand_uniform_double(&RNG) - 0.5), LowerBound, UpperBound);
+    for (; l < u; ++l) *l = std::clamp(*l + Scalar * (curand_uniform_double(&RNG) - 0.5f), LowerBound, UpperBound);
 }
 #endif
 
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<uint8_t> Array, uint32_t FlipProb, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
+template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+__host__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
+        if constexpr (_MemoryOnHost) {
+            uint64_t* l64 = (uint64_t*)Array.ptr;
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+            for (; l64 < u64; ++l64) *l64 = RandomizeWFlips(*l64, FlipProb, RNG);
+
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            memcpy(&endV, u64, r);
+            if (r > 4) endV = RandomizeWFlips(endV, FlipProb, RNG);
+            else if (r > 2) endV = (uint64_t)RandomizeWFlips((uint32_t)endV, FlipProb, RNG);
+            else if (r > 1) endV = (uint64_t)RandomizeWFlips((uint16_t)endV, FlipProb, RNG);
+            else endV = (uint64_t)RandomizeWFlips((uint8_t)endV, FlipProb, RNG);
+            memcpy(u64, &endV, r & 7);
+        }
+        else {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), FlipProb, dis64(RNG));
+
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
+            if (r > 4) endV = RandomizeWFlips(endV, FlipProb, RNG);
+            else if (r > 2) endV = (uint64_t)RandomizeWFlips((uint32_t)endV, FlipProb, RNG);
+            else if (r > 1) endV = (uint64_t)RandomizeWFlips((uint16_t)endV, FlipProb, RNG);
+            else endV = (uint64_t)RandomizeWFlips((uint8_t)endV, FlipProb, RNG);
+            cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+        }
+    }
+    else {
+        RandomizeArrayWFlips<_MemoryOnHost, uint8_t, _TRNG>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), FlipProb, RNG);
+    }
+}
+#ifdef __CUDACC__
+template <std::integral _T>
+__device__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, curandState& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
         uint64_t* l64 = (uint64_t*)Array.ptr;
         uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
         for (; l64 < u64; ++l64) *l64 = RandomizeWFlips(*l64, FlipProb, RNG);
-        
+
         uint64_t endV;
         size_t r = Array.size & 7;
         memcpy(&endV, u64, r);
@@ -396,43 +382,54 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<uint8_t> Array, uin
         else if (r > 2) endV = (uint64_t)RandomizeWFlips((uint32_t)endV, FlipProb, RNG);
         else if (r > 1) endV = (uint64_t)RandomizeWFlips((uint16_t)endV, FlipProb, RNG);
         else endV = (uint64_t)RandomizeWFlips((uint8_t)endV, FlipProb, RNG);
-        memcpy(u64, &endV, r & 7);
+        memcpy(u64, &endV, r);
     }
     else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), FlipProb, dis64(RNG));
+        RandomizeArrayWFlips<_T>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), FlipProb, RNG);
+    }
+}
+#endif
+template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+__host__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
+        if constexpr (_MemoryOnHost) {
+            uint64_t* l64 = (uint64_t*)Array.ptr;
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+            for (; l64 < u64; ++l64) *l64 = RandomizeWTargets(*l64, EachFlipProb, RNG);
 
-        uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            memcpy(&endV, u64, r);
+            if (r > 4) endV = RandomizeWTargets(endV, EachFlipProb, RNG);
+            else if (r > 2) endV = (uint64_t)RandomizeWTargets((uint32_t)endV, EachFlipProb, RNG);
+            else if (r > 1) endV = (uint64_t)RandomizeWTargets((uint16_t)endV, EachFlipProb, RNG);
+            else endV = (uint64_t)RandomizeWTargets((uint8_t)endV, EachFlipProb, RNG);
+            memcpy(u64, &endV, r);
+        }
+        else {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), EachFlipProb, dis64(RNG));
 
-        uint64_t endV;
-        size_t r = Array.size & 7;
-        cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
-        if (r > 4) endV = RandomizeWFlips(endV, FlipProb, RNG);
-        else if (r > 2) endV = (uint64_t)RandomizeWFlips((uint32_t)endV, FlipProb, RNG);
-        else if (r > 1) endV = (uint64_t)RandomizeWFlips((uint16_t)endV, FlipProb, RNG);
-        else endV = (uint64_t)RandomizeWFlips((uint8_t)endV, FlipProb, RNG);
-        cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
+            if (r > 4) endV = RandomizeWTargets(endV, EachFlipProb, RNG);
+            else if (r > 2) endV = (uint64_t)RandomizeWTargets((uint32_t)endV, EachFlipProb, RNG);
+            else if (r > 1) endV = (uint64_t)RandomizeWTargets((uint16_t)endV, EachFlipProb, RNG);
+            else endV = (uint64_t)RandomizeWTargets((uint8_t)endV, EachFlipProb, RNG);
+            cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+        }
+    }
+    else {
+        RandomizeArrayWTargets<_MemoryOnHost, uint8_t, _TRNG>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), EachFlipProb, RNG);
     }
 }
 #ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<uint8_t> Array, uint32_t FlipProb, curandState& RNG) {
-    uint64_t* l64 = (uint64_t*)Array.ptr;
-    uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-    for (; l64 < u64; ++l64) *l64 = RandomizeWFlips(*l64, FlipProb, RNG);
-
-    uint64_t endV;
-    size_t r = Array.size & 7;
-    memcpy(&endV, u64, r);
-    if (r > 4) endV = RandomizeWFlips(endV, FlipProb, RNG);
-    else if (r > 2) endV = (uint64_t)RandomizeWFlips((uint32_t)endV, FlipProb, RNG);
-    else if (r > 1) endV = (uint64_t)RandomizeWFlips((uint16_t)endV, FlipProb, RNG);
-    else endV = (uint64_t)RandomizeWFlips((uint8_t)endV, FlipProb, RNG);
-    memcpy(u64, &endV, r);
-}
-#endif
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<uint8_t> Array, uint32_t EachFlipProb, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
+template <std::integral _T>
+__device__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, curandState& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
         uint64_t* l64 = (uint64_t*)Array.ptr;
         uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
         for (; l64 < u64; ++l64) *l64 = RandomizeWTargets(*l64, EachFlipProb, RNG);
@@ -447,40 +444,51 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<uint8_t> Array, u
         memcpy(u64, &endV, r);
     }
     else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), EachFlipProb, dis64(RNG));
+        RandomizeArrayWTargets<uint8_t>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), EachFlipProb, RNG);
+    }
+}
+#endif
+template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+__host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
+        if constexpr (_MemoryOnHost) {
+            uint64_t* l64 = (uint64_t*)Array.ptr;
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+            for (; l64 < u64; ++l64) *l64 = RandomizeWMutations(*l64, MutationProb, RNG);
 
-        uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            memcpy(&endV, u64, r);
+            if (r > 4) endV = RandomizeWMutations(endV, MutationProb, RNG);
+            else if (r > 2) endV = (uint64_t)RandomizeWMutations((uint32_t)endV, MutationProb, RNG);
+            else if (r > 1) endV = (uint64_t)RandomizeWMutations((uint16_t)endV, MutationProb, RNG);
+            else endV = (uint64_t)RandomizeWMutations((uint8_t)endV, MutationProb, RNG);
+            memcpy(u64, &endV, r);
+        }
+        else {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), MutationProb, dis64(RNG));
 
-        uint64_t endV;
-        size_t r = Array.size & 7;
-        cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
-        if (r > 4) endV = RandomizeWTargets(endV, EachFlipProb, RNG);
-        else if (r > 2) endV = (uint64_t)RandomizeWTargets((uint32_t)endV, EachFlipProb, RNG);
-        else if (r > 1) endV = (uint64_t)RandomizeWTargets((uint16_t)endV, EachFlipProb, RNG);
-        else endV = (uint64_t)RandomizeWTargets((uint8_t)endV, EachFlipProb, RNG);
-        cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
+            if (r > 4) endV = RandomizeWMutations(endV, MutationProb, RNG);
+            else if (r > 2) endV = (uint64_t)RandomizeWMutations((uint32_t)endV, MutationProb, RNG);
+            else if (r > 1) endV = (uint64_t)RandomizeWMutations((uint16_t)endV, MutationProb, RNG);
+            else endV = (uint64_t)RandomizeWMutations((uint8_t)endV, MutationProb, RNG);
+            cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+        }
+    }
+    else {
+        RandomizeArrayWMutations<_MemoryOnHost, uint8_t, _TRNG>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), MutationProb, RNG);
     }
 }
 #ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<uint8_t> Array, uint32_t EachFlipProb, curandState& RNG) {
-    uint64_t* l64 = (uint64_t*)Array.ptr;
-    uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-    for (; l64 < u64; ++l64) *l64 = RandomizeWTargets(*l64, EachFlipProb, RNG);
-
-    uint64_t endV;
-    size_t r = Array.size & 7;
-    memcpy(&endV, u64, r);
-    if (r > 4) endV = RandomizeWTargets(endV, EachFlipProb, RNG);
-    else if (r > 2) endV = (uint64_t)RandomizeWTargets((uint32_t)endV, EachFlipProb, RNG);
-    else if (r > 1) endV = (uint64_t)RandomizeWTargets((uint16_t)endV, EachFlipProb, RNG);
-    else endV = (uint64_t)RandomizeWTargets((uint8_t)endV, EachFlipProb, RNG);
-    memcpy(u64, &endV, r);
-}
-#endif
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<uint8_t> Array, uint32_t MutationProb, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
+template <std::integral _T>
+__device__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, curandState& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
         uint64_t* l64 = (uint64_t*)Array.ptr;
         uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
         for (; l64 < u64; ++l64) *l64 = RandomizeWMutations(*l64, MutationProb, RNG);
@@ -495,123 +503,108 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<uint8_t> Array,
         memcpy(u64, &endV, r);
     }
     else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), MutationProb, dis64(RNG));
-
-        uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-
-        uint64_t endV;
-        size_t r = Array.size & 7;
-        cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
-        if (r > 4) endV = RandomizeWMutations(endV, MutationProb, RNG);
-        else if (r > 2) endV = (uint64_t)RandomizeWMutations((uint32_t)endV, MutationProb, RNG);
-        else if (r > 1) endV = (uint64_t)RandomizeWMutations((uint16_t)endV, MutationProb, RNG);
-        else endV = (uint64_t)RandomizeWMutations((uint8_t)endV, MutationProb, RNG);
-        cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+        RandomizeArrayWMutations<uint8_t>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), MutationProb, RNG);
     }
-}
-#ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<uint8_t> Array, uint32_t MutationProb, curandState& RNG) {
-    uint64_t* l64 = (uint64_t*)Array.ptr;
-    uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-    for (; l64 < u64; ++l64) *l64 = RandomizeWMutations(*l64, MutationProb, RNG);
-
-    uint64_t endV;
-    size_t r = Array.size & 7;
-    memcpy(&endV, u64, r);
-    if (r > 4) endV = RandomizeWMutations(endV, MutationProb, RNG);
-    else if (r > 2) endV = (uint64_t)RandomizeWMutations((uint32_t)endV, MutationProb, RNG);
-    else if (r > 1) endV = (uint64_t)RandomizeWMutations((uint16_t)endV, MutationProb, RNG);
-    else endV = (uint64_t)RandomizeWMutations((uint8_t)endV, MutationProb, RNG);
-    memcpy(u64, &endV, r);
 }
 #endif
 
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::InitRandomArray(Span<float> Array, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
-        std::uniform_real_distribution<float> dis(-1.f, 1.f);
-        float* l = Array.ptr;
-        float* u = Array.ptr + Array.size;
-        for (; l < u; ++l) *l = dis(RNG);
-        break;
+template <bool _MemoryOnHost, typename _T, std::uniform_random_bit_generator _TRNG>
+   requires std::is_arithmetic_v<_T>
+__host__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, _TRNG& RNG) {
+    if constexpr (std::floating_point<_T>) {
+        if constexpr (_MemoryOnHost) {
+            std::uniform_real_distribution<_T> dis(-1., 1.);
+            _T* l = Array.ptr;
+            _T* u = Array.ptr + Array.size;
+            for (; l < u; ++l) *l = dis(RNG);
+        }
+        else {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            details::InitArray_CallKernel(Array, dis64(RNG));
+        }
+    }
+    else if (std::same_as<_T, uint8_t>) {
+        if constexpr (_MemoryOnHost) {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            uint64_t* l64 = (uint64_t*)Array.ptr;
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+            for (; l64 < u64; ++l64) *l64 = dis64(RNG);
+
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            memcpy(&endV, u64, r);
+            endV = dis64(RNG);
+            memcpy(u64, &endV, r);
+        }
+        else {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            details::InitArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), dis64(RNG));
+
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
+            endV = dis64(RNG);
+            cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+        }
     }
     else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::InitArray_CallKernel(Array, dis64(RNG));
-        break;
+        InitRandomArray<_MemoryOnHost, uint8_t, _TRNG>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), RNG);
     }
 }
 #ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::InitRandomArray(Span<float> Array, curandState& RNG) {
-    float* l = Array.ptr;
-    float* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l = curand_uniform(&RNG);
-}
-#endif
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::InitRandomArray(Span<float> Array, float LowerBound, float UpperBound, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
-        std::uniform_real_distribution<float> dis(LowerBound, UpperBound);
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__device__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, curandState& RNG) {
+    if constexpr (std::same_as<_T, float>) {
         float* l = Array.ptr;
         float* u = Array.ptr + Array.size;
+        for (; l < u; ++l) *l = curand_uniform(&RNG);
+    }
+    else if constexpr (std::same_as<_T, double>) {
+        double* l = Array.ptr;
+        double* u = Array.ptr + Array.size;
+        for (; l < u; ++l) *l = curand_uniform_double(&RNG);
+    }
+    else {
+        static_assert(std::integral<_T>, "Type _T has not yet been implemented.");
+        uint32_t* l32 = (uint32_t*)Array.ptr;
+        uint32_t* u32 = ((uint32_t*)Array.ptr) + (Array.size >> 2);
+        for (; l32 < u32; ++l32) *l32 = curand(&RNG);
+
+        uint32_t endV;
+        size_t r = Array.size & 3;
+        memcpy(&endV, u32, r);
+        endV = curand(&RNG);
+        memcpy(u32, &endV, r);
+    }
+}
+
+#endif
+template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
+__host__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    if constexpr (_MemoryOnHost) {
+        std::uniform_real_distribution<_T> dis(LowerBound, UpperBound);
+        _T* l = Array.ptr;
+        _T* u = Array.ptr + Array.size;
         for (; l < u; ++l) *l = dis(RNG);
-        break;
     }
     else {
         std::uniform_int_distribution<uint64_t> dis64(0);
         details::InitArray_CallKernel(Array, LowerBound, UpperBound, dis64(RNG));
-        break;
     }
 }
 #ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::InitRandomArray(Span<float> Array, float LowerBound, float UpperBound, curandState& RNG) {
+template <>
+__device__ void BrendanCUDA::Random::InitRandomArray<float>(Span<float> Array, float LowerBound, float UpperBound, curandState& RNG) {
     float range = UpperBound - LowerBound;
     float* l = Array.ptr;
     float* u = Array.ptr + Array.size;
     for (; l < u; ++l) *l = curand_uniform(&RNG) * range + LowerBound;
 }
-#endif
-
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::InitRandomArray(Span<double> Array, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
-        std::uniform_real_distribution<double> dis(-1.f, 1.f);
-        double* l = Array.ptr;
-        double* u = Array.ptr + Array.size;
-        for (; l < u; ++l) *l = dis(RNG);
-        break;
-    }
-    else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::InitArray_CallKernel(Array, dis64(RNG));
-        break;
-    }
-}
-#ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::InitRandomArray(Span<double> Array, curandState& RNG) {
-    double* l = Array.ptr;
-    double* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l = curand_uniform_double(&RNG);
-}
-#endif
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::InitRandomArray(Span<double> Array, double LowerBound, double UpperBound, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
-        std::uniform_real_distribution<double> dis(LowerBound, UpperBound);
-        double* l = Array.ptr;
-        double* u = Array.ptr + Array.size;
-        for (; l < u; ++l) *l = dis(RNG);
-        break;
-    }
-    else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::InitArray_CallKernel(Array, LowerBound, UpperBound, dis64(RNG));
-        break;
-    }
-}
-#ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::InitRandomArray(Span<double> Array, double LowerBound, double UpperBound, curandState& RNG) {
+template <>
+__device__ void BrendanCUDA::Random::InitRandomArray<double>(Span<double> Array, double LowerBound, double UpperBound, curandState& RNG) {
     double range = UpperBound - LowerBound;
     double* l = Array.ptr;
     double* u = Array.ptr + Array.size;
@@ -619,132 +612,106 @@ __device__ void BrendanCUDA::Random::InitRandomArray(Span<double> Array, double 
 }
 #endif
 
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::InitRandomArray(Span<uint8_t> Array, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        uint64_t* l64 = (uint64_t*)Array.ptr;
-        uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-        for (; l64 < u64; ++l64) *l64 = dis64(RNG);
+template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
+__host__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
+        if constexpr (_MemoryOnHost) {
+            uint64_t* l64 = (uint64_t*)Array.ptr;
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+            for (; l64 < u64; ++l64) *l64 = Get64Bits(ProbabilityOf1, RNG);
 
-        uint64_t endV;
-        size_t r = Array.size & 7;
-        memcpy(&endV, u64, r);
-        endV = dis64(RNG);
-        memcpy(u64, &endV, r);
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            memcpy(&endV, u64, r);
+            endV = Get64Bits(ProbabilityOf1, RNG);
+            memcpy(u64, &endV, r);
+        }
+        else {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            details::InitArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), ProbabilityOf1, dis64(RNG));
 
-        break;
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+
+            uint64_t endV;
+            size_t r = Array.size & 7;
+            cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
+            endV = Get64Bits(ProbabilityOf1, RNG);
+            cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+        }
     }
     else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::InitArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), MutationProb, dis64(RNG));
-
-        uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-
-        uint64_t endV;
-        size_t r = Array.size & 7;
-        cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
-        endV = dis64(RNG);
-        cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
-
-        break;
+        InitRandomArray<_MemoryOnHost, uint8_t, _TRNG>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), ProbabilityOf1, RNG);
     }
 }
 #ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::InitRandomArray(Span<uint8_t> Array, curandState& RNG) {
-    uint32_t* l32 = (uint32_t*)Array.ptr;
-    uint32_t* u32 = ((uint32_t*)Array.ptr) + (Array.size >> 2);
-    for (; l32 < u32; ++l32) *l32 = curand(&RNG);
+template <std::integral _T>
+__device__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, curandState& RNG) {
+    if constexpr (std::same_as<_T, uint8_t>) {
+        uint32_t* l32 = (uint32_t*)Array.ptr;
+        uint32_t* u32 = ((uint32_t*)Array.ptr) + (Array.size >> 2);
+        for (; l32 < u32; ++l32) *l32 = Get32Bits(ProbabilityOf1, RNG);
 
-    uint32_t endV;
-    size_t r = Array.size & 3;
-    memcpy(&endV, u32, r);
-    endV = curand(&RNG);
-    memcpy(u32, &endV, r);
+        uint32_t endV;
+        size_t r = Array.size & 3;
+        memcpy(&endV, u32, r);
+        endV = Get32Bits(ProbabilityOf1, RNG);
+        memcpy(u32, &endV, r);
+    }
+    else {
+        InitRandomArray<uint8_t>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), ProbabilityOf1, RNG);
+    }
 }
 #endif
 
-template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::InitRandomArray(Span<uint8_t> Array, uint32_t ProbabilityOf1, _TRNG& RNG) {
-    if constexpr (_MemoryOnHost) {
-        uint64_t* l64 = (uint64_t*)Array.ptr;
-        uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-        for (; l64 < u64; ++l64) *l64 = Get64Bits(ProbabilityOf1, RNG);
+template <bool _MemoryOnHost, typename _T>
+    requires std::is_arithmetic_v<_T>
+__host__ void BrendanCUDA::Random::ClearArray(Span<_T> Array) {
+    if constexpr (std::floating_point<_T>) {
+        if constexpr (_MemoryOnHost) {
+            _T* l = Array.ptr;
+            _T* u = Array.ptr + Array.size;
+            for (; l < u; ++l) *l = (_T)0;
+        }
+        else {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            details::ClearArray_CallKernel(Array);
+        }
+    }
+    else if constexpr (std::same_as<_T, uint8_t>) {
+        if constexpr (_MemoryOnHost) {
+            uint64_t* l64 = (uint64_t*)Array.ptr;
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+            for (; l64 < u64; ++l64) *l64 = 0;
 
-        uint64_t endV;
-        size_t r = Array.size & 7;
-        memcpy(&endV, u64, r);
-        endV = Get64Bits(ProbabilityOf1, RNG);
-        memcpy(u64, &endV, r);
+            uint64_t endV = 0;
+            size_t r = Array.size & 7;
+            memcpy(u64, &endV, r);
+        }
+        else {
+            std::uniform_int_distribution<uint64_t> dis64(0);
+            details::ClearArray_CallKernel(Span<uint64_t>((uint64_t*)Array.ptr, Array.size >> 3));
 
-        break;
+            uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
+
+            uint64_t endV = 0;
+            size_t r = Array.size & 7;
+            cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+        }
     }
     else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::InitArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), MutationProb, dis64(RNG));
-
-        uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-
-        uint64_t endV;
-        size_t r = Array.size & 7;
-        cudaMemcpy(&endV, u64, r, cudaMemcpyDefault);
-        endV = Get64Bits(ProbabilityOf1, RNG);
-        cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
-
-        break;
+        ClearArray<_MemoryOnHost, uint8_t>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)));
     }
 }
 #ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::InitRandomArray(Span<uint8_t> Array, uint32_t ProbabilityOf1, curandState& RNG) {
-    uint32_t* l32 = (uint32_t*)Array.ptr;
-    uint32_t* u32 = ((uint32_t*)Array.ptr) + (Array.size >> 2);
-    for (; l32 < u32; ++l64) *l32 = Get32Bits(ProbabilityOf1, RNG);
-
-    uint32_t endV;
-    size_t r = Array.size & 3;
-    memcpy(&endV, u32, r);
-    endV = Get32Bits(ProbabilityOf1, RNG);
-    memcpy(u32, &endV, r);
-}
-#endif
-
-template <bool _MemoryOnHost>
-__host__ void BrendanCUDA::Random::ClearArray(Span<float> Array) {
-    if constexpr (_MemoryOnHost) {
-        float* l = Array.ptr;
-        float* u = Array.ptr + Array.size;
-        for (; l < u; ++l) *l += 0.f;
+template <typename _T>
+    requires std::is_arithmetic_v<_T>
+__device__ void BrendanCUDA::Random::ClearArray(Span<_T> Array) {
+    if constexpr (std::floating_point<_T>) {
+        _T* l = Array.ptr;
+        _T* u = Array.ptr + Array.size;
+        for (; l < u; ++l) *l = (_T)0;
     }
-    else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::ClearArray_CallKernel(Array);
-    }
-}
-__device__ void BrendanCUDA::Random::ClearArray(Span<float> Array) {
-    float* l = Array.ptr;
-    float* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l += 0.f;
-}
-template <bool _MemoryOnHost>
-__host__ void BrendanCUDA::Random::ClearArray(Span<double> Array) {
-    if constexpr (_MemoryOnHost) {
-        double* l = Array.ptr;
-        double* u = Array.ptr + Array.size;
-        for (; l < u; ++l) *l += 0.;
-    }
-    else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::ClearArray_CallKernel(Array);
-    }
-}
-__device__ void BrendanCUDA::Random::ClearArray(Span<double> Array) {
-    double* l = Array.ptr;
-    double* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l += 0.;
-}
-template <bool _MemoryOnHost>
-__host__ void BrendanCUDA::Random::ClearArray(Span<uint8_t> Array) {
-    if constexpr (_MemoryOnHost) {
+    else if constexpr (std::same_as<_T, uint8_t>) {
         uint64_t* l64 = (uint64_t*)Array.ptr;
         uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
         for (; l64 < u64; ++l64) *l64 = 0;
@@ -754,24 +721,7 @@ __host__ void BrendanCUDA::Random::ClearArray(Span<uint8_t> Array) {
         memcpy(u64, &endV, r);
     }
     else {
-        std::uniform_int_distribution<uint64_t> dis64(0);
-        details::ClearArray_CallKernel(Span<uint64_t>((uint64_t*)Array.ptr, Array.size >> 3));
-
-        uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-
-        uint64_t endV = 0;
-        size_t r = Array.size & 7;
-        cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
+        ClearArray<uint8_t>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)));
     }
-}
-#ifdef __CUDACC__
-__device__ void BrendanCUDA::Random::ClearArray(Span<uint8_t> Array) {
-    uint64_t* l64 = (uint64_t*)Array.ptr;
-    uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
-    for (; l64 < u64; ++l64) *l64 = 0;
-
-    uint64_t endV = 0;
-    size_t r = Array.size & 7;
-    memcpy(u64, &endV, r);
 }
 #endif
