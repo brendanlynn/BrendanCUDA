@@ -9,7 +9,8 @@ namespace BrendanCUDA {
     namespace details {
         template <typename _TOutputType, typename _TRNG>
         __host__ __device__ _TOutputType RunRNGFunc(void* RNG) {
-            return (_TOutputType)((*(_TRNG*)RNG)());
+            std::uniform_int_distribution<_TOutputType> dis(0);
+            return dis(*(_TRNG*)RNG);
         }
         template <typename _TOutputType>
         using runRNGFunc_t = _TOutputType(*)(void*);
