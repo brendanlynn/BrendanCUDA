@@ -163,14 +163,14 @@ __host__ __device__ __forceinline _T BrendanCUDA::details::RandomizeWTargets_Get
 
 template <std::integral _T, std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline _T BrendanCUDA::Random::RandomizeWFlips(_T Value, uint32_t FlipProbability, _TRNG& RNG) {
-    if constexpr (sizeof(_T) > 4) Value ^= (_T)Get64Bits(FlipProbability, RNG);
-    else Value ^= (_T)Get32Bits(FlipProbability, RNG);
+    if constexpr (sizeof(_T) > 4) return Value ^ (_T)Get64Bits(FlipProbability, RNG);
+    else return Value ^ (_T)Get32Bits(FlipProbability, RNG);
 }
 #ifdef __CUDACC__
 template <std::integral _T>
 __device__ __forceinline _T BrendanCUDA::Random::RandomizeWFlips(_T Value, uint32_t FlipProbability, curandState& RNG) {
-    if constexpr (sizeof(_T) > 4) Value ^= (_T)Get64Bits(FlipProbability, RNG);
-    else Value ^= (_T)Get32Bits(FlipProbability, RNG);
+    if constexpr (sizeof(_T) > 4) return Value ^ (_T)Get64Bits(FlipProbability, RNG);
+    else return Value ^ (_T)Get32Bits(FlipProbability, RNG);
 }
 #endif
 template <std::integral _T, std::uniform_random_bit_generator _TRNG>
@@ -229,9 +229,15 @@ template <std::integral _T, std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline _T BrendanCUDA::Random::RandomizeWMutations(_T Value, uint32_t MutationProbability, _TRNG& RNG) {
     std::uniform_int_distribution<uint32_t> dis32(0);
     if (dis32(RNG) < MutationProbability) {
-        if constexpr (std::same_as<_T, uint32_t>) return dis32(RNG);
-        std::uniform_int_distribution<_T> disT(0);
-        return disT(RNG);
+        if constexpr (sizeof(_T) == 4) return (_T)dis32(RNG);
+        else if constexpr (sizeof(_T) > 4) {
+            std::uniform_int_distribution<_T> disT(std::numeric_limits<_T>::min(), std::numeric_limits<_T>::max());
+            return disT(RNG);
+        }
+        else {
+            std::uniform_int_distribution<uint16_t> dis(0, (1 << (sizeof(_T) << 3)) - 1);
+            return (_T)dis(RNG);
+        }
     }
     return Value;
 }
@@ -381,7 +387,7 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T> Array, uint32_t
         }
         else {
             std::uniform_int_distribution<uint64_t> dis64(0);
-            details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), FlipProb, dis64(RNG));
+            details::RandomizeArrayWFlips_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), FlipProb, dis64(RNG));
 
             uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
 
@@ -440,7 +446,7 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<_T> Array, uint32
         }
         else {
             std::uniform_int_distribution<uint64_t> dis64(0);
-            details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), EachFlipProb, dis64(RNG));
+            details::RandomizeArrayWTargets_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), EachFlipProb, dis64(RNG));
 
             uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
 
@@ -499,7 +505,7 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint
         }
         else {
             std::uniform_int_distribution<uint64_t> dis64(0);
-            details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), MutationProb, dis64(RNG));
+            details::RandomizeArrayWMutations_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), MutationProb, dis64(RNG));
 
             uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
 
@@ -558,7 +564,7 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint
         }
         else {
             std::uniform_int_distribution<uint64_t> dis64(0);
-            details::RandomizeArray_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), MutationProb, ProbabilityOf1, dis64(RNG));
+            details::RandomizeArrayWMutations_CallKernel(Span<uint32_t>((uint32_t*)Array.ptr, Array.size >> 2), MutationProb, ProbabilityOf1, dis64(RNG));
 
             uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
 

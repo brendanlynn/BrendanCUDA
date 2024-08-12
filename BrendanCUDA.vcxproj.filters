@@ -146,9 +146,6 @@
     <CudaCompile Include="brendancuda_nets_makenet.cu">
       <Filter>Nets</Filter>
     </CudaCompile>
-    <CudaCompile Include="brendancuda_ai_mlpb_mlpbl.cu">
-      <Filter>AI\MLPB</Filter>
-    </CudaCompile>
     <CudaCompile Include="brendancuda_details_fillwith.cu">
       <Filter>details</Filter>
     </CudaCompile>

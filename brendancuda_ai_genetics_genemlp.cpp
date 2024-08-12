@@ -2,6 +2,7 @@
 #include "brendancuda_rand_anyrng.h"
 #include "cuda_runtime.h"
 #include "brendancuda_errorhelp.h"
+#include "brendancuda_rand_randomizer.h"
 
 template <typename _T>
 BrendanCUDA::AI::Genetics::GeneMLP<_T>::GeneMLP(_T* Base, MLP::MLP<_T> Intermediate) {
@@ -30,22 +31,22 @@ BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::C
 }
 template <typename _T>
 void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar, Random::AnyRNG<uint64_t> RNG) {
-    RandomizeArray(Span<_T>(base, intermediate.InputLength()), Scalar, RNG);
+    Random::RandomizeArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(base, intermediate.InputLength()), Scalar, RNG);
     intermediate.Randomize(Scalar, RNG);
 }
 template <typename _T>
 void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) {
-    RandomizeArray(Span<_T>(base, intermediate.InputLength()), Scalar, LowerBound, UpperBound, RNG);
+    Random::RandomizeArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(base, intermediate.InputLength()), Scalar, LowerBound, UpperBound, RNG);
     intermediate.Randomize(Scalar, LowerBound, UpperBound, RNG);
 }
 template <typename _T>
 void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar_Base, _T Scalar_Intermediate, Random::AnyRNG<uint64_t> RNG) {
-    RandomizeArray(Span<_T>(base, intermediate.InputLength()), Scalar_Base, RNG);
+    Random::RandomizeArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(base, intermediate.InputLength()), Scalar_Base, RNG);
     intermediate.Randomize(Scalar_Intermediate, RNG);
 }
 template <typename _T>
 void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) {
-    RandomizeArray(Span<_T>(base, intermediate.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
+    Random::RandomizeArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(base, intermediate.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
     intermediate.Randomize(Scalar_Intermediate, LowerBound, UpperBound, RNG);
 }
 template <typename _T>
@@ -74,17 +75,17 @@ BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::R
 }
 template <typename _T>
 void BrendanCUDA::AI::Genetics::GeneMLP<_T>::ZeroOverwrite() {
-    InitZeroArray(Span<_T>(base, intermediate.InputLength()));
+    Random::ClearArray<false, _T>(Span<_T>(base, intermediate.InputLength()));
     intermediate.ZeroOverwrite();
 }
 template <typename _T>
 void BrendanCUDA::AI::Genetics::GeneMLP<_T>::RandomOverwrite(Random::AnyRNG<uint64_t> RNG) {
-    InitRandomArray(Span<_T>(base, intermediate.InputLength()), RNG);
+    Random::InitRandomArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(base, intermediate.InputLength()), RNG);
     intermediate.RandomOverwrite(RNG);
 }
 template <typename _T>
 void BrendanCUDA::AI::Genetics::GeneMLP<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) {
-    InitRandomArray(Span<_T>(base, intermediate.InputLength()), LowerBound, UpperBound, RNG);
+    Random::InitRandomArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(base, intermediate.InputLength()), LowerBound, UpperBound, RNG);
     intermediate.RandomOverwrite(LowerBound, UpperBound, RNG);
 }
 

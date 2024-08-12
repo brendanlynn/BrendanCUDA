@@ -1,11 +1,12 @@
 #include "brendancuda_nets_makenet.h"
-#include "brendancuda_rand_drandom.cuh"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_points.h"
+#include "brendancuda_rand_randomizer.h"
 #include <cuda_runtime.h>
+#include <curand_kernel.h>
+#include <device_launch_parameters.h>
 
 using BrendanCUDA::float_3;
-using BrendanCUDA::Random::DeviceRandom;
 using BrendanCUDA::CoordinatesToIndex;
 using BrendanCUDA::uint32_3;
 using BrendanCUDA::ThrowIfBad;
@@ -43,11 +44,6 @@ __device__ uint32_3 whichBucket(float_3 point, uint32_t bucketCountPerD) {
     }
 
     return uint32_3(bX, bY, bZ);
-}
-
-__global__ void fillRandomly(BrendanCUDA::float_3* arr, uint64_t bS) {
-    DeviceRandom dr(bS);
-    arr[blockIdx.x] = float_3(dr.GetF(), dr.GetF(), dr.GetF());
 }
 
 __device__ void addToBucket(Bucket& bucket, size_t value) {
@@ -193,10 +189,10 @@ __global__ void disposeOfBuckets(BucketTS* buckets) {
     delete[] buckets[blockIdx.x].data;
 }
 
-BrendanCUDA::Nets::Net BrendanCUDA::Nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, BrendanCUDA::Random::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
+BrendanCUDA::Nets::Net BrendanCUDA::Nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, Random::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
     thrust::device_vector<float_3>* dv = new thrust::device_vector<float_3>(NodeCount);
 
-    fillRandomly<<<dv->size(), 1>>>(dv->data().get(), RNG());
+    Random::InitRandomArray<false, float, Random::AnyRNG<uint64_t>>(Span<float>((float*)(dv->data().get()), NodeCount * 3), RNG);
 
     constexpr size_t bucketCountPerD = 10;
 
