@@ -119,7 +119,6 @@
     <ClInclude Include="brendancuda_rand_anyrng.h" />
     <ClInclude Include="brendancuda_binary_basic.h" />
     <ClInclude Include="brendancuda_dcopy.cuh" />
-    <ClInclude Include="brendancuda_rand_drandom.cuh" />
     <ClInclude Include="brendancuda_fields_dfield.h" />
     <ClInclude Include="brendancuda_ai_evol_evolver.h" />
     <ClInclude Include="brendancuda_fields_field.h" />
@@ -149,7 +148,6 @@
     <CudaCompile Include="brendancuda_dcopy.cu" />
     <CudaCompile Include="brendancuda_nets_makenet.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu" />
-    <CudaCompile Include="brendancuda_rand_drandom.cu" />
     <CudaCompile Include="brendancuda_rand_randomizer.cu" />
   </ItemGroup>
   <ItemGroup>

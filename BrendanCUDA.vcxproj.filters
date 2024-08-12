@@ -32,9 +32,6 @@
     <ClInclude Include="brendancuda_fields_dfield.h">
       <Filter>Fields</Filter>
     </ClInclude>
-    <ClInclude Include="brendancuda_rand_drandom.cuh">
-      <Filter>Random</Filter>
-    </ClInclude>
     <ClInclude Include="brendancuda_rand_bits.h">
       <Filter>Random</Filter>
     </ClInclude>
@@ -139,9 +136,6 @@
     </CudaCompile>
     <CudaCompile Include="brendancuda_ai.cu">
       <Filter>AI</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_rand_drandom.cu">
-      <Filter>Random</Filter>
     </CudaCompile>
     <CudaCompile Include="brendancuda_binary_basic.cu" />
     <CudaCompile Include="brendancuda_dcopy.cu" />
