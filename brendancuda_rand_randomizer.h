@@ -91,62 +91,44 @@ namespace BrendanCUDA {
 
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWFlips(Span<uint64_t> Array, uint32_t FlipProb, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArrayWFlips(Span<uint64_t> Array, uint32_t FlipProb, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWFlips(Span<uint32_t> Array, uint32_t FlipProb, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArrayWFlips(Span<uint32_t> Array, uint32_t FlipProb, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWFlips(Span<uint16_t> Array, uint32_t FlipProb, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArrayWFlips(Span<uint16_t> Array, uint32_t FlipProb, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWFlips(Span<uint8_t> Array, uint32_t FlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
+        __device__ void RandomizeArrayWFlips(Span<uint64_t> Array, uint32_t FlipProb, curandState& RNG);
+        __device__ void RandomizeArrayWFlips(Span<uint32_t> Array, uint32_t FlipProb, curandState& RNG);
+        __device__ void RandomizeArrayWFlips(Span<uint16_t> Array, uint32_t FlipProb, curandState& RNG);
         __device__ void RandomizeArrayWFlips(Span<uint8_t> Array, uint32_t FlipProb, curandState& RNG);
 #endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWTargets(Span<uint64_t> Array, uint32_t EachFlipProb, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArrayWTargets(Span<uint64_t> Array, uint32_t EachFlipProb, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWTargets(Span<uint32_t> Array, uint32_t EachFlipProb, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArrayWTargets(Span<uint32_t> Array, uint32_t EachFlipProb, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWTargets(Span<uint16_t> Array, uint32_t EachFlipProb, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArrayWTargets(Span<uint16_t> Array, uint32_t EachFlipProb, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWTargets(Span<uint8_t> Array, uint32_t EachFlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
+        __device__ void RandomizeArrayWTargets(Span<uint64_t> Array, uint32_t EachFlipProb, curandState& RNG);
+        __device__ void RandomizeArrayWTargets(Span<uint32_t> Array, uint32_t EachFlipProb, curandState& RNG);
+        __device__ void RandomizeArrayWTargets(Span<uint16_t> Array, uint32_t EachFlipProb, curandState& RNG);
         __device__ void RandomizeArrayWTargets(Span<uint8_t> Array, uint32_t EachFlipProb, curandState& RNG);
 #endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWMutations(Span<uint64_t> Array, uint32_t MutationProb, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArrayWMutations(Span<uint64_t> Array, uint32_t MutationProb, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWMutations(Span<uint32_t> Array, uint32_t MutationProb, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArrayWMutations(Span<uint32_t> Array, uint32_t MutationProb, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWMutations(Span<uint16_t> Array, uint32_t MutationProb, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void RandomizeArrayWMutations(Span<uint16_t> Array, uint32_t MutationProb, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void RandomizeArrayWMutations(Span<uint8_t> Array, uint32_t MutationProb, _TRNG& RNG);
 #ifdef __CUDACC__
+        __device__ void RandomizeArrayWMutations(Span<uint64_t> Array, uint32_t MutationProb, curandState& RNG);
+        __device__ void RandomizeArrayWMutations(Span<uint32_t> Array, uint32_t MutationProb, curandState& RNG);
+        __device__ void RandomizeArrayWMutations(Span<uint16_t> Array, uint32_t MutationProb, curandState& RNG);
         __device__ void RandomizeArrayWMutations(Span<uint8_t> Array, uint32_t MutationProb, curandState& RNG);
 #endif
 
@@ -174,43 +156,31 @@ namespace BrendanCUDA {
 
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void InitRandomArray(Span<uint64_t> Array, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<uint64_t> Array, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void InitRandomArray(Span<uint32_t> Array, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<uint32_t> Array, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void InitRandomArray(Span<uint16_t> Array, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<uint16_t> Array, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void InitRandomArray(Span<uint8_t> Array, _TRNG& RNG);
 #ifdef __CUDACC__
+        __device__ void InitRandomArray(Span<uint64_t> Array, curandState& RNG);
+        __device__ void InitRandomArray(Span<uint32_t> Array, curandState& RNG);
+        __device__ void InitRandomArray(Span<uint16_t> Array, curandState& RNG);
         __device__ void InitRandomArray(Span<uint8_t> Array, curandState& RNG);
 #endif
 
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void InitRandomArray(Span<uint64_t> Array, uint32_t ProbabilityOf1, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<uint64_t> Array, uint32_t ProbabilityOf1, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void InitRandomArray(Span<uint32_t> Array, uint32_t ProbabilityOf1, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<uint32_t> Array, uint32_t ProbabilityOf1, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void InitRandomArray(Span<uint16_t> Array, uint32_t ProbabilityOf1, _TRNG& RNG);
-#ifdef __CUDACC__
-        __device__ void InitRandomArray(Span<uint16_t> Array, uint32_t ProbabilityOf1, curandState& RNG);
-#endif
         template <bool _MemoryOnHost, std::uniform_random_bit_generator _TRNG>
         __host__ void InitRandomArray(Span<uint8_t> Array, uint32_t ProbabilityOf1, _TRNG& RNG);
 #ifdef __CUDACC__
+        __device__ void InitRandomArray(Span<uint64_t> Array, uint32_t ProbabilityOf1, curandState& RNG);
+        __device__ void InitRandomArray(Span<uint32_t> Array, uint32_t ProbabilityOf1, curandState& RNG);
+        __device__ void InitRandomArray(Span<uint16_t> Array, uint32_t ProbabilityOf1, curandState& RNG);
         __device__ void InitRandomArray(Span<uint8_t> Array, uint32_t ProbabilityOf1, curandState& RNG);
 #endif
 
@@ -220,18 +190,21 @@ namespace BrendanCUDA {
         template <bool _MemoryOnHost>
         __host__ void ClearArray(Span<double> Array);
         __device__ void ClearArray(Span<double> Array);
+
         template <bool _MemoryOnHost>
         __host__ void ClearArray(Span<uint64_t> Array);
-        __device__ void ClearArray(Span<uint64_t> Array);
         template <bool _MemoryOnHost>
         __host__ void ClearArray(Span<uint32_t> Array);
-        __device__ void ClearArray(Span<uint32_t> Array);
         template <bool _MemoryOnHost>
         __host__ void ClearArray(Span<uint16_t> Array);
-        __device__ void ClearArray(Span<uint16_t> Array);
         template <bool _MemoryOnHost>
         __host__ void ClearArray(Span<uint8_t> Array);
+#ifdef __CUDACC__
+        __device__ void ClearArray(Span<uint64_t> Array);
+        __device__ void ClearArray(Span<uint32_t> Array);
+        __device__ void ClearArray(Span<uint16_t> Array);
         __device__ void ClearArray(Span<uint8_t> Array);
+#endif
     }
 }
 
@@ -845,6 +818,7 @@ __host__ void BrendanCUDA::Random::ClearArray(Span<uint8_t> Array) {
         cudaMemcpy(u64, &endV, r, cudaMemcpyDefault);
     }
 }
+#ifdef __CUDACC__
 __device__ void BrendanCUDA::Random::ClearArray(Span<uint8_t> Array) {
     uint64_t* l64 = (uint64_t*)Array.ptr;
     uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
@@ -853,4 +827,5 @@ __device__ void BrendanCUDA::Random::ClearArray(Span<uint8_t> Array) {
     uint64_t endV = 0;
     size_t r = Array.size & 7;
     memcpy(u64, &endV, r);
-}
+}}
+#endif
