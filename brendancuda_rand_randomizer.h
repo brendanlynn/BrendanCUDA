@@ -11,8 +11,8 @@
 namespace BrendanCUDA {
     namespace details {
         template <std::integral _T>
-        __host__ __device__ __forceinline _T RandomizeWTargets_GetEditsOf1s(_T Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t RN1, uint32_t RN2);
-        
+        __host__ __device__ static __forceinline _T RandomizeWTargets_GetEditsOf1s(_T Value, uint32_t CountOf1s, uint32_t FlipProb, uint32_t RN1, uint32_t RN2);
+
         void RandomizeArray_CallKernel(Span<float> Array, float Scalar, uint64_t Seed);
         void RandomizeArray_CallKernel(Span<double> Array, double Scalar, uint64_t Seed);
         void RandomizeArray_CallKernel(Span<float> Array, float Scalar, float LowerBound, float UpperBound, uint64_t Seed);
@@ -33,112 +33,112 @@ namespace BrendanCUDA {
     }
     namespace Random {
         template <std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline _T RandomizeWFlips(_T Value, uint32_t FlipProbability, _TRNG& RNG);
+        __host__ static __forceinline _T RandomizeWFlips(_T Value, uint32_t FlipProbability, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ __forceinline _T RandomizeWFlips(_T Value, uint32_t FlipProbability, curandState& RNG);
+        __device__ static __forceinline _T RandomizeWFlips(_T Value, uint32_t FlipProbability, curandState& RNG);
 #endif
         template <std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline _T RandomizeWTargets(_T Value, uint32_t EachFlipProbability, _TRNG& RNG);
+        __host__ static __forceinline _T RandomizeWTargets(_T Value, uint32_t EachFlipProbability, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ __forceinline _T RandomizeWTargets(_T Value, uint32_t EachFlipProbability, curandState& RNG);
+        __device__ static __forceinline _T RandomizeWTargets(_T Value, uint32_t EachFlipProbability, curandState& RNG);
 #endif
         template <std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, _TRNG& RNG);
+        __host__ static __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, curandState& RNG);
+        __device__ static __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, curandState& RNG);
 #endif
         template <std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, uint32_t ProbabilityOf1, _TRNG& RNG);
+        __host__ static __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, uint32_t ProbabilityOf1, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, uint32_t ProbabilityOf1, curandState& RNG);
+        __device__ static __forceinline _T RandomizeWMutations(_T Value, uint32_t MutationProbability, uint32_t ProbabilityOf1, curandState& RNG);
 #endif
         template <std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline float Randomize(float Value, float Scalar, _TRNG& RNG);
+        __host__ static __forceinline float Randomize(float Value, float Scalar, _TRNG& RNG);
         template <std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline double Randomize(double Value, double Scalar, _TRNG& RNG);
+        __host__ static __forceinline double Randomize(double Value, double Scalar, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ __forceinline float Randomize(float Value, float Scalar, curandState& RNG);
-        __device__ __forceinline double Randomize(double Value, double Scalar, curandState& RNG);
+        __device__ static __forceinline float Randomize(float Value, float Scalar, curandState& RNG);
+        __device__ static __forceinline double Randomize(double Value, double Scalar, curandState& RNG);
 #endif
         template <std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline float Randomize(float Value, float Scalar, float LowerBound, float UpperBound, _TRNG& RNG);
+        __host__ static __forceinline float Randomize(float Value, float Scalar, float LowerBound, float UpperBound, _TRNG& RNG);
         template <std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline double Randomize(double Value, double Scalar, double LowerBound, double UpperBound, _TRNG& RNG);
+        __host__ static __forceinline double Randomize(double Value, double Scalar, double LowerBound, double UpperBound, _TRNG& RNG);
 #ifdef __CUDACC__
-        __device__ __forceinline float Randomize(float Value, float Scalar, float LowerBound, float UpperBound, curandState& RNG);
-        __device__ __forceinline double Randomize(double Value, double Scalar, double LowerBound, double UpperBound, curandState& RNG);
+        __device__ static __forceinline float Randomize(float Value, float Scalar, float LowerBound, float UpperBound, curandState& RNG);
+        __device__ static __forceinline double Randomize(double Value, double Scalar, double LowerBound, double UpperBound, curandState& RNG);
 #endif
 
         template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArray(Span<_T> Array, _T Scalar, _TRNG& RNG);
+        __host__ static __forceinline void RandomizeArray(Span<_T> Array, _T Scalar, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::floating_point _T>
-        __device__ void RandomizeArray(Span<_T> Array, _T Scalar, curandState& RNG);
+        __device__ static __forceinline void RandomizeArray(Span<_T> Array, _T Scalar, curandState& RNG);
 #endif
         template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+        __host__ static __forceinline void RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::floating_point _T>
-        __device__ void RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, curandState& RNG);
+        __device__ static __forceinline void RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, curandState& RNG);
 #endif
 
         template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, _TRNG& RNG);
+        __host__ static __forceinline void RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ void RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, curandState& RNG);
+        __device__ static __forceinline void RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, curandState& RNG);
 #endif
         template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, _TRNG& RNG);
+        __host__ static __forceinline void RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ void RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, curandState& RNG);
+        __device__ static __forceinline void RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, curandState& RNG);
 #endif
         template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, _TRNG& RNG);
+        __host__ static __forceinline void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, curandState& RNG);
+        __device__ static __forceinline void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, curandState& RNG);
 #endif
         template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, _TRNG& RNG);
+        __host__ static __forceinline void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, curandState& RNG);
+        __device__ static __forceinline void RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, curandState& RNG);
 #endif
 
         template <bool _MemoryOnHost, typename _T, std::uniform_random_bit_generator _TRNG>
             requires std::is_arithmetic_v<_T>
-        __host__ void InitRandomArray(Span<_T> Array, _TRNG& RNG);
+        __host__ static __forceinline void InitRandomArray(Span<_T> Array, _TRNG& RNG);
 #ifdef __CUDACC__
         template <typename _T>
             requires std::is_arithmetic_v<_T>
-        __device__ void InitRandomArray(Span<_T> Array, curandState& RNG);
+        __device__ static __forceinline void InitRandomArray(Span<_T> Array, curandState& RNG);
 #endif
         template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
-        __host__ void InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, _TRNG& RNG);
+        __host__ static __forceinline void InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::floating_point _T>
-        __device__ void InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, curandState& RNG);
+        __device__ static __forceinline void InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, curandState& RNG);
 #endif
         template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ void InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, _TRNG& RNG);
+        __host__ static __forceinline void InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, _TRNG& RNG);
 #ifdef __CUDACC__
         template <std::integral _T>
-        __device__ void InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, curandState& RNG);
+        __device__ static __forceinline void InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, curandState& RNG);
 #endif
 
         template <bool _MemoryOnHost, typename _T>
             requires std::is_arithmetic_v<_T>
-        __host__ void ClearArray(Span<_T> Array);
+        __host__ static __forceinline void ClearArray(Span<_T> Array);
 #ifdef __CUDACC__
         template <typename _T>
             requires std::is_arithmetic_v<_T>
-        __device__ void ClearArray(Span<_T> Array);
+        __device__ static __forceinline void ClearArray(Span<_T> Array);
 #endif
     }
 }
@@ -175,7 +175,7 @@ __device__ __forceinline _T BrendanCUDA::Random::RandomizeWFlips(_T Value, uint3
 template <std::integral _T, std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline _T BrendanCUDA::Random::RandomizeWTargets(_T Value, uint32_t FlipProbability, _TRNG& RNG) {
     constexpr uint32_t shiftMask = (sizeof(_T) << 3) - 1;
-    
+
     std::uniform_int_distribution<uint32_t> dis32(0);
 
     if (!Value) {
@@ -307,7 +307,7 @@ __device__ __forceinline double BrendanCUDA::Random::Randomize(double Value, dou
 #endif
 
 template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _TRNG& RNG) {
+__host__ __forceinline void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _TRNG& RNG) {
     if constexpr (_MemoryOnHost) {
         Scalar *= 2.f;
         std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
@@ -322,14 +322,14 @@ __host__ void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _TR
 }
 #ifdef __CUDACC__
 template <>
-__device__ void BrendanCUDA::Random::RandomizeArray<float>(Span<float> Array, float Scalar, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArray<float>(Span<float> Array, float Scalar, curandState& RNG) {
     Scalar *= 2.f;
     float* l = Array.ptr;
     float* u = Array.ptr + Array.size;
     for (; l < u; ++l) *l += Scalar * (curand_uniform(&RNG) - 0.5f);
 }
 template <>
-__device__ void BrendanCUDA::Random::RandomizeArray<double>(Span<double> Array, double Scalar, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArray<double>(Span<double> Array, double Scalar, curandState& RNG) {
     Scalar *= 2.;
     double* l = Array.ptr;
     double* u = Array.ptr + Array.size;
@@ -337,7 +337,7 @@ __device__ void BrendanCUDA::Random::RandomizeArray<double>(Span<double> Array, 
 }
 #endif
 template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+__host__ __forceinline void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     if constexpr (_MemoryOnHost) {
         Scalar *= 2.f;
         std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
@@ -352,14 +352,14 @@ __host__ void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _T 
 }
 #ifdef __CUDACC__
 template <>
-__device__ void BrendanCUDA::Random::RandomizeArray<float>(Span<float> Array, float Scalar, float LowerBound, float UpperBound, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArray<float>(Span<float> Array, float Scalar, float LowerBound, float UpperBound, curandState& RNG) {
     Scalar *= 2.f;
     float* l = Array.ptr;
     float* u = Array.ptr + Array.size;
     for (; l < u; ++l) *l = std::clamp(*l + Scalar * (curand_uniform(&RNG) - 0.5f), LowerBound, UpperBound);
 }
 template <>
-__device__ void BrendanCUDA::Random::RandomizeArray<double>(Span<double> Array, double Scalar, double LowerBound, double UpperBound, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArray<double>(Span<double> Array, double Scalar, double LowerBound, double UpperBound, curandState& RNG) {
     Scalar *= 2.f;
     double* l = Array.ptr;
     double* u = Array.ptr + Array.size;
@@ -368,7 +368,7 @@ __device__ void BrendanCUDA::Random::RandomizeArray<double>(Span<double> Array, 
 #endif
 
 template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, _TRNG& RNG) {
+__host__ __forceinline void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, _TRNG& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         if constexpr (_MemoryOnHost) {
             uint64_t* l64 = (uint64_t*)Array.ptr;
@@ -406,7 +406,7 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T> Array, uint32_t
 }
 #ifdef __CUDACC__
 template <std::integral _T>
-__device__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T> Array, uint32_t FlipProb, curandState& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         uint64_t* l64 = (uint64_t*)Array.ptr;
         uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
@@ -427,7 +427,7 @@ __device__ void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T> Array, uint32
 }
 #endif
 template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, _TRNG& RNG) {
+__host__ __forceinline void BrendanCUDA::Random::RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, _TRNG& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         if constexpr (_MemoryOnHost) {
             uint64_t* l64 = (uint64_t*)Array.ptr;
@@ -465,7 +465,7 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<_T> Array, uint32
 }
 #ifdef __CUDACC__
 template <std::integral _T>
-__device__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArrayWTargets(Span<_T> Array, uint32_t EachFlipProb, curandState& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         uint64_t* l64 = (uint64_t*)Array.ptr;
         uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
@@ -486,7 +486,7 @@ __device__ void BrendanCUDA::Random::RandomizeArrayWTargets(Span<_T> Array, uint
 }
 #endif
 template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, _TRNG& RNG) {
+__host__ __forceinline void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, _TRNG& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         if constexpr (_MemoryOnHost) {
             uint64_t* l64 = (uint64_t*)Array.ptr;
@@ -524,7 +524,7 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint
 }
 #ifdef __CUDACC__
 template <std::integral _T>
-__device__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, curandState& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         uint64_t* l64 = (uint64_t*)Array.ptr;
         uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
@@ -545,7 +545,7 @@ __device__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, ui
 }
 #endif
 template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, _TRNG& RNG) {
+__host__ __forceinline void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, _TRNG& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         if constexpr (_MemoryOnHost) {
             uint64_t* l64 = (uint64_t*)Array.ptr;
@@ -583,7 +583,7 @@ __host__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint
 }
 #ifdef __CUDACC__
 template <std::integral _T>
-__device__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, curandState& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         uint64_t* l64 = (uint64_t*)Array.ptr;
         uint64_t* u64 = ((uint64_t*)Array.ptr) + (Array.size >> 3);
@@ -605,8 +605,8 @@ __device__ void BrendanCUDA::Random::RandomizeArrayWMutations(Span<_T> Array, ui
 #endif
 
 template <bool _MemoryOnHost, typename _T, std::uniform_random_bit_generator _TRNG>
-   requires std::is_arithmetic_v<_T>
-__host__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, _TRNG& RNG) {
+    requires std::is_arithmetic_v<_T>
+__host__ __forceinline void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, _TRNG& RNG) {
     if constexpr (std::floating_point<_T>) {
         if constexpr (_MemoryOnHost) {
             std::uniform_real_distribution<_T> dis(-1., 1.);
@@ -652,7 +652,7 @@ __host__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, _TRNG& RNG) {
 #ifdef __CUDACC__
 template <typename _T>
     requires std::is_arithmetic_v<_T>
-__device__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, curandState& RNG) {
     if constexpr (std::same_as<_T, float>) {
         float* l = Array.ptr;
         float* u = Array.ptr + Array.size;
@@ -679,7 +679,7 @@ __device__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, curandState
 
 #endif
 template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+__host__ __forceinline void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     if constexpr (_MemoryOnHost) {
         std::uniform_real_distribution<_T> dis(LowerBound, UpperBound);
         _T* l = Array.ptr;
@@ -693,14 +693,14 @@ __host__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, _T LowerBound
 }
 #ifdef __CUDACC__
 template <>
-__device__ void BrendanCUDA::Random::InitRandomArray<float>(Span<float> Array, float LowerBound, float UpperBound, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::InitRandomArray<float>(Span<float> Array, float LowerBound, float UpperBound, curandState& RNG) {
     float range = UpperBound - LowerBound;
     float* l = Array.ptr;
     float* u = Array.ptr + Array.size;
     for (; l < u; ++l) *l = curand_uniform(&RNG) * range + LowerBound;
 }
 template <>
-__device__ void BrendanCUDA::Random::InitRandomArray<double>(Span<double> Array, double LowerBound, double UpperBound, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::InitRandomArray<double>(Span<double> Array, double LowerBound, double UpperBound, curandState& RNG) {
     double range = UpperBound - LowerBound;
     double* l = Array.ptr;
     double* u = Array.ptr + Array.size;
@@ -709,7 +709,7 @@ __device__ void BrendanCUDA::Random::InitRandomArray<double>(Span<double> Array,
 #endif
 
 template <bool _MemoryOnHost, std::integral _T, std::uniform_random_bit_generator _TRNG>
-__host__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, _TRNG& RNG) {
+__host__ __forceinline void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, _TRNG& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         if constexpr (_MemoryOnHost) {
             uint64_t* l64 = (uint64_t*)Array.ptr;
@@ -741,7 +741,7 @@ __host__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, uint32_t Prob
 }
 #ifdef __CUDACC__
 template <std::integral _T>
-__device__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, curandState& RNG) {
+__device__ __forceinline void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, uint32_t ProbabilityOf1, curandState& RNG) {
     if constexpr (std::same_as<_T, uint8_t>) {
         uint32_t* l32 = (uint32_t*)Array.ptr;
         uint32_t* u32 = ((uint32_t*)Array.ptr) + (Array.size >> 2);
@@ -761,7 +761,7 @@ __device__ void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, uint32_t Pr
 
 template <bool _MemoryOnHost, typename _T>
     requires std::is_arithmetic_v<_T>
-__host__ void BrendanCUDA::Random::ClearArray(Span<_T> Array) {
+__host__ __forceinline void BrendanCUDA::Random::ClearArray(Span<_T> Array) {
     if constexpr (std::floating_point<_T>) {
         if constexpr (_MemoryOnHost) {
             _T* l = Array.ptr;
@@ -801,7 +801,7 @@ __host__ void BrendanCUDA::Random::ClearArray(Span<_T> Array) {
 #ifdef __CUDACC__
 template <typename _T>
     requires std::is_arithmetic_v<_T>
-__device__ void BrendanCUDA::Random::ClearArray(Span<_T> Array) {
+__device__ __forceinline void BrendanCUDA::Random::ClearArray(Span<_T> Array) {
     if constexpr (std::floating_point<_T>) {
         _T* l = Array.ptr;
         _T* u = Array.ptr + Array.size;
