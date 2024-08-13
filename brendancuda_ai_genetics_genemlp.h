@@ -22,29 +22,29 @@ namespace BrendanCUDA {
 
                 void ZeroOverwrite();
                 template <std::uniform_random_bit_generator _TRNG>
-                void RandomOverwrite(_TRNG RNG);
+                void RandomOverwrite(_TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                void RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG RNG);
+                void RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG);
 
                 ArrayV<_T> Run();
 
                 GeneMLP<_T> Clone();
                 template <std::uniform_random_bit_generator _TRNG>
-                void Randomize(_T Scalar, _TRNG RNG);
+                void Randomize(_T Scalar, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                void Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG RNG);
+                void Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                void Randomize(_T Scalar_Base, _T Scalar_Intermediate, _TRNG RNG);
+                void Randomize(_T Scalar_Base, _T Scalar_Intermediate, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                void Randomize(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, _TRNG RNG);
+                void Randomize(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                GeneMLP<_T> Reproduce(_T Scalar, _TRNG RNG);
+                GeneMLP<_T> Reproduce(_T Scalar, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                GeneMLP<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG RNG);
+                GeneMLP<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                GeneMLP<_T> Reproduce(_T Scalar_Base, _T Scalar_Intermediate, _TRNG RNG);
+                GeneMLP<_T> Reproduce(_T Scalar_Base, _T Scalar_Intermediate, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                GeneMLP<_T> Reproduce(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, _TRNG RNG);
+                GeneMLP<_T> Reproduce(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, _TRNG& RNG);
             private:
                 _T* base;
             };
@@ -79,52 +79,52 @@ BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::C
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar, _TRNG RNG) {
+void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar, _TRNG& RNG) {
     Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, intermediate.InputLength()), Scalar, RNG);
     intermediate.Randomize(Scalar, RNG);
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG RNG) {
+void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, intermediate.InputLength()), Scalar, LowerBound, UpperBound, RNG);
     intermediate.Randomize(Scalar, LowerBound, UpperBound, RNG);
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar_Base, _T Scalar_Intermediate, _TRNG RNG) {
+void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar_Base, _T Scalar_Intermediate, _TRNG& RNG) {
     Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, intermediate.InputLength()), Scalar_Base, RNG);
     intermediate.Randomize(Scalar_Intermediate, RNG);
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, _TRNG RNG) {
+void BrendanCUDA::AI::Genetics::GeneMLP<_T>::Randomize(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, intermediate.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
     intermediate.Randomize(Scalar_Intermediate, LowerBound, UpperBound, RNG);
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::Reproduce(_T Scalar, _TRNG RNG) {
+BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::Reproduce(_T Scalar, _TRNG& RNG) {
     GeneMLP<_T> n = Clone();
     n.Randomize(Scalar, RNG);
     return n;
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG RNG) {
+BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     GeneMLP<_T> n = Clone();
     n.Randomize(Scalar, LowerBound, UpperBound, RNG);
     return n;
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::Reproduce(_T Scalar_Base, _T Scalar_Intermediate, _TRNG RNG) {
+BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::Reproduce(_T Scalar_Base, _T Scalar_Intermediate, _TRNG& RNG) {
     GeneMLP<_T> n = Clone();
     n.Randomize(Scalar_Base, Scalar_Intermediate, RNG);
     return n;
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::Reproduce(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, _TRNG RNG) {
+BrendanCUDA::AI::Genetics::GeneMLP<_T> BrendanCUDA::AI::Genetics::GeneMLP<_T>::Reproduce(_T Scalar_Base, _T Scalar_Intermediate, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     GeneMLP<_T> n = Clone();
     n.Randomize(Scalar_Base, Scalar_Intermediate, LowerBound, UpperBound, RNG);
     return n;
@@ -136,13 +136,13 @@ void BrendanCUDA::AI::Genetics::GeneMLP<_T>::ZeroOverwrite() {
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneMLP<_T>::RandomOverwrite(_TRNG RNG) {
+void BrendanCUDA::AI::Genetics::GeneMLP<_T>::RandomOverwrite(_TRNG& RNG) {
     Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, intermediate.InputLength()), RNG);
     intermediate.RandomOverwrite(RNG);
 }
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneMLP<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG RNG) {
+void BrendanCUDA::AI::Genetics::GeneMLP<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
     Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, intermediate.InputLength()), LowerBound, UpperBound, RNG);
     intermediate.RandomOverwrite(LowerBound, UpperBound, RNG);
 }
