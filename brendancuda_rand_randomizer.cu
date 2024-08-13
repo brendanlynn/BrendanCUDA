@@ -1,5 +1,5 @@
-#include "brendancuda_rand_randomizer.h"
 #include "brendancuda_arrays.h"
+#include "brendancuda_rand_randomizer.h"
 #include <curand_kernel.h>
 #include <device_launch_parameters.h>
 

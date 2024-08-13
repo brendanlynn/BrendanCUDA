@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cuda_runtime.h>
-#include <cstdint>
-#include <curand_kernel.h>
-#include "brendancuda_rand_anyrng.h"
 #include "brendancuda_binary_basic.h"
+#include "brendancuda_rand_anyrng.h"
+#include <cstdint>
+#include <cuda_runtime.h>
+#include <curand_kernel.h>
 
 namespace BrendanCUDA {
     namespace Random {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cuda_runtime.h>
 #include <cstdint>
+#include <cuda_runtime.h>
 
 namespace BrendanCUDA {
     namespace Binary {

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "brendancuda_ai_evol.h"
-#include <limits>
 #include <algorithm>
+#include <limits>
 
 namespace BrendanCUDA {
     namespace AI {

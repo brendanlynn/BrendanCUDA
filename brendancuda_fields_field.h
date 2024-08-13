@@ -1,17 +1,16 @@
 #pragma once
 
+#include "brendancuda_copyblock.h"
+#include "brendancuda_cudaconstexpr.h"
+#include "brendancuda_dcopy.cuh"
+#include "brendancuda_details_fillwith.h"
+#include "brendancuda_errorhelp.h"
+#include "brendancuda_points.h"
+#include "BSerializer/Serializer.h"
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <memory>
 #include <thrust/device_ptr.h>
-
-#include "brendancuda_dcopy.cuh"
-#include "brendancuda_points.h"
-#include "brendancuda_errorhelp.h"
-#include "brendancuda_cudaconstexpr.h"
-#include "brendancuda_copyblock.h"
-#include "brendancuda_details_fillwith.h"
-#include "BSerializer/Serializer.h"
 
 namespace BrendanCUDA {
     namespace Fields {

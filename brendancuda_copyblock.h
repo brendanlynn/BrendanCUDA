@@ -1,8 +1,8 @@
 #pragma once
 
+#include "brendancuda_arrays.h"
 #include "brendancuda_fixedvectors.h"
 #include "brendancuda_points.h"
-#include "brendancuda_arrays.h"
 #include <cuda_runtime.h>
 
 namespace BrendanCUDA {

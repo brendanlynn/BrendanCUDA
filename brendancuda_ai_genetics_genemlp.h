@@ -2,9 +2,9 @@
 
 #include "brendancuda_ai_mlp_mlp.h"
 #include "brendancuda_arrays.h"
-#include <cuda_runtime.h>
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_rand_randomizer.h"
+#include <cuda_runtime.h>
 
 namespace BrendanCUDA {
     namespace AI {

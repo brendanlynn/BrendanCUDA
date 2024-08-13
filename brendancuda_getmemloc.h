@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cuda_runtime.h>
-#include <cstdint>
 #include "brendancuda_errorhelp.h"
+#include <cstdint>
+#include <cuda_runtime.h>
 
 namespace BrendanCUDA {
     enum MemoryLocationBasic {

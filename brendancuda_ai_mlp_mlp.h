@@ -1,9 +1,9 @@
 #pragma once
 
 #include "brendancuda_ai_mlp_mlpl.h"
-#include "brendancuda_rand_anyrng.h"
 #include "brendancuda_arrays.h"
 #include "brendancuda_errorhelp.h"
+#include "brendancuda_rand_anyrng.h"
 
 namespace BrendanCUDA {
     namespace details {

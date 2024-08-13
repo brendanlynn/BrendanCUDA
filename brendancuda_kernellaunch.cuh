@@ -1,8 +1,8 @@
 #pragma once
 
+#include "brendancuda_fixedvectors.h"
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
-#include "brendancuda_fixedvectors.h"
 
 namespace BrendanCUDA {
 #ifdef __CUDACC__

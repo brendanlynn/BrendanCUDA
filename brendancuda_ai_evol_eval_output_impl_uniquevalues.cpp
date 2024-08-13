@@ -1,6 +1,6 @@
 #include "brendancuda_ai_evol_eval_output_impl_uniquevalues.h"
-#include <unordered_set>
 #include <exception>
+#include <unordered_set>
 
 template <typename _T>
 float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues(void* Object, Evaluate_UniqueValues_SD<_T>& Settings) {

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <cstdint>
-#include <cuda_runtime.h>
-#include <cstdarg>
-#include <concepts>
-#include <cmath>
 #include "brendancuda_mathfuncs.h"
 #include "BSerializer/Serializer.h"
+#include <cmath>
+#include <concepts>
+#include <cstdarg>
+#include <cstdint>
+#include <cuda_runtime.h>
 
 namespace BrendanCUDA {
     namespace details {

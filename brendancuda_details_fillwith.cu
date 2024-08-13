@@ -1,6 +1,6 @@
 #include "brendancuda_details_fillwith.h"
-#include <cuda_runtime.h>
 #include <cstdint>
+#include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
 __global__ void fillWithKernel(void* Array, void* Value, size_t ValueSize) {

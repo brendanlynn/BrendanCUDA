@@ -1,8 +1,8 @@
 #pragma once
 
+#include "brendancuda_errorhelp.h"
 #include "brendancuda_fields_field.h"
 #include "brendancuda_points.h"
-#include "brendancuda_errorhelp.h"
 #include <stdexcept>
 #include <string>
 

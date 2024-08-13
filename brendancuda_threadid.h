@@ -1,8 +1,8 @@
 #pragma once
 
+#include "cstdint"
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include "cstdint"
 
 namespace BrendanCUDA {
 #ifdef __CUDACC__

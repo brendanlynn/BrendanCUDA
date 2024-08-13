@@ -1,10 +1,10 @@
 #include "brendancuda_ai_evol_eval_output_impl_proliferation.h"
 #include "brendancuda_binary_basic.h"
-#include <cstdint>
-#include <type_traits>
-#include <stdexcept>
-#include <cmath>
 #include <bit>
+#include <cmath>
+#include <cstdint>
+#include <stdexcept>
+#include <type_traits>
 
 template <>
 float BrendanCUDA::AI::Evolution::Evaluation::Output::Evaluate_Proliferation<float>(void* Object, Evaluate_Proliferation_SD<float>& Settings) {

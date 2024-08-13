@@ -1,13 +1,13 @@
 #pragma once
 
-#include <cuda_runtime.h>
-#include <type_traits>
-#include "brendancuda_rand_anyrng.h"
-#include <random>
 #include "brendancuda_ai.h"
 #include "brendancuda_mathfuncs.h"
+#include "brendancuda_rand_anyrng.h"
 #include "brendancuda_rand_randomizer.h"
 #include "BSerializer/Serializer.h"
+#include <cuda_runtime.h>
+#include <random>
+#include <type_traits>
 
 namespace BrendanCUDA {
     namespace AI {

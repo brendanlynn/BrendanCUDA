@@ -1,15 +1,15 @@
 #pragma once
 
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
-#include <cublas_v2.h>
-#include <limits>
-#include <random>
-#include "brendancuda_dcopy.cuh"
 #include "brendancuda_ai.h"
+#include "brendancuda_dcopy.cuh"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_rand_randomizer.h"
+#include <cublas_v2.h>
+#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
 #include <iostream>
+#include <limits>
+#include <random>
 
 namespace BrendanCUDA {
     namespace AI {

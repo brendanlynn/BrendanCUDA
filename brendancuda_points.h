@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cuda_runtime.h>
-#include <cstdint>
 #include "brendancuda_fixedvectors.h"
+#include <cstdint>
+#include <cuda_runtime.h>
 
 namespace BrendanCUDA {
     template <std::unsigned_integral _TIndex, std::unsigned_integral _TVectorElement, size_t _VectorLength, bool _RowMajor>

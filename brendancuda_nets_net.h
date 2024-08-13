@@ -1,9 +1,9 @@
 #pragma once
 
-#include <thrust/device_vector.h>
-#include <ostream>
-#include <cuda_runtime.h>
 #include "brendancuda_errorhelp.h"
+#include <cuda_runtime.h>
+#include <ostream>
+#include <thrust/device_vector.h>
 
 namespace BrendanCUDA {
     namespace Nets {

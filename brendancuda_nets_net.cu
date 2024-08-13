@@ -1,9 +1,9 @@
-#include "brendancuda_nets_net.h"
-#include <device_launch_parameters.h>
-#include "brendancuda_errorhelp.h"
 #include "brendancuda_crossassigns.h"
+#include "brendancuda_errorhelp.h"
+#include "brendancuda_nets_net.h"
 #include <cuda.h>
 #include <cuda_runtime.h>
+#include <device_launch_parameters.h>
 #include <string>
 
 __global__ void net_addConnection_checkForPreexistence(BrendanCUDA::Nets::NetNode** arr, BrendanCUDA::Nets::NetNode* v, bool* opt) {

@@ -1,9 +1,9 @@
 #pragma once
 
+#include "brendancuda_ai_evol_eval_output.h"
 #include "brendancuda_fields_dfield.h"
 #include "brendancuda_rand_anyrng.h"
 #include <tuple>
-#include "brendancuda_ai_evol_eval_output.h"
 
 namespace BrendanCUDA {
     namespace details {

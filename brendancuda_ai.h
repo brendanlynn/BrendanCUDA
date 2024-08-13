@@ -1,10 +1,10 @@
 #pragma once
 
+#include "brendancuda_arrays.h"
+#include "brendancuda_rand_bits.h"
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
-#include "brendancuda_rand_bits.h"
 #include <limits>
-#include "brendancuda_arrays.h"
 
 namespace BrendanCUDA {
     namespace AI {

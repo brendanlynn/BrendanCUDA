@@ -1,9 +1,9 @@
 #pragma once
 
-#include <cstdint>
 #include <cmath>
-#include <cuda_runtime.h>
 #include <concepts>
+#include <cstdint>
+#include <cuda_runtime.h>
 
 namespace BrendanCUDA {
     namespace Math {

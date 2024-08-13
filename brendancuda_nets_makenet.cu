@@ -1,5 +1,5 @@
-#include "brendancuda_nets_makenet.h"
 #include "brendancuda_errorhelp.h"
+#include "brendancuda_nets_makenet.h"
 #include "brendancuda_points.h"
 #include "brendancuda_rand_randomizer.h"
 #include <cuda_runtime.h>

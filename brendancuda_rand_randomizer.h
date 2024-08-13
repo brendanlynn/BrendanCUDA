@@ -1,13 +1,12 @@
 #pragma once
 
-#include <cuda_runtime.h>
-#include <concepts>
-#include <bit>
-#include <curand_kernel.h>
-
+#include "brendancuda_arrays.h"
 #include "brendancuda_rand_anyrng.h"
 #include "brendancuda_rand_bits.h"
-#include "brendancuda_arrays.h"
+#include <bit>
+#include <concepts>
+#include <cuda_runtime.h>
+#include <curand_kernel.h>
 
 namespace BrendanCUDA {
     namespace details {

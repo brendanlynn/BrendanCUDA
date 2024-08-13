@@ -1,9 +1,9 @@
 #pragma once
 
-#include <random>
-#include <limits>
-#include <cuda_runtime.h>
 #include <concepts>
+#include <cuda_runtime.h>
+#include <limits>
+#include <random>
 
 namespace BrendanCUDA {
     namespace details {

@@ -1,11 +1,9 @@
 #pragma once
 
-#include <cstdint>
-#include <vector>
-#include <random>
-
 #include "brendancuda_ai_evol.h"
 #include "brendancuda_arrays.h"
+#include <cstdint>
+#include <random>
 
 namespace BrendanCUDA {
     namespace AI {

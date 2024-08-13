@@ -1,7 +1,7 @@
 #pragma once
 
-#include "brendancuda_rand_anyrng.h"
 #include "brendancuda_ai_evol_eval_output.h"
+#include "brendancuda_rand_anyrng.h"
 
 namespace BrendanCUDA {
     namespace AI {

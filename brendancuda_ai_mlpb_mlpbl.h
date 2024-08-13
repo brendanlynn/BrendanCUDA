@@ -1,17 +1,17 @@
 #pragma once
 
+#include "brendancuda_ai.h"
+#include "brendancuda_binary_basic.h"
+#include "brendancuda_dcopy.cuh"
+#include "brendancuda_errorhelp.h"
+#include "brendancuda_rand_bits.h"
+#include "brendancuda_rand_randomizer.h"
+#include "BSerializer/Serializer.h"
+#include <bit>
+#include <concepts>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <memory>
-#include <bit>
-#include <concepts>
-#include "BSerializer/Serializer.h"
-#include "brendancuda_ai.h"
-#include "brendancuda_binary_basic.h"
-#include "brendancuda_rand_randomizer.h"
-#include "brendancuda_rand_bits.h"
-#include "brendancuda_errorhelp.h"
-#include "brendancuda_dcopy.cuh"
 
 namespace BrendanCUDA {
     namespace AI {
