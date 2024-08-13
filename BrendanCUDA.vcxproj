@@ -109,7 +109,6 @@
     <ClInclude Include="brendancuda_errorhelp.h" />
     <ClInclude Include="brendancuda_fields_instance.h" />
     <ClInclude Include="brendancuda_ai_mlp_fixedmlp.h" />
-    <ClInclude Include="brendancuda_getmemloc.h" />
     <ClInclude Include="brendancuda_kernellaunch.cuh" />
     <ClInclude Include="brendancuda_nets_makenet.h" />
     <ClInclude Include="brendancuda_points.h" />
