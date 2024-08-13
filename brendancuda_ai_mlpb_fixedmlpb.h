@@ -83,7 +83,8 @@ namespace BrendanCUDA {
                 FixedMLPB<_TOutput1, _TOutput2, _TsContinuedOutputs...> nextLayers;
 
                 __host__ __device__ void FillWith0();
-                __host__ __device__ void FillWithRandom(Random::AnyRNG<uint32_t> RNG);
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ __device__ void FillWithRandom(_TRNG RNG);
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG RNG);
                 template <std::uniform_random_bit_generator _TRNG>
@@ -116,7 +117,8 @@ namespace BrendanCUDA {
                 FixedMLPBL<_TInput, _TOutput1> layer;
 
                 __host__ __device__ void FillWith0();
-                __host__ __device__ void FillWithRandom(Random::AnyRNG<uint32_t> RNG);
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ __device__ void FillWithRandom(_TRNG RNG);
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG RNG);
                 template <std::uniform_random_bit_generator _TRNG>
@@ -225,7 +227,8 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::F
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-__host__ __device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWithRandom(Random::AnyRNG<uint32_t> RNG) {
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWithRandom(_TRNG RNG) {
     layer.FillWithRandom(RNG);
 }
 
@@ -265,7 +268,8 @@ __host__ __device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _T
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-__host__ __device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWithRandom(Random::AnyRNG<uint32_t> RNG) {
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWithRandom(_TRNG RNG) {
     layer.FillWithRandom(RNG);
     nextLayers.FillWithRandom(RNG);
 }
