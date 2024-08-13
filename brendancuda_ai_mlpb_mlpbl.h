@@ -51,17 +51,23 @@ namespace BrendanCUDA {
                 __host__ __device__ __forceinline MLPBL<_TInput, _TOutput> Clone() const;
 
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG RNG);
+                __host__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
+                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ __forceinline MLPBL<_TInput, _TOutput> ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG RNG) const;
+                __host__ __forceinline MLPBL<_TInput, _TOutput> ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) const;
+                __device__ __forceinline MLPBL<_TInput, _TOutput> ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG) const;
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ __forceinline void RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, _TRNG RNG);
+                __host__ __forceinline void RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
+                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, curandState& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ __forceinline MLPBL<_TInput, _TOutput> ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, _TRNG RNG) const;
+                __host__ __forceinline MLPBL<_TInput, _TOutput> ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) const;
+                __device__ __forceinline MLPBL<_TInput, _TOutput> ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, curandState& RNG) const;
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG RNG);
+                __host__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
+                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ __forceinline MLPBL<_TInput, _TOutput> ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG RNG) const;
+                __host__ __forceinline MLPBL<_TInput, _TOutput> ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) const;
+                __device__ __forceinline MLPBL<_TInput, _TOutput> ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG) const;
 
                 __forceinline size_t SerializedSize() const;
                 __forceinline void Serialize(void*& Data) const;
@@ -263,39 +269,72 @@ __host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG RNG) {
+__host__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     Random::RandomizeArrayWFlips<false, _TInput, _TRNG>(Span<_TInput>(weights, sizeof(_TOutput) << 3), WeightsFlipProb, RNG);
     Random::RandomizeArrayWFlips<false, _TOutput, _TRNG>(Span<_TOutput>(bias, 1), BiasFlipProb, RNG);
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG) {
+    Random::RandomizeArrayWFlips<_TInput>(Span<_TInput>(weights, sizeof(_TOutput) << 3), WeightsFlipProb, RNG);
+    Random::RandomizeArrayWFlips<_TOutput>(Span<_TOutput>(bias, 1), BiasFlipProb, RNG);
+}
+template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG RNG) const {
+__host__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) const {
+    MLPBL<_TInput, _TOutput> n = Clone();
+    n.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
+    return n;
+}
+template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
+__device__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::ReproduceWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG) const {
     MLPBL<_TInput, _TOutput> n = Clone();
     n.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
     return n;
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, _TRNG RNG) {
+__host__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     Random::RandomizeArrayWTargets<false, _TInput, _TRNG>(Span<_TInput>(weights, sizeof(_TOutput) << 3), WeightsEachFlipProb, RNG);
     Random::RandomizeArrayWTargets<false, _TOutput, _TRNG>(Span<_TOutput>(bias, 1), BiasFlipProb, RNG);
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, curandState& RNG) {
+    Random::RandomizeArrayWTargets<_TInput>(Span<_TInput>(weights, sizeof(_TOutput) << 3), WeightsEachFlipProb, RNG);
+    Random::RandomizeArrayWTargets<_TOutput>(Span<_TOutput>(bias, 1), BiasFlipProb, RNG);
+}
+template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, _TRNG RNG) const {
+__host__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) const {
+    MLPBL<_TInput, _TOutput> n = Clone();
+    n.RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, RNG);
+    return n;
+}
+template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
+__device__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::ReproduceWTargets(uint32_t WeightsEachFlipProb, uint32_t BiasFlipProb, curandState& RNG) const {
     MLPBL<_TInput, _TOutput> n = Clone();
     n.RandomizeWTargets(WeightsEachFlipProb, BiasFlipProb, RNG);
     return n;
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG RNG) {
+__host__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     Random::RandomizeArrayWMutations<false, _TInput, _TRNG>(Span<_TInput>(weights, sizeof(_TOutput) << 3), WeightsMutationProb, RNG);
     Random::RandomizeArrayWMutations<false, _TOutput, _TRNG>(Span<_TOutput>(bias, 1), BiasMutationProb, RNG);
 }
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG) {
+    Random::RandomizeArrayWMutations<_TInput>(Span<_TInput>(weights, sizeof(_TOutput) << 3), WeightsMutationProb, RNG);
+    Random::RandomizeArrayWMutations<_TOutput>(Span<_TOutput>(bias, 1), BiasMutationProb, RNG);
+}
+template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG RNG) const {
+__host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) const {
+    MLPBL<_TInput, _TOutput> n = Clone();
+    n.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
+    return n;
+}
+template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
+__host__ __device__ __forceinline BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput> BrendanCUDA::AI::MLPB::MLPBL<_TInput, _TOutput>::ReproduceWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG) const {
     MLPBL<_TInput, _TOutput> n = Clone();
     n.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
     return n;
