@@ -3,7 +3,6 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include "brendancuda_rand_bits.h"
-#include "brendancuda_rand_anyrng.h"
 #include <limits>
 #include "brendancuda_arrays.h"
 
