@@ -1,10 +1,6 @@
 #include "brendancuda_ai.h"
-#include "brendancuda_rand_bits.h"
 #include "brendancuda_errorhelp.h"
 #include <curand_kernel.h>
-
-using BrendanCUDA::Random::Get64Bits;
-using BrendanCUDA::Random::AnyRNG;
 
 __host__ __device__ void copyFloatsToInt32Func(float* Floats, uint32_t* Int32, float Split) {
     uint32_t m = 0;
