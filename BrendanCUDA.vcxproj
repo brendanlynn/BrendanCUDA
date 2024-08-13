@@ -138,7 +138,6 @@
     <CudaCompile Include="brendancuda_ai_evol_evolver.cpp">
       <FileType>CppCode</FileType>
     </CudaCompile>
-    <ClCompile Include="brendancuda_ai_genetics_genemlp.cpp" />
     <CudaCompile Include="brendancuda_ai_mlp_mlp.cu" />
     <CudaCompile Include="brendancuda_ai_mlpb_mlpblw.cu" />
     <CudaCompile Include="brendancuda_binary_basic.cu" />

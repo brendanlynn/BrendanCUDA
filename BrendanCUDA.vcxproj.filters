@@ -160,9 +160,6 @@
     <ClCompile Include="brendancuda_ai_evol_eval_output_impl_uniquevalues.cpp">
       <Filter>AI\Evolution\Evaluation\Output</Filter>
     </ClCompile>
-    <ClCompile Include="brendancuda_ai_genetics_genemlp.cpp">
-      <Filter>AI\Genetics</Filter>
-    </ClCompile>
     <ClCompile Include="brendancuda_copyblock.cpp" />
   </ItemGroup>
 </Project>
