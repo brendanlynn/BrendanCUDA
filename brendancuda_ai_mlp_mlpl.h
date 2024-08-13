@@ -7,7 +7,6 @@
 #include <random>
 #include "brendancuda_dcopy.cuh"
 #include "brendancuda_ai.h"
-#include "brendancuda_rand_anyrng.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_rand_randomizer.h"
 #include <iostream>
@@ -26,8 +25,10 @@ namespace BrendanCUDA {
                 __host__ __device__ __forceinline void Dispose();
 
                 __host__ __device__ __forceinline void ZeroOverwrite();
-                __host__ __device__ __forceinline void RandomOverwrite(Random::AnyRNG<uint64_t> RNG);
-                __host__ __device__ __forceinline void RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG);
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ __device__ __forceinline void RandomOverwrite(_TRNG RNG);
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ __device__ __forceinline void RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG RNG);
 
                 __host__ __device__ __forceinline size_t InputLength() const;
                 __host__ __device__ __forceinline size_t OutputLength() const;
@@ -59,10 +60,14 @@ namespace BrendanCUDA {
                 __host__ __forceinline _T* Run(_T* Input) const;
 
                 __host__ __device__ __forceinline MLPL<_T> Clone() const;
-                __host__ __device__ __forceinline void Randomize(_T Scalar, Random::AnyRNG<uint64_t> RNG);
-                __host__ __device__ __forceinline void Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG);
-                __host__ __device__ __forceinline MLPL<_T> Reproduce(_T Scalar, Random::AnyRNG<uint64_t> RNG) const;
-                __host__ __device__ __forceinline MLPL<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) const;
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ __device__ __forceinline void Randomize(_T Scalar, _TRNG RNG);
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ __device__ __forceinline void Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG RNG);
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ __device__ __forceinline MLPL<_T> Reproduce(_T Scalar, _TRNG RNG) const;
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ __device__ __forceinline MLPL<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG RNG) const;
             private:
                 size_t iptLen;
                 size_t optLen;
@@ -102,14 +107,16 @@ __host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::ZeroOverw
     Random::ClearArray<false, _T>(Span<_T>(bias, optLen));
 }
 template <typename _T>
-__host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::RandomOverwrite(Random::AnyRNG<uint64_t> RNG) {
-    Random::InitRandomArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(wgts, iptLen * optLen), RNG);
-    Random::InitRandomArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(bias, optLen), RNG);
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::RandomOverwrite(_TRNG RNG) {
+    Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(wgts, iptLen * optLen), RNG);
+    Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(bias, optLen), RNG);
 }
 template <typename _T>
-__host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) {
-    Random::InitRandomArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(wgts, iptLen * optLen), LowerBound, UpperBound, RNG);
-    Random::InitRandomArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(bias, optLen), LowerBound, UpperBound, RNG);
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG RNG) {
+    Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(wgts, iptLen * optLen), LowerBound, UpperBound, RNG);
+    Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(bias, optLen), LowerBound, UpperBound, RNG);
 }
 template <typename _T>
 __host__ __device__ __forceinline size_t BrendanCUDA::AI::MLP::MLPL<_T>::InputLength() const {
@@ -296,23 +303,27 @@ __host__ __device__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI
     return MLPL<_T>(iptLen, optLen, wgts, bias);
 }
 template <typename _T>
-__host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::Randomize(_T Scalar, Random::AnyRNG<uint64_t> RNG) {
-    Random::RandomizeArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(wgts, iptLen * optLen), Scalar, RNG);
-    Random::RandomizeArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(bias, optLen), Scalar, RNG);
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::Randomize(_T Scalar, _TRNG RNG) {
+    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(wgts, iptLen * optLen), Scalar, RNG);
+    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(bias, optLen), Scalar, RNG);
 }
 template <typename _T>
-__host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) {
-    Random::RandomizeArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(wgts, iptLen * optLen), Scalar, LowerBound, UpperBound, RNG);
-    Random::RandomizeArray<false, _T, Random::AnyRNG<uint64_t>>(Span<_T>(bias, optLen), Scalar, LowerBound, UpperBound, RNG);
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLPL<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG RNG) {
+    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(wgts, iptLen * optLen), Scalar, LowerBound, UpperBound, RNG);
+    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(bias, optLen), Scalar, LowerBound, UpperBound, RNG);
 }
 template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T>::Reproduce(_T Scalar, Random::AnyRNG<uint64_t> RNG) const {
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __device__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T>::Reproduce(_T Scalar, _TRNG RNG) const {
     MLPL<_T> n = Clone();
     n.Randomize(Scalar, RNG);
     return n;
 }
 template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, Random::AnyRNG<uint64_t> RNG) const {
+template <std::uniform_random_bit_generator _TRNG>
+__host__ __device__ __forceinline BrendanCUDA::AI::MLP::MLPL<_T> BrendanCUDA::AI::MLP::MLPL<_T>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG RNG) const {
     MLPL<_T> n = Clone();
     n.Randomize(Scalar, LowerBound, UpperBound, RNG);
     return n;
