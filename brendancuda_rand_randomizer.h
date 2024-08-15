@@ -422,7 +422,7 @@ __device__ __forceinline void BrendanCUDA::Random::RandomizeArrayWFlips(Span<_T>
         memcpy(u64, &endV, r);
     }
     else {
-        RandomizeArrayWFlips<_T>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), FlipProb, RNG);
+        RandomizeArrayWFlips<uint8_t>(Span<uint8_t>((uint8_t*)Array.ptr, Array.size * sizeof(_T)), FlipProb, RNG);
     }
 }
 #endif
