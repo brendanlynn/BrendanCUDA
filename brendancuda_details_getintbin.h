@@ -2,6 +2,7 @@
 
 #include <random>
 #include <cuda_runtime.h>
+#include <curand_kernel.h>
 
 namespace BrendanCUDA {
     namespace details {
@@ -14,6 +15,15 @@ namespace BrendanCUDA {
             else {
                 std::uniform_int_distribution<uint32_t> dis32(0, (1u << (sizeof(_T) << 3)) - 1);
                 return (_T)dis32(RNG);
+            }
+        }
+        template <std::integral _T>
+        static __forceinline _T GetIntBin(curandState& RNG) {
+            if constexpr (sizeof(_T) == 8) {
+                return ((_T)curand(RNG) << 32) | (_T)curand(RNG);
+            }
+            else {
+                return (_T)curand(RNG);
             }
         }
     }
