@@ -87,6 +87,9 @@
       <Filter>details</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_threadid.h" />
+    <ClInclude Include="brendancuda_details_getintbin.h">
+      <Filter>details</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">
