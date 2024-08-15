@@ -46,21 +46,29 @@ namespace BrendanCUDA {
                 __host__ __device__ __forceinline size_t InputLength();
                 __host__ __device__ __forceinline size_t OutputLength();
 
-                __host__ __forceinline _T* Run(_T* Input) const;
+                __host__ __device__ __forceinline _T* Run(_T* Input) const;
 
                 __host__ __device__ __forceinline MLP<_T> Clone() const;
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void Randomize(_T Scalar, _TRNG& RNG);
+#ifdef __CUDACC__
                 __device__ __forceinline void Randomize(_T Scalar, curandState& RNG);
+#endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+#ifdef __CUDACC__
                 __device__ __forceinline void Randomize(_T Scalar, _T LowerBound, _T UpperBound, curandState& RNG);
+#endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline MLP<_T> Reproduce(_T Scalar, _TRNG& RNG) const;
+#ifdef __CUDACC__
                 __device__ __forceinline MLP<_T> Reproduce(_T Scalar, curandState& RNG) const;
+#endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline MLP<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) const;
+#ifdef __CUDACC__
                 __device__ __forceinline MLP<_T> Reproduce(_T Scalar, _T LowerBound, _T UpperBound, curandState& RNG) const;
+#endif
             private:
                 size_t len;
                 MLPL<_T>* lyrs;
@@ -101,7 +109,7 @@ __host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::Dispose() 
 #endif
 }
 template <typename _T>
-__host__ __forceinline _T* BrendanCUDA::AI::MLP::MLP<_T>::Run(_T* Input) const {
+__host__ __device__ __forceinline _T* BrendanCUDA::AI::MLP::MLP<_T>::Run(_T* Input) const {
     if (!len) return 0;
 #ifdef __CUDA_ARCH__
     MLPL<_T>* l = Layer(0);
@@ -230,44 +238,32 @@ template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::Randomize(_T Scalar, _TRNG& RNG) {
     for (size_t i = 0; i < len; ++i) {
-#ifdef __CUDA_ARCH__
-        Layer(i)->Randomize(Scalar, RNG);
-#else
         GetLayer(i).Randomize(Scalar, RNG);
-#endif
     }
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::Randomize(_T Scalar, curandState& RNG) {
     for (size_t i = 0; i < len; ++i) {
-#ifdef __CUDA_ARCH__
         Layer(i)->Randomize(Scalar, RNG);
-#else
-        GetLayer(i).Randomize(Scalar, RNG);
-#endif
     }
 }
+#endif
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     for (size_t i = 0; i < len; ++i) {
-#ifdef __CUDA_ARCH__
-        Layer(i)->Randomize(Scalar, LowerBound, UpperBound, RNG);
-#else
         GetLayer(i).Randomize(Scalar, LowerBound, UpperBound, RNG);
-#endif
     }
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, curandState& RNG) {
     for (size_t i = 0; i < len; ++i) {
-#ifdef __CUDA_ARCH__
         Layer(i)->Randomize(Scalar, LowerBound, UpperBound, RNG);
-#else
-        GetLayer(i).Randomize(Scalar, LowerBound, UpperBound, RNG);
-#endif
     }
 }
+#endif
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Reproduce(_T Scalar, _TRNG& RNG) const {
@@ -275,12 +271,14 @@ __host__ __forceinline BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_
     n.Randomize(Scalar, RNG);
     return n;
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Reproduce(_T Scalar, curandState& RNG) const {
     MLP<_T> n = Clone();
     n.Randomize(Scalar, RNG);
     return n;
 }
+#endif
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) const {
@@ -288,12 +286,14 @@ __host__ __forceinline BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_
     n.Randomize(Scalar, LowerBound, UpperBound, RNG);
     return n;
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline BrendanCUDA::AI::MLP::MLP<_T> BrendanCUDA::AI::MLP::MLP<_T>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, curandState& RNG) const {
     MLP<_T> n = Clone();
     n.Randomize(Scalar, LowerBound, UpperBound, RNG);
     return n;
 }
+#endif
 template <typename _T>
 __host__ __device__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::ZeroOverwrite() {
     for (size_t i = 0; i < len; ++i) {
@@ -308,41 +308,29 @@ template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::RandomOverwrite(_TRNG& RNG) {
     for (size_t i = 0; i < len; ++i) {
-#ifdef __CUDA_ARCH__
-        Layer(i)->RandomOverwrite(RNG);
-#else
         GetLayer(i).RandomOverwrite(RNG);
-#endif
     }
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::RandomOverwrite(curandState& RNG) {
     for (size_t i = 0; i < len; ++i) {
-#ifdef __CUDA_ARCH__
         Layer(i)->RandomOverwrite(RNG);
-#else
-        GetLayer(i).RandomOverwrite(RNG);
-#endif
     }
 }
+#endif
 template <typename _T>
 template <std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
     for (size_t i = 0; i < len; ++i) {
-#ifdef __CUDA_ARCH__
-        Layer(i)->RandomOverwrite(LowerBound, UpperBound, RNG);
-#else
         GetLayer(i).RandomOverwrite(LowerBound, UpperBound, RNG);
-#endif
     }
 }
+#ifdef __CUDACC__
 template <typename _T>
 __device__ __forceinline void BrendanCUDA::AI::MLP::MLP<_T>::RandomOverwrite(_T LowerBound, _T UpperBound, curandState& RNG) {
     for (size_t i = 0; i < len; ++i) {
-#ifdef __CUDA_ARCH__
         Layer(i)->RandomOverwrite(LowerBound, UpperBound, RNG);
-#else
-        GetLayer(i).RandomOverwrite(LowerBound, UpperBound, RNG);
-#endif
     }
 }
+#endif
