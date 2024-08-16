@@ -8,7 +8,7 @@
 template <>
 void BrendanCUDA::ThrowIfBad<cudaError_t>(cudaError_t e) {
     if (e) {
-        throw std::exception(("A CUDA Runtime API error occured: cudaError_t #" + std::to_string(e) + ".").c_str());
+        throw std::exception(("A CUDA Runtime API error occured: cudaError_t #" + std::to_string(e) + "; " + cudaGetErrorName(e) + "; " + cudaGetErrorString(e) + ".").c_str());
     }
 }
 
@@ -22,14 +22,16 @@ void BrendanCUDA::ThrowIfBad<cublasStatus_t>(cublasStatus_t e) {
 template <>
 void BrendanCUDA::ThrowIfBad<CUresult>(CUresult e) {
     if (e) {
-        throw std::exception(("A CUDA Driver API error occured: CUresult #" + std::to_string(e) + ".").c_str());
+        const char* name; cuGetErrorName(e, &name);
+        const char* desc; cuGetErrorString(e, &desc);
+        throw std::exception(("A CUDA Driver API error occured: CUresult #" + std::to_string(e) + "; " + (name ? name : "unnamed") + "; " + (desc ? desc : "undescribed") + ".").c_str());
     }
 }
 
 template <typename T>
 void BrendanCUDA::ThrowIfBad(T e) {
     if (e) {
-        throw std::exception(("An error occured: error #" + std::to_string(e) + ".").c_str());
+        throw std::exception(("An error occured: \"" + std::to_string(e) + "\".").c_str());
     }
 }
 
