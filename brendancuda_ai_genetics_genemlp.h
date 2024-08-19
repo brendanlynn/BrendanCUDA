@@ -10,7 +10,7 @@ namespace BrendanCUDA {
     namespace AI {
         namespace Genetics {
             template <typename _T>
-            class GeneMLP final {
+            class GeneMLP {
             public:
                 GeneMLP() = default;
                 GeneMLP(_T* Base, MLP::MLP<_T> Intermediate);

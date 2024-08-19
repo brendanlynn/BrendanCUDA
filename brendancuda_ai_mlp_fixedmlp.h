@@ -38,7 +38,7 @@ namespace BrendanCUDA {
     namespace AI {
         namespace MLP {
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-            struct FixedMLPL final {
+            struct FixedMLPL {
             private:
                 using this_t = FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>;
             public:
@@ -65,7 +65,7 @@ namespace BrendanCUDA {
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
             struct FixedMLP;
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-            struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> final {
+            struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
             private:
                 using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
             public:
@@ -99,7 +99,7 @@ namespace BrendanCUDA {
                 static void Deserialize(const void*& Data, void* ObjMem);
             };
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
-            struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> final {
+            struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> {
             private:
                 using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>;
             public:

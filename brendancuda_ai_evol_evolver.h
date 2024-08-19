@@ -9,7 +9,7 @@ namespace BrendanCUDA {
     namespace AI {
         namespace Evolution {
             //A class to reduce the boilerplate code of implementing an evolutionary algorithm.
-            class Evolver final {
+            class Evolver {
             public:
                 //Creates an instance of the BrendanCUDA::AI::Evolution::Evolver class.
                 Evolver(

@@ -10,7 +10,7 @@ namespace BrendanCUDA {
     struct Span_ReadOnly;
 
     template <typename _T, size_t _Size>
-    struct ArrayF final {
+    struct ArrayF {
         _T data[_Size];
         __forceinline ArrayF() = default;
         __host__ __device__ __forceinline _T& operator[](size_t Index);
@@ -21,7 +21,7 @@ namespace BrendanCUDA {
     };
 
     template <typename _T>
-    struct ArrayV final {
+    struct ArrayV {
         _T* ptr;
         size_t size;
         __host__ __device__ __forceinline ArrayV();
@@ -36,7 +36,7 @@ namespace BrendanCUDA {
     };
 
     template <typename _T>
-    struct Span final {
+    struct Span {
         _T* ptr;
         size_t size;
         template <size_t _Size>
@@ -50,7 +50,7 @@ namespace BrendanCUDA {
     };
 
     template <typename _T>
-    struct Span_ReadOnly final {
+    struct Span_ReadOnly {
         const _T* ptr;
         size_t size;
         template <size_t _Size>

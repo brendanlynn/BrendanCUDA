@@ -9,7 +9,7 @@
 namespace BrendanCUDA {
     namespace Fields {
         template <typename _T, size_t _DimensionCount>
-        class DField final {
+        class DField {
             static_assert(_DimensionCount, "_DimensionCount may not be zero.");
             using vector_t = FixedVector<uint32_t, _DimensionCount>;
         public:

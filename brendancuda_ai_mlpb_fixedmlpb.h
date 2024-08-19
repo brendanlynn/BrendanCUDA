@@ -43,7 +43,7 @@ namespace BrendanCUDA {
     namespace AI {
         namespace MLPB {
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-            struct FixedMLPBL final {
+            struct FixedMLPBL {
             private:
                 using this_t = FixedMLPBL<_TInput, _TOutput>;
             public:
@@ -82,7 +82,7 @@ namespace BrendanCUDA {
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral... _LayerCounts>
             struct FixedMLPB;
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-            struct FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> final {
+            struct FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> {
             private:
                 using this_t = FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>;
             public:
@@ -129,7 +129,7 @@ namespace BrendanCUDA {
                 static void Deserialize(const void*& Data, void* ObjMem);
             };
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-            struct FixedMLPB<_TInput, _TOutput1> final {
+            struct FixedMLPB<_TInput, _TOutput1> {
             private:
                 using this_t = FixedMLPB<_TInput, _TOutput1>;
             public:

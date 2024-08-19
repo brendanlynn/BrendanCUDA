@@ -17,7 +17,7 @@ namespace BrendanCUDA {
     }
     namespace Random {
         template <std::unsigned_integral _TOutputType>
-        class AnyRNG final {
+        class AnyRNG {
         public:
             template <typename _TRNG>
             __host__ __device__ AnyRNG(_TRNG* RNG) {

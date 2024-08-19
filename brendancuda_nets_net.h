@@ -13,7 +13,7 @@ namespace BrendanCUDA {
         //Clones the NetNode::data field, provided context.
         using dataCloner_t = void*(*)(NetNode);
         //A node of a BrendanCUDA::Nets::Net.
-        struct NetNode final {
+        struct NetNode {
             //A pointer to the data attached to the node.
             void* data;
             //The inputs to the node. All input claims must be reflected in the list of outputs for each referenced node, or undefined behavior will result. No duplicate elements may exist in the list, or undefined behavior will result.
@@ -32,7 +32,7 @@ namespace BrendanCUDA {
             __forceinline void Dispose(dataDestructor_t DataDestructor) const;
         };
         //A directed graph.
-        class Net final {
+        class Net {
         public:
             //Creates a BrendanCUDA::Nets::Net object.
             __forceinline Net();
