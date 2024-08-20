@@ -8,15 +8,15 @@
 namespace BrendanCUDA {
     namespace Math {
         template <typename _T>
-        __host__ __device__ __forceinline _T sqrt(_T value);
+        __host__ __device__ static __forceinline _T sqrt(_T value);
 
         template <typename _T>
-        __host__ __device__ __forceinline _T clamp(_T value, _T lower, _T upper);
+        __host__ __device__ static __forceinline _T clamp(_T value, _T lower, _T upper);
     }
 }
 
 template <>
-__host__ __device__ __forceinline int32_t BrendanCUDA::Math::sqrt<int32_t>(int32_t value) {
+__host__ __device__ static __forceinline int32_t BrendanCUDA::Math::sqrt<int32_t>(int32_t value) {
     if (value < 0) {
         return -1;
     }
@@ -40,7 +40,7 @@ __host__ __device__ __forceinline int32_t BrendanCUDA::Math::sqrt<int32_t>(int32
     return lower;
 }
 template <>
-__host__ __device__ __forceinline uint32_t BrendanCUDA::Math::sqrt<uint32_t>(uint32_t value) {
+__host__ __device__ static __forceinline uint32_t BrendanCUDA::Math::sqrt<uint32_t>(uint32_t value) {
     if (value < 2) {
         return value;
     }
@@ -61,7 +61,7 @@ __host__ __device__ __forceinline uint32_t BrendanCUDA::Math::sqrt<uint32_t>(uin
     return lower;
 }
 template <>
-__host__ __device__ __forceinline int64_t BrendanCUDA::Math::sqrt<int64_t>(int64_t value) {
+__host__ __device__ static __forceinline int64_t BrendanCUDA::Math::sqrt<int64_t>(int64_t value) {
     if (value < 0) {
         return -1;
     }
@@ -85,7 +85,7 @@ __host__ __device__ __forceinline int64_t BrendanCUDA::Math::sqrt<int64_t>(int64
     return lower;
 }
 template <>
-__host__ __device__ __forceinline uint64_t BrendanCUDA::Math::sqrt<uint64_t>(uint64_t value) {
+__host__ __device__ static __forceinline uint64_t BrendanCUDA::Math::sqrt<uint64_t>(uint64_t value) {
     if (value < 2) {
         return value;
     }
@@ -106,7 +106,7 @@ __host__ __device__ __forceinline uint64_t BrendanCUDA::Math::sqrt<uint64_t>(uin
     return lower;
 }
 template <typename _T>
-__host__ __device__ __forceinline _T BrendanCUDA::Math::sqrt(_T value) {
+__host__ __device__ static __forceinline _T BrendanCUDA::Math::sqrt(_T value) {
     if constexpr (std::signed_integral<_T>)
         return (_T)sqrt((int32_t)value);
     else if constexpr (std::unsigned_integral<_T>)
@@ -116,7 +116,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::Math::sqrt(_T value) {
 }
 
 template <typename _T>
-__host__ __device__ __forceinline _T BrendanCUDA::Math::clamp(_T value, _T lower, _T upper) {
+__host__ __device__ static __forceinline _T BrendanCUDA::Math::clamp(_T value, _T lower, _T upper) {
     if (value < lower) {
         return lower;
     }
