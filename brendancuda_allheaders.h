@@ -18,6 +18,7 @@
 #include "brendancuda_arrays.h"
 #include "brendancuda_binary_basic.h"
 #include "brendancuda_crossassigns.h"
+#include "brendancuda_dimensionedbase.h"
 #include "brendancuda_errorhelp.h"
 #include "brendancuda_fields_dfield.h"
 #include "brendancuda_fields_field.h"
