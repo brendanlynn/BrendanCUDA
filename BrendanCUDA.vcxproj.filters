@@ -90,6 +90,7 @@
     <ClInclude Include="brendancuda_details_getintbin.h">
       <Filter>details</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_dimensionedbase.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">

@@ -107,6 +107,7 @@
     <ClInclude Include="brendancuda_cudaconstexpr.h" />
     <ClInclude Include="brendancuda_details_fillwith.h" />
     <ClInclude Include="brendancuda_details_getintbin.h" />
+    <ClInclude Include="brendancuda_dimensionedbase.h" />
     <ClInclude Include="brendancuda_errorhelp.h" />
     <ClInclude Include="brendancuda_fields_instance.h" />
     <ClInclude Include="brendancuda_ai_mlp_fixedmlp.h" />
