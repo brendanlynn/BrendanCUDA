@@ -84,7 +84,7 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline _T GetValueAt(vector_t Coordinates) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline _T GetValueAt(_Ts... Coordinates) const const {
+            __host__ __device__ __forceinline _T GetValueAt(_Ts... Coordinates) const {
                 return GetValueAt(vector_t(Coordinates...));
             }
 
