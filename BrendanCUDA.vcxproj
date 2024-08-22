@@ -103,6 +103,7 @@
     <ClInclude Include="brendancuda_allheaders.h" />
     <ClInclude Include="brendancuda_arrays.h" />
     <ClInclude Include="brendancuda_copyblock.h" />
+    <ClInclude Include="brendancuda_copytype.h" />
     <ClInclude Include="brendancuda_crossassigns.h" />
     <ClInclude Include="brendancuda_cudaconstexpr.h" />
     <ClInclude Include="brendancuda_details_fillwith.h" />

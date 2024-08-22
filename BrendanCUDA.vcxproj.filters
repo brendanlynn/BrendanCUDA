@@ -91,6 +91,7 @@
       <Filter>details</Filter>
     </ClInclude>
     <ClInclude Include="brendancuda_dimensionedbase.h" />
+    <ClInclude Include="brendancuda_copytype.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Fields">

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "brendancuda_arrays.h"
+#include "brendancuda_copytype.h"
 #include "brendancuda_fixedvectors.h"
 #include "brendancuda_points.h"
 #include <cuda_runtime.h>
@@ -21,23 +22,29 @@ namespace BrendanCUDA {
 
         __host__ __device__ ArrayV<Landmark> GetLandmarksInDirection(uint32_t InputLength, uint32_t OutputLength, uint32_t RangeLength, uint32_t InputIndex, uint32_t OutputIndex);
     }
-    template <typename _T, size_t _VectorLength, bool _Wrap = false>
-    __host__ __device__ void CopyBlock(_T* Input, _T* Output, FixedVector<uint32_t, _VectorLength> InputDimensions, FixedVector<uint32_t, _VectorLength> OutputDimensions, FixedVector<uint32_t, _VectorLength> RangeDimensions, FixedVector<uint32_t, _VectorLength> RangeInInputsCoordinates, FixedVector<uint32_t, _VectorLength> RangeInOutputsCoordinates);
+    template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap = false, CopyType _CopyType = copyTypeMemcpy>
+        requires (_CopyType == 0 || _CopyType == 2)
+    __host__ void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
+    template <typename _T, size_t _VectorLength, bool _Wrap = false, CopyType _CopyType = copyTypeMemcpy>
+        requires (_CopyType == 0 || _CopyType == 2)
+    __device__ void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
 }
 
-template <typename _T, size_t _VectorLength, bool _Wrap>
-__host__ __device__ void BrendanCUDA::CopyBlock(_T* Input, _T* Output, FixedVector<uint32_t, _VectorLength> InputDimensions, FixedVector<uint32_t, _VectorLength> OutputDimensions, FixedVector<uint32_t, _VectorLength> RangeDimensions, FixedVector<uint32_t, _VectorLength> RangeInInputsCoordinates, FixedVector<uint32_t, _VectorLength> RangeInOutputsCoordinates) {
+template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap, BrendanCUDA::CopyType _CopyType>
+    requires (_CopyType == 0 || _CopyType == 2)
+__host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
+    using vector_t = FixedVector<uint32_t, _VectorLength>;
+    
     if constexpr (_Wrap) {
         ArrayF<ArrayV<details::Landmark>, _VectorLength> landmarksArray;
-        for (size_t i = 0; i < _VectorLength; ++i) {
+        for (size_t i = 0; i < _VectorLength; ++i)
             landmarksArray[i] = details::GetLandmarksInDirection(InputDimensions[i], OutputDimensions[i], RangeDimensions[i], RangeInInputsCoordinates[i], RangeInOutputsCoordinates[i]);
-        }
-
-        FixedVector<uint32_t, _VectorLength> i;
+        
+        vector_t i;
         while (true) {
-            FixedVector<uint32_t, _VectorLength> rangeDimensions;
-            FixedVector<uint32_t, _VectorLength> rangeInInputCoordinates;
-            FixedVector<uint32_t, _VectorLength> rangeInOutputCoordinates;
+            vector_t rangeDimensions;
+            vector_t rangeInInputCoordinates;
+            vector_t rangeInOutputCoordinates;
             for (size_t j = 0; j < _VectorLength; ++j) {
                 details::Landmark landmark = landmarksArray[j][i[j]];
                 rangeDimensions[j] = landmark.size;
@@ -45,7 +52,7 @@ __host__ __device__ void BrendanCUDA::CopyBlock(_T* Input, _T* Output, FixedVect
                 rangeInOutputCoordinates[j] = landmark.outputIndex;
             }
 
-            CopyBlock<_T, _VectorLength>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
+            CopyBlock<_T, _VectorLength, _InputOnHost, _OutputOnHost, false, _CopyType>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
             
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
@@ -61,16 +68,128 @@ __host__ __device__ void BrendanCUDA::CopyBlock(_T* Input, _T* Output, FixedVect
     }
     else {
         if constexpr (_VectorLength == 1) {
-            cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyDefault);
+            if constexpr (_CopyType == copyTypeMemcpy) {
+                if constexpr (_InputOnHost)
+                    if constexpr (_OutputOnHost) memcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x);
+                    else cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyHostToDevice);
+                else
+                    if constexpr (_OutputOnHost) cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyDeviceToHost);
+                    else cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyDeviceToDevice);
+            }
+            else {
+                if constexpr (_InputOnHost)
+                    if constexpr (_OutputOnHost) Output[RangeInOutputsCoordinates.x] = Input[RangeInInputsCoordinates.x];
+                    else thrust::device_ptr<_T>(Output)[RangeInOutputsCoordinates.x] = Input[RangeInInputsCoordinates.x];
+                else
+                    if constexpr (_OutputOnHost) Output[RangeInOutputsCoordinates.x] = thrust::device_ptr<_T>(Input)[RangeInInputsCoordinates.x];
+                    else thrust::device_ptr<_T>(Output)[RangeInOutputsCoordinates.x] = thrust::device_ptr<_T>(Input)[RangeInInputsCoordinates.x];
+            }
             return;
         }
-        size_t memcpySize = sizeof(_T) * RangeDimensions[_VectorLength - 1];
-        FixedVector<uint32_t, _VectorLength> i;
+        size_t elementNum = RangeDimensions[_VectorLength - 1];
+        size_t memcpySize = sizeof(_T) * elementNum;
+        vector_t i;
         while (true) {
             size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
             size_t optIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(OutputDimensions, RangeInOutputsCoordinates + i);
 
-            cudaMemcpy(Output + optIdx, Input + iptIdx, memcpySize, cudaMemcpyDefault);
+            _T* iptPtr = Input + iptIdx;
+            _T* optPtr = Output + optIdx;
+
+            if constexpr (_CopyType == copyTypeMemcpy) {
+                if constexpr (_InputOnHost)
+                    if constexpr (_OutputOnHost) memcpy(optPtr, iptPtr, memcpySize);
+                    else cudaMemcpy(optPtr, iptPtr, memcpySize, cudaMemcpyHostToDevice);
+                else
+                    if constexpr (_OutputOnHost) cudaMemcpy(optPtr, iptPtr, memcpySize, cudaMemcpyDeviceToHost);
+                    else cudaMemcpy(optPtr, iptPtr, memcpySize, cudaMemcpyDeviceToDevice);
+            }
+            else {
+                _T* iptUpper = iptPtr + elementNum;
+                for (; iptPtr < iptUpper; ++iptPtr, ++optPtr) {
+                    if constexpr (_InputOnHost)
+                        if constexpr (_OutputOnHost) *optPtr = *iptPtr;
+                        else thrust::device_ptr<_T>(optPtr) = *iptPtr;
+                    else
+                        if constexpr (_OutputOnHost) *optPtr = thrust::device_ptr<_T>(iptPtr);
+                        else thrust::device_ptr<_T>(optPtr) = thrust::device_ptr<_T>(iptPtr);
+                }
+            }
+
+            bool toBreak = true;
+            for (size_t j = 1; j < _VectorLength; ++j) {
+                uint32_t& si = i[j];
+                if (++si >= RangeDimensions[j]) si = 0;
+                else {
+                    toBreak = false;
+                    break;
+                }
+            }
+            if (toBreak) break;
+        }
+    }
+}
+template <typename _T, size_t _VectorLength, bool _Wrap, BrendanCUDA::CopyType _CopyType>
+    requires (_CopyType == 0 || _CopyType == 2)
+__device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
+    using vector_t = FixedVector<uint32_t, _VectorLength>;
+
+    if constexpr (_Wrap) {
+        ArrayF<ArrayV<details::Landmark>, _VectorLength> landmarksArray;
+        for (size_t i = 0; i < _VectorLength; ++i)
+            landmarksArray[i] = details::GetLandmarksInDirection(InputDimensions[i], OutputDimensions[i], RangeDimensions[i], RangeInInputsCoordinates[i], RangeInOutputsCoordinates[i]);
+        
+        vector_t i;
+        while (true) {
+            vector_t rangeDimensions;
+            vector_t rangeInInputCoordinates;
+            vector_t rangeInOutputCoordinates;
+            for (size_t j = 0; j < _VectorLength; ++j) {
+                details::Landmark landmark = landmarksArray[j][i[j]];
+                rangeDimensions[j] = landmark.size;
+                rangeInInputCoordinates[j] = landmark.inputIndex;
+                rangeInOutputCoordinates[j] = landmark.outputIndex;
+            }
+
+            CopyBlock<_T, _VectorLength, false, _CopyType>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
+
+            bool toBreak = true;
+            for (size_t j = 0; j < _VectorLength; ++j) {
+                uint32_t& si = i[j];
+                if (++si >= landmarksArray[j].size) si = 0;
+                else {
+                    toBreak = false;
+                    break;
+                }
+            }
+            if (toBreak) break;
+        }
+    }
+    else {
+        if constexpr (_VectorLength == 1) {
+            if constexpr (_CopyType == copyTypeMemcpy)
+                memcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x);
+            else
+                Output[RangeInOutputsCoordinates.x] = Input[RangeInInputsCoordinates.x];
+            return;
+        }
+        size_t elementNum = RangeDimensions[_VectorLength - 1];
+        size_t memcpySize = sizeof(_T) * elementNum;
+        vector_t i;
+        while (true) {
+            size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
+            size_t optIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(OutputDimensions, RangeInOutputsCoordinates + i);
+
+            _T* iptPtr = Input + iptIdx;
+            _T* optPtr = Output + optIdx;
+
+            if constexpr (_CopyType == copyTypeMemcpy)
+                memcpy(optPtr, iptPtr, memcpySize);
+            else {
+                _T* iptUpper = iptPtr + elementNum;
+                for (; iptPtr < iptUpper; ++iptPtr, ++optPtr)
+                    *optPtr = *iptPtr;
+            }
 
             bool toBreak = true;
             for (size_t j = 1; j < _VectorLength; ++j) {
