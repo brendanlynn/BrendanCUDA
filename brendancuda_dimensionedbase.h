@@ -43,13 +43,19 @@ namespace BrendanCUDA {
 }
 
 template <size_t _DimensionCount>
-BrendanCUDA::DimensionedBase<_DimensionCount>::DimensionedBase(vector_t Dimensions)
-    : dims(Dimensions) { }
+BrendanCUDA::DimensionedBase<_DimensionCount>::DimensionedBase(vector_t Dimensions) {
+    for (size_t i = 0; i < _DimensionCount; ++i)
+        if (!Dimensions[i]) {
+            dims = vector_t();
+            return;
+        }
+    dims = Dimensions;
+}
 template <size_t _DimensionCount>
 template <std::convertible_to<uint32_t>... _Ts>
     requires (sizeof...(_Ts) == _DimensionCount)
 BrendanCUDA::DimensionedBase<_DimensionCount>::DimensionedBase(_Ts... Dimensions)
-    : dims(Dimensions...) { }
+    : DimensionedBase(vector_t(Dimensions...)) { }
 template <size_t _DimensionCount>
 __host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::LengthX() const requires (_DimensionCount <= 4) {
     return dimensions.x;
