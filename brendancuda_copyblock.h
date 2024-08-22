@@ -23,15 +23,15 @@ namespace BrendanCUDA {
         __host__ __device__ ArrayV<Landmark> GetLandmarksInDirection(uint32_t InputLength, uint32_t OutputLength, uint32_t RangeLength, uint32_t InputIndex, uint32_t OutputIndex);
     }
     template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap = false, CopyType _CopyType = copyTypeMemcpy>
-        requires (_CopyType == 0 || _CopyType == 2)
+        requires (_CopyType <= 1)
     __host__ void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
     template <typename _T, size_t _VectorLength, bool _Wrap = false, CopyType _CopyType = copyTypeMemcpy>
-        requires (_CopyType == 0 || _CopyType == 2)
+        requires (_CopyType <= 1)
     __device__ void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
 }
 
 template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap, BrendanCUDA::CopyType _CopyType>
-    requires (_CopyType == 0 || _CopyType == 2)
+    requires (_CopyType <= 1)
 __host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
     
@@ -130,7 +130,7 @@ __host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVec
     }
 }
 template <typename _T, size_t _VectorLength, bool _Wrap, BrendanCUDA::CopyType _CopyType>
-    requires (_CopyType == 0 || _CopyType == 2)
+    requires (_CopyType <= 1)
 __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
