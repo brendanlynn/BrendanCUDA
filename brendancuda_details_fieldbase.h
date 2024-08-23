@@ -119,85 +119,48 @@ namespace BrendanCUDA {
 
 #pragma region CpyAll
         protected:
-            template <bool _CopyFromHost, CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
+            template <bool _CopyFromHost>
             __host__ __forceinline void CpyAllIn(const _T* All);
 #ifdef __CUDACC__
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __device__ __forceinline void CpyAllIn(const _T* All);
 #endif
         public:
-            template <bool _CopyToHost, CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
+            template <bool _CopyToHost>
             __host__ __forceinline _T* CpyAllOut() const;
 #ifdef __CUDACC__
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __device__ __forceinline _T* CpyAllOut() const;
 #endif
-            template <bool _CopyToHost, CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
+            template <bool _CopyToHost>
             __host__ __device__ __forceinline void CpyAllOut(_T* All) const;
 #ifdef __CUDACC__
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __device__ __forceinline void CpyAllOut(_T* All) const;
 #endif
 #pragma endregion
 
 #pragma region CpyVal
         protected:
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __device__ __forceinline void CpyValIn(uint64_t Idx, const _T& Val);
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T& Val);
-            template <bool _CopyFromHost, CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val);
 #ifdef __CUDACC__
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __device__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val);
 #endif
-            template <bool _CopyFromHost, CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val);
 #ifdef __CUDACC__
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val);
 #endif
         public:
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __device__ __forceinline void CpyValOut(uint64_t Idx, _T& Val) const;
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __device__ __forceinline void CpyValOut(const vector_t& Coords, _T& Val) const;
-            template <bool _CopyToHost, CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const;
 #ifdef __CUDACC__
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __device__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const;
 #endif
-            template <bool _CopyToHost, CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const;
 #ifdef __CUDACC__
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __device__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const;
 #endif
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __device__ __forceinline _T CpyValOut(uint64_t Idx) const;
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __host__ __device__ __forceinline _T CpyValOut(const vector_t& Coords) const;
 #pragma endregion
 
@@ -208,20 +171,16 @@ namespace BrendanCUDA {
         public:
             __host__ __device__ __forceinline const _T* Data() const;
 
-            template <bool _InputOnHost, CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
+        protected:
+            template <bool _InputOnHost>
             __host__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates);
 #ifdef __CUDACC__
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __device__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates);
 #endif
-            template <bool _OutputOnHost, CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
+        public:
+            template <bool _OutputOnHost>
             __host__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const;
 #ifdef __CUDACC__
-            template <CopyType _CpyType = copyTypeCopyAssignment>
-                requires (_CpyType <= 1)
             __device__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const;
 #endif
 
@@ -392,160 +351,84 @@ __host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, const 
     return CoordsToRef(Coords);
 }
 template <typename _T, size_t _DimensionCount>
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(uint64_t Idx, const _T& Val) {
-    if constexpr (_CpyType == copyTypeCopyAssignment)
-        IdxToRef(Idx) = Val;
-    else {
 #ifdef __CUDA_ARCH__
-        memcpy(IdxToPtr(Coords), &Val, sizeof(_T));
+    memcpy(IdxToPtr(Coords), &Val, sizeof(_T));
 #else
-        cudaMemcpy(IdxToPtr(Coords), &Val, sizeof(_T), cudaMemcpyHostToDevice);
+    cudaMemcpy(IdxToPtr(Coords), &Val, sizeof(_T), cudaMemcpyHostToDevice);
 #endif
-    }
 }
 template <typename _T, size_t _DimensionCount>
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(const vector_t& Coords, const _T& Val) {
-    if constexpr (_CpyType == copyTypeCopyAssignment)
-        CoordsToRef(Coords) = Val;
-    else {
 #ifdef __CUDA_ARCH__
-        memcpy(CoordsToPtr(Coords), &Val, sizeof(_T));
+    memcpy(CoordsToPtr(Coords), &Val, sizeof(_T));
 #else
-        cudaMemcpy(CoordsToPtr(Coords), &Val, sizeof(_T), cudaMemcpyHostToDevice);
+    cudaMemcpy(CoordsToPtr(Coords), &Val, sizeof(_T), cudaMemcpyHostToDevice);
 #endif
-    }
 }
 template <typename _T, size_t _DimensionCount>
-template <bool _CopyFromHost, BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
+template <bool _CopyFromHost>
 __host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(uint64_t Idx, const _T* Val) {
-    if constexpr (_CpyType == copyTypeCopyAssignment) {
-        if constexpr (_CopyFromHost) IdxToRef(Idx) = *Val;
-        else IdxToRef(Idx) = *thrust::device_ptr<_T>(Val);
-    }
-    else {
-        cudaMemcpy(IdxToPtr(Idx), Val, sizeof(_T), _CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
-    }
+    cudaMemcpy(IdxToPtr(Idx), Val, sizeof(_T), _CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
 }
 #ifdef __CUDACC__
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(uint64_t Idx, const _T* Val) {
-    if constexpr (_CpyType == copyTypeCopyAssignment)
-        IdxToRef(Idx) = *Val;
-    else
-        memcpy(IdxToPtr(Idx), Val, sizeof(_T));
+    memcpy(IdxToPtr(Idx), Val, sizeof(_T));
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-template <bool _CopyFromHost, BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
+template <bool _CopyFromHost>
 __host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(const vector_t& Coords, const _T* Val) {
-    if constexpr (_CpyType == copyTypeCopyAssignment) {
-        if constexpr (_CopyFromHost) CoordsToRef(Coords) = *Val;
-        else CoordsToRef(Coords) = *thrust::device_ptr<_T>(Val);
-    }
-    else {
-        cudaMemcpy(CoordsToPtr(Coords), Val, sizeof(_T), _CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
-    }
+    cudaMemcpy(CoordsToPtr(Coords), Val, sizeof(_T), _CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
 }
 #ifdef __CUDACC__
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(const vector_t& Coords, const _T* Val) {
-    if constexpr (_CpyType == copyTypeCopyAssignment)
-        CoordsToRef(Coords) = *Val;
-    else
-        memcpy(CoordsToPtr(Coords), &Val, sizeof(_T));
+    memcpy(CoordsToPtr(Coords), &Val, sizeof(_T));
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(uint64_t Idx, _T& Val) const {
-    if constexpr (_CpyType == copyTypeCopyAssignment)
-        Val = IdxToRef(Idx);
-    else {
 #ifdef __CUDA_ARCH__
-        memcpy(&Val, IdxToPtr(Coords), sizeof(_T));
+    memcpy(&Val, IdxToPtr(Coords), sizeof(_T));
 #else
-        cudaMemcpy(&Val, IdxToPtr(Coords), sizeof(_T), cudaMemcpyDeviceToHost);
+    cudaMemcpy(&Val, IdxToPtr(Coords), sizeof(_T), cudaMemcpyDeviceToHost);
 #endif
-    }
 }
 template <typename _T, size_t _DimensionCount>
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const vector_t& Coords, _T& Val) const {
-    if constexpr (_CpyType == copyTypeCopyAssignment)
-        Val = CoordsToRef(Coords);
-    else {
 #ifdef __CUDA_ARCH__
-        memcpy(&Val, CoordsToPtr(Coords), sizeof(_T));
+    memcpy(&Val, CoordsToPtr(Coords), sizeof(_T));
 #else
-        cudaMemcpy(&Val, CoordsToPtr(Coords), sizeof(_T), cudaMemcpyDeviceToHost);
+    cudaMemcpy(&Val, CoordsToPtr(Coords), sizeof(_T), cudaMemcpyDeviceToHost);
 #endif
-    }
 }
 template <typename _T, size_t _DimensionCount>
-template <bool _CopyToHost, BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
+template <bool _CopyToHost>
 __host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(uint64_t Idx, _T* Val) const {
-    if constexpr (_CpyType == copyTypeCopyAssignment) {
-        if constexpr (_CopyToHost) *Val = IdxToRef(Idx);
-        else *thrust::device_ptr<_T>(Val) = IdxToRef(Idx);
-    }
-    else {
-        cudaMemcpy(Val, IdxToPtr(Idx), sizeof(_T), _CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
-    }
+    cudaMemcpy(Val, IdxToPtr(Idx), sizeof(_T), _CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
 }
 #ifdef __CUDACC__
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(uint64_t Idx, _T* Val) const {
-    if constexpr (_CpyType == copyTypeCopyAssignment)
-        *Val = IdxToRef(Idx);
-    else
-        memcpy(Val, IdxToPtr(Idx), sizeof(_T));
+    memcpy(Val, IdxToPtr(Idx), sizeof(_T));
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-template <bool _CopyToHost, BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
+template <bool _CopyToHost>
 __host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const vector_t& Coords, _T* Val) const {
-    if constexpr (_CpyType == copyTypeCopyAssignment) {
-        if constexpr (_CopyToHost) *Val = CoordsToRef(Coords);
-        else *thrust::device_ptr<_T>(Val) = CoordsToRef(Coords);
-    }
-    else {
-        cudaMemcpy(Val, CoordsToPtr(Coords), sizeof(_T), _CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
-    }
+    cudaMemcpy(Val, CoordsToPtr(Coords), sizeof(_T), _CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
 }
 #ifdef __CUDACC__
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(vector_t Coords, _T* Val) const {
-    if constexpr (_CpyType == copyTypeCopyAssignment)
-        *Val = CoordsToRef(Idx);
-    else
-        memcpy(Val, CoordsToPtr(Idx), sizeof(_T));
+    memcpy(Val, CoordsToPtr(Idx), sizeof(_T));
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __host__ __device__ __forceinline _T BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(uint64_t Idx) const {
     _T val;
     CpyValOut(Idx, val);
     return val;
 }
 template <typename _T, size_t _DimensionCount>
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __host__ __device__ __forceinline _T BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const vector_t& Coords) const {
     _T val;
     CpyValOut(Coords, val);
@@ -568,31 +451,25 @@ __host__ __device__ __forceinline const _T* BrendanCUDA::details::FieldBase<_T, 
     return darr;
 }
 template <typename _T, size_t _DimensionCount>
-template <bool _InputOnHost, BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
+template <bool _InputOnHost>
 __host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) {
-    CopyBlock<_T, _DimensionCount, _InputOnHost, false, true, _CpyType>(Input, darr, InputDimensions, Dimensions(), RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+    CopyBlock<_T, _DimensionCount, _InputOnHost, false, true>(Input, darr, InputDimensions, Dimensions(), RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #ifdef __CUDACC__
 template <typename _T, size_t _DimensionCount>
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) {
-    CopyBlock<_T, _DimensionCount, true, _CpyType>(Input, darr, InputDimensions, Dimensions(), RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+    CopyBlock<_T, _DimensionCount, true>(Input, darr, InputDimensions, Dimensions(), RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-template <bool _OutputOnHost, BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
+template <bool _OutputOnHost>
 __host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
-    CopyBlock<_T, _DimensionCount, false, _OutputOnHost, true, _CpyType>(darr, Output, Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+    CopyBlock<_T, _DimensionCount, false, _OutputOnHost, true>(darr, Output, Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #ifdef __CUDACC__
 template <typename _T, size_t _DimensionCount>
-template <BrendanCUDA::CopyType _CpyType>
-    requires (_CpyType <= 1)
 __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
-    CopyBlock<_T, _DimensionCount, true, _CpyType>(darr, Output, Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+    CopyBlock<_T, _DimensionCount, true>(darr, Output, Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #endif
 template <typename _T, size_t _DimensionCount>
