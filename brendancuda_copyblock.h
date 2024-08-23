@@ -22,16 +22,15 @@ namespace BrendanCUDA {
 
         __host__ __device__ ArrayV<Landmark> GetLandmarksInDirection(uint32_t InputLength, uint32_t OutputLength, uint32_t RangeLength, uint32_t InputIndex, uint32_t OutputIndex);
     }
-    template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap = false, CopyType _CopyType = copyTypeMemcpy>
-        requires (_CopyType <= 1)
-    __host__ void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
+    template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap = false>
+    __host__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
+#ifdef __CUDACC__
     template <typename _T, size_t _VectorLength, bool _Wrap = false, CopyType _CopyType = copyTypeMemcpy>
-        requires (_CopyType <= 1)
-    __device__ void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
+    __device__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
+#endif
 }
 
-template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap, BrendanCUDA::CopyType _CopyType>
-    requires (_CopyType <= 1)
+template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap>
 __host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
     
@@ -52,7 +51,7 @@ __host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVec
                 rangeInOutputCoordinates[j] = landmark.outputIndex;
             }
 
-            CopyBlock<_T, _VectorLength, _InputOnHost, _OutputOnHost, false, _CopyType>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
+            CopyBlock<_T, _VectorLength, _InputOnHost, _OutputOnHost, false>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
             
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
@@ -68,22 +67,12 @@ __host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVec
     }
     else {
         if constexpr (_VectorLength == 1) {
-            if constexpr (_CopyType == copyTypeMemcpy) {
-                if constexpr (_InputOnHost)
-                    if constexpr (_OutputOnHost) memcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x);
-                    else cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyHostToDevice);
-                else
-                    if constexpr (_OutputOnHost) cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyDeviceToHost);
-                    else cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyDeviceToDevice);
-            }
-            else {
-                if constexpr (_InputOnHost)
-                    if constexpr (_OutputOnHost) Output[RangeInOutputsCoordinates.x] = Input[RangeInInputsCoordinates.x];
-                    else thrust::device_ptr<_T>(Output)[RangeInOutputsCoordinates.x] = Input[RangeInInputsCoordinates.x];
-                else
-                    if constexpr (_OutputOnHost) Output[RangeInOutputsCoordinates.x] = thrust::device_ptr<_T>(Input)[RangeInInputsCoordinates.x];
-                    else thrust::device_ptr<_T>(Output)[RangeInOutputsCoordinates.x] = thrust::device_ptr<_T>(Input)[RangeInInputsCoordinates.x];
-            }
+            if constexpr (_InputOnHost)
+                if constexpr (_OutputOnHost) memcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x);
+                else cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyHostToDevice);
+            else
+                if constexpr (_OutputOnHost) cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyDeviceToHost);
+                else cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyDeviceToDevice);
             return;
         }
         size_t elementNum = RangeDimensions[_VectorLength - 1];
@@ -96,25 +85,12 @@ __host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVec
             _T* iptPtr = Input + iptIdx;
             _T* optPtr = Output + optIdx;
 
-            if constexpr (_CopyType == copyTypeMemcpy) {
-                if constexpr (_InputOnHost)
-                    if constexpr (_OutputOnHost) memcpy(optPtr, iptPtr, memcpySize);
-                    else cudaMemcpy(optPtr, iptPtr, memcpySize, cudaMemcpyHostToDevice);
-                else
-                    if constexpr (_OutputOnHost) cudaMemcpy(optPtr, iptPtr, memcpySize, cudaMemcpyDeviceToHost);
-                    else cudaMemcpy(optPtr, iptPtr, memcpySize, cudaMemcpyDeviceToDevice);
-            }
-            else {
-                _T* iptUpper = iptPtr + elementNum;
-                for (; iptPtr < iptUpper; ++iptPtr, ++optPtr) {
-                    if constexpr (_InputOnHost)
-                        if constexpr (_OutputOnHost) *optPtr = *iptPtr;
-                        else thrust::device_ptr<_T>(optPtr) = *iptPtr;
-                    else
-                        if constexpr (_OutputOnHost) *optPtr = thrust::device_ptr<_T>(iptPtr);
-                        else thrust::device_ptr<_T>(optPtr) = thrust::device_ptr<_T>(iptPtr);
-                }
-            }
+            if constexpr (_InputOnHost)
+                if constexpr (_OutputOnHost) memcpy(optPtr, iptPtr, memcpySize);
+                else cudaMemcpy(optPtr, iptPtr, memcpySize, cudaMemcpyHostToDevice);
+            else
+                if constexpr (_OutputOnHost) cudaMemcpy(optPtr, iptPtr, memcpySize, cudaMemcpyDeviceToHost);
+                else cudaMemcpy(optPtr, iptPtr, memcpySize, cudaMemcpyDeviceToDevice);
 
             bool toBreak = true;
             for (size_t j = 1; j < _VectorLength; ++j) {
@@ -129,8 +105,8 @@ __host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVec
         }
     }
 }
-template <typename _T, size_t _VectorLength, bool _Wrap, BrendanCUDA::CopyType _CopyType>
-    requires (_CopyType <= 1)
+#ifdef __CUDACC__
+template <typename _T, size_t _VectorLength, bool _Wrap>
 __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
@@ -151,7 +127,7 @@ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedV
                 rangeInOutputCoordinates[j] = landmark.outputIndex;
             }
 
-            CopyBlock<_T, _VectorLength, false, _CopyType>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
+            CopyBlock<_T, _VectorLength, false>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
 
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
@@ -167,10 +143,7 @@ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedV
     }
     else {
         if constexpr (_VectorLength == 1) {
-            if constexpr (_CopyType == copyTypeMemcpy)
-                memcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x);
-            else
-                Output[RangeInOutputsCoordinates.x] = Input[RangeInInputsCoordinates.x];
+            memcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x);
             return;
         }
         size_t elementNum = RangeDimensions[_VectorLength - 1];
@@ -183,13 +156,7 @@ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedV
             _T* iptPtr = Input + iptIdx;
             _T* optPtr = Output + optIdx;
 
-            if constexpr (_CopyType == copyTypeMemcpy)
-                memcpy(optPtr, iptPtr, memcpySize);
-            else {
-                _T* iptUpper = iptPtr + elementNum;
-                for (; iptPtr < iptUpper; ++iptPtr, ++optPtr)
-                    *optPtr = *iptPtr;
-            }
+            memcpy(optPtr, iptPtr, memcpySize);
 
             bool toBreak = true;
             for (size_t j = 1; j < _VectorLength; ++j) {
@@ -204,3 +171,4 @@ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedV
         }
     }
 }
+#endif
