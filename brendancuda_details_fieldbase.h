@@ -183,6 +183,8 @@ namespace BrendanCUDA {
 #ifdef __CUDACC__
             __device__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const;
 #endif
+            
+            __host__ __device__ FieldBase<_T, _DimensionCount> Clone() const;
 
             __forceinline size_t SerializedSize() const requires BSerializer::Serializable<_T>;
             __forceinline void Serialize(void*& Data) const requires BSerializer::Serializable<_T>;
@@ -515,6 +517,10 @@ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCoun
     CopyBlock<_T, _DimensionCount, true>(darr, Output, Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #endif
+template <typename _T, size_t _DimensionCount>
+__host__ __device__ auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::Clone() const -> FieldBase<_T, _DimensionCount> {
+    return FieldBase<_T, _DimensionCount>(Dimensions(), darr);
+}
 template <typename _T, size_t _DimensionCount>
 __forceinline size_t BrendanCUDA::details::FieldBase<_T, _DimensionCount>::SerializedSize() const requires BSerializer::Serializable<_T> {
     size_t t = sizeof(uint32_t) * _DimensionCount;
