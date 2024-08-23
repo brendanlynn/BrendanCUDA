@@ -25,7 +25,7 @@ namespace BrendanCUDA {
     template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap = false>
     __host__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
 #ifdef __CUDACC__
-    template <typename _T, size_t _VectorLength, bool _Wrap = false, CopyType _CopyType = copyTypeMemcpy>
+    template <typename _T, size_t _VectorLength, bool _Wrap = false>
     __device__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
 #endif
 }
