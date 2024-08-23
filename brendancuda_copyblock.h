@@ -29,7 +29,9 @@ namespace BrendanCUDA {
     __device__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
 #endif
 
-    template <typename _T, size_t _VectorLength, copyFunc_t _CopyValFunc, bool _Wrap = false>
+    template <typename _T, size_t _VectorLength, copyValFunc_t _CopyValFunc, bool _Wrap = false>
+    __host__ __device__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
+    template <typename _T, size_t _VectorLength, copyArrFunc_t _CopyArrFunc, bool _Wrap = false>
     __host__ __device__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
 }
 
@@ -176,7 +178,7 @@ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedV
 }
 #endif
 
-template <typename _T, size_t _VectorLength, BrendanCUDA::copyFunc_t _CopyValFunc, bool _Wrap>
+template <typename _T, size_t _VectorLength, BrendanCUDA::copyValFunc_t _CopyValFunc, bool _Wrap>
 __host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
@@ -197,7 +199,7 @@ __host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, con
                 rangeInOutputCoordinates[j] = landmark.outputIndex;
             }
 
-            CopyBlock<_T, _VectorLength, _InputOnHost, _OutputOnHost, false>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
+            CopyBlock<_T, _VectorLength, _CopyValFunc, false>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
 
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
@@ -228,6 +230,68 @@ __host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, con
 
             for (_T* ipu = iptPtr + elementNum; iptPtr < ipu; ++iptPtr, ++optPtr)
                 _CopyValFunc(optPtr, iptPtr);
+
+            bool toBreak = true;
+            for (size_t j = 1; j < _VectorLength; ++j) {
+                uint32_t& si = i[j];
+                if (++si >= RangeDimensions[j]) si = 0;
+                else {
+                    toBreak = false;
+                    break;
+                }
+            }
+            if (toBreak) break;
+        }
+    }
+}
+
+template <typename _T, size_t _VectorLength, BrendanCUDA::copyArrFunc_t _CopyArrFunc, bool _Wrap>
+__host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
+    using vector_t = FixedVector<uint32_t, _VectorLength>;
+
+    if constexpr (_Wrap) {
+        ArrayF<ArrayV<details::Landmark>, _VectorLength> landmarksArray;
+        for (size_t i = 0; i < _VectorLength; ++i)
+            landmarksArray[i] = details::GetLandmarksInDirection(InputDimensions[i], OutputDimensions[i], RangeDimensions[i], RangeInInputsCoordinates[i], RangeInOutputsCoordinates[i]);
+
+        vector_t i;
+        while (true) {
+            vector_t rangeDimensions;
+            vector_t rangeInInputCoordinates;
+            vector_t rangeInOutputCoordinates;
+            for (size_t j = 0; j < _VectorLength; ++j) {
+                details::Landmark landmark = landmarksArray[j][i[j]];
+                rangeDimensions[j] = landmark.size;
+                rangeInInputCoordinates[j] = landmark.inputIndex;
+                rangeInOutputCoordinates[j] = landmark.outputIndex;
+            }
+
+            CopyBlock<_T, _VectorLength, _CopyArrFunc, false>(Input, Output, InputDimensions, OutputDimensions, rangeDimensions, rangeInInputCoordinates, rangeInOutputCoordinates);
+
+            bool toBreak = true;
+            for (size_t j = 0; j < _VectorLength; ++j) {
+                uint32_t& si = i[j];
+                if (++si >= landmarksArray[j].size) si = 0;
+                else {
+                    toBreak = false;
+                    break;
+                }
+            }
+            if (toBreak) break;
+        }
+    }
+    else {
+        if constexpr (_VectorLength == 1) {
+            _CopyArrFunc(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, RangeDimensions.x);
+            return;
+        }
+        size_t elementNum = RangeDimensions[_VectorLength - 1];
+        vector_t i;
+        while (true) {
+            size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
+            size_t optIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(OutputDimensions, RangeInOutputsCoordinates + i);
+
+            _CopyArrFunc(Output + optIdx, Input + iptIdx, elementNum);
 
             bool toBreak = true;
             for (size_t j = 1; j < _VectorLength; ++j) {

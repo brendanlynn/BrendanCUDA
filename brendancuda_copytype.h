@@ -12,7 +12,7 @@ namespace BrendanCUDA {
     };
 
     template <typename _T>
-    using copyFunc_t = void(*)(_T* DestPtr, _T* SourcePtr);
+    using copyValFunc_t = void(*)(_T* DestPtr, _T* SourcePtr);
     template <typename _T>
     using copyArrFunc_t = void(*)(_T* DestPtr, _T* SourcePtr, size_t Count);
 
