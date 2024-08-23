@@ -351,6 +351,49 @@ __host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, const 
     return CoordsToRef(Coords);
 }
 template <typename _T, size_t _DimensionCount>
+template <bool _CopyFromHost>
+__host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyAllIn(const _T* All) {
+    cudaMemcpy(darr, All, SizeOnGPU(), _CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
+}
+#ifdef __CUDACC__
+template <typename _T, size_t _DimensionCount>
+__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyAllIn(const _T* All) {
+    memcpy(darr, All, SizeOnGPU());
+}
+#endif
+template <typename _T, size_t _DimensionCount>
+template <bool _CopyToHost>
+__host__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyAllOut() const {
+    _T* all;
+    if constexpr (_CopyToHost) cudaMalloc(&all, SizeOnGPU());
+    else malloc(all);
+
+    CpyAllOut<_CopyToHost>(all);
+
+    return all;
+}
+#ifdef __CUDACC__
+template <typename _T, size_t _DimensionCount>
+__device__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyAllOut() const {
+    _T* all = malloc(SizeOnGPU());
+
+    CpyAllOut(all);
+
+    return all;
+}
+#endif
+template <typename _T, size_t _DimensionCount>
+template <bool _CopyToHost>
+__host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyAllOut(_T* All) const {
+    cudaMemcpy(All, darr, SizeOnGPU(), _CopyToHost ? cudaMemcpyDeviceToHost, cudaMemcpyDeviceToDevice);
+}
+#ifdef __CUDACC__
+template <typename _T, size_t _DimensionCount>
+__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyAllOut(_T* All) const {
+    memcpy(All, darr, SizeOnGPU());
+}
+#endif
+template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(uint64_t Idx, const _T& Val) {
 #ifdef __CUDA_ARCH__
     memcpy(IdxToPtr(Coords), &Val, sizeof(_T));
