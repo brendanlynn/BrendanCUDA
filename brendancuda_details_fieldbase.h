@@ -144,10 +144,12 @@ namespace BrendanCUDA {
         protected:
             __host__ __device__ __forceinline void CpyValIn(uint64_t Idx, const _T& Val);
             __host__ __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T& Val);
+            template <bool _CopyFromHost>
             __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val);
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val);
 #endif
+            template <bool _CopyFromHost>
             __host__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val);
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val);
@@ -155,10 +157,12 @@ namespace BrendanCUDA {
         public:
             __host__ __device__ __forceinline void CpyValOut(uint64_t Idx, _T& Val) const;
             __host__ __device__ __forceinline void CpyValOut(const vector_t& Coords, _T& Val) const;
+            template <bool _CopyToHost>
             __host__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const;
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const;
 #endif
+            template <bool _CopyToHost>
             __host__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const;
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const;
