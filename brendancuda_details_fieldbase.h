@@ -17,6 +17,8 @@ namespace BrendanCUDA {
     namespace details {
         template <typename _T, size_t _DimensionCount>
         class FieldBase : public DimensionedBase<_DimensionCount> {
+            using this_t = FieldBase<_T, _DimensionCount>;
+            using base_t = DimensionedBase<_DimensionCount>;
         public:
 #pragma region Constructors
             __host__ __device__ __forceinline FieldBase(const vector_t& Dimensions);
@@ -24,13 +26,14 @@ namespace BrendanCUDA {
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline FieldBase(_Ts... Dimensions)
                 : FieldBase(vector_t(Dimensions...)) { }
-            __host__ __device__ __forceinline FieldBase(const vector_t& Dimensions, _T* All);
+            __host__ __device__ __forceinline FieldBase(const vector_t& Dimensions, const _T* All);
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline FieldBase(_Ts... Dimensions, _T* All)
+            __host__ __device__ __forceinline FieldBase(_Ts... Dimensions, const _T* All)
                 : FieldBase(vector_t(Dimensions...), All) { }
 #pragma endregion
 
+            using base_t::DimensionsD();
             __host__ __device__ __forceinline size_t SizeOnGPU() const;
 
 #pragma region RefConversion
@@ -164,7 +167,9 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline _T CpyValOut(const vector_t& Coords) const;
 #pragma endregion
 
+        protected:
             __host__ __device__ __forceinline void Dispose();
+        public:
 
         protected:
             __host__ __device__ __forceinline _T* Data();
@@ -184,11 +189,11 @@ namespace BrendanCUDA {
             __device__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const;
 #endif
             
-            __host__ __device__ FieldBase<_T, _DimensionCount> Clone() const;
+            __host__ __device__ this_t Clone() const;
 
             __forceinline size_t SerializedSize() const requires BSerializer::Serializable<_T>;
             __forceinline void Serialize(void*& Data) const requires BSerializer::Serializable<_T>;
-            static __forceinline FieldBase<_T, _DimensionCount> Deserialize(const void*& Data) requires BSerializer::Serializable<_T>;
+            static __forceinline this_t Deserialize(const void*& Data) requires BSerializer::Serializable<_T>;
             static __forceinline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T>;
         private:
             _T* darr;
@@ -210,9 +215,9 @@ __host__ __device__ __forceinline BrendanCUDA::details::FieldBase<_T, _Dimension
 #endif
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline BrendanCUDA::details::FieldBase<_T, _DimensionCount>::FieldBase(const vector_t& Dimensions, _T* All)
-    : FieldBase(Dimensions) {
-    CpyAllIn(All);
+__host__ __device__ __forceinline BrendanCUDA::details::FieldBase<_T, _DimensionCount>::FieldBase(const vector_t& Dimensions, const _T* All)
+    : DimensionedBase(Dimensions) {
+    darr = All;
 }
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline size_t BrendanCUDA::details::FieldBase<_T, _DimensionCount>::SizeOnGPU() const {
@@ -482,9 +487,9 @@ __host__ __device__ __forceinline _T BrendanCUDA::details::FieldBase<_T, _Dimens
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::Dispose() {
 #ifdef __CUDA_ARCH__
-    free(cudaArray);
+    free(darr);
 #else
-    ThrowIfBad(cudaFree(cudaArray));
+    ThrowIfBad(cudaFree(darr));
 #endif
 }
 template <typename _T, size_t _DimensionCount>
@@ -518,7 +523,7 @@ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCoun
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::Clone() const -> FieldBase<_T, _DimensionCount> {
+__host__ __device__ auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::Clone() const -> this_t {
     return FieldBase<_T, _DimensionCount>(Dimensions(), darr);
 }
 template <typename _T, size_t _DimensionCount>
@@ -537,7 +542,7 @@ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::Seriali
         BSerializer::Serialize(Data, GetValueAt(i));
 }
 template <typename _T, size_t _DimensionCount>
-__forceinline auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::Deserialize(const void*& Data) -> FieldBase<_T, _DimensionCount> requires BSerializer::Serializable<_T> {
+__forceinline auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::Deserialize(const void*& Data) -> this_t requires BSerializer::Serializable<_T> {
     vector_t dimensions = BSerializer::Deserialize<vector_t>(Data);
     FieldBase<_T, _DimensionCount> field(dimensions);
     size_t l = field.ValueCount();
