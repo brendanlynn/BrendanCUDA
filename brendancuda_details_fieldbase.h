@@ -12,6 +12,7 @@
 #include <device_launch_parameters.h>
 #include <memory>
 #include <thrust/device_ptr.h>
+#include <type_traits>
 
 namespace BrendanCUDA {
     namespace details {
@@ -26,11 +27,11 @@ namespace BrendanCUDA {
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline FieldBase(_Ts... Dimensions)
                 : FieldBase(vector_t(Dimensions...)) { }
-            __host__ __device__ __forceinline FieldBase(const vector_t& Dimensions, const _T* All);
+            __host__ __device__ __forceinline FieldBase(const vector_t& Dimensions, const _T* Arr);
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline FieldBase(_Ts... Dimensions, const _T* All)
-                : FieldBase(vector_t(Dimensions...), All) { }
+            __host__ __device__ __forceinline FieldBase(_Ts... Dimensions, const _T* Arr)
+                : FieldBase(vector_t(Dimensions...), Arr) { }
 #pragma endregion
 
             using base_t::DimensionsD();
@@ -197,8 +198,10 @@ namespace BrendanCUDA {
 
             __forceinline size_t SerializedSize() const requires BSerializer::Serializable<_T>;
             __forceinline void Serialize(void*& Data) const requires BSerializer::Serializable<_T>;
+        protected:
             static __forceinline this_t Deserialize(const void*& Data) requires BSerializer::Serializable<_T>;
             static __forceinline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T>;
+        public:
         private:
             _T* darr;
         };
@@ -220,9 +223,7 @@ __host__ __device__ __forceinline BrendanCUDA::details::FieldBase<_T, _Dimension
 }
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline BrendanCUDA::details::FieldBase<_T, _DimensionCount>::FieldBase(const vector_t& Dimensions, const _T* All)
-    : DimensionedBase(Dimensions) {
-    darr = All;
-}
+    : base_t(Dimensions), darr(All) { }
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline size_t BrendanCUDA::details::FieldBase<_T, _DimensionCount>::SizeOnGPU() const {
     return sizeof(_T) * ValueCount();

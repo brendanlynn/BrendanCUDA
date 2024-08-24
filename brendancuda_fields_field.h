@@ -38,6 +38,9 @@ namespace BrendanCUDA {
             static __forceinline this_t Deserialize(const void*& Data) requires BSerializer::Serializable<_T> {
                 return reinterpret_cast<this_t>(base_t::Deserialize(Data));
             }
+            static __forceinline this_t Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> {
+                base_t::Deserialize(Data, Value);
+            }
 
             __host__ __device__ __forceinline Field(const vector_t& Dimensions)
                 : base_t(Dimensions) { }
