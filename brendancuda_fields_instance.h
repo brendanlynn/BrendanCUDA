@@ -9,7 +9,7 @@ namespace BrendanCUDA {
     namespace details {
         template <typename _T, size_t _DimensionCount>
         struct FieldInstance_CurrentInstance final {
-            Fields::DField<_T, _DimensionCount>& field;
+            Fields::DField<_T, _DimensionCount> dfield;
             ArrayV<size_t> inputs;
             ArrayV<size_t> outputs;
             void* obj;
@@ -19,7 +19,7 @@ namespace BrendanCUDA {
     }
     namespace Fields {
         template <typename _T, size_t _DimensionCount>
-        using fieldInstance_objectRunner_t = void(*)(void* Object, Fields::DField<_T, _DimensionCount> Field, void* SharedData);
+        using fieldInstance_objectRunner_t = void(*)(void* Object, Fields::DFieldProxy<_T, _DimensionCount> Field, void* SharedData);
         template <typename _T, size_t _DimensionCount>
         using fieldInstance_createField_t = DField<_T, _DimensionCount>*(*)(void* SharedData);
         struct FieldInstance_Construct_Settings final {
@@ -56,8 +56,7 @@ void* BrendanCUDA::Fields::FieldInstance_Construct(void* Object, void* Settings)
     FieldInstance_Construct_Settings settings = *(FieldInstance_Construct_Settings*)Settings;
     Random::AnyRNG<uint32_t>& rng = settings.rng;
 
-    DField<_T, _DimensionCount>& f = *_CreateField(settings.createField_sharedData);
-    details::FieldInstance_CurrentInstance<_T, _DimensionCount>* p_rv = new details::FieldInstance_CurrentInstance<_T, _DimensionCount>{ f, ArrayV<uint32_3>(settings.inputCount), ArrayV<uint32_3>(settings.outputCount), Object, settings.objectRunner_sharedData, rng };
+    details::FieldInstance_CurrentInstance<_T, _DimensionCount>* p_rv = new details::FieldInstance_CurrentInstance<_T, _DimensionCount>{ _CreateField(settings.createField_sharedData), ArrayV<uint32_3>(settings.inputCount), ArrayV<uint32_3>(settings.outputCount), Object, settings.objectRunner_sharedData, rng };
     details::FieldInstance_CurrentInstance<_T, _DimensionCount>& rv = *p_rv;
     ArrayV<size_t> il = rv.inputs;
     ArrayV<size_t> ol = rv.outputs;
@@ -85,35 +84,32 @@ void* BrendanCUDA::Fields::FieldInstance_Construct(void* Object, void* Settings)
 };
 template <typename _T, size_t _DimensionCount, BrendanCUDA::Fields::fieldInstance_objectRunner_t<_T, _DimensionCount> _ObjectRunner>
 _T* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _T* Inputs) {
-    details::FieldInstance_CurrentInstance<_T, _DimensionCount> c = *(details::FieldInstance_CurrentInstance<_T, _DimensionCount>*)CurrentInstance;
-    DField<_T, _DimensionCount>& df = c.field;
+    details::FieldInstance_CurrentInstance<_T, _DimensionCount>& c = *(details::FieldInstance_CurrentInstance<_T, _DimensionCount>*)CurrentInstance;
+    DField<_T, _DimensionCount>& df = c.dfield;
     ArrayV<size_t> il = c.inputs;
     ArrayV<size_t> ol = c.outputs;
 
     if (Inputs) {
-        Field<_TFieldValue, _DimensionCount> f = df.FFront();
+        FieldProxy<_T, _DimensionCount> f = df.F();
         for (size_t i = 0; i < il.size; ++i) {
-            f.SetValueAt(il[i], Inputs[i]);
+            f.CpyValIn(il[i], Inputs[i]);
         }
     }
-    _ObjectRunner(c.obj, df, c.objectRunner_sharedData);
+    _ObjectRunner(c.obj, df.MakeProxy(), c.objectRunner_sharedData);
     _T* opts = new _T[ol.size];
     {
-        Field<_TFieldValue, _DimensionCount> f = df.FFront();
+        FieldProxy<_T, _DimensionCount> f = df.F();
         for (size_t i = 0; i < ol.size; ++i) {
-            opts[i] = f.GetValueAt(ol[i]);
+            opts[i] = f.CpyValOut(ol[i]);
         }
     }
     return opts;
 };
 template <typename _T, size_t _DimensionCount>
 void BrendanCUDA::Fields::FieldInstance_Destruct(void* CurrentInstance) {
-    details::FieldInstance_CurrentInstance<_T, _DimensionCount>* p_c = (details::FieldInstance_CurrentInstance<_T, _DimensionCount>*)CurrentInstance;
-    details::FieldInstance_CurrentInstance<_T, _DimensionCount> c = *p_c;
-    DField<_T, _DimensionCount>& f = c.field;
+    auto* p_c = (details::FieldInstance_CurrentInstance<_T, _DimensionCount>*)CurrentInstance;
+    auto& c = *p_c;
 
-    f.Dispose();
-    delete (&f);
     c.inputs.Dispose();
     c.outputs.Dispose();
     delete p_c;
@@ -131,25 +127,26 @@ BrendanCUDA::AI::Evolution::Evaluation::Output::InstanceFunctions<_T*, _T*> Bren
 template <typename _TFieldValue, size_t _DimensionCount, typename _TInput, typename _TOutput, BrendanCUDA::Fields::fieldInstance_assignInput_t<_TFieldValue, _TInput> _AssignInput, BrendanCUDA::Fields::fieldInstance_getOutput_t<_TFieldValue, _TOutput> _GetOutput, BrendanCUDA::Fields::fieldInstance_objectRunner_t<_TFieldValue, _DimensionCount> _ObjectRunner>
 _TOutput* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _TInput* Inputs) {
     details::FieldInstance_CurrentInstance<_TFieldValue, _DimensionCount> c = *(details::FieldInstance_CurrentInstance<_TFieldValue, _DimensionCount>*)CurrentInstance;
-    DField<_TFieldValue, _DimensionCount>& df = c.field;
+    DField<_TFieldValue, _DimensionCount>& df = c.dfield;
     ArrayV<size_t> il = c.inputs;
     ArrayV<size_t> ol = c.outputs;
 
     if (Inputs) {
-        Field<_TFieldValue, _DimensionCount> f = df.FFront();
+        FieldProxy<_TFieldValue, _DimensionCount> f = df.F();
         for (size_t i = 0; i < il.size; ++i) {
             size_t idx = il[i];
-            _TFieldValue fieldValue = f.GetValueAt(idx);
+            _TFieldValue fieldValue = f.CpyValOut(idx);
             _AssignInput(fieldValue, Inputs[i]);
-            f.SetValueAt(idx, fieldValue);
+            f.CpyValIn(idx, fieldValue);
         }
     }
-    _ObjectRunner(c.obj, df, c.objectRunner_sharedData);
+    _ObjectRunner(c.obj, df.MakeProxy(), c.objectRunner_sharedData);
+    df.Reverse();
     _TOutput* opts = new _TOutput[ol.size];
     {
-        Field<_TFieldValue, _DimensionCount> f = df.FFront();
+        FieldProxy<_TFieldValue, _DimensionCount> f = df.F();
         for (size_t i = 0; i < ol.size; ++i) {
-            _TFieldValue fieldValue = f.GetValueAt(ol[i]);
+            _TFieldValue fieldValue = f.CpyValOut(ol[i]);
             opts[i] = _GetOutput(fieldValue);
         }
     }
