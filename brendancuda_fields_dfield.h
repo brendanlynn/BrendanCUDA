@@ -90,7 +90,6 @@ namespace BrendanCUDA {
         };
         template <typename _T, size_t _DimensionCount>
         class DFieldProxy : details::DFieldBase<_DimensionCount> {
-            using this_t = DField<_T, _DimensionCount>;
             using base_t = details::DFieldBase<_DimensionCount>;
         public:
             using base_t::F;
