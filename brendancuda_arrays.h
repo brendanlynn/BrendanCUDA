@@ -7,32 +7,71 @@ namespace BrendanCUDA {
     struct Span;
 
     template <typename _T>
-    struct Span_ReadOnly;
-
-    template <typename _T, size_t _Size>
-    struct ArrayF {
-        _T data[_Size];
-        __forceinline ArrayF() = default;
-        __host__ __device__ __forceinline _T& operator[](size_t Index);
-        __host__ __device__ __forceinline const _T& operator[](size_t Index) const;
-        __host__ __device__ __forceinline operator Span<_T>() const;
-        __host__ __device__ __forceinline operator Span_ReadOnly<_T>() const;
-        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) const;
-    };
+    struct SpanConst;
 
     template <typename _T>
-    struct ArrayV {
+    class ArrayV {
         _T* ptr;
         size_t size;
-        __host__ __device__ __forceinline ArrayV();
-        __host__ __device__ __forceinline ArrayV(_T* Pointer, size_t Size);
-        __host__ __device__ __forceinline ArrayV(size_t Size);
-        __host__ __device__ __forceinline _T& operator[](size_t Index);
-        __host__ __device__ __forceinline const _T& operator[](size_t Index) const;
-        __host__ __device__ __forceinline void Dispose();
-        __host__ __device__ __forceinline operator Span<_T>() const;
-        __host__ __device__ __forceinline operator Span_ReadOnly<_T>() const;
-        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) const;
+    public:
+        __forceinline ArrayV() = default;
+        __host__ __device__ __forceinline ArrayV(_T* Ptr, size_t Size)
+            : ptr(Ptr), size(Size) { }
+        __host__ __device__ __forceinline ArrayV(size_t Size)
+            : ptr(new _T[Size]), size(Size) { }
+        __host__ __device__ __forceinline ArrayV(const ArrayV<_T>& Array)
+            : ArrayV(Array.size) {
+            std::copy(Array.ptr, Array.ptr + Array.size, ptr);
+        }
+        __host__ __device__ __forceinline ArrayV(ArrayV<_T>&& Array)
+            : ArrayV(Array.ptr, Array.size) {
+            Array.ptr = 0;
+        }
+
+        __host__ __device__ __forceinline ~ArrayV() {
+            delete[] ptr;
+        }
+
+        __host__ __device__ __forceinline ArrayV<_T>& operator=(const ArrayV<_T>& Array) {
+            this->~ArrayV();
+            new (this) ArrayV<_T>(Array);
+            return *this;
+        }
+        __host__ __device__ __forceinline ArrayV<_T>& operator=(ArrayV<_T>&& Array) {
+            this->~ArrayV();
+            new (this) ArrayV<_T>(Array);
+            return *this;
+        }
+
+        __host__ __device__ _T* Data() {
+            return ptr;
+        }
+        __host__ __device__ const _T* Data() const {
+            return ptr;
+        }
+        __host__ __device__ size_t Size() const {
+            return size;
+        }
+
+        __host__ __device__ __forceinline _T& operator[](size_t Idx) {
+            return ptr[Idx];
+        }
+        __host__ __device__ __forceinline const _T& operator[](size_t Idx) const {
+            return ptr[Idx];
+        }
+
+        __host__ __device__ __forceinline operator Span<_T>() {
+            return Span<_T>(*this);
+        }
+        __host__ __device__ __forceinline operator SpanConst<_T>() const {
+            return SpanConst<_T>(*this);
+        }
+        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) {
+            return Span<_T>(*this);
+        }
+        __host__ __device__ __forceinline SpanConst<_T> Split(size_t Start, size_t NewSize) const {
+            return SpanConst<_T>(*this);
+        }
     };
 
     template <typename _T>
@@ -40,172 +79,56 @@ namespace BrendanCUDA {
         _T* ptr;
         size_t size;
         template <size_t _Size>
-        __host__ __device__ __forceinline Span(ArrayF<_T, _Size>& Array);
-        __host__ __device__ __forceinline Span(ArrayV<_T> Array);
-        __host__ __device__ __forceinline Span(_T* Pointer, size_t Size);
-        __host__ __device__ __forceinline _T& operator[](size_t Index);
-        __host__ __device__ __forceinline const _T& operator[](size_t Index) const;
-        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) const;
-        __host__ __device__ __forceinline operator Span_ReadOnly<_T>() const;
+        __host__ __device__ __forceinline Span(_T* Ptr, size_t Size)
+            : ptr(Ptr), size(Size) { }
+
+        __host__ __device__ __forceinline Span(std::array<_T, _Size>& Array)
+            : ptr(Array.data()), size(Array.size()) { }
+        __host__ __device__ __forceinline Span(std::vector<_T>& Vector)
+            : ptr(Vector.data()), size(Vector.size()) { }
+        __host__ __device__ __forceinline Span(ArrayV<_T>& Array)
+            : ptr(Array.Data()), size(Array.Size()) { }
+
+        __host__ __device__ __forceinline _T& operator[](size_t Idx) {
+            return ptr[Idx];
+        }
+        __host__ __device__ __forceinline const _T& operator[](size_t Idx) const {
+            return ptr[Idx];
+        }
+
+        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) const {
+            return Span<_T>(ptr + Start, NewSize);
+        }
+
+        __host__ __device__ __forceinline operator SpanConst<_T>() const {
+            return SpanConst<_T>(*this);
+        }
     };
 
     template <typename _T>
-    struct Span_ReadOnly {
+    struct SpanConst {
         const _T* ptr;
         size_t size;
+        __host__ __device__ __forceinline SpanConst(const _T* Ptr, size_t Size)
+            : ptr(Ptr), size(Size) { }
+
         template <size_t _Size>
-        __host__ __device__ __forceinline Span_ReadOnly(ArrayF<_T, _Size>& Array);
-        __host__ __device__ __forceinline Span_ReadOnly(ArrayV<_T> Array);
-        __host__ __device__ __forceinline Span_ReadOnly(Span<_T> Span);
-        __host__ __device__ __forceinline Span_ReadOnly(_T* Pointer, size_t Size);
-        __host__ __device__ __forceinline const _T& operator[](size_t Index) const;
-        __host__ __device__ __forceinline Span_ReadOnly<_T> Split(size_t Start, size_t NewSize) const;
+        __host__ __device__ __forceinline SpanConst(const std::array<_T, _Size>& Array)
+            : ptr(Array.data()), size(Array.size()) { }
+        template <typename _TAlloc>
+        __host__ __device__ __forceinline SpanConst(const std::vector<_T, _TAlloc>& Vector)
+            : ptr(Vector.data()), size(Vector.size()) { }
+        __host__ __device__ __forceinline SpanConst(const ArrayV<_T>& Array)
+            : ptr(Array.Data()), size(Array.Size()) { }
+        __host__ __device__ __forceinline SpanConst(const Span<_T>& Span)
+            : ptr(Span.ptr), size(Span.size) { }
+
+        __host__ __device__ __forceinline const _T& operator[](size_t Idx) const {
+            return ptr[Idx];
+        }
+
+        __host__ __device__ __forceinline SpanConst<_T> Split(size_t Start, size_t NewSize) const {
+            return SpanConst<_T>(ptr + Start, NewSize);
+        }
     };
-}
-
-template <typename _T, size_t _Size>
-__host__ __device__ __forceinline _T& BrendanCUDA::ArrayF<_T, _Size>::operator[](size_t Index) {
-    return data[Index];
-}
-
-template <typename _T, size_t _Size>
-__host__ __device__ __forceinline const _T& BrendanCUDA::ArrayF<_T, _Size>::operator[](size_t Index) const {
-    return data[Index];
-}
-
-template <typename _T, size_t _Size>
-__host__ __device__ __forceinline BrendanCUDA::ArrayF<_T, _Size>::operator BrendanCUDA::Span<_T>() const {
-    return Span<_T>((_T*)this, _Size);
-}
-
-template <typename _T, size_t _Size>
-__host__ __device__ __forceinline BrendanCUDA::ArrayF<_T, _Size>::operator BrendanCUDA::Span_ReadOnly<_T>() const {
-    return Span_ReadOnly<_T>((_T*)this, _Size);
-}
-
-template <typename _T, size_t _Size>
-__host__ __device__ __forceinline BrendanCUDA::Span<_T> BrendanCUDA::ArrayF<_T, _Size>::Split(size_t Start, size_t NewSize) const {
-    return Span<_T>((_T*)this + Start, NewSize);
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::ArrayV<_T>::ArrayV() {
-    ptr = 0;
-    size = 0;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::ArrayV<_T>::ArrayV(_T* Pointer, size_t Size) {
-    ptr = Pointer;
-    size = Size;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::ArrayV<_T>::ArrayV(size_t Size) {
-    ptr = new _T[Size];
-    size = Size;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline _T& BrendanCUDA::ArrayV<_T>::operator[](size_t Index) {
-    return ptr[Index];
-}
-
-template <typename _T>
-__host__ __device__ __forceinline const _T& BrendanCUDA::ArrayV<_T>::operator[](size_t Index) const {
-    return ptr[Index];
-}
-
-template <typename _T>
-__host__ __device__ __forceinline void BrendanCUDA::ArrayV<_T>::Dispose() {
-    delete[] ptr;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::ArrayV<_T>::operator BrendanCUDA::Span<_T>() const {
-    return Span<_T>(ptr, size);
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::ArrayV<_T>::operator BrendanCUDA::Span_ReadOnly<_T>() const {
-    return Span_ReadOnly<_T>(ptr, size);
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::Span<_T> BrendanCUDA::ArrayV<_T>::Split(size_t Start, size_t NewSize) const {
-    return Span<_T>(ptr + Start, NewSize);
-}
-
-template <typename _T>
-template <size_t _Size>
-__host__ __device__ __forceinline BrendanCUDA::Span<_T>::Span(ArrayF<_T, _Size>& Array) {
-    ptr = (_T*)&Array;
-    size = _Size;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::Span<_T>::Span(ArrayV<_T> Array) {
-    ptr = Array.ptr;
-    size = Array.size;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::Span<_T>::Span(_T* Pointer, size_t Size) {
-    ptr = Pointer;
-    size = Size;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline _T& BrendanCUDA::Span<_T>::operator[](size_t Index) {
-    return ptr[Index];
-}
-
-template <typename _T>
-__host__ __device__ __forceinline const _T& BrendanCUDA::Span<_T>::operator[](size_t Index) const {
-    return ptr[Index];
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::Span<_T> BrendanCUDA::Span<_T>::Split(size_t Start, size_t NewSize) const {
-    return Span<_T>(ptr + Start, NewSize);
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::Span<_T>::operator BrendanCUDA::Span_ReadOnly<_T>() const {
-    return Span_ReadOnly<_T>(ptr, size);
-}
-
-template <typename _T>
-template <size_t _Size>
-__host__ __device__ __forceinline BrendanCUDA::Span_ReadOnly<_T>::Span_ReadOnly(ArrayF<_T, _Size>& Array) {
-    ptr = (_T*)&Array;
-    size = _Size;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::Span_ReadOnly<_T>::Span_ReadOnly(ArrayV<_T> Array) {
-    ptr = Array.ptr;
-    size = Array.size;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::Span_ReadOnly<_T>::Span_ReadOnly(Span<_T> Span) {
-    ptr = Span.ptr;
-    size = Span.size;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::Span_ReadOnly<_T>::Span_ReadOnly(_T* Pointer, size_t Size) {
-    ptr = Pointer;
-    size = Size;
-}
-
-template <typename _T>
-__host__ __device__ __forceinline const _T& BrendanCUDA::Span_ReadOnly<_T>::operator[](size_t Index) const {
-    return ptr[Index];
-}
-
-template <typename _T>
-__host__ __device__ __forceinline BrendanCUDA::Span_ReadOnly<_T> BrendanCUDA::Span_ReadOnly<_T>::Split(size_t Start, size_t NewSize) const {
-    return Span_ReadOnly<_T>(ptr + Start, NewSize);
 }
