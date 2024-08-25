@@ -40,7 +40,7 @@ __host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVec
     using vector_t = FixedVector<uint32_t, _VectorLength>;
     
     if constexpr (_Wrap) {
-        ArrayF<ArrayV<details::Landmark>, _VectorLength> landmarksArray;
+        ArrayV<details::Landmark> landmarksArray[_VectorLength];
         for (size_t i = 0; i < _VectorLength; ++i)
             landmarksArray[i] = details::GetLandmarksInDirection(InputDimensions[i], OutputDimensions[i], RangeDimensions[i], RangeInInputsCoordinates[i], RangeInOutputsCoordinates[i]);
         
@@ -116,7 +116,7 @@ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedV
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
     if constexpr (_Wrap) {
-        ArrayF<ArrayV<details::Landmark>, _VectorLength> landmarksArray;
+        ArrayV<details::Landmark> landmarksArray[_VectorLength];
         for (size_t i = 0; i < _VectorLength; ++i)
             landmarksArray[i] = details::GetLandmarksInDirection(InputDimensions[i], OutputDimensions[i], RangeDimensions[i], RangeInInputsCoordinates[i], RangeInOutputsCoordinates[i]);
         
@@ -183,7 +183,7 @@ __host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, con
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
     if constexpr (_Wrap) {
-        ArrayF<ArrayV<details::Landmark>, _VectorLength> landmarksArray;
+        ArrayV<details::Landmark> landmarksArray[_VectorLength];
         for (size_t i = 0; i < _VectorLength; ++i)
             landmarksArray[i] = details::GetLandmarksInDirection(InputDimensions[i], OutputDimensions[i], RangeDimensions[i], RangeInInputsCoordinates[i], RangeInOutputsCoordinates[i]);
 
@@ -250,7 +250,7 @@ __host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, con
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
     if constexpr (_Wrap) {
-        ArrayF<ArrayV<details::Landmark>, _VectorLength> landmarksArray;
+        ArrayV<details::Landmark> landmarksArray[_VectorLength];
         for (size_t i = 0; i < _VectorLength; ++i)
             landmarksArray[i] = details::GetLandmarksInDirection(InputDimensions[i], OutputDimensions[i], RangeDimensions[i], RangeInInputsCoordinates[i], RangeInOutputsCoordinates[i]);
 

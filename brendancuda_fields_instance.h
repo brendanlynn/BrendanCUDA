@@ -58,8 +58,8 @@ void* BrendanCUDA::Fields::FieldInstance_Construct(void* Object, void* Settings)
 
     details::FieldInstance_CurrentInstance<_T, _DimensionCount>* p_rv = new details::FieldInstance_CurrentInstance<_T, _DimensionCount>{ _CreateField(settings.createField_sharedData), ArrayV<uint32_3>(settings.inputCount), ArrayV<uint32_3>(settings.outputCount), Object, settings.objectRunner_sharedData, rng };
     details::FieldInstance_CurrentInstance<_T, _DimensionCount>& rv = *p_rv;
-    ArrayV<size_t> il = rv.inputs;
-    ArrayV<size_t> ol = rv.outputs;
+    ArrayV<size_t>& il = rv.inputs;
+    ArrayV<size_t>& ol = rv.outputs;
 
     std::uniform_int_distribution<uint32_t> dis(0, f.ValueCount());
 
@@ -86,8 +86,8 @@ template <typename _T, size_t _DimensionCount, BrendanCUDA::Fields::fieldInstanc
 _T* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _T* Inputs) {
     details::FieldInstance_CurrentInstance<_T, _DimensionCount>& c = *(details::FieldInstance_CurrentInstance<_T, _DimensionCount>*)CurrentInstance;
     DField<_T, _DimensionCount>& df = c.dfield;
-    ArrayV<size_t> il = c.inputs;
-    ArrayV<size_t> ol = c.outputs;
+    ArrayV<size_t>& il = c.inputs;
+    ArrayV<size_t>& ol = c.outputs;
 
     if (Inputs) {
         FieldProxy<_T, _DimensionCount> f = df.F();
@@ -96,6 +96,7 @@ _T* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _T* Inputs
         }
     }
     _ObjectRunner(c.obj, df.MakeProxy(), c.objectRunner_sharedData);
+    df.Reverse();
     _T* opts = new _T[ol.size];
     {
         FieldProxy<_T, _DimensionCount> f = df.F();
@@ -107,12 +108,7 @@ _T* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _T* Inputs
 };
 template <typename _T, size_t _DimensionCount>
 void BrendanCUDA::Fields::FieldInstance_Destruct(void* CurrentInstance) {
-    auto* p_c = (details::FieldInstance_CurrentInstance<_T, _DimensionCount>*)CurrentInstance;
-    auto& c = *p_c;
-
-    c.inputs.Dispose();
-    c.outputs.Dispose();
-    delete p_c;
+    delete (details::FieldInstance_CurrentInstance<_T, _DimensionCount>*)CurrentInstance;
 };
 
 template <typename _T, size_t _DimensionCount, BrendanCUDA::Fields::fieldInstance_createField_t<_T, _DimensionCount> _CreateField, BrendanCUDA::Fields::fieldInstance_objectRunner_t<_T, _DimensionCount> _ObjectRunner>
@@ -128,8 +124,8 @@ template <typename _TFieldValue, size_t _DimensionCount, typename _TInput, typen
 _TOutput* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _TInput* Inputs) {
     details::FieldInstance_CurrentInstance<_TFieldValue, _DimensionCount> c = *(details::FieldInstance_CurrentInstance<_TFieldValue, _DimensionCount>*)CurrentInstance;
     DField<_TFieldValue, _DimensionCount>& df = c.dfield;
-    ArrayV<size_t> il = c.inputs;
-    ArrayV<size_t> ol = c.outputs;
+    ArrayV<size_t>& il = c.inputs;
+    ArrayV<size_t>& ol = c.outputs;
 
     if (Inputs) {
         FieldProxy<_TFieldValue, _DimensionCount> f = df.F();
