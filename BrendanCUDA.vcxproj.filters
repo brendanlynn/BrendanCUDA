@@ -98,6 +98,7 @@
     <ClInclude Include="brendancuda_details_dfieldbase.h">
       <Filter>details</Filter>
     </ClInclude>
+    <ClInclude Include="brendancuda_curandkernelgens.h" />
     <ClInclude Include="brendancuda_packs.h" />
   </ItemGroup>
   <ItemGroup>

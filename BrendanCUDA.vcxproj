@@ -106,6 +106,7 @@
     <ClInclude Include="brendancuda_copytype.h" />
     <ClInclude Include="brendancuda_crossassigns.h" />
     <ClInclude Include="brendancuda_cudaconstexpr.h" />
+    <ClInclude Include="brendancuda_curandkernelgens.h" />
     <ClInclude Include="brendancuda_details_dfieldbase.h" />
     <ClInclude Include="brendancuda_details_fieldbase.h" />
     <ClInclude Include="brendancuda_details_fillwith.h" />
