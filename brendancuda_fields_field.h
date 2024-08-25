@@ -68,12 +68,12 @@ namespace BrendanCUDA {
             }
             __host__ __device__ __forceinline this_t& operator=(const this_t& Other) {
                 this->~Field();
-                this->Field(Other);
+                new (this) Field(Other);
                 return *this;
             }
             __host__ __device__ __forceinline this_t& operator=(this_t&& Other) {
                 this->~Field();
-                this->Field(Other);
+                new (this) Field(Other);
                 return *this;
             }
 
