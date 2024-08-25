@@ -1,6 +1,7 @@
 #pragma once
 
 #include "brendancuda_ai.h"
+#include "brendancuda_curandkernelgens.h"
 #include "brendancuda_details_getintbin.h"
 #include "brendancuda_mathfuncs.h"
 #include "brendancuda_rand_anyrng.h"
@@ -54,22 +55,26 @@ namespace BrendanCUDA {
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ void FillWithRandom(_TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ void FillWithRandom(curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void FillWithRandom(_TRNG& RNG);
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
 #endif
                 __host__ __device__ _TOutput Run(_TInput Input) const;
                 __host__ __device__ uint64_t RunG(uint64_t Input) const;
@@ -99,22 +104,26 @@ namespace BrendanCUDA {
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ void FillWithRandom(_TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ void FillWithRandom(curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void FillWithRandom(_TRNG& RNG);
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
 #endif
                 __host__ __device__ output_t Run(_TInput Input) const;
                 __host__ __device__ uint64_t RunG(uint64_t Input) const;
@@ -145,22 +154,26 @@ namespace BrendanCUDA {
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ void FillWithRandom(_TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ void FillWithRandom(curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void FillWithRandom(_TRNG& RNG);
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG);
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
 #ifdef __CUDACC__
-                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
 #endif
                 __host__ __device__ output_t Run(_TInput Input) const;
                 __host__ __device__ uint64_t RunG(uint64_t Input) const;
@@ -197,7 +210,8 @@ __host__ void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWithRand
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-__device__ void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWithRandom(curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWithRandom(_TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i) {
         weights[i] = details::GetIntBin<_TInput>(RNG);
     }
@@ -215,7 +229,8 @@ __host__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
         weights[i] = BrendanCUDA::Random::RandomizeWFlips(weights[i], WeightsFlipProb, RNG);
     bias = BrendanCUDA::Random::RandomizeWFlips(bias, BiasFlipProb, RNG);
@@ -232,7 +247,8 @@ __host__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
         weights[i] = BrendanCUDA::Random::RandomizeWTargets(weights[i], WeightsFlipProb, RNG);
     bias = BrendanCUDA::Random::RandomizeWTargets(bias, BiasFlipProb, RNG);
@@ -249,7 +265,8 @@ __host__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
         weights[i] = BrendanCUDA::Random::RandomizeWMutations(weights[i], WeightsProbOf1, RNG);
     bias = BrendanCUDA::Random::RandomizeWMutations(bias, BiasProbOf1, RNG);
@@ -308,7 +325,8 @@ __host__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWithRand
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-__device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWithRandom(curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWithRandom(_TRNG& RNG) {
     layer.FillWithRandom(RNG);
 }
 #endif
@@ -321,7 +339,8 @@ __host__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
 }
 #endif
@@ -334,7 +353,8 @@ __host__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
 }
 #endif
@@ -347,7 +367,8 @@ __host__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
 }
 #endif
@@ -378,7 +399,8 @@ __host__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _T
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-__device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWithRandom(curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWithRandom(_TRNG& RNG) {
     layer.FillWithRandom(RNG);
     nextLayers.FillWithRandom(RNG);
 }
@@ -393,7 +415,8 @@ __host__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1,
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
     nextLayers.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
 }
@@ -408,7 +431,8 @@ __host__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1,
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
     nextLayers.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
 }
@@ -423,7 +447,8 @@ __host__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1,
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, curandState& RNG) {
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
     nextLayers.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
 }
