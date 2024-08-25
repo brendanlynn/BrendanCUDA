@@ -116,6 +116,7 @@
     <ClInclude Include="brendancuda_ai_mlp_fixedmlp.h" />
     <ClInclude Include="brendancuda_kernellaunch.cuh" />
     <ClInclude Include="brendancuda_nets_makenet.h" />
+    <ClInclude Include="brendancuda_packs.h" />
     <ClInclude Include="brendancuda_points.h" />
     <ClInclude Include="brendancuda_fixedvectors.h" />
     <ClInclude Include="brendancuda_mathfuncs.h" />
