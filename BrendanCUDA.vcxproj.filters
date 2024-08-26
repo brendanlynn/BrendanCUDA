@@ -1,176 +1,67 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="brendancuda_dcopy.cuh" />
-    <ClInclude Include="brendancuda_ai_mlpb_mlpb.h">
-      <Filter>AI\MLPB</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlpb_mlpblw.h">
-      <Filter>AI\MLPB</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlpb_mlpbl.h">
-      <Filter>AI\MLPB</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_fields_field.h">
-      <Filter>Fields</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_evol_evolver.h">
-      <Filter>AI\Evolution</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlp_mlp.h">
-      <Filter>AI\MLP</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlp_mlpl.h">
-      <Filter>AI\MLP</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_genetics_genemlp.h">
-      <Filter>AI\Genetics</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai.h">
-      <Filter>AI</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_fields_dfield.h">
-      <Filter>Fields</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_rand_bits.h">
-      <Filter>Random</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_binary_basic.h" />
-    <ClInclude Include="brendancuda_ai_evol_eval_output.h">
-      <Filter>AI\Evolution\Evaluation\Output</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_evol_eval_multieval.h">
-      <Filter>AI\Evolution\Evaluation</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_evol.h">
-      <Filter>AI\Evolution</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_rand_anyrng.h">
-      <Filter>Random</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_nets_net.h">
-      <Filter>Nets</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_fixedvectors.h" />
-    <ClInclude Include="brendancuda_mathfuncs.h" />
-    <ClInclude Include="brendancuda_errorhelp.h" />
-    <ClInclude Include="brendancuda_crossassigns.h" />
-    <ClInclude Include="brendancuda_ai_evol_eval_output_impl_proliferation.h">
-      <Filter>AI\Evolution\Evaluation\Output</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_evol_eval_output_impl_uniquevalues.h">
-      <Filter>AI\Evolution\Evaluation\Output</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_points.h" />
-    <ClInclude Include="brendancuda_nets_makenet.h">
-      <Filter>Nets</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_fields_instance.h">
-      <Filter>Fields</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_ai_mlp_fixedmlp.h">
-      <Filter>AI\MLP</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_arrays.h" />
-    <ClInclude Include="brendancuda_kernellaunch.cuh" />
-    <ClInclude Include="brendancuda_cudaconstexpr.h" />
-    <ClInclude Include="brendancuda_ai_mlpb_fixedmlpb.h">
-      <Filter>AI\MLPB</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_rand_randomizer.h">
-      <Filter>Random</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_allheaders.h" />
-    <ClInclude Include="brendancuda_allheaders.cuh" />
-    <ClInclude Include="brendancuda_copyblock.h" />
-    <ClInclude Include="brendancuda_details_fillwith.h">
-      <Filter>details</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_threadid.h" />
-    <ClInclude Include="brendancuda_details_getintbin.h">
-      <Filter>details</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_dimensionedbase.h" />
-    <ClInclude Include="brendancuda_details_fieldbase.h">
-      <Filter>details</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_copytype.h" />
-    <ClInclude Include="brendancuda_details_dfieldbase.h">
-      <Filter>details</Filter>
-    </ClInclude>
-    <ClInclude Include="brendancuda_curandkernelgens.h" />
-    <ClInclude Include="brendancuda_packs.h" />
+    <ClInclude Include="dcopy.cuh" />
+    <ClInclude Include="binary_basic.h" />
+    <ClInclude Include="fixedvectors.h" />
+    <ClInclude Include="mathfuncs.h" />
+    <ClInclude Include="errorhelp.h" />
+    <ClInclude Include="crossassigns.h" />
+    <ClInclude Include="points.h" />
+    <ClInclude Include="arrays.h" />
+    <ClInclude Include="kernellaunch.cuh" />
+    <ClInclude Include="cudaconstexpr.h" />
+    <ClInclude Include="allheaders.h" />
+    <ClInclude Include="allheaders.cuh" />
+    <ClInclude Include="copyblock.h" />
+    <ClInclude Include="threadid.h" />
+    <ClInclude Include="dimensionedbase.h" />
+    <ClInclude Include="copytype.h" />
+    <ClInclude Include="curandkernelgens.h" />
+    <ClInclude Include="packs.h" />
+    <ClInclude Include="ai_evol_eval_output.h" />
+    <ClInclude Include="ai_evol_eval_output_impl_proliferation.h" />
+    <ClInclude Include="ai_evol_eval_output_impl_uniquevalues.h" />
+    <ClInclude Include="ai_evol_eval_multieval.h" />
+    <ClInclude Include="ai_evol.h" />
+    <ClInclude Include="ai_evol_evolver.h" />
+    <ClInclude Include="ai_genetics_genemlp.h" />
+    <ClInclude Include="ai_mlp_fixedmlp.h" />
+    <ClInclude Include="ai_mlp_mlp.h" />
+    <ClInclude Include="ai_mlp_mlpl.h" />
+    <ClInclude Include="ai_mlpb_fixedmlpb.h" />
+    <ClInclude Include="ai_mlpb_mlpb.h" />
+    <ClInclude Include="ai_mlpb_mlpbl.h" />
+    <ClInclude Include="ai_mlpb_mlpblw.h" />
+    <ClInclude Include="ai.h" />
+    <ClInclude Include="details_dfieldbase.h" />
+    <ClInclude Include="details_fieldbase.h" />
+    <ClInclude Include="details_fillwith.h" />
+    <ClInclude Include="details_getintbin.h" />
+    <ClInclude Include="fields_dfield.h" />
+    <ClInclude Include="fields_field.h" />
+    <ClInclude Include="fields_instance.h" />
+    <ClInclude Include="nets_makenet.h" />
+    <ClInclude Include="nets_net.h" />
+    <ClInclude Include="rand_anyrng.h" />
+    <ClInclude Include="rand_bits.h" />
+    <ClInclude Include="rand_randomizer.h" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Fields">
-      <UniqueIdentifier>{b56075d7-9c2e-4d47-939d-10dcd496f493}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI">
-      <UniqueIdentifier>{c1b12faf-5c1b-4185-a259-39e36db021fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\MLPB">
-      <UniqueIdentifier>{fc38189c-3d12-4b1b-8fe6-85b6084c4cdc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\Evolution">
-      <UniqueIdentifier>{26b939c8-4823-457f-9cd9-32856e0598eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\MLP">
-      <UniqueIdentifier>{912494ca-a88d-4457-8472-bf9fc8bf0767}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\Genetics">
-      <UniqueIdentifier>{ce47f0e1-0ba0-4a74-978d-297a10635a19}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Random">
-      <UniqueIdentifier>{0bd788c8-6a74-49a0-96b9-dbc38b4bedb3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\Evolution\Evaluation">
-      <UniqueIdentifier>{62fb3aff-7b01-4a99-8bc8-1dbbb7cf6d5c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\Evolution\Evaluation\Output">
-      <UniqueIdentifier>{bcf89ce9-1e7e-4c0c-9fe9-87888ae7836e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Nets">
-      <UniqueIdentifier>{9dfa7c44-b669-40fb-a640-c89bd8ab5e22}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="details">
-      <UniqueIdentifier>{db0a6dd5-f5c5-4e01-9a19-ff30d81d34be}</UniqueIdentifier>
-    </Filter>
+    <CudaCompile Include="binary_basic.cu" />
+    <CudaCompile Include="dcopy.cu" />
+    <CudaCompile Include="ai_evol_evolver.cpp" />
+    <CudaCompile Include="ai_mlp_mlp.cu" />
+    <CudaCompile Include="ai_mlpb_mlpblw.cu" />
+    <CudaCompile Include="ai.cu" />
+    <CudaCompile Include="details_fillwith.cu" />
+    <CudaCompile Include="nets_makenet.cu" />
+    <CudaCompile Include="nets_net.cu" />
+    <CudaCompile Include="rand_randomizer.cu" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="brendancuda_ai_evol_evolver.cpp">
-      <Filter>AI\Evolution</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_ai_mlp_mlp.cu">
-      <Filter>AI\MLP</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_ai_mlpb_mlpblw.cu">
-      <Filter>AI\MLPB</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_ai.cu">
-      <Filter>AI</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_binary_basic.cu" />
-    <CudaCompile Include="brendancuda_dcopy.cu" />
-    <CudaCompile Include="brendancuda_nets_net.cu">
-      <Filter>Nets</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_nets_makenet.cu">
-      <Filter>Nets</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_details_fillwith.cu">
-      <Filter>details</Filter>
-    </CudaCompile>
-    <CudaCompile Include="brendancuda_rand_randomizer.cu">
-      <Filter>Random</Filter>
-    </CudaCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="brendancuda_ai_evol_eval_output_impl_proliferation.cpp">
-      <Filter>AI\Evolution\Evaluation\Output</Filter>
-    </ClCompile>
-    <ClCompile Include="brendancuda_ai_evol_eval_output_impl_uniquevalues.cpp">
-      <Filter>AI\Evolution\Evaluation\Output</Filter>
-    </ClCompile>
-    <ClCompile Include="brendancuda_copyblock.cpp" />
+    <ClCompile Include="copyblock.cpp" />
+    <ClCompile Include="ai_evol_eval_output_impl_proliferation.cpp" />
+    <ClCompile Include="ai_evol_eval_output_impl_uniquevalues.cpp" />
   </ItemGroup>
 </Project>
