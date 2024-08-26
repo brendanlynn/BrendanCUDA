@@ -2,320 +2,330 @@
 #include "brendancuda_errorhelp.h"
 #include <curand_kernel.h>
 
-__host__ __device__ void copyFloatsToInt32Func(float* Floats, uint32_t* Int32, float Split) {
+template <std::floating_point _TFloat>
+__host__ __device__ uint32_t convertFloatsToInt32(_TFloat* Floats, size_t Max, _TFloat Split) {
     uint32_t m = 0;
-    if (Floats[0] > Split) m |= 1ui32 << 0;
-    if (Floats[1] > Split) m |= 1ui32 << 1;
-    if (Floats[2] > Split) m |= 1ui32 << 2;
-    if (Floats[3] > Split) m |= 1ui32 << 3;
-    if (Floats[4] > Split) m |= 1ui32 << 4;
-    if (Floats[5] > Split) m |= 1ui32 << 5;
-    if (Floats[6] > Split) m |= 1ui32 << 6;
-    if (Floats[7] > Split) m |= 1ui32 << 7;
-    if (Floats[8] > Split) m |= 1ui32 << 8;
-    if (Floats[9] > Split) m |= 1ui32 << 9;
-    if (Floats[10] > Split) m |= 1ui32 << 10;
-    if (Floats[11] > Split) m |= 1ui32 << 11;
-    if (Floats[12] > Split) m |= 1ui32 << 12;
-    if (Floats[13] > Split) m |= 1ui32 << 13;
-    if (Floats[14] > Split) m |= 1ui32 << 14;
-    if (Floats[15] > Split) m |= 1ui32 << 15;
-    if (Floats[16] > Split) m |= 1ui32 << 16;
-    if (Floats[17] > Split) m |= 1ui32 << 17;
-    if (Floats[18] > Split) m |= 1ui32 << 18;
-    if (Floats[19] > Split) m |= 1ui32 << 19;
-    if (Floats[20] > Split) m |= 1ui32 << 20;
-    if (Floats[21] > Split) m |= 1ui32 << 21;
-    if (Floats[22] > Split) m |= 1ui32 << 22;
-    if (Floats[23] > Split) m |= 1ui32 << 23;
-    if (Floats[24] > Split) m |= 1ui32 << 24;
-    if (Floats[25] > Split) m |= 1ui32 << 25;
-    if (Floats[26] > Split) m |= 1ui32 << 26;
-    if (Floats[27] > Split) m |= 1ui32 << 27;
-    if (Floats[28] > Split) m |= 1ui32 << 28;
-    if (Floats[29] > Split) m |= 1ui32 << 29;
-    if (Floats[30] > Split) m |= 1ui32 << 30;
-    if (Floats[31] > Split) m |= 1ui32 << 31;
-    *Int32 = m;
+    if (Max >= 32) {
+        if (*(Floats++) > Split) m |= 1ui32 << 0;
+        if (*(Floats++) > Split) m |= 1ui32 << 1;
+        if (*(Floats++) > Split) m |= 1ui32 << 2;
+        if (*(Floats++) > Split) m |= 1ui32 << 3;
+        if (*(Floats++) > Split) m |= 1ui32 << 4;
+        if (*(Floats++) > Split) m |= 1ui32 << 5;
+        if (*(Floats++) > Split) m |= 1ui32 << 6;
+        if (*(Floats++) > Split) m |= 1ui32 << 7;
+        if (*(Floats++) > Split) m |= 1ui32 << 8;
+        if (*(Floats++) > Split) m |= 1ui32 << 9;
+        if (*(Floats++) > Split) m |= 1ui32 << 10;
+        if (*(Floats++) > Split) m |= 1ui32 << 11;
+        if (*(Floats++) > Split) m |= 1ui32 << 12;
+        if (*(Floats++) > Split) m |= 1ui32 << 13;
+        if (*(Floats++) > Split) m |= 1ui32 << 14;
+        if (*(Floats++) > Split) m |= 1ui32 << 15;
+        if (*(Floats++) > Split) m |= 1ui32 << 16;
+        if (*(Floats++) > Split) m |= 1ui32 << 17;
+        if (*(Floats++) > Split) m |= 1ui32 << 18;
+        if (*(Floats++) > Split) m |= 1ui32 << 19;
+        if (*(Floats++) > Split) m |= 1ui32 << 20;
+        if (*(Floats++) > Split) m |= 1ui32 << 21;
+        if (*(Floats++) > Split) m |= 1ui32 << 22;
+        if (*(Floats++) > Split) m |= 1ui32 << 23;
+        if (*(Floats++) > Split) m |= 1ui32 << 24;
+        if (*(Floats++) > Split) m |= 1ui32 << 25;
+        if (*(Floats++) > Split) m |= 1ui32 << 26;
+        if (*(Floats++) > Split) m |= 1ui32 << 27;
+        if (*(Floats++) > Split) m |= 1ui32 << 28;
+        if (*(Floats++) > Split) m |= 1ui32 << 29;
+        if (*(Floats++) > Split) m |= 1ui32 << 30;
+        if (*Floats > Split) m |= 1ui32 << 31;
+    }
+    else {
+        Floats += 32;
+        switch (Max) {
+        case 32: if (*(Floats--) > Split) m |= 1ui32 << 31;
+        case 31: if (*(Floats--) > Split) m |= 1ui32 << 30;
+        case 30: if (*(Floats--) > Split) m |= 1ui32 << 29;
+        case 29: if (*(Floats--) > Split) m |= 1ui32 << 28;
+        case 28: if (*(Floats--) > Split) m |= 1ui32 << 27;
+        case 27: if (*(Floats--) > Split) m |= 1ui32 << 26;
+        case 26: if (*(Floats--) > Split) m |= 1ui32 << 25;
+        case 25: if (*(Floats--) > Split) m |= 1ui32 << 24;
+        case 24: if (*(Floats--) > Split) m |= 1ui32 << 23;
+        case 23: if (*(Floats--) > Split) m |= 1ui32 << 22;
+        case 22: if (*(Floats--) > Split) m |= 1ui32 << 21;
+        case 21: if (*(Floats--) > Split) m |= 1ui32 << 20;
+        case 20: if (*(Floats--) > Split) m |= 1ui32 << 19;
+        case 19: if (*(Floats--) > Split) m |= 1ui32 << 18;
+        case 18: if (*(Floats--) > Split) m |= 1ui32 << 17;
+        case 17: if (*(Floats--) > Split) m |= 1ui32 << 16;
+        case 16: if (*(Floats--) > Split) m |= 1ui32 << 15;
+        case 15: if (*(Floats--) > Split) m |= 1ui32 << 14;
+        case 14: if (*(Floats--) > Split) m |= 1ui32 << 13;
+        case 13: if (*(Floats--) > Split) m |= 1ui32 << 12;
+        case 12: if (*(Floats--) > Split) m |= 1ui32 << 11;
+        case 11: if (*(Floats--) > Split) m |= 1ui32 << 10;
+        case 10: if (*(Floats--) > Split) m |= 1ui32 << 9;
+        case 9: if (*(Floats--) > Split) m |= 1ui32 << 8;
+        case 8: if (*(Floats--) > Split) m |= 1ui32 << 7;
+        case 7: if (*(Floats--) > Split) m |= 1ui32 << 6;
+        case 6: if (*(Floats--) > Split) m |= 1ui32 << 5;
+        case 5: if (*(Floats--) > Split) m |= 1ui32 << 4;
+        case 4: if (*(Floats--) > Split) m |= 1ui32 << 3;
+        case 3: if (*(Floats--) > Split) m |= 1ui32 << 2;
+        case 2: if (*(Floats--) > Split) m |= 1ui32 << 1;
+        case 1: if (*(Floats--) > Split) m |= 1ui32 << 0;
+        }
+    }
+    return m;
 }
-__host__ __device__ void copyDoublesToInt32Func(double* Doubles, uint32_t* Int32, double Split) {
-    uint32_t m = 0;
-    if (Doubles[0] > Split) m |= 1ui32 << 0;
-    if (Doubles[1] > Split) m |= 1ui32 << 1;
-    if (Doubles[2] > Split) m |= 1ui32 << 2;
-    if (Doubles[3] > Split) m |= 1ui32 << 3;
-    if (Doubles[4] > Split) m |= 1ui32 << 4;
-    if (Doubles[5] > Split) m |= 1ui32 << 5;
-    if (Doubles[6] > Split) m |= 1ui32 << 6;
-    if (Doubles[7] > Split) m |= 1ui32 << 7;
-    if (Doubles[8] > Split) m |= 1ui32 << 8;
-    if (Doubles[9] > Split) m |= 1ui32 << 9;
-    if (Doubles[10] > Split) m |= 1ui32 << 10;
-    if (Doubles[11] > Split) m |= 1ui32 << 11;
-    if (Doubles[12] > Split) m |= 1ui32 << 12;
-    if (Doubles[13] > Split) m |= 1ui32 << 13;
-    if (Doubles[14] > Split) m |= 1ui32 << 14;
-    if (Doubles[15] > Split) m |= 1ui32 << 15;
-    if (Doubles[16] > Split) m |= 1ui32 << 16;
-    if (Doubles[17] > Split) m |= 1ui32 << 17;
-    if (Doubles[18] > Split) m |= 1ui32 << 18;
-    if (Doubles[19] > Split) m |= 1ui32 << 19;
-    if (Doubles[20] > Split) m |= 1ui32 << 20;
-    if (Doubles[21] > Split) m |= 1ui32 << 21;
-    if (Doubles[22] > Split) m |= 1ui32 << 22;
-    if (Doubles[23] > Split) m |= 1ui32 << 23;
-    if (Doubles[24] > Split) m |= 1ui32 << 24;
-    if (Doubles[25] > Split) m |= 1ui32 << 25;
-    if (Doubles[26] > Split) m |= 1ui32 << 26;
-    if (Doubles[27] > Split) m |= 1ui32 << 27;
-    if (Doubles[28] > Split) m |= 1ui32 << 28;
-    if (Doubles[29] > Split) m |= 1ui32 << 29;
-    if (Doubles[30] > Split) m |= 1ui32 << 30;
-    if (Doubles[31] > Split) m |= 1ui32 << 31;
-    *Int32 = m;
-}
-__host__ __device__ void copyFloatsToInt64Func(float* Floats, uint64_t* Int64, float Split) {
-    uint64_t m = 0;
-    if (Floats[0] > Split) m |= 1ui64 << 0;
-    if (Floats[1] > Split) m |= 1ui64 << 1;
-    if (Floats[2] > Split) m |= 1ui64 << 2;
-    if (Floats[3] > Split) m |= 1ui64 << 3;
-    if (Floats[4] > Split) m |= 1ui64 << 4;
-    if (Floats[5] > Split) m |= 1ui64 << 5;
-    if (Floats[6] > Split) m |= 1ui64 << 6;
-    if (Floats[7] > Split) m |= 1ui64 << 7;
-    if (Floats[8] > Split) m |= 1ui64 << 8;
-    if (Floats[9] > Split) m |= 1ui64 << 9;
-    if (Floats[10] > Split) m |= 1ui64 << 10;
-    if (Floats[11] > Split) m |= 1ui64 << 11;
-    if (Floats[12] > Split) m |= 1ui64 << 12;
-    if (Floats[13] > Split) m |= 1ui64 << 13;
-    if (Floats[14] > Split) m |= 1ui64 << 14;
-    if (Floats[15] > Split) m |= 1ui64 << 15;
-    if (Floats[16] > Split) m |= 1ui64 << 16;
-    if (Floats[17] > Split) m |= 1ui64 << 17;
-    if (Floats[18] > Split) m |= 1ui64 << 18;
-    if (Floats[19] > Split) m |= 1ui64 << 19;
-    if (Floats[20] > Split) m |= 1ui64 << 20;
-    if (Floats[21] > Split) m |= 1ui64 << 21;
-    if (Floats[22] > Split) m |= 1ui64 << 22;
-    if (Floats[23] > Split) m |= 1ui64 << 23;
-    if (Floats[24] > Split) m |= 1ui64 << 24;
-    if (Floats[25] > Split) m |= 1ui64 << 25;
-    if (Floats[26] > Split) m |= 1ui64 << 26;
-    if (Floats[27] > Split) m |= 1ui64 << 27;
-    if (Floats[28] > Split) m |= 1ui64 << 28;
-    if (Floats[29] > Split) m |= 1ui64 << 29;
-    if (Floats[30] > Split) m |= 1ui64 << 30;
-    if (Floats[31] > Split) m |= 1ui64 << 31;
-    if (Floats[32] > Split) m |= 1ui64 << 32;
-    if (Floats[33] > Split) m |= 1ui64 << 33;
-    if (Floats[34] > Split) m |= 1ui64 << 34;
-    if (Floats[35] > Split) m |= 1ui64 << 35;
-    if (Floats[36] > Split) m |= 1ui64 << 36;
-    if (Floats[37] > Split) m |= 1ui64 << 37;
-    if (Floats[38] > Split) m |= 1ui64 << 38;
-    if (Floats[39] > Split) m |= 1ui64 << 39;
-    if (Floats[40] > Split) m |= 1ui64 << 40;
-    if (Floats[41] > Split) m |= 1ui64 << 41;
-    if (Floats[42] > Split) m |= 1ui64 << 42;
-    if (Floats[43] > Split) m |= 1ui64 << 43;
-    if (Floats[44] > Split) m |= 1ui64 << 44;
-    if (Floats[45] > Split) m |= 1ui64 << 45;
-    if (Floats[46] > Split) m |= 1ui64 << 46;
-    if (Floats[47] > Split) m |= 1ui64 << 47;
-    if (Floats[48] > Split) m |= 1ui64 << 48;
-    if (Floats[49] > Split) m |= 1ui64 << 49;
-    if (Floats[50] > Split) m |= 1ui64 << 50;
-    if (Floats[51] > Split) m |= 1ui64 << 51;
-    if (Floats[52] > Split) m |= 1ui64 << 52;
-    if (Floats[53] > Split) m |= 1ui64 << 53;
-    if (Floats[54] > Split) m |= 1ui64 << 54;
-    if (Floats[55] > Split) m |= 1ui64 << 55;
-    if (Floats[56] > Split) m |= 1ui64 << 56;
-    if (Floats[57] > Split) m |= 1ui64 << 57;
-    if (Floats[58] > Split) m |= 1ui64 << 58;
-    if (Floats[59] > Split) m |= 1ui64 << 59;
-    if (Floats[60] > Split) m |= 1ui64 << 60;
-    if (Floats[61] > Split) m |= 1ui64 << 61;
-    if (Floats[62] > Split) m |= 1ui64 << 62;
-    if (Floats[63] > Split) m |= 1ui64 << 63;
-    *Int64 = m;
-}
-__host__ __device__ void copyDoublesToInt64Func(double* Doubles, uint64_t* Int64, double Split) {
-    uint64_t m = 0;
-    if (Doubles[0] > Split) m |= 1ui64 << 0;
-    if (Doubles[1] > Split) m |= 1ui64 << 1;
-    if (Doubles[2] > Split) m |= 1ui64 << 2;
-    if (Doubles[3] > Split) m |= 1ui64 << 3;
-    if (Doubles[4] > Split) m |= 1ui64 << 4;
-    if (Doubles[5] > Split) m |= 1ui64 << 5;
-    if (Doubles[6] > Split) m |= 1ui64 << 6;
-    if (Doubles[7] > Split) m |= 1ui64 << 7;
-    if (Doubles[8] > Split) m |= 1ui64 << 8;
-    if (Doubles[9] > Split) m |= 1ui64 << 9;
-    if (Doubles[10] > Split) m |= 1ui64 << 10;
-    if (Doubles[11] > Split) m |= 1ui64 << 11;
-    if (Doubles[12] > Split) m |= 1ui64 << 12;
-    if (Doubles[13] > Split) m |= 1ui64 << 13;
-    if (Doubles[14] > Split) m |= 1ui64 << 14;
-    if (Doubles[15] > Split) m |= 1ui64 << 15;
-    if (Doubles[16] > Split) m |= 1ui64 << 16;
-    if (Doubles[17] > Split) m |= 1ui64 << 17;
-    if (Doubles[18] > Split) m |= 1ui64 << 18;
-    if (Doubles[19] > Split) m |= 1ui64 << 19;
-    if (Doubles[20] > Split) m |= 1ui64 << 20;
-    if (Doubles[21] > Split) m |= 1ui64 << 21;
-    if (Doubles[22] > Split) m |= 1ui64 << 22;
-    if (Doubles[23] > Split) m |= 1ui64 << 23;
-    if (Doubles[24] > Split) m |= 1ui64 << 24;
-    if (Doubles[25] > Split) m |= 1ui64 << 25;
-    if (Doubles[26] > Split) m |= 1ui64 << 26;
-    if (Doubles[27] > Split) m |= 1ui64 << 27;
-    if (Doubles[28] > Split) m |= 1ui64 << 28;
-    if (Doubles[29] > Split) m |= 1ui64 << 29;
-    if (Doubles[30] > Split) m |= 1ui64 << 30;
-    if (Doubles[31] > Split) m |= 1ui64 << 31;
-    if (Doubles[32] > Split) m |= 1ui64 << 32;
-    if (Doubles[33] > Split) m |= 1ui64 << 33;
-    if (Doubles[34] > Split) m |= 1ui64 << 34;
-    if (Doubles[35] > Split) m |= 1ui64 << 35;
-    if (Doubles[36] > Split) m |= 1ui64 << 36;
-    if (Doubles[37] > Split) m |= 1ui64 << 37;
-    if (Doubles[38] > Split) m |= 1ui64 << 38;
-    if (Doubles[39] > Split) m |= 1ui64 << 39;
-    if (Doubles[40] > Split) m |= 1ui64 << 40;
-    if (Doubles[41] > Split) m |= 1ui64 << 41;
-    if (Doubles[42] > Split) m |= 1ui64 << 42;
-    if (Doubles[43] > Split) m |= 1ui64 << 43;
-    if (Doubles[44] > Split) m |= 1ui64 << 44;
-    if (Doubles[45] > Split) m |= 1ui64 << 45;
-    if (Doubles[46] > Split) m |= 1ui64 << 46;
-    if (Doubles[47] > Split) m |= 1ui64 << 47;
-    if (Doubles[48] > Split) m |= 1ui64 << 48;
-    if (Doubles[49] > Split) m |= 1ui64 << 49;
-    if (Doubles[50] > Split) m |= 1ui64 << 50;
-    if (Doubles[51] > Split) m |= 1ui64 << 51;
-    if (Doubles[52] > Split) m |= 1ui64 << 52;
-    if (Doubles[53] > Split) m |= 1ui64 << 53;
-    if (Doubles[54] > Split) m |= 1ui64 << 54;
-    if (Doubles[55] > Split) m |= 1ui64 << 55;
-    if (Doubles[56] > Split) m |= 1ui64 << 56;
-    if (Doubles[57] > Split) m |= 1ui64 << 57;
-    if (Doubles[58] > Split) m |= 1ui64 << 58;
-    if (Doubles[59] > Split) m |= 1ui64 << 59;
-    if (Doubles[60] > Split) m |= 1ui64 << 60;
-    if (Doubles[61] > Split) m |= 1ui64 << 61;
-    if (Doubles[62] > Split) m |= 1ui64 << 62;
-    if (Doubles[63] > Split) m |= 1ui64 << 63;
-    *Int64 = m;
-}
-__global__ void copyFloatsToInt32sKernel(float* Floats, uint32_t* Int32s, float Split) {
-    copyFloatsToInt32Func(&Floats[blockIdx.x << 5], &Int32s[blockIdx.x], Split);
-}
-__global__ void copyDoublesToInt32sKernel(double* Floats, uint32_t* Int32s, double Split) {
-    copyDoublesToInt32Func(&Floats[blockIdx.x << 5], &Int32s[blockIdx.x], Split);
-}
-__global__ void copyFloatsToInt64sKernel(float* Floats, uint64_t* Int64s, float Split) {
-    copyFloatsToInt64Func(&Floats[blockIdx.x << 5], &Int64s[blockIdx.x], Split);
-}
-__global__ void copyDoublesToInt64sKernel(double* Floats, uint64_t* Int64s, double Split) {
-    copyDoublesToInt64Func(&Floats[blockIdx.x << 5], &Int64s[blockIdx.x], Split);
-}
-__global__ void copyFloatsToBoolsKernel(float* Floats, bool* Bools, float Split) {
-    Bools[blockIdx.x] = Floats[blockIdx.x] > Split;
-}
-__global__ void copyDoublesToBoolsKernel(float* Doubles, bool* Bools, float Split) {
-    Bools[blockIdx.x] = Doubles[blockIdx.x] > Split;
+template <std::floating_point _TFloat>
+__host__ __device__ void convertInt32ToFloats(_TFloat* Floats, uint32_t Int, size_t Max, _TFloat ValTrue, _TFloat ValFalse) {
+    if (Max >= 32) {
+        *(Floats++) = (Int & (1ui32 << 0)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 1)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 2)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 3)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 4)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 5)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 6)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 7)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 8)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 9)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 10)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 11)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 12)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 13)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 14)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 15)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 16)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 17)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 18)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 19)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 20)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 21)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 22)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 23)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 24)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 25)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 26)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 27)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 28)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 29)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 30)) ? ValTrue : ValFalse;
+        *(Floats++) = (Int & (1ui32 << 31)) ? ValTrue : ValFalse;
+    }
+    else {
+        Floats += 32;
+        switch (Max) {
+        case 32: *(Floats++) = (Int & (1ui32 << 31)) ? ValTrue : ValFalse;
+        case 31: *(Floats++) = (Int & (1ui32 << 30)) ? ValTrue : ValFalse;
+        case 30: *(Floats++) = (Int & (1ui32 << 29)) ? ValTrue : ValFalse;
+        case 29: *(Floats++) = (Int & (1ui32 << 28)) ? ValTrue : ValFalse;
+        case 28: *(Floats++) = (Int & (1ui32 << 27)) ? ValTrue : ValFalse;
+        case 27: *(Floats++) = (Int & (1ui32 << 26)) ? ValTrue : ValFalse;
+        case 26: *(Floats++) = (Int & (1ui32 << 25)) ? ValTrue : ValFalse;
+        case 25: *(Floats++) = (Int & (1ui32 << 24)) ? ValTrue : ValFalse;
+        case 24: *(Floats++) = (Int & (1ui32 << 23)) ? ValTrue : ValFalse;
+        case 23: *(Floats++) = (Int & (1ui32 << 22)) ? ValTrue : ValFalse;
+        case 22: *(Floats++) = (Int & (1ui32 << 21)) ? ValTrue : ValFalse;
+        case 21: *(Floats++) = (Int & (1ui32 << 20)) ? ValTrue : ValFalse;
+        case 20: *(Floats++) = (Int & (1ui32 << 19)) ? ValTrue : ValFalse;
+        case 19: *(Floats++) = (Int & (1ui32 << 18)) ? ValTrue : ValFalse;
+        case 18: *(Floats++) = (Int & (1ui32 << 17)) ? ValTrue : ValFalse;
+        case 17: *(Floats++) = (Int & (1ui32 << 16)) ? ValTrue : ValFalse;
+        case 16: *(Floats++) = (Int & (1ui32 << 15)) ? ValTrue : ValFalse;
+        case 15: *(Floats++) = (Int & (1ui32 << 14)) ? ValTrue : ValFalse;
+        case 14: *(Floats++) = (Int & (1ui32 << 13)) ? ValTrue : ValFalse;
+        case 13: *(Floats++) = (Int & (1ui32 << 12)) ? ValTrue : ValFalse;
+        case 12: *(Floats++) = (Int & (1ui32 << 11)) ? ValTrue : ValFalse;
+        case 11: *(Floats++) = (Int & (1ui32 << 10)) ? ValTrue : ValFalse;
+        case 10: *(Floats++) = (Int & (1ui32 << 9)) ? ValTrue : ValFalse;
+        case 9: *(Floats++) = (Int & (1ui32 << 8)) ? ValTrue : ValFalse;
+        case 8: *(Floats++) = (Int & (1ui32 << 7)) ? ValTrue : ValFalse;
+        case 7: *(Floats++) = (Int & (1ui32 << 6)) ? ValTrue : ValFalse;
+        case 6: *(Floats++) = (Int & (1ui32 << 5)) ? ValTrue : ValFalse;
+        case 5: *(Floats++) = (Int & (1ui32 << 4)) ? ValTrue : ValFalse;
+        case 4: *(Floats++) = (Int & (1ui32 << 3)) ? ValTrue : ValFalse;
+        case 3: *(Floats++) = (Int & (1ui32 << 2)) ? ValTrue : ValFalse;
+        case 2: *(Floats++) = (Int & (1ui32 << 1)) ? ValTrue : ValFalse;
+        case 1: *(Floats++) = (Int & (1ui32 << 0)) ? ValTrue : ValFalse;
+        }
+    }
 }
 
-__host__ void BrendanCUDA::AI::CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split, bool MemoryOnHost) {
-    if (MemoryOnHost) {
-        for (size_t i = 0; i < Length; ++i) {
-            Bools[i] = Floats[i] > Split;
+__global__ void convertFloatsToBoolsKernel(float* Floats, bool* Bools, float Split) {
+    Bools[blockIdx.x] = Floats[blockIdx.x] > Split;
+}
+__global__ void convertFloatsToBoolsKernel(double* Doubles, bool* Bools, double Split) {
+    Bools[blockIdx.x] = Doubles[blockIdx.x] > Split;
+}
+__global__ void convertBoolsToFloatsKernel(bool* Bools, float* Floats, float ValTrue, float ValFalse) {
+    Floats[blockIdx.x] = Bools[blockIdx.x] ? ValTrue : ValFalse;
+}
+__global__ void convertBoolsToFloatsKernel(bool* Bools, double* Doubles, double ValTrue, double ValFalse) {
+    Doubles[blockIdx.x] = Bools[blockIdx.x] ? ValTrue : ValFalse;
+}
+__global__ void convertFloatsToInt32sKernel(float* Floats, uint32_t* Int32s, size_t Max, float Split) {
+    Int32s[blockIdx.x] = convertFloatsToInt32(Floats + (blockIdx.x << 5), Max - (blockIdx.x << 5), Split);
+}
+__global__ void convertFloatsToInt32sKernel(double* Doubles, uint32_t* Int32s, size_t Max, double Split) {
+    Int32s[blockIdx.x] = convertFloatsToInt32(Doubles + (blockIdx.x << 5), Max - (blockIdx.x << 5), Split);
+}
+__global__ void convertInt32sToFloatsKernel(uint32_t* Int32s, float* Floats, size_t Max, float ValTrue, float ValFalse) {
+    convertInt32ToFloats(Floats + (blockIdx.x << 5), Int32s[blockIdx.x], Max - (blockIdx.x << 5), ValTrue, ValFalse);
+}
+__global__ void convertInt32sToFloatsKernel(uint32_t* Int32s, double* Doubles, size_t Max, double ValTrue, double ValFalse) {
+    convertInt32ToFloats(Doubles + (blockIdx.x << 5), Int32s[blockIdx.x], Max - (blockIdx.x << 5), ValTrue, ValFalse);
+}
+
+template <std::floating_point _TFloat>
+__host__ __forceinline void convertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
+    convertFloatsToBoolsKernel<<<Length, 1>>>(Floats, Bools, Split);
+}
+template <std::floating_point _TFloat>
+__host__ __forceinline void convertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
+    convertBoolsToFloatsKernel<<<Length, 1>>>(Bools, Floats, ValTrue, ValFalse);
+}
+template <std::floating_point _TFloat>
+__host__ __forceinline void convertFloatsToInt32s(_TFloat* Floats, uint32_t* Int32s, size_t Length, _TFloat Split) {
+    convertFloatsToInt32sKernel<<<((Length + 31) >> 5), 1>>>(Floats, Int32s, Length, Split);
+}
+template <std::floating_point _TFloat>
+__host__ __forceinline void convertInt32sToFloats(uint32_t* Int32s, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
+    convertInt32sToFloatsKernel<<<((Length + 31) >> 5), 1>>>(Floats, Int32s, Length, ValTrue, ValFalse);
+}
+
+template <bool _FloatsOnHost, std::floating_point _TFloat, bool _BoolsOnHost>
+__host__ void BrendanCUDA::AI::ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
+    if constexpr (_FloatsOnHost) {
+        if constexpr (_BoolsOnHost) {
+            for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
+                *Bools = *Floats > Split;
+        }
+        else {
+            _TFloat* dFloats;
+            cudaMalloc(&dFloats, sizeof(_TFloat) * Length);
+            cudaMemcpy(dFloats, Floats, sizeof(_TFloat) * Length, cudaMemcpyHostToDevice);
+            convertFloatsToBools(dFloats, Bools, Length, Split);
+            cudaFree(dFloats);
         }
     }
     else {
-        copyFloatsToBoolsKernel<<<Length, 1>>>(Floats, Bools, Split);
+        if constexpr (_BoolsOnHost) {
+            bool* dBools;
+            cudaMalloc(&dBools, sizeof(bool) * Length);
+            convertFloatsToBools(Floats, Bools, Length, Split);
+            cudaMemcpy(Bools, dBools, sizeof(bool) * Length, cudaMemcpyDeviceToHost);
+        }
+        else {
+            convertFloatsToBools(Floats, Bools, Length, Split);
+        }
     }
 }
-__host__ void BrendanCUDA::AI::CopyDoublesToBools(float* Doubles, bool* Bools, size_t Length, float Split, bool MemoryOnHost) {
-    if (MemoryOnHost) {
-        for (size_t i = 0; i < Length; ++i) {
-            Bools[i] = Doubles[i] > Split;
+template <std::floating_point _TFloat>
+__device__ void BrendanCUDA::AI::ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
+    for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
+        *Bools = *Floats > Split;
+}
+template <bool _FloatsOnHost, std::floating_point _TFloat, bool _IntsOnHost, std::integral _TInt>
+__host__ void BrendanCUDA::AI::ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
+    if constexpr (_FloatsOnHost) {
+        if constexpr (_IntsOnHost) {
+            size_t intLength = (FloatsLength + 31) >> 5;
+            for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
+                *Ints = convertFloatsToInt32(Floats, FloatsLength, Split);
+        }
+        else {
+            _TFloat* dFloats;
+            cudaMalloc(&dFloats, sizeof(_TFloat) * FloatsLength);
+            cudaMemcpy(dFloats, Floats, sizeof(_TFloat) * FloatsLength, cudaMemcpyHostToDevice);
+            convertFloatsToInt32s(dFloats, Ints, FloatsLength, Split);
+            cudaFree(dFloats);
         }
     }
     else {
-        copyDoublesToBoolsKernel<<<Length, 1>>>(Doubles, Bools, Split);
+        if constexpr (_IntsOnHost) {
+            size_t intLength = (FloatsLength + 31) >> 5;
+            _TInt* dInts;
+            cudaMalloc(&dInts, sizeof(_TInt) * intLength);
+            convertFloatsToInt32s(Floats, dInts, FloatsLength, Split);
+            cudaMemcpy(Ints, dInts, sizeof(_TInt) * intLength, cudaMemcpyDeviceToHost);
+        }
+        else {
+            convertFloatsToInt32s(Floats, Ints, FloatsLength, Split);
+        }
     }
 }
-__device__ void BrendanCUDA::AI::CopyFloatsToBools(float* Floats, bool* Bools, size_t Length, float Split) {
-    for (size_t i = 0; i < Length; ++i) {
-        Bools[i] = Floats[i] > Split;
-    }
+template <std::floating_point _TFloat, std::integral _TInt>
+__device__ void BrendanCUDA::AI::ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
+    size_t intLength = (FloatsLength + 31) >> 5;
+    for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
+        *Ints = convertFloatsToInt32(Floats, FloatsLength, Split);
 }
-__device__ void BrendanCUDA::AI::CopyDoublesToBools(double* Doubles, bool* Bools, size_t Length, double Split) {
-    for (size_t i = 0; i < Length; ++i) {
-        Bools[i] = Doubles[i] > Split;
-    }
-}
-__host__ void BrendanCUDA::AI::CopyFloatsToInt32s(float* Floats, uint32_t* Int32s, size_t Int32Length, float Split, bool MemoryOnHost) {
-    if (MemoryOnHost) {
-        for (size_t i = 0; i < Int32Length; ++i) {
-            copyFloatsToInt32Func(&Floats[i << 5], &Int32s[i], Split);
+template <bool _FloatsOnHost, bool _BoolsOnHost, std::floating_point _TFloat>
+__host__ void BrendanCUDA::AI::ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
+    if constexpr (_BoolsOnHost) {
+        if constexpr (_FloatsOnHost) {
+            for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
+                *Floats = *Bools ? ValTrue : ValFalse;
+        }
+        else {
+            bool* dBools;
+            cudaMalloc(&dBools, sizeof(_TFloat) * Length);
+            cudaMemcpy(dBools, Bools, sizeof(_TFloat) * Length, cudaMemcpyHostToDevice);
+            convertBoolsToFloats(dBools, Floats, Length, ValTrue, ValFalse);
+            cudaFree(dBools);
         }
     }
     else {
-        copyFloatsToInt32sKernel<<<Int32Length, 1>>>(Floats, Int32s, Split);
+        if constexpr (_FloatsOnHost) {
+            _TFloat* dFloats;
+            cudaMalloc(&dFloats, sizeof(_TFloat) * Length);
+            convertBoolsToFloats(Bools, dFloats, Length, ValTrue, ValFalse);
+            cudaMemcpy(Floats, dFloats, sizeof(_TFloat) * Length, cudaMemcpyDeviceToHost);
+        }
+        else {
+            convertBoolsToFloats(Bools, Floats, Length, ValTrue, ValFalse);
+        }
     }
 }
-__host__ void BrendanCUDA::AI::CopyDoublesToInt32s(double* Doubles, uint32_t* Int32s, size_t Int32Length, double Split, bool MemoryOnHost) {
-    if (MemoryOnHost) {
-        for (size_t i = 0; i < Int32Length; ++i) {
-            copyDoublesToInt32Func(&Doubles[i << 5], &Int32s[i], Split);
+template <std::floating_point _TFloat>
+__device__ void BrendanCUDA::AI::ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
+    for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
+        *Floats = *Bools ? ValTrue : ValFalse;
+}
+template <bool _IntsOnHost, std::integral _TInt, bool _FloatsOnHost, std::floating_point _TFloat>
+__host__ void BrendanCUDA::AI::ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
+    if constexpr (_IntsOnHost) {
+        if constexpr (_FloatsOnHost) {
+            size_t intLength = (FloatsLength + 31) >> 5;
+            for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
+                convertInt32ToFloats(Ints, Floats, FloatsLength, ValTrue, ValFalse);
+        }
+        else {
+            size_t intLength = (FloatsLength + 31) >> 5;
+            _TInt* dInts;
+            cudaMalloc(&dInts, sizeof(_TInt) * intLength);
+            cudaMemcpy(dInts, Ints, sizeof(_TInt) * intLength, cudaMemcpyHostToDevice);
+            convertInt32sToFloats(dInts, Floats, FloatsLength, ValTrue, ValFalse);
+            cudaFree(dInts);
         }
     }
     else {
-        copyDoublesToInt32sKernel<<<Int32Length, 1>>>(Doubles, Int32s, Split);
-    }
-}
-__device__ void BrendanCUDA::AI::CopyFloatsToInt32s(float* Floats, uint32_t* Int32s, size_t Int32Length, float Split) {
-    for (size_t i = 0; i < Int32Length; ++i) {
-        copyFloatsToInt32Func(&Floats[i << 5], &Int32s[i], Split);
-    }
-}
-__device__ void BrendanCUDA::AI::CopyDoublesToInt32s(double* Doubles, uint32_t* Int32s, size_t Int32Length, double Split) {
-    for (size_t i = 0; i < Int32Length; ++i) {
-        copyDoublesToInt32Func(&Doubles[i << 5], &Int32s[i], Split);
-    }
-}
-__host__ void BrendanCUDA::AI::CopyFloatsToInt64s(float* Floats, uint64_t* Int64s, size_t Int64Length, float Split, bool MemoryOnHost) {
-    if (MemoryOnHost) {
-        for (size_t i = 0; i < Int64Length; ++i) {
-            copyFloatsToInt64Func(&Floats[i << 5], &Int64s[i], Split);
+        if constexpr (_FloatsOnHost) {
+            _TFloat* dFloats;
+            cudaMalloc(&dFloats, sizeof(_TFloat) * FloatsLength);
+            convertInt32sToFloats(Ints, dFloats, FloatsLength, ValTrue, ValFalse);
+            cudaMemcpy(Floats, dFloats, sizeof(_TFloat) * FloatsLength, cudaMemcpyDeviceToHost);
+        }
+        else {
+            convertInt32sToFloats(Ints, Floats, FloatsLength, ValTrue, ValFalse);
         }
     }
-    else {
-        copyFloatsToInt64sKernel<<<Int64Length, 1>>>(Floats, Int64s, Split);
-    }
 }
-__host__ void BrendanCUDA::AI::CopyDoublesToInt64s(double* Doubles, uint64_t* Int64s, size_t Int64Length, double Split, bool MemoryOnHost) {
-    if (MemoryOnHost) {
-        for (size_t i = 0; i < Int64Length; ++i) {
-            copyDoublesToInt64Func(&Doubles[i << 5], &Int64s[i], Split);
-        }
-    }
-    else {
-        copyDoublesToInt64sKernel<<<Int64Length, 1>>>(Doubles, Int64s, Split);
-    }
-}
-__device__ void BrendanCUDA::AI::CopyFloatsToInt64s(float* Floats, uint64_t* Int64s, size_t Int64Length, float Split) {
-    for (size_t i = 0; i < Int64Length; ++i) {
-        copyFloatsToInt64Func(&Floats[i << 5], &Int64s[i], Split);
-    }
-}
-__device__ void BrendanCUDA::AI::CopyDoublesToInt64s(double* Doubles, uint64_t* Int64s, size_t Int64Length, double Split) {
-    for (size_t i = 0; i < Int64Length; ++i) {
-        copyDoublesToInt64Func(&Doubles[i << 5], &Int64s[i], Split);
-    }
+template <std::integral _TInt, std::floating_point _TFloat>
+__device__ void BrendanCUDA::AI::ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
+    size_t intLength = (FloatsLength + 31) >> 5;
+    for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
+        convertInt32ToFloats(Ints, Floats, FloatsLength, ValTrue, ValFalse);
 }
