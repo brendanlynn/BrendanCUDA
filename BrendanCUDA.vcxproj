@@ -148,7 +148,6 @@
     <CudaCompile Include="brendancuda_ai_mlpb_mlpblw.cu" />
     <CudaCompile Include="brendancuda_binary_basic.cu" />
     <CudaCompile Include="brendancuda_details_fillwith.cu" />
-    <CudaCompile Include="brendancuda_errorhelp.cpp" />
     <CudaCompile Include="brendancuda_dcopy.cu" />
     <CudaCompile Include="brendancuda_nets_makenet.cu" />
     <CudaCompile Include="brendancuda_nets_net.cu" />
