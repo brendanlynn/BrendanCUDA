@@ -214,7 +214,7 @@ __device__ __forceinline _T BrendanCUDA::Random::RandomizeWTargets(_T Value, uin
         }
         return (_T)0;
     }
-    else if (Value == ~(_T)0) {
+    else if (!~Value) {
         if (curand(&RNG) < FlipProbability) {
             return ~(((_T)1) << (shiftMask & curand(&RNG)));
         }
@@ -330,19 +330,20 @@ __host__ __forceinline void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, 
     }
 }
 #ifdef __CUDACC__
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ __forceinline void BrendanCUDA::Random::RandomizeArray<float, _TRNG>(Span<float> Array, float Scalar, _TRNG& RNG) {
-    Scalar *= 2.f;
-    float* l = Array.ptr;
-    float* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l += Scalar * (curand_uniform(&RNG) - 0.5f);
-}
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ __forceinline void BrendanCUDA::Random::RandomizeArray<double, _TRNG>(Span<double> Array, double Scalar, _TRNG& RNG) {
-    Scalar *= 2.;
-    double* l = Array.ptr;
-    double* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l += Scalar * (curand_uniform_double(&RNG) - 0.5);
+template <std::floating_point _T, BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, float>) {
+        Scalar *= 2.f;
+        float* l = Array.ptr;
+        float* u = Array.ptr + Array.size;
+        for (; l < u; ++l) *l += Scalar * (curand_uniform(&RNG) - 0.5f);
+    }
+    else {
+        Scalar *= 2.;
+        double* l = Array.ptr;
+        double* u = Array.ptr + Array.size;
+        for (; l < u; ++l) *l += Scalar * (curand_uniform_double(&RNG) - 0.5);
+    }
 }
 #endif
 template <bool _MemoryOnHost, std::floating_point _T, std::uniform_random_bit_generator _TRNG>
@@ -360,19 +361,20 @@ __host__ __forceinline void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, 
     }
 }
 #ifdef __CUDACC__
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ __forceinline void BrendanCUDA::Random::RandomizeArray<float, _TRNG>(Span<float> Array, float Scalar, float LowerBound, float UpperBound, _TRNG& RNG) {
-    Scalar *= 2.f;
-    float* l = Array.ptr;
-    float* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l = std::clamp(*l + Scalar * (curand_uniform(&RNG) - 0.5f), LowerBound, UpperBound);
-}
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ __forceinline void BrendanCUDA::Random::RandomizeArray<double, _TRNG>(Span<double> Array, double Scalar, double LowerBound, double UpperBound, _TRNG& RNG) {
-    Scalar *= 2.f;
-    double* l = Array.ptr;
-    double* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l = std::clamp(*l + Scalar * (curand_uniform_double(&RNG) - 0.5f), LowerBound, UpperBound);
+template <std::floating_point _T, BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::Random::RandomizeArray(Span<_T> Array, _T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, float>) {
+        Scalar *= 2.f;
+        float* l = Array.ptr;
+        float* u = Array.ptr + Array.size;
+        for (; l < u; ++l) *l = std::clamp(*l + Scalar * (curand_uniform(&RNG) - 0.5f), LowerBound, UpperBound);
+    }
+    else {
+        Scalar *= 2.f;
+        double* l = Array.ptr;
+        double* u = Array.ptr + Array.size;
+        for (; l < u; ++l) *l = std::clamp(*l + Scalar * (curand_uniform_double(&RNG) - 0.5f), LowerBound, UpperBound);
+    }
 }
 #endif
 
@@ -701,19 +703,20 @@ __host__ __forceinline void BrendanCUDA::Random::InitRandomArray(Span<_T> Array,
     }
 }
 #ifdef __CUDACC__
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ __forceinline void BrendanCUDA::Random::InitRandomArray<float>(Span<float> Array, float LowerBound, float UpperBound, _TRNG& RNG) {
-    float range = UpperBound - LowerBound;
-    float* l = Array.ptr;
-    float* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l = curand_uniform(&RNG) * range + LowerBound;
-}
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ __forceinline void BrendanCUDA::Random::InitRandomArray<double>(Span<double> Array, double LowerBound, double UpperBound, _TRNG& RNG) {
-    double range = UpperBound - LowerBound;
-    double* l = Array.ptr;
-    double* u = Array.ptr + Array.size;
-    for (; l < u; ++l) *l = curand_uniform_double(&RNG) * range + LowerBound;
+template <std::floating_point _T, BrendanCUDA::KernelCurandState _TRNG>
+__device__ __forceinline void BrendanCUDA::Random::InitRandomArray(Span<_T> Array, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, float>) {
+        float range = UpperBound - LowerBound;
+        float* l = Array.ptr;
+        float* u = Array.ptr + Array.size;
+        for (; l < u; ++l) *l = curand_uniform(&RNG) * range + LowerBound;
+    }
+    else {
+        double range = UpperBound - LowerBound;
+        double* l = Array.ptr;
+        double* u = Array.ptr + Array.size;
+        for (; l < u; ++l) *l = curand_uniform_double(&RNG) * range + LowerBound;
+    }
 }
 #endif
 

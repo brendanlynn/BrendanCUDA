@@ -1,6 +1,7 @@
 #pragma once
 
 #include "brendancuda_binary_basic.h"
+#include "brendancuda_curandkernelgens.h"
 #include "brendancuda_rand_anyrng.h"
 #include <cstdint>
 #include <cuda_runtime.h>

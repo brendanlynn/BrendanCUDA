@@ -25,6 +25,6 @@ __host__ __device__ BrendanCUDA::ArrayV<BrendanCUDA::details::Landmark> BrendanC
         RangeLength -= dMin;
     }
     ArrayV<Landmark> landmarkArray(landmarks.size());
-    std::copy(landmarks.data(), landmarks.data() + landmarks.size(), landmarkArray.ptr);
+    std::copy(landmarks.data(), landmarks.data() + landmarks.size(), landmarkArray.Data());
     return landmarkArray;
 }

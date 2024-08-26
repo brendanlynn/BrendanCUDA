@@ -1,6 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <cuda_runtime.h>
+#include <vector>
 
 namespace BrendanCUDA {
     template <typename _T>
@@ -78,10 +80,10 @@ namespace BrendanCUDA {
     struct Span {
         _T* ptr;
         size_t size;
-        template <size_t _Size>
         __host__ __device__ __forceinline Span(_T* Ptr, size_t Size)
             : ptr(Ptr), size(Size) { }
 
+        template <size_t _Size>
         __host__ __device__ __forceinline Span(std::array<_T, _Size>& Array)
             : ptr(Array.data()), size(Array.size()) { }
         __host__ __device__ __forceinline Span(std::vector<_T>& Vector)
