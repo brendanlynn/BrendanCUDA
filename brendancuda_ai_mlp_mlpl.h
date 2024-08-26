@@ -15,7 +15,7 @@ namespace BrendanCUDA {
     namespace AI {
         namespace MLP {
             template <typename _T>
-            class MLPL {
+            class [[deprecated("out of support")]] MLPL {
                 static_assert(std::is_same<_T, float>::value || std::is_same<_T, double>::value, "_T must be either 'float' or 'double'.");
             public:
                 __forceinline MLPL() = default;

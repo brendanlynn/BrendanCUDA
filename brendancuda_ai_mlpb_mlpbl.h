@@ -17,7 +17,7 @@ namespace BrendanCUDA {
     namespace AI {
         namespace MLPB {
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-            class MLPBL final {
+            class [[deprecated("out of support")]] MLPBL final {
             public:
                 __host__ __device__ __forceinline MLPBL();
                 __host__ __device__ __forceinline MLPBL(_TInput* Weights, _TOutput* Bias);

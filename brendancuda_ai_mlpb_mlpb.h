@@ -11,7 +11,7 @@
 namespace BrendanCUDA {
     namespace AI {
         namespace MLPB {
-            class MLPB {
+            class [[deprecated("out of support")]] MLPB {
             public:
                 __host__ __device__ __forceinline MLPB(size_t LayerCount);
                 __host__ __device__ __forceinline MLPB(MLPBLW* Layers, size_t LayerCount);

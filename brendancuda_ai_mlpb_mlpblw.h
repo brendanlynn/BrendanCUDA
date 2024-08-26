@@ -9,7 +9,7 @@
 namespace BrendanCUDA {
     namespace AI {
         namespace MLPB {
-            class alignas(8) MLPBLW {
+            class alignas(8) [[deprecated("out of support")]] MLPBLW {
             public:
                 __host__ __device__ __forceinline MLPBLW();
                 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
