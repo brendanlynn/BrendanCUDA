@@ -16,7 +16,7 @@ namespace BrendanCUDA {
         class FieldProxyConst;
 
         template <typename _T, size_t _DimensionCount>
-        class Field final : details::FieldBase<_T, _DimensionCount> {
+        class Field final : public details::FieldBase<_T, _DimensionCount> {
             using this_t = Field<_T, _DimensionCount>;
             using base_t = details::FieldBase<_T, _DimensionCount>;
         public:
@@ -92,7 +92,7 @@ namespace BrendanCUDA {
             }
         };
         template <typename _T, size_t _DimensionCount>
-        class FieldProxy final : details::FieldBase<_T, _DimensionCount> {
+        class FieldProxy final : public details::FieldBase<_T, _DimensionCount> {
             using base_t = details::FieldBase<_T, _DimensionCount>;
         public:
             using base_t::IdxToPtr;
@@ -120,7 +120,7 @@ namespace BrendanCUDA {
             }
         };
         template <typename _T, size_t _DimensionCount>
-        class FieldProxyConst final : details::FieldBase<_T, _DimensionCount> {
+        class FieldProxyConst final : public details::FieldBase<_T, _DimensionCount> {
             using base_t = details::FieldBase<_T, _DimensionCount>;
         public:
             __host__ __device__ __forceinline Field<_T, _DimensionCount> Clone() const {

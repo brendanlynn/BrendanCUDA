@@ -16,7 +16,7 @@ namespace BrendanCUDA {
         class DFieldProxyConst;
 
         template <typename _T, size_t _DimensionCount>
-        class DField final : details::DFieldBase<_DimensionCount> {
+        class DField final : public details::DFieldBase<_DimensionCount> {
             using this_t = DField<_T, _DimensionCount>;
             using base_t = details::DFieldBase<_DimensionCount>;
         public:
@@ -89,7 +89,7 @@ namespace BrendanCUDA {
             }
         };
         template <typename _T, size_t _DimensionCount>
-        class DFieldProxy final : details::DFieldBase<_DimensionCount> {
+        class DFieldProxy final : public details::DFieldBase<_DimensionCount> {
             using base_t = details::DFieldBase<_DimensionCount>;
         public:
             using base_t::F;
@@ -114,7 +114,7 @@ namespace BrendanCUDA {
             }
         };
         template <typename _T, size_t _DimensionCount>
-        class DFieldProxyConst final : details::DFieldBase<_T, _DimensionCount> {
+        class DFieldProxyConst final : public details::DFieldBase<_T, _DimensionCount> {
             using base_t = details::DFieldBase<_T, _DimensionCount>;
         public:
             __host__ __device__ __forceinline DField<_T, _DimensionCount> Clone() const {
