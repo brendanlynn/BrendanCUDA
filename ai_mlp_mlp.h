@@ -4,6 +4,7 @@
 #include "arrays.h"
 #include "errorhelp.h"
 
+#pragma warning(disable : 4996)
 namespace BrendanCUDA {
     namespace details {
         template <typename _T>

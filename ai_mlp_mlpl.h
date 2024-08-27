@@ -11,6 +11,7 @@
 #include <limits>
 #include <random>
 
+#pragma warning(disable : 4996)
 namespace BrendanCUDA {
     namespace AI {
         namespace MLP {

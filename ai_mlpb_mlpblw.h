@@ -6,6 +6,7 @@
 #include "ai_mlpb_mlpbl.h"
 #include "rand_anyrng.h"
 
+#pragma warning(disable : 4996)
 namespace BrendanCUDA {
     namespace AI {
         namespace MLPB {

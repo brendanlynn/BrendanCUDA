@@ -1,5 +1,6 @@
 #include "ai_mlpb_mlpblw.h"
 
+#pragma warning(disable : 4996)
 __host__ __device__ uint64_t BrendanCUDA::AI::MLPB::MLPBLW::Run(uint64_t Input) const {
     switch (type) {
     case eMLPBL8T8:

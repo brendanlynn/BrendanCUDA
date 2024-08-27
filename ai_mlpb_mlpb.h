@@ -8,6 +8,7 @@
 #include "BSerializer/Serializer.h"
 #include <memory>
 
+#pragma warning(disable : 4996)
 namespace BrendanCUDA {
     namespace AI {
         namespace MLPB {

@@ -1,5 +1,6 @@
 #include "ai_mlp_mlp.h"
 
+#pragma warning(disable : 4996)
 __global__ void runActivationFunctionOnArrayKernel(float* Array, BrendanCUDA::AI::activationFunction_t<float> ActivationFunction) {
     float& p(Array[blockIdx.x]);
     p = ActivationFunction(p);
