@@ -1,10 +1,9 @@
 #pragma once
 
-#include <cuda_runtime.h>
-#include <memory>
-
 #include "ai_mlpb_mlpbl.h"
 #include "rand_anyrng.h"
+#include <cuda_runtime.h>
+#include <memory>
 
 #pragma warning(disable : 4996)
 namespace BrendanCUDA {

@@ -2,11 +2,11 @@
 
 #include "ai.h"
 #include "binary_basic.h"
+#include "BSerializer/Serializer.h"
 #include "dcopy.cuh"
 #include "errorhelp.h"
 #include "rand_bits.h"
 #include "rand_randomizer.h"
-#include "BSerializer/Serializer.h"
 #include <bit>
 #include <concepts>
 #include <cuda_runtime.h>

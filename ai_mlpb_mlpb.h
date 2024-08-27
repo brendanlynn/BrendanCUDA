@@ -2,10 +2,10 @@
 
 #include "ai_mlpb_mlpbl.h"
 #include "ai_mlpb_mlpblw.h"
+#include "BSerializer/Serializer.h"
 #include "dcopy.cuh"
 #include "errorhelp.h"
 #include "rand_anyrng.h"
-#include "BSerializer/Serializer.h"
 #include <memory>
 
 #pragma warning(disable : 4996)
