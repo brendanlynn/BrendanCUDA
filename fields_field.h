@@ -19,6 +19,7 @@ namespace BrendanCUDA {
         class Field final : public details::FieldBase<_T, _DimensionCount> {
             using this_t = Field<_T, _DimensionCount>;
             using base_t = details::FieldBase<_T, _DimensionCount>;
+            using vector_t = base_t::vector_t;
         public:
             using base_t::IdxToPtr;
             using base_t::IdxToRef;
@@ -33,10 +34,10 @@ namespace BrendanCUDA {
             using base_t::Data;
 
             __host__ __device__ __forceinline this_t Clone() const {
-                return reinterpret_cast<this_t>(base_t::Clone());
+                return *(this_t*)base_t::Clone();
             }
             static __forceinline this_t Deserialize(const void*& Data) requires BSerializer::Serializable<_T> {
-                return reinterpret_cast<this_t>(base_t::Deserialize(Data));
+                return *(this_t)base_t::Deserialize(Data);
             }
             static __forceinline this_t Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> {
                 base_t::Deserialize(Data, Value);
@@ -61,10 +62,10 @@ namespace BrendanCUDA {
                 : Field(Other.Dimensions(), Other.Data()) { }
             __host__ __device__ __forceinline Field(this_t&& Other)
                 : base_t(Other.Dimensions(), Other.Data()) {
-                new (&Other) base_t(Dimensions(), 0);
+                new (&Other) base_t(this->Dimensions(), 0);
             }
             __host__ __device__ __forceinline ~Field() {
-                Dispose();
+                base_t::Dispose();
             }
             __host__ __device__ __forceinline this_t& operator=(const this_t& Other) {
                 this->~Field();
@@ -94,6 +95,7 @@ namespace BrendanCUDA {
         template <typename _T, size_t _DimensionCount>
         class FieldProxy final : public details::FieldBase<_T, _DimensionCount> {
             using base_t = details::FieldBase<_T, _DimensionCount>;
+            using vector_t = base_t::vector_t;
         public:
             using base_t::IdxToPtr;
             using base_t::IdxToRef;
@@ -108,7 +110,7 @@ namespace BrendanCUDA {
             using base_t::Data;
 
             __host__ __device__ __forceinline Field<_T, _DimensionCount> Clone() const {
-                return reinterpret_cast<Field<_T, _DimensionCount>>(base_t::Clone());
+                return *(Field<_T, _DimensionCount>*)base_t::Clone();
             }
 
             __host__ __device__ FieldProxy(const vector_t& Dimensions, _T* All)
@@ -122,16 +124,17 @@ namespace BrendanCUDA {
         template <typename _T, size_t _DimensionCount>
         class FieldProxyConst final : public details::FieldBase<_T, _DimensionCount> {
             using base_t = details::FieldBase<_T, _DimensionCount>;
+            using vector_t = base_t::vector_t;
         public:
             __host__ __device__ __forceinline Field<_T, _DimensionCount> Clone() const {
-                return reinterpret_cast<Field<_T, _DimensionCount>>(base_t::Clone());
+                return *(Field<_T, _DimensionCount>*)base_t::Clone();
             }
 
-            __host__ __device__ FieldProxy(const vector_t& Dimensions, const _T* All)
+            __host__ __device__ FieldProxyConst(const vector_t& Dimensions, const _T* All)
                 : base_t(Dimensions, const_cast<_T*>(All)) { }
-            __host__ __device__ FieldProxy(const Field<_T, _DimensionCount>& Parent)
+            __host__ __device__ FieldProxyConst(const Field<_T, _DimensionCount>& Parent)
                 : base_t(Parent.Dimensions(), Parent.Data()) { }
-            __host__ __device__ FieldProxy(const FieldProxy<_T, _DimensionCount>& Partner)
+            __host__ __device__ FieldProxyConst(const FieldProxy<_T, _DimensionCount>& Partner)
                 : base_t(Partner.Dimensions(), Partner.Data()) { }
         };
     }

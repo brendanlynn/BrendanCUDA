@@ -16,9 +16,10 @@ namespace BrendanCUDA {
         class DFieldProxyConst;
 
         template <typename _T, size_t _DimensionCount>
-        class DField final : public details::DFieldBase<_DimensionCount> {
+        class DField final : public details::DFieldBase<_T, _DimensionCount> {
             using this_t = DField<_T, _DimensionCount>;
-            using base_t = details::DFieldBase<_DimensionCount>;
+            using base_t = details::DFieldBase<_T, _DimensionCount>;
+            using vector_t = base_t::vector_t;
         public:
             using base_t::F;
             using base_t::B;
@@ -30,10 +31,10 @@ namespace BrendanCUDA {
             using base_t::CopyBlockIn;
 
             __host__ __device__ __forceinline this_t Clone() const {
-                return reinterpret_cast<this_t>(base_t::Clone());
+                return *(this_t*)base_t::Clone();
             }
             static __forceinline this_t Deserialize(const void*& Data) requires BSerializer::Serializable<_T> {
-                return reinterpret_cast<this_t>(base_t::Deserialize(Data));
+                return *(this_t*)base_t::Deserialize(Data);
             }
             static __forceinline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> {
                 base_t::Deserialize(Data, Value);
@@ -58,10 +59,10 @@ namespace BrendanCUDA {
                 : DField(Other.Dimensions(), Other.FData()) { }
             __host__ __device__ __forceinline DField(this_t&& Other)
                 : base_t(Other.Dimensions(), Other.FData(), Other.BData()) {
-                new (&Other) base_t(Dimensions(), 0, 0);
+                new (&Other) base_t(this->Dimensions(), 0, 0);
             }
             __host__ __device__ __forceinline ~DField() {
-                Dispose();
+                base_t::Dispose();
             }
             __host__ __device__ __forceinline this_t& operator=(const this_t& Other) {
                 this->~DField();
@@ -89,8 +90,9 @@ namespace BrendanCUDA {
             }
         };
         template <typename _T, size_t _DimensionCount>
-        class DFieldProxy final : public details::DFieldBase<_DimensionCount> {
-            using base_t = details::DFieldBase<_DimensionCount>;
+        class DFieldProxy final : public details::DFieldBase<_T, _DimensionCount> {
+            using base_t = details::DFieldBase<_T, _DimensionCount>;
+            using vector_t = base_t::vector_t;
         public:
             using base_t::F;
             using base_t::B;
@@ -102,7 +104,7 @@ namespace BrendanCUDA {
             using base_t::CopyBlockIn;
 
             __host__ __device__ __forceinline DField<_T, _DimensionCount> Clone() const {
-                return reinterpret_cast<DField<_T, _DimensionCount>>(base_t::Clone());
+                return *(DField<_T, _DimensionCount>*)base_t::Clone();
             }
 
             __host__ __device__ DFieldProxy(const vector_t& Dimensions, _T* ArrF, _T* ArrB)
@@ -116,16 +118,17 @@ namespace BrendanCUDA {
         template <typename _T, size_t _DimensionCount>
         class DFieldProxyConst final : public details::DFieldBase<_T, _DimensionCount> {
             using base_t = details::DFieldBase<_T, _DimensionCount>;
+            using vector_t = base_t::vector_t;
         public:
             __host__ __device__ __forceinline DField<_T, _DimensionCount> Clone() const {
-                return reinterpret_cast<DField<_T, _DimensionCount>>(base_t::Clone());
+                return *(DField<_T, _DimensionCount>*)base_t::Clone();
             }
 
-            __host__ __device__ DFieldProxy(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)
+            __host__ __device__ DFieldProxyConst(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)
                 : base_t(Dimensions, const_cast<_T*>(ArrF), const_cast<_T*>(ArrB)) { }
-            __host__ __device__ DFieldProxy(const DField<_T, _DimensionCount>& Parent)
+            __host__ __device__ DFieldProxyConst(const DField<_T, _DimensionCount>& Parent)
                 : base_t(Parent.Dimensions(), Parent.FData(), Parent.BData()) { }
-            __host__ __device__ DFieldProxy(const DFieldProxy<_T, _DimensionCount>& Partner)
+            __host__ __device__ DFieldProxyConst(const DFieldProxy<_T, _DimensionCount>& Partner)
                 : base_t(Partner.Dimensions(), Partner.FData(), Partner.BData()) { }
         };
     }

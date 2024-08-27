@@ -23,9 +23,9 @@ namespace BrendanCUDA {
         __host__ __device__ __forceinline uint32_t LengthZ() const requires (_DimensionCount >= 3 && _DimensionCount <= 4);
         __host__ __device__ __forceinline uint32_t LengthW() const requires (_DimensionCount == 4);
 
-        template <size_t _Index>
-            requires (_Index < _DimensionCount)
-        __host__ __device__ __forceinline uint32_t Length() const;
+        __host__ __device__ __forceinline uint32_t Length(size_t Idx) const {
+            return dims[Idx];
+        }
         __host__ __device__ __forceinline vector_t Dimensions() const;
     protected:
         __host__ __device__ __forceinline dim3 DimensionsD() const requires (_DimensionCount <= 3);
@@ -33,10 +33,12 @@ namespace BrendanCUDA {
         __host__ __device__ __forceinline size_t ValueCount() const;
 
         __host__ __device__ __forceinline vector_t IdxToCoords(uint64_t Index) const;
-        __host__ __device__ __forceinline uint64_t CoordsToIdx(vector_t Coordinates) const;
+        __host__ __device__ __forceinline uint64_t CoordsToIdx(vector_t Coords) const;
         template <std::convertible_to<uint32_t>... _Ts>
             requires (sizeof...(_Ts) == _DimensionCount)
-        __host__ __device__ __forceinline uint64_t CoordsToIdx(_Ts... Coordinates) const;
+        __host__ __device__ __forceinline uint64_t CoordsToIdx(_Ts... Coords) const {
+            return CoordsToIdx(vector_t(Coords...));
+        }
     private:
         vector_t dims;
     };
@@ -52,31 +54,20 @@ BrendanCUDA::DimensionedBase<_DimensionCount>::DimensionedBase(vector_t Dimensio
     dims = Dimensions;
 }
 template <size_t _DimensionCount>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _DimensionCount)
-BrendanCUDA::DimensionedBase<_DimensionCount>::DimensionedBase(_Ts... Dimensions)
-    : DimensionedBase(vector_t(Dimensions...)) { }
-template <size_t _DimensionCount>
 __host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::LengthX() const requires (_DimensionCount <= 4) {
-    return dimensions.x;
+    return dims.x;
 }
 template <size_t _DimensionCount>
 __host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::LengthY() const requires (_DimensionCount >= 2 && _DimensionCount <= 4) {
-    return dimensions.y;
+    return dims.y;
 }
 template <size_t _DimensionCount>
 __host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::LengthZ() const requires (_DimensionCount >= 3 && _DimensionCount <= 4) {
-    return dimensions.z;
+    return dims.z;
 }
 template <size_t _DimensionCount>
 __host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::LengthW() const requires (_DimensionCount == 4) {
-    return dimensions.w;
-}
-template <size_t _DimensionCount>
-template <size_t _Index>
-    requires (_Index < _DimensionCount)
-__host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::Length() const {
-    return dims[_Index];
+    return dims.w;
 }
 template <size_t _DimensionCount>
 __host__ __device__ __forceinline auto BrendanCUDA::DimensionedBase<_DimensionCount>::Dimensions() const -> vector_t {
@@ -98,12 +89,6 @@ __host__ __device__ __forceinline size_t BrendanCUDA::DimensionedBase<_Dimension
 template <size_t _DimensionCount>
 __host__ __device__ __forceinline uint64_t BrendanCUDA::DimensionedBase<_DimensionCount>::CoordsToIdx(vector_t Coords) const {
     return BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Coords);
-}
-template <size_t _DimensionCount>
-template <std::convertible_to<uint32_t>... _Ts>
-    requires (sizeof...(_Ts) == _DimensionCount)
-__host__ __device__ __forceinline uint64_t BrendanCUDA::DimensionedBase<_DimensionCount>::CoordsToIdx(_Ts... Coords) const {
-    return CoordsToIdx(vector_t(Coords...));
 }
 template <size_t _DimensionCount>
 __host__ __device__ __forceinline auto BrendanCUDA::DimensionedBase<_DimensionCount>::IdxToCoords(uint64_t Idx) const -> vector_t {

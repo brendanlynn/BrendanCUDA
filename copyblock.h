@@ -29,9 +29,9 @@ namespace BrendanCUDA {
     __device__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
 #endif
 
-    template <typename _T, size_t _VectorLength, copyValFunc_t _CopyValFunc, bool _Wrap = false>
+    template <typename _T, size_t _VectorLength, copyValFunc_t<_T> _CopyValFunc, bool _Wrap = false>
     __host__ __device__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
-    template <typename _T, size_t _VectorLength, copyArrFunc_t _CopyArrFunc, bool _Wrap = false>
+    template <typename _T, size_t _VectorLength, copyArrFunc_t<_T> _CopyArrFunc, bool _Wrap = false>
     __host__ __device__ static void CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
 }
 
@@ -178,7 +178,7 @@ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedV
 }
 #endif
 
-template <typename _T, size_t _VectorLength, BrendanCUDA::copyValFunc_t _CopyValFunc, bool _Wrap>
+template <typename _T, size_t _VectorLength, BrendanCUDA::copyValFunc_t<_T> _CopyValFunc, bool _Wrap>
 __host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
@@ -245,7 +245,7 @@ __host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, con
     }
 }
 
-template <typename _T, size_t _VectorLength, BrendanCUDA::copyArrFunc_t _CopyArrFunc, bool _Wrap>
+template <typename _T, size_t _VectorLength, BrendanCUDA::copyArrFunc_t<_T> _CopyArrFunc, bool _Wrap>
 __host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 

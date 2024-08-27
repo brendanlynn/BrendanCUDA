@@ -8,7 +8,7 @@
 namespace BrendanCUDA {
     namespace details {
         template <typename _TOutputType, typename _TRNG>
-        __host__ __device__ _TOutputType RunRNGFunc(void* RNG) {
+        _TOutputType RunRNGFunc(void* RNG) {
             std::uniform_int_distribution<_TOutputType> dis(0);
             return dis(*(_TRNG*)RNG);
         }
@@ -20,22 +20,22 @@ namespace BrendanCUDA {
         class AnyRNG {
         public:
             template <typename _TRNG>
-            __host__ __device__ AnyRNG(_TRNG* RNG) {
+            AnyRNG(_TRNG* RNG) {
                 i_rng = RNG;
                 r_rng = details::RunRNGFunc<_TOutputType, _TRNG>;
             }
             template <typename _TRNG>
-            __host__ __device__ AnyRNG(_TRNG& RNG) {
+            AnyRNG(_TRNG& RNG) {
                 i_rng = &RNG;
                 r_rng = details::RunRNGFunc<_TOutputType, _TRNG>;
             }
-            __host__ __device__ _TOutputType operator()() {
+            _TOutputType operator()() {
                 return r_rng(i_rng);
             }
-            __host__ __device__ static constexpr _TOutputType min() {
+            static constexpr _TOutputType min() {
                 return std::numeric_limits<_TOutputType>::min();
             }
-            __host__ __device__ static constexpr _TOutputType max() {
+            static constexpr _TOutputType max() {
                 return std::numeric_limits<_TOutputType>::max();
             }
             using result_type = _TOutputType;

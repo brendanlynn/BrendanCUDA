@@ -8,10 +8,12 @@ namespace BrendanCUDA {
         class DFieldBase : public DimensionedBase<_DimensionCount> {
             using this_t = DFieldBase<_T, _DimensionCount>;
             using base_t = DimensionedBase<_DimensionCount>;
+        protected:
+            using vector_t = base_t::vector_t;
         public:
             __host__ __device__ __forceinline DFieldBase(vector_t Dimensions)
                 : base_t(Dimensions) {
-                if (!Length<0>()) {
+                if (!this->Length(0)) {
                     darrF = 0;
                     darrB = 0;
                     return;
@@ -35,18 +37,18 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions, _T* ArrF, _T* ArrB)
                 : DFieldBase(vector_t(Dimensions...), ArrF, ArrB) { }
 
-            using base_t::DimensionsD();
+            using base_t::DimensionsD;
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
-                return ValueCount() * sizeof(_T);
+                return this->ValueCount() * sizeof(_T);
             }
 
 #pragma region ProxyAccess
         protected:
             __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> F() {
-                return Fields::FieldProxy<_T, _DimensionCount>(Dimensions(), darrF);
+                return Fields::FieldProxy<_T, _DimensionCount>(this->Dimensions(), darrF);
             }
             __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> B() {
-                return Fields::FieldProxy<_T, _DimensionCount>(Dimensions(), darrB);
+                return Fields::FieldProxy<_T, _DimensionCount>(this->Dimensions(), darrB);
             }
             __host__ __device__ _T* FData() {
                 return darrF;
@@ -59,10 +61,10 @@ namespace BrendanCUDA {
             }
         public:
             __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> F() const {
-                return Fields::FieldProxyConst<_T, _DimensionCount>(Dimensions(), darrF);
+                return Fields::FieldProxyConst<_T, _DimensionCount>(this->Dimensions(), darrF);
             }
             __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> B() const {
-                return Fields::FieldProxyConst<_T, _DimensionCount>(Dimensions(), darrB);
+                return Fields::FieldProxyConst<_T, _DimensionCount>(this->Dimensions(), darrB);
             }
             __host__ __device__ const _T* FData() const {
                 return darrF;
@@ -111,7 +113,7 @@ namespace BrendanCUDA {
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyAllOut(_T* All) const {
-                F().CpyAllOut<_CopyToHost>(All);
+                F().CpyAllOut(All);
             }
 #endif
 #pragma endregion
@@ -197,7 +199,7 @@ namespace BrendanCUDA {
 #endif
 
             __host__ __device__ this_t Clone() const {
-                this_t clone(Dimensions());
+                this_t clone(this->Dimensions());
                 clone.F().CpyAllIn<false>(FData());
                 return clone;
             }
