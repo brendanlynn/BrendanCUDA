@@ -25,14 +25,9 @@
     <ClInclude Include="ai_evol_eval_multieval.h" />
     <ClInclude Include="ai_evol.h" />
     <ClInclude Include="ai_evol_evolver.h" />
-    <ClInclude Include="ai_genetics_genemlp.h" />
+    <ClInclude Include="ai_genetics_genefixedmlp.h" />
     <ClInclude Include="ai_mlp_fixedmlp.h" />
-    <ClInclude Include="ai_mlp_mlp.h" />
-    <ClInclude Include="ai_mlp_mlpl.h" />
     <ClInclude Include="ai_mlpb_fixedmlpb.h" />
-    <ClInclude Include="ai_mlpb_mlpb.h" />
-    <ClInclude Include="ai_mlpb_mlpbl.h" />
-    <ClInclude Include="ai_mlpb_mlpblw.h" />
     <ClInclude Include="ai.h" />
     <ClInclude Include="details_dfieldbase.h" />
     <ClInclude Include="details_fieldbase.h" />
@@ -51,8 +46,6 @@
     <CudaCompile Include="binary_basic.cu" />
     <CudaCompile Include="dcopy.cu" />
     <CudaCompile Include="ai_evol_evolver.cpp" />
-    <CudaCompile Include="ai_mlp_mlp.cu" />
-    <CudaCompile Include="ai_mlpb_mlpblw.cu" />
     <CudaCompile Include="ai.cu" />
     <CudaCompile Include="details_fillwith.cu" />
     <CudaCompile Include="nets_makenet.cu" />

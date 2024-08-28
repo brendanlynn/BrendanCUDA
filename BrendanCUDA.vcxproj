@@ -128,14 +128,9 @@
     <ClInclude Include="fields_dfield.h" />
     <ClInclude Include="ai_evol_evolver.h" />
     <ClInclude Include="fields_field.h" />
-    <ClInclude Include="ai_genetics_genemlp.h" />
+    <ClInclude Include="ai_genetics_genefixedmlp.h" />
     <ClInclude Include="rand_randomizer.h" />
     <ClInclude Include="threadid.h" />
-    <ClInclude Include="ai_mlp_mlp.h" />
-    <ClInclude Include="ai_mlpb_mlpb.h" />
-    <ClInclude Include="ai_mlpb_mlpblw.h" />
-    <ClInclude Include="ai_mlpb_mlpbl.h" />
-    <ClInclude Include="ai_mlp_mlpl.h" />
     <ClInclude Include="rand_bits.h" />
   </ItemGroup>
   <ItemGroup>
@@ -144,8 +139,6 @@
     <CudaCompile Include="ai_evol_evolver.cpp">
       <FileType>CppCode</FileType>
     </CudaCompile>
-    <CudaCompile Include="ai_mlp_mlp.cu" />
-    <CudaCompile Include="ai_mlpb_mlpblw.cu" />
     <CudaCompile Include="binary_basic.cu" />
     <CudaCompile Include="details_fillwith.cu" />
     <CudaCompile Include="dcopy.cu" />
