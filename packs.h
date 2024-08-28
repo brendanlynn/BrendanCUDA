@@ -133,5 +133,17 @@ namespace BrendanCUDA {
 
         template <typename... _Ts>
         using combine_t = details::addPacks<_Ts...>::type_t;
+
+        namespace details {
+            template <template <typename...> typename _T, typename _TPack>
+            struct applyPack;
+            template <template <typename...> typename _T, typename... _Ts>
+            struct applyPack<_T, Pack<_Ts...>> {
+                using type_t = _T<_Ts...>;
+            };
+        }
+
+        template <template <typename...> typename _T, IsPack _TPack>
+        using appliedPack_t = details::applyPack<_T, _Pack>::type_t;
     }
 }
