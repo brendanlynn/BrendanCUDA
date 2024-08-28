@@ -1,9 +1,10 @@
 #pragma once
 
 #include "ai.h"
+#include "BSerializer/Serializer.h"
+#include "curandkernelgens.h"
 #include "mathfuncs.h"
 #include "rand_anyrng.h"
-#include "BSerializer/Serializer.h"
 #include <cuda_runtime.h>
 #include <random>
 #include <type_traits>
@@ -50,11 +51,17 @@ namespace BrendanCUDA {
 
                 __host__ __device__ void FillWith0();
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ void FillWithRandom(_TRNG& RNG);
+                __host__ void FillWithRandom(_TRNG& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void FillWithRandom(_TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
+                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
                 __host__ __device__ void Run(const _T* Input, _T* Output) const;
 
                 size_t SerializedSize() const;
@@ -77,11 +84,17 @@ namespace BrendanCUDA {
 
                 __host__ __device__ void FillWith0();
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ void FillWithRandom(_TRNG& RNG);
+                __host__ void FillWithRandom(_TRNG& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void FillWithRandom(_TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
+                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
                 __host__ __device__ void Run(const _T* Input, _T* Output) const;
                 __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const;
                 template <size_t _Index>
@@ -111,11 +124,17 @@ namespace BrendanCUDA {
 
                 __host__ __device__ void FillWith0();
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ void FillWithRandom(_TRNG& RNG);
+                __host__ void FillWithRandom(_TRNG& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void FillWithRandom(_TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
+                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                template <KernelCurandState _TRNG>
+                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
                 __host__ __device__ void Run(const _T* Input, _T* Output) const;
                 __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const;
                 template <size_t _Index>
@@ -149,7 +168,7 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::FillWithRandom(_TRNG& RNG) {
+__host__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::FillWithRandom(_TRNG& RNG) {
     std::uniform_real_distribution<_T> dis(-1., 1.);
 
     for (size_t i = 0; i < _OutputCount; ++i) {
@@ -161,8 +180,29 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::FillWithRandom(_TRNG& RNG) {
+    if constexpr (std::same_as<_T, float>) {
+        for (size_t i = 0; i < _OutputCount; ++i) {
+            for (size_t j = 0; j < _InputCount; ++j) {
+                weights[i][j] = curand_uniform(&RNG) * 2.f - 1.f;
+            }
+            bias[i] = curand_uniform(&RNG) * 2.f - 1.f;
+        }
+    }
+    else {
+        for (size_t i = 0; i < _OutputCount; ++i) {
+            for (size_t j = 0; j < _InputCount; ++j) {
+                weights[i][j] = curand_uniform_double(&RNG) * 2. - 1.;
+            }
+            bias[i] = curand_uniform_double(&RNG) * 2. - 1.;
+        }
+    }
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+__host__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _TRNG& RNG) {
     std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
 
     for (size_t i = 0; i < _OutputCount; ++i) {
@@ -174,8 +214,29 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction
 }
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, float>) {
+        for (size_t i = 0; i < _OutputCount; ++i) {
+            for (size_t j = 0; j < _InputCount; ++j) {
+                weights[i][j] += curand_uniform(&RNG);
+            }
+            bias[i] += curand_uniform(&RNG);
+        }
+    }
+    else {
+        for (size_t i = 0; i < _OutputCount; ++i) {
+            for (size_t j = 0; j < _InputCount; ++j) {
+                weights[i][j] += curand_uniform_double(&RNG);
+            }
+            bias[i] += curand_uniform_double(&RNG);
+        }
+    }
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+__host__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
 
     for (size_t i = 0; i < _OutputCount; ++i) {
@@ -185,6 +246,31 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction
         }
         _T& v = bias[i];
         v = Math::clamp(v + dis(RNG), LowerBound, UpperBound);
+    }
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+template <BrendanCUDA::KernelCurandState _TRNG>
+__device__ void BrendanCUDA::AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    if constexpr (std::same_as<_T, float>) {
+        for (size_t i = 0; i < _OutputCount; ++i) {
+            for (size_t j = 0; j < _InputCount; ++j) {
+                _T& v = weights[i][j];
+                v = Math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
+            }
+            _T& v = bias[i];
+            v = Math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
+        }
+    }
+    else {
+        for (size_t i = 0; i < _OutputCount; ++i) {
+            for (size_t j = 0; j < _InputCount; ++j) {
+                _T& v = weights[i][j];
+                v = Math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
+            }
+            _T& v = bias[i];
+            v = Math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
+        }
     }
 }
 
@@ -260,6 +346,24 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction,
     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
 }
 
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+template <BrendanCUDA::KernelCurandState _TRNG>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::FillWithRandom(_TRNG& RNG) {
+    layer.FillWithRandom(RNG);
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+template <BrendanCUDA::KernelCurandState _TRNG>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+    layer.ChangeWithRandom(Scalar, RNG);
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+template <BrendanCUDA::KernelCurandState _TRNG>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+}
+
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
 __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::FillWith0() {
     layer.FillWith0();
@@ -282,6 +386,27 @@ __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction,
 
 template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
 template <std::uniform_random_bit_generator _TRNG>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+    nextLayers.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+template <BrendanCUDA::KernelCurandState _TRNG>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::FillWithRandom(_TRNG& RNG) {
+    layer.FillWithRandom(RNG);
+    nextLayers.FillWithRandom(RNG);
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+template <BrendanCUDA::KernelCurandState _TRNG>
+__host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+    layer.ChangeWithRandom(Scalar, RNG);
+    nextLayers.ChangeWithRandom(Scalar, RNG);
+}
+
+template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+template <BrendanCUDA::KernelCurandState _TRNG>
 __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
     nextLayers.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
