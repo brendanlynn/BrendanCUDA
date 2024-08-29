@@ -8,6 +8,7 @@
 #include <cuda_runtime.h>
 #include <random>
 #include <type_traits>
+#include <cublas_v2.h>
 
 namespace BrendanCUDA {
     namespace AI {
@@ -35,16 +36,31 @@ namespace BrendanCUDA {
 
         template <size_t _Index, std::floating_point _T, AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
         using mlpLayerType_t = MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _ContinuedOutputCounts...>;
+    
+        template <uintmax_t _Idx, size_t... _Ints>
+        struct getIntsByIndex;
+        template <size_t _Int1, size_t... _ContinuedInts>
+        struct getIntsByIndex<0, _Int1, _ContinuedInts...> {
+            static constexpr size_t value = _Int1;
+        };
+        template <uintmax_t _Idx, size_t _Int1, size_t... _ContinuedInts>
+        struct getIntsByIndex<_Idx, _Int1, _ContinuedInts...> {
+            static constexpr size_t value = getIntsByIndex<_Idx - 1, _ContinuedInts...>::value;
+        };
     }
     namespace AI {
         namespace MLP {
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
             struct FixedMLPL {
+                static_assert(_InputCount, "_InputCount must be greater than 0.");
+                static_assert(_OutputCount, "_OutputCount must be greater than 0.");
             private:
                 using this_t = FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>;
             public:
-                static_assert(_InputCount, "_InputCount must be greater than 0.");
-                static_assert(_OutputCount, "_OutputCount must be greater than 0.");
+                using elementType_t = _T;
+                static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
+                static constexpr size_t inputCount = _InputCount;
+                static constexpr size_t outputCount = _OutputCount;
 
                 _T weights[_InputCount][_OutputCount];
                 _T bias[_OutputCount];
@@ -82,9 +98,13 @@ namespace BrendanCUDA {
             private:
                 using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
             public:
+                using elementType_t = _T;
+                static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
+                template <size_t _Index>
+                static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
                 template <size_t _Index>
                 using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
-                
+
                 FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
                 FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...> nextLayers;
 
@@ -129,6 +149,10 @@ namespace BrendanCUDA {
             private:
                 using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>;
             public:
+                using elementType_t = _T;
+                static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
+                template <size_t _Index>
+                static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count>;
                 template <size_t _Index>
                 using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count>;
 
@@ -171,6 +195,33 @@ namespace BrendanCUDA {
                 static void Deserialize(const void*& Data, void* ObjMem);
             };
         }
+    }
+    namespace details {
+        template <typename _T>
+        struct isFixedMLPL : std::false_type { };
+        template <std::floating_point _T, AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+        struct isFixedMLPL<AI::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>> : std::true_type { };
+        template <typename _T>
+        struct isFixedMLP : std::false_type { };
+        template <std::floating_point _T, AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+        struct isFixedMLP<AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>> : std::true_type { };
+    }
+    namespace AI {
+        namespace MLP {
+            template <typename _T>
+            concept IsFixedMLPL = details::isFixedMLPL<_T>::value;
+            template <typename _T>
+            concept IsFixedMLP = details::isFixedMLP<_T>::value;
+
+            template <IsFixedMLPL _TFixedMLPL, bool _InputOnHost, bool _OutputOnHost>
+            void RunFixedMLPLOnDevice(const _TFixedMLPL* MLP, const typename _TFixedMLPL::elementType_t* Inputs, typename _TFixedMLPL::elementType_t* Outputs);
+            template <IsFixedMLP _TFixedMLP, bool _InputOnHost, bool _OutputOnHost>
+            void RunFixedMLPOnDevice(const _TFixedMLP* MLP, const typename _TFixedMLP::elementType_t* Inputs, typename _TFixedMLP::elementType_t* Outputs);
+        }
+    }
+    namespace details {
+        template <AI::MLP::IsFixedMLP _TFixedMLP>
+        void RunFixedMLPOnDevice(const _TFixedMLP* MLP, const typename _TFixedMLP::elementType_t* Inputs, typename _TFixedMLP::elementType_t* Intermediate0, typename _TFixedMLP::elementType_t* Intermediate1, typename _TFixedMLP::elementType_t* Outputs);
     }
 }
 
@@ -599,4 +650,103 @@ template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _Act
 void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Deserialize(const void*& Data, void* ObjMem) {
     this_t& obj = &(this_t*)ObjMem;
     BSerializer::Deserialize(Data, &obj.layer);
+}
+
+template <BrendanCUDA::AI::MLP::IsFixedMLPL _TFixedMLPL, bool _InputOnHost, bool _OutputOnHost>
+void BrendanCUDA::AI::MLP::RunFixedMLPLOnDevice(const _TFixedMLPL* MLPL, const typename _TFixedMLPL::elementType_t* Inputs, typename _TFixedMLPL::elementType_t* Outputs) {
+    using value_t = typename _TFixedMLPL::elementType_t;
+    if constexpr (_InputOnHost) {
+        if constexpr (_OutputOnHost) {
+            value_t* dInputs;
+            ThrowIfBad(cudaMalloc(&dInputs, sizeof(value_t) * _TFixedMLPL::inputCount));
+            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(value_t) * _TFixedMLPL::inputCount, cudaMemcpyHostToDevice));
+            value_t* dOutputs;
+            ThrowIfBad(cudaMalloc(&dOutputs, sizeof(value_t) * _TFixedMLPL::outputCount));
+            
+            RunFixedMLPLOnDevice<_TFixedMLPL, false, false>(MLPL, dInputs, dOutputs);
+        }
+        else {
+            value_t* dInputs;
+            ThrowIfBad(cudaMalloc(&dInputs, sizeof(value_t) * _TFixedMLPL::inputCount));
+            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(value_t) * _TFixedMLPL::inputCount, cudaMemcpyHostToDevice));
+            
+            RunFixedMLPLOnDevice<_TFixedMLPL, false, false>(MLPL, dInputs, Outputs);
+        }
+    }
+    else {
+        if constexpr (_OutputOnHost) {
+            value_t* dOutputs;
+            ThrowIfBad(cudaMalloc(&dOutputs, sizeof(value_t) * _TFixedMLPL::outputCount));
+
+            RunFixedMLPLOnDevice<_TFixedMLPL, false, false>(MLPL, Inputs, dOutputs);
+        }
+        else {
+            cudaMemcpy(Outputs, &MLPL->bias, sizeof(value_t) * _TFixedMLPL::outputCount, cudaMemcpyDeviceToDevice);
+
+            cublasHandle_t cublasH;
+            ThrowIfBad(cublasCreate(&cublasH));
+
+            float oneF = 1.f;
+            ThrowIfBad(cublasSgemv(cublasH, CUBLAS_OP_N, _TFixedMLPL::outputCount, _TFixedMLPL::inputCount, &oneF, &MLPL->weights, _TFixedMLPL::outputCount, Inputs, 1, &oneF, Outputs, 1));
+            
+            ThrowIfBad(cublasDestroy(cublasH));
+        }
+    }
+}
+
+template <BrendanCUDA::AI::MLP::IsFixedMLP _TFixedMLP, bool _InputOnHost, bool _OutputOnHost>
+void BrendanCUDA::AI::MLP::RunFixedMLPOnDevice(const _TFixedMLP* MLP, const typename _TFixedMLP::elementType_t* Inputs, typename _TFixedMLP::elementType_t* Outputs) {
+    using value_t = typename _TFixedMLP::elementType_t;
+    if constexpr (_InputOnHost) {
+        if constexpr (_OutputOnHost) {
+            value_t* dInputs;
+            ThrowIfBad(cudaMalloc(&dInputs, sizeof(value_t) * _TFixedMLP::InputCount()));
+            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(value_t) * _TFixedMLP::InputCount(), cudaMemcpyHostToDevice));
+            value_t* dOutputs;
+            ThrowIfBad(cudaMalloc(&dOutputs, sizeof(value_t) * _TFixedMLP::OutputCount()));
+
+            RunFixedMLPOnDevice<_TFixedMLP, false, false>(MLPL, dInputs, dOutputs);
+        }
+        else {
+            value_t* dInputs;
+            ThrowIfBad(cudaMalloc(&dInputs, sizeof(value_t) * _TFixedMLPL::InputCount()));
+            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(value_t) * _TFixedMLPL::InputCount(), cudaMemcpyHostToDevice));
+
+            RunFixedMLPOnDevice<_TFixedMLP, false, false>(MLPL, dInputs, Outputs);
+        }
+    }
+    else {
+        if constexpr (_OutputOnHost) {
+            value_t* dOutputs;
+            ThrowIfBad(cudaMalloc(&dOutputs, sizeof(value_t) * _TFixedMLP::OutputCount()));
+
+            RunFixedMLPOnDevice<_TFixedMLP, false, false>(MLP, Inputs, dOutputs);
+        }
+        else {
+            if constexpr (_TFixedMLP::LayerCount() == 1) {
+                RunFixedMLPLOnDevice<decltype(MLP->layer), false, false>(&MLP->layer, Inputs, Outputs);
+            }
+            else {
+                value_t* dIntermediate0;
+                ThrowIfBad(cudaMalloc(&dIntermediate0, sizeof(value_t) * _TFixedMLP::OutputCount()));
+                value_t* dIntermediate1;
+                ThrowIfBad(cudaMalloc(&dIntermediate1, sizeof(value_t) * _TFixedMLP::OutputCount()));
+
+                details::RunFixedMLPOnDevice<_TFixedMLP>(MLP, Inputs, dIntermediate0, dIntermediate1, Outputs);
+            }
+        }
+    }
+}
+
+template <BrendanCUDA::AI::MLP::IsFixedMLP _TFixedMLP>
+void BrendanCUDA::details::RunFixedMLPOnDevice(const _TFixedMLP* MLP, const typename _TFixedMLP::elementType_t* Inputs, typename _TFixedMLP::elementType_t* Intermediate0, typename _TFixedMLP::elementType_t* Intermediate1, typename _TFixedMLP::elementType_t* Outputs) {
+    using value_t = typename _TFixedMLP::elementType_t;
+
+    if constexpr (_TFixedMLP::LayerCount() == 1) {
+        RunFixedMLPLOnDevice<decltype(MLP->layer), false, false>(&MLP->layer, Inputs, Outputs);
+    }
+    else {
+        AI::MLP::RunFixedMLPLOnDevice<decltype(MLP->layer), false, false>(&MLP->layer, Inputs, Intermediate0);
+        RunFixedMLPOnDevice(&MLP->nextLayers, Intermediate0, Intermediate1, Intermediate0, Outputs);
+    }
 }
