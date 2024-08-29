@@ -131,5 +131,8 @@ namespace BrendanCUDA {
             __host__ __device__ DFieldProxyConst(const DFieldProxy<_T, _DimensionCount>& Partner)
                 : base_t(Partner.Dimensions(), Partner.FData(), Partner.BData()) { }
         };
+
+        template <typename _T, size_t _DimensionCount>
+        using dfieldIteratorKernel_t = void(*)(FixedVector<uint32_t, _DimensionCount> Pos, DFieldProxyConst<_T, _DimensionCount> Previous, _T& NextVal);
     }
 }
