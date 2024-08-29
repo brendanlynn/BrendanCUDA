@@ -133,6 +133,6 @@ namespace BrendanCUDA {
         };
 
         template <typename _T, size_t _DimensionCount>
-        using dfieldIteratorKernel_t = void(*)(FixedVector<uint32_t, _DimensionCount> Pos, DFieldProxyConst<_T, _DimensionCount> Previous, _T& NextVal);
+        using dfieldIteratorKernel_t = void(*)(FixedVector<uint32_t, _DimensionCount> Pos, FieldProxyConst<_T, _DimensionCount> Previous, _T& NextVal);
     }
 }
