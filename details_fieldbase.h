@@ -43,47 +43,56 @@ namespace BrendanCUDA {
 
 #pragma region RefConversion
             __host__ __device__ __forceinline _T* IdxToPtr(uint64_t Idx) const;
-            __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> IdxToRef(uint64_t Idx) const;
+            __device__ __forceinline _T& IdxToRef(uint64_t Idx) const;
+            __host__ __forceinline thrust::device_reference<_T> IdxToDRef(uint64_t Idx) const;
             __host__ __device__ __forceinline _T* CoordsToPtr(const vector_t& Coords) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline _T* CoordsToPtr(_Ts... Coords) const {
                 return CoordsToPtr(vector_t(Coords...));
             }
-            __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> CoordsToRef(const vector_t& Coords) const;
+            __host__ __device__ __forceinline _T& CoordsToRef(const vector_t& Coords) const;
+            __host__ __device__ __forceinline thrust::device_reference<_T> CoordsToDRef(const vector_t& Coords) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> CoordsToRef(_Ts... Coords) const {
+            __device__ __forceinline _T& CoordsToRef(_Ts... Coords) const {
+                return CoordsToRef(vector_t(Coords...));
+            }
+            template <std::convertible_to<uint32_t>... _Ts>
+                requires (sizeof...(_Ts) == _DimensionCount)
+            __host__ __forceinline thrust::device_reference<_T> CoordsToDRef(_Ts... Coords) const {
                 return CoordsToRef(vector_t(Coords...));
             }
             __host__ __device__ __forceinline uint64_t PtrToIdx(const _T* Ptr) const;
             __host__ __device__ __forceinline vector_t PtrToCoords(const _T* Ptr) const;
-            __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> PtrToRef(const _T* Ptr) const;
-            __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> PtrToRef(const _T* Ptr);
-            __host__ __forceinline uint64_t RefToIdx(thrust::device_reference<_T> Ref) const;
-            __host__ __forceinline uint64_t RefToIdx(thrust::device_reference<const _T> Ref) const;
+            __device__ __forceinline _T& PtrToRef(const _T* Ptr) const;
+            __host__ __forceinline thrust::device_reference<_T> PtrToDRef(const _T* Ptr) const;
+            __device__ __forceinline _T& PtrToRef(const _T* Ptr);
+            __host__ __forceinline thrust::device_reference<_T> PtrToDRef(const _T* Ptr);
+            __host__ __forceinline uint64_t DRefToIdx(thrust::device_reference<_T> Ref) const;
+            __host__ __forceinline uint64_t DRefToIdx(thrust::device_reference<const _T> Ref) const;
 #ifdef __CUDACC__
             __device__ __forceinline uint64_t RefToIdx(const _T& Ref) const;
 #endif
-            __host__ __forceinline vector_t RefToCoords(thrust::device_reference<_T> Ref) const;
-            __host__ __forceinline vector_t RefToCoords(thrust::device_reference<const _T> Ref) const;
+            __host__ __forceinline vector_t DRefToCoords(thrust::device_reference<_T> Ref) const;
+            __host__ __forceinline vector_t DRefToCoords(thrust::device_reference<const _T> Ref) const;
 #ifdef __CUDACC__
             __device__ __forceinline vector_t RefToCoords(const _T& Ref) const;
 #endif
-            __host__ __forceinline _T* RefToPtr(thrust::device_reference<_T> Ref) const;
-            __host__ __forceinline _T* RefToPtr(thrust::device_reference<const _T> Ref) const;
+            __host__ __forceinline _T* DRefToPtr(thrust::device_reference<_T> Ref) const;
+            __host__ __forceinline _T* DRefToPtr(thrust::device_reference<const _T> Ref) const;
 #ifdef __CUDACC__
             __device__ __forceinline _T* RefToPtr(const _T& Ref) const;
 #endif
 #pragma endregion
 
 #pragma region OperatorInvoke
-            __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> operator()(uint64_t Idx) const;
-            __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> operator()(const vector_t& Coords) const;
+            __device__ __forceinline _T& operator()(uint64_t Idx) const;
+            __device__ __forceinline _T& operator()(const vector_t& Coords) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline std::conditional_t<isCuda, _T&, thrust::device_reference<_T>> operator()(_Ts... Coords) const {
-                return CoordsToRef(Coords...);
+            __device__ __forceinline _T& operator()(_Ts... Coords) const {
+                return CoordsToRef(vector_t(Coords...));
             }
 #pragma endregion
 
@@ -179,20 +188,24 @@ __host__ __device__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _Dimen
     return darr + Idx;
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, _T&, thrust::device_reference<_T>> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::IdxToRef(uint64_t Idx) const {
-#ifdef __CUDA_ARCH__
+__device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount>::IdxToRef(uint64_t Idx) const {
     return darr[Idx];
-#else
+}
+template <typename _T, size_t _DimensionCount>
+__host__ __forceinline thrust::device_reference<_T> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::IdxToDRef(uint64_t Idx) const {
     return *thrust::device_ptr<_T>(darr + Idx);
-#endif
 }
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToPtr(const vector_t& Coords) const {
     return IdxToPtr(this->CoordsToIdx(Coords));
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, _T&, thrust::device_reference<_T>> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToRef(const vector_t& Coords) const {
+__device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToRef(const vector_t& Coords) const {
     return IdxToRef(this->CoordsToIdx(Coords));
+}
+template <typename _T, size_t _DimensionCount>
+__host__ __forceinline thrust::device_reference<_T> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToDRef(const vector_t& Coords) const {
+    return IdxToDRef(this->CoordsToIdx(Coords));
 }
 template <typename _T, size_t _DimensionCount>
 __host__ __device__ __forceinline uint64_t BrendanCUDA::details::FieldBase<_T, _DimensionCount>::PtrToIdx(const _T* Ptr) const {
@@ -203,19 +216,19 @@ __host__ __device__ __forceinline auto BrendanCUDA::details::FieldBase<_T, _Dime
     return this->IdxToCoords(PtrToIdx(Ptr));
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, _T&, thrust::device_reference<_T>> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::PtrToRef(const _T* Ptr) const {
-#ifdef __CUDA_ARCH__
+__device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount>::PtrToRef(const _T* Ptr) const {
     return *Ptr;
-#else
-    return *thrust::device_ptr<_T>(Ptr);
-#endif
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __forceinline uint64_t BrendanCUDA::details::FieldBase<_T, _DimensionCount>::RefToIdx(thrust::device_reference<const _T> Ref) const {
+__host__ __forceinline thrust::device_reference<_T> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::PtrToDRef(const _T* Ptr) const {
+    return *thrust::device_ptr<_T>(Ptr);
+}
+template <typename _T, size_t _DimensionCount>
+__host__ __forceinline uint64_t BrendanCUDA::details::FieldBase<_T, _DimensionCount>::DRefToIdx(thrust::device_reference<const _T> Ref) const {
     return PtrToIdx(RefToPtr(Ref));
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __forceinline uint64_t BrendanCUDA::details::FieldBase<_T, _DimensionCount>::RefToIdx(thrust::device_reference<_T> Ref) const {
+__host__ __forceinline uint64_t BrendanCUDA::details::FieldBase<_T, _DimensionCount>::DRefToIdx(thrust::device_reference<_T> Ref) const {
     return PtrToIdx(RefToPtr(Ref));
 }
 #ifdef __CUDACC__
@@ -225,11 +238,11 @@ __device__ __forceinline uint64_t BrendanCUDA::details::FieldBase<_T, _Dimension
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-__host__ __forceinline auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::RefToCoords(thrust::device_reference<_T> Ref) const -> vector_t {
+__host__ __forceinline auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::DRefToCoords(thrust::device_reference<_T> Ref) const -> vector_t {
     return PtrToCoords(RefToPtr(Ref));
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __forceinline auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::RefToCoords(thrust::device_reference<const _T> Ref) const -> vector_t {
+__host__ __forceinline auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::DRefToCoords(thrust::device_reference<const _T> Ref) const -> vector_t {
     return PtrToCoords(RefToPtr(Ref));
 }
 #ifdef __CUDACC__
@@ -239,11 +252,11 @@ __device__ __forceinline auto BrendanCUDA::details::FieldBase<_T, _DimensionCoun
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-__host__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount>::RefToPtr(thrust::device_reference<_T> Ref) const {
+__host__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount>::DRefToPtr(thrust::device_reference<_T> Ref) const {
     return (&Ref).get();
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount>::RefToPtr(thrust::device_reference<const _T> Ref) const {
+__host__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount>::DRefToPtr(thrust::device_reference<const _T> Ref) const {
     return (&Ref).get();
 }
 #ifdef __CUDACC__
@@ -253,11 +266,11 @@ __device__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, _T&, thrust::device_reference<_T>> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::operator()(uint64_t Idx) const {
+__device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount>::operator()(uint64_t Idx) const {
     return IdxToRef(Idx);
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline std::conditional_t<BrendanCUDA::isCuda, _T&, thrust::device_reference<_T>> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::operator()(const vector_t& Coords) const {
+__device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount>::operator()(const vector_t& Coords) const {
     return CoordsToRef(Coords);
 }
 template <typename _T, size_t _DimensionCount>
