@@ -7,11 +7,11 @@ namespace BrendanCUDA {
         template <typename _T, size_t _DimensionCount>
         class DFieldBase : public DimensionedBase<_DimensionCount> {
             using this_t = DFieldBase<_T, _DimensionCount>;
-            using base_t = DimensionedBase<_DimensionCount>;
+            using basedb_t = DimensionedBase<_DimensionCount>;
         protected:
             using vector_t = base_t::vector_t;
         public:
-            __host__ __device__ __forceinline DFieldBase(vector_t Dimensions)
+            __host__ __device__ __forceinline DFieldBase(const vector_t& Dimensions)
                 : base_t(Dimensions) {
                 if (!this->Length(0)) {
                     darrF = 0;
@@ -30,51 +30,42 @@ namespace BrendanCUDA {
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions)
                 : DFieldBase(vector_t(Dimensions...)) { }
-            __host__ __device__ __forceinline DFieldBase(vector_t Dimensions, _T* ArrF, _T* ArrB)
-                : base_t(Dimensions), darrF(ArrF), darrB(ArrB) { }
+            __host__ __device__ __forceinline DFieldBase(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)
+                : basedb_t(Dimensions), darrF(ArrF), darrB(ArrB) { }
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions, _T* ArrF, _T* ArrB)
+            __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions, const _T* ArrF, const _T* ArrB)
                 : DFieldBase(vector_t(Dimensions...), ArrF, ArrB) { }
 
             using base_t::DimensionsD;
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
-                return this->ValueCount() * sizeof(_T);
+                return basedb_t::ValueCount() * sizeof(_T);
             }
 
 #pragma region ProxyAccess
-        protected:
-            __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> F() {
+            __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> F() const {
                 return Fields::FieldProxy<_T, _DimensionCount>(this->Dimensions(), darrF);
             }
-            __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> B() {
+            __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> B() const {
                 return Fields::FieldProxy<_T, _DimensionCount>(this->Dimensions(), darrB);
             }
-            __host__ __device__ _T* FData() {
+            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
+                return Fields::FieldProxyConst<_T, _DimensionCount>(this->Dimensions(), darrF);
+            }
+            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
+                return Fields::FieldProxyConst<_T, _DimensionCount>(this->Dimensions(), darrB);
+            }
+            __host__ __device__ _T* FData() const {
                 return darrF;
             }
-            __host__ __device__ _T* BData() {
+            __host__ __device__ _T* BData() const {
                 return darrB;
             }
             __host__ __device__ void Reverse() {
                 std::swap(darrF, darrB);
             }
-        public:
-            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> F() const {
-                return Fields::FieldProxyConst<_T, _DimensionCount>(this->Dimensions(), darrF);
-            }
-            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> B() const {
-                return Fields::FieldProxyConst<_T, _DimensionCount>(this->Dimensions(), darrB);
-            }
-            __host__ __device__ const _T* FData() const {
-                return darrF;
-            }
-            __host__ __device__ const _T* BData() const {
-                return darrB;
-            }
 #pragma endregion
 
-        protected:
             __host__ __device__ __forceinline void Dispose() {
 #ifdef __CUDA_ARCH__
                 free(darrF);
@@ -84,20 +75,17 @@ namespace BrendanCUDA {
                 ThrowIfBad(cudaFree(darrB));
 #endif
             }
-        public:
 
 #pragma region CpyAll
-        protected:
             template <bool _CopyFromHost>
-            __host__ __forceinline void CpyAllIn(const _T* All) {
+            __host__ __forceinline void CpyAllIn(const _T* All) const {
                 B().CpyAllIn<_CopyFromHost>(All);
             }
 #ifdef __CUDACC__
-            __device__ __forceinline void CpyAllIn(const _T* All) {
+            __device__ __forceinline void CpyAllIn(const _T* All) const {
                 B().CpyAllIn(All);
             }
 #endif
-        public:
             template <bool _CopyToHost>
             __host__ __forceinline _T* CpyAllOut() const {
                 return F().CpyAllOut<_CopyToHost>();
@@ -119,15 +107,14 @@ namespace BrendanCUDA {
 #pragma endregion
 
 #pragma region CpyVal
-        protected:
-            __host__ __device__ __forceinline void CpyValIn(uint64_t Idx, const _T& Val) {
+            __host__ __device__ __forceinline void CpyValIn(uint64_t Idx, const _T& Val) const {
                 B().CpyValIn(Idx, Val);
             }
-            __host__ __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T& Val) {
+            __host__ __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T& Val) const {
                 B().CpyValIn(Coords, Val);
             }
             template <bool _CopyFromHost>
-            __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) {
+            __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) const {
                 B().CpyValIn<_CopyFromHost>(Idx, Val);
             }
 #ifdef __CUDACC__
@@ -136,15 +123,14 @@ namespace BrendanCUDA {
             }
 #endif
             template <bool _CopyFromHost>
-            __host__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) {
+            __host__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) const {
                 B().CpyValIn<_CopyFromHost>(Coords, Val);
             }
 #ifdef __CUDACC__
-            __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) {
+            __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) const {
                 B().CpyValIn(Coords, Val);
             }
 #endif
-        public:
             __host__ __device__ __forceinline void CpyValOut(uint64_t Idx, _T& Val) const {
                 F().CpyValOut(Idx, Val);
             }
@@ -177,17 +163,15 @@ namespace BrendanCUDA {
             }
 #pragma endregion
 
-        protected:
             template <bool _InputOnHost>
-            __host__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) {
+            __host__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
                 B().CopyBlockIn<_InputOnHost>(Input, InputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #ifdef __CUDACC__
-            __device__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) {
+            __device__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
                 B().CopyBlockIn(Input, InputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #endif
-        public:
             template <bool _OutputOnHost>
             __host__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
                 F().CopyBlockOut<_OutputOnHost>(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
@@ -210,7 +194,6 @@ namespace BrendanCUDA {
             __forceinline void Serialize(void*& Data) const requires BSerializer::Serializable<_T> {
                 F().Serialize(Data);
             }
-        protected:
             static __forceinline this_t Deserialize(const void*& Data) requires BSerializer::Serializable<_T> {
                 FieldBase<_T, _DimensionCount> field = FieldBase<_T, _DimensionCount>::Deserialize(Data);
                 this_t value(field.Dimensions());
@@ -220,7 +203,6 @@ namespace BrendanCUDA {
             static __forceinline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> {
                 new (Value) this_t(Deserialize(Data));
             }
-        public:
         private:
             _T* darrF;
             _T* darrB;
