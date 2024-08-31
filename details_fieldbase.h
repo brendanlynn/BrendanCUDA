@@ -29,11 +29,11 @@ namespace BrendanCUDA {
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline FieldBase(_Ts... Dimensions)
                 : FieldBase(vector_t(Dimensions...)) { }
-            __host__ __device__ __forceinline FieldBase(const vector_t& Dimensions, const _T* Arr)
-                : basedb_t(Dimensions), darr(All) { }
+            __host__ __device__ __forceinline FieldBase(const vector_t& Dimensions, _T* Arr)
+                : basedb_t(Dimensions), darr(Arr) { }
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline FieldBase(_Ts... Dimensions, const _T* Arr)
+            __host__ __device__ __forceinline FieldBase(_Ts... Dimensions, _T* Arr)
                 : FieldBase(vector_t(Dimensions...), Arr) { }
 #pragma endregion
 

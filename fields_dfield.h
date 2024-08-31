@@ -98,7 +98,7 @@ namespace BrendanCUDA {
             }
             template <bool _CopyFromHost>
             __host__ __forceinline void CpyAllIn(const _T* All) {
-                basefb_t::CpyAllIn<_CopyFromHost>(All);
+                basefb_t::template CpyAllIn<_CopyFromHost>(All);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyAllIn(const _T* All) {
@@ -107,7 +107,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _CopyToHost>
             __host__ __forceinline _T* CpyAllOut() const {
-                return basefb_t::CpyAllOut<_CopyToHost>();
+                return basefb_t::template CpyAllOut<_CopyToHost>();
             }
 #ifdef __CUDACC__
             __device__ __forceinline _T* CpyAllOut() const {
@@ -116,7 +116,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _CopyToHost>
             __host__ __device__ __forceinline void CpyAllOut(_T* All) const {
-                basefb_t::CpyAllOut<_CopyToHost>(All);
+                basefb_t::template CpyAllOut<_CopyToHost>(All);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyAllOut(_T* All) const {
@@ -131,7 +131,7 @@ namespace BrendanCUDA {
             }
             template <bool _CopyFromHost>
             __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) {
-                basefb_t::CpyValIn<_CopyFromHost>(Idx, Val);
+                basefb_t::template CpyValIn<_CopyFromHost>(Idx, Val);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) {
@@ -140,7 +140,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _CopyFromHost>
             __host__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) {
-                basefb_t::CpyValIn<_CopyFromHost>(Coords, Val);
+                basefb_t::template CpyValIn<_CopyFromHost>(Coords, Val);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) {
@@ -155,7 +155,7 @@ namespace BrendanCUDA {
             }
             template <bool _CopyToHost>
             __host__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const {
-                basefb_t::CpyValOut(Idx, Val);
+                basefb_t::template CpyValOut<_CopyToHost>(Idx, Val);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const {
@@ -164,7 +164,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _CopyToHost>
             __host__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const {
-                basefb_t::CpyValOut(Coords, Val);
+                basefb_t::template CpyValOut<_CopyToHost>(Coords, Val);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const {
@@ -179,7 +179,7 @@ namespace BrendanCUDA {
             }
             template <bool _InputOnHost>
             __host__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) {
-                basefb_t::CopyBlockIn(Input, InputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+                basefb_t::template CopyBlockIn<_InputOnHost>(Input, InputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) {
@@ -188,7 +188,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _OutputOnHost>
             __host__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
-                basefb_t::CopyBlockOut(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+                basefb_t::template CopyBlockOut<_OutputOnHost>(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
@@ -320,7 +320,7 @@ namespace BrendanCUDA {
             }
             template <bool _CopyFromHost>
             __host__ __forceinline void CpyAllIn(const _T* All) const {
-                basefb_t::CpyAllIn<_CopyFromHost>(All);
+                basefb_t::template CpyAllIn<_CopyFromHost>(All);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyAllIn(const _T* All) const {
@@ -329,7 +329,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _CopyToHost>
             __host__ __forceinline _T* CpyAllOut() const {
-                return basefb_t::CpyAllOut<_CopyToHost>();
+                return basefb_t::template CpyAllOut<_CopyToHost>();
             }
 #ifdef __CUDACC__
             __device__ __forceinline _T* CpyAllOut() const {
@@ -338,7 +338,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _CopyToHost>
             __host__ __device__ __forceinline void CpyAllOut(_T* All) const {
-                basefb_t::CpyAllOut<_CopyToHost>(All);
+                basefb_t::template CpyAllOut<_CopyToHost>(All);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyAllOut(_T* All) const {
@@ -353,7 +353,7 @@ namespace BrendanCUDA {
             }
             template <bool _CopyFromHost>
             __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) const {
-                basefb_t::CpyValIn<_CopyFromHost>(Idx, Val);
+                basefb_t::template CpyValIn<_CopyFromHost>(Idx, Val);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) const {
@@ -362,7 +362,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _CopyFromHost>
             __host__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) const {
-                basefb_t::CpyValIn<_CopyFromHost>(Coords, Val);
+                basefb_t::template CpyValIn<_CopyFromHost>(Coords, Val);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) const {
@@ -377,7 +377,7 @@ namespace BrendanCUDA {
             }
             template <bool _CopyToHost>
             __host__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const {
-                basefb_t::CpyValOut(Idx, Val);
+                basefb_t::template CpyValOut<_CopyToHost>(Idx, Val);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const {
@@ -386,7 +386,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _CopyToHost>
             __host__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const {
-                basefb_t::CpyValOut(Coords, Val);
+                basefb_t::template CpyValOut<_CopyToHost>(Coords, Val);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const {
@@ -401,7 +401,7 @@ namespace BrendanCUDA {
             }
             template <bool _InputOnHost>
             __host__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
-                basefb_t::CopyBlockIn(Input, InputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+                basefb_t::template CopyBlockIn<_InputOnHost>(Input, InputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
@@ -410,7 +410,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _OutputOnHost>
             __host__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
-                basefb_t::CopyBlockOut(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+                basefb_t::template CopyBlockOut<_OutputOnHost>(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
@@ -502,7 +502,7 @@ namespace BrendanCUDA {
             }
             template <bool _CopyToHost>
             __host__ __forceinline _T* CpyAllOut() const {
-                return basefb_t::CpyAllOut<_CopyToHost>();
+                return basefb_t::template CpyAllOut<_CopyToHost>();
             }
 #ifdef __CUDACC__
             __device__ __forceinline _T* CpyAllOut() const {
@@ -511,7 +511,7 @@ namespace BrendanCUDA {
 #endif
             template <bool _CopyToHost>
             __host__ __device__ __forceinline void CpyAllOut(_T* All) const {
-                basefb_t::CpyAllOut<_CopyToHost>(All);
+                basefb_t::template CpyAllOut<_CopyToHost>(All);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CpyAllOut(_T* All) const {
@@ -550,7 +550,7 @@ namespace BrendanCUDA {
             }
             template <bool _OutputOnHost>
             __host__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
-                basefb_t::CopyBlockOut(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+                basefb_t::template CopyBlockOut<_OutputOnHost>(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #ifdef __CUDACC__
             __device__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {

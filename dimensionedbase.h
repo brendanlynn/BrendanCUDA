@@ -27,9 +27,7 @@ namespace BrendanCUDA {
             return dims[Idx];
         }
         __host__ __device__ __forceinline vector_t Dimensions() const;
-    protected:
         __host__ __device__ __forceinline dim3 DimensionsD() const requires (_DimensionCount <= 3);
-    public:
         __host__ __device__ __forceinline size_t ValueCount() const;
 
         __host__ __device__ __forceinline vector_t IdxToCoords(uint64_t Index) const;

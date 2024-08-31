@@ -30,11 +30,11 @@ namespace BrendanCUDA {
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions)
                 : DFieldBase(vector_t(Dimensions...)) { }
-            __host__ __device__ __forceinline DFieldBase(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)
+            __host__ __device__ __forceinline DFieldBase(const vector_t& Dimensions, _T* ArrF, _T* ArrB)
                 : basedb_t(Dimensions), darrF(ArrF), darrB(ArrB) { }
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions, const _T* ArrF, const _T* ArrB)
+            __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions, _T* ArrF, _T* ArrB)
                 : DFieldBase(vector_t(Dimensions...), ArrF, ArrB) { }
 
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
