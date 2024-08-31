@@ -9,10 +9,10 @@ namespace BrendanCUDA {
             using this_t = DFieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         protected:
-            using vector_t = base_t::vector_t;
+            using vector_t = basedb_t::vector_t;
         public:
             __host__ __device__ __forceinline DFieldBase(const vector_t& Dimensions)
-                : base_t(Dimensions) {
+                : basedb_t(Dimensions) {
                 if (!this->Length(0)) {
                     darrF = 0;
                     darrB = 0;
@@ -37,7 +37,6 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions, const _T* ArrF, const _T* ArrB)
                 : DFieldBase(vector_t(Dimensions...), ArrF, ArrB) { }
 
-            using base_t::DimensionsD;
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
                 return basedb_t::ValueCount() * sizeof(_T);
             }

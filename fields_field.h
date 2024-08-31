@@ -518,7 +518,7 @@ namespace BrendanCUDA {
                 basefb_t::CpyValIn(Coords, Val);
             }
             template <bool _CopyFromHost>
-            __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val const) {
+            __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) const {
                 basefb_t::CpyValIn<_CopyFromHost>(Idx, Val);
             }
 #ifdef __CUDACC__
@@ -810,15 +810,13 @@ namespace BrendanCUDA {
 #pragma endregion
 
             __host__ __device__ __forceinline Field<_T, _DimensionCount> Clone() const {
-                return *(Field<_T, _DimensionCount>*)base_t::Clone();
+                return *(Field<_T, _DimensionCount>*)basefb_t::Clone();
             }
 
-            __host__ __device__ FieldProxyConst(const vector_t& Dimensions, const _T* All)
-                : base_t(Dimensions, const_cast<_T*>(All)) { }
             __host__ __device__ FieldProxyConst(const Field<_T, _DimensionCount>& Parent)
-                : base_t(Parent.Dimensions(), Parent.Data()) { }
+                : basefb_t(Parent.Dimensions(), Parent.Data()) { }
             __host__ __device__ FieldProxyConst(const FieldProxy<_T, _DimensionCount>& Partner)
-                : base_t(Partner.Dimensions(), Partner.Data()) { }
+                : basefb_t(Partner.Dimensions(), Partner.Data()) { }
         };
     }
 }

@@ -352,7 +352,7 @@ namespace BrendanCUDA {
                 basefb_t::CpyValIn(Coords, Val);
             }
             template <bool _CopyFromHost>
-            __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val const) {
+            __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) const {
                 basefb_t::CpyValIn<_CopyFromHost>(Idx, Val);
             }
 #ifdef __CUDACC__
