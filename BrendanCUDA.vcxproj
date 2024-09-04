@@ -111,10 +111,12 @@
     <ClInclude Include="details_fieldbase.h" />
     <ClInclude Include="details_fillwith.h" />
     <ClInclude Include="details_getintbin.h" />
+    <ClInclude Include="details_mfieldbase.h" />
     <ClInclude Include="dimensionedbase.h" />
     <ClInclude Include="errorhelp.h" />
     <ClInclude Include="fields_instance.h" />
     <ClInclude Include="ai_mlp_fixedmlp.h" />
+    <ClInclude Include="fields_mfield.h" />
     <ClInclude Include="kernellaunch.cuh" />
     <ClInclude Include="nets_makenet.h" />
     <ClInclude Include="packs.h" />

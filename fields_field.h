@@ -20,9 +20,9 @@ namespace BrendanCUDA {
             using this_t = Field<_T, _DimensionCount>;
             using basefb_t = details::FieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
-        protected:
-            using vector_t = basedb_t::vector_t;
         public:
+            using vector_t = basedb_t::vector_t;
+
 #pragma region Wrapper
             __host__ __device__ __forceinline Field(const vector_t& Dimensions)
                 : basefb_t(Dimensions) { }
@@ -381,9 +381,9 @@ namespace BrendanCUDA {
             using this_t = FieldProxy<_T, _DimensionCount>;
             using basefb_t = details::FieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
-        protected:
-            using vector_t = basedb_t::vector_t;
         public:
+            using vector_t = basedb_t::vector_t;
+
 #pragma region Wrapper
             __host__ __device__ __forceinline FieldProxy(const vector_t& Dimensions)
                 : basefb_t(Dimensions) { }
@@ -652,9 +652,9 @@ namespace BrendanCUDA {
             using this_t = FieldProxyConst<_T, _DimensionCount>;
             using basefb_t = details::FieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
-        protected:
-            using vector_t = basedb_t::vector_t;
         public:
+            using vector_t = basedb_t::vector_t;
+
 #pragma region Wrapper
             __host__ __device__ __forceinline FieldProxyConst(const vector_t& Dimensions)
                 : basefb_t(Dimensions) { }

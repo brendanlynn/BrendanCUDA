@@ -41,6 +41,8 @@
     <ClInclude Include="rand_anyrng.h" />
     <ClInclude Include="rand_bits.h" />
     <ClInclude Include="rand_randomizer.h" />
+    <ClInclude Include="details_mfieldbase.h" />
+    <ClInclude Include="fields_mfield.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="binary_basic.cu" />

@@ -20,16 +20,14 @@ namespace BrendanCUDA {
         class FieldBase : public DimensionedBase<_DimensionCount> {
             using this_t = FieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
-        protected:
-            using vector_t = basedb_t::vector_t;
         public:
 #pragma region Constructors
-            __host__ __device__ __forceinline FieldBase(const vector_t& Dimensions);
+            __host__ __device__ __forceinline FieldBase(const this_t::vector_t& Dimensions);
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline FieldBase(_Ts... Dimensions)
                 : FieldBase(vector_t(Dimensions...)) { }
-            __host__ __device__ __forceinline FieldBase(const vector_t& Dimensions, _T* Arr)
+            __host__ __device__ __forceinline FieldBase(const this_t::vector_t& Dimensions, _T* Arr)
                 : basedb_t(Dimensions), darr(Arr) { }
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
@@ -45,14 +43,14 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline _T* IdxToPtr(uint64_t Idx) const;
             __device__ __forceinline _T& IdxToRef(uint64_t Idx) const;
             __host__ __forceinline thrust::device_reference<_T> IdxToDRef(uint64_t Idx) const;
-            __host__ __device__ __forceinline _T* CoordsToPtr(const vector_t& Coords) const;
+            __host__ __device__ __forceinline _T* CoordsToPtr(const this_t::vector_t& Coords) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline _T* CoordsToPtr(_Ts... Coords) const {
                 return CoordsToPtr(vector_t(Coords...));
             }
-            __host__ __device__ __forceinline _T& CoordsToRef(const vector_t& Coords) const;
-            __host__ __device__ __forceinline thrust::device_reference<_T> CoordsToDRef(const vector_t& Coords) const;
+            __host__ __device__ __forceinline _T& CoordsToRef(const this_t::vector_t& Coords) const;
+            __host__ __device__ __forceinline thrust::device_reference<_T> CoordsToDRef(const this_t::vector_t& Coords) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __device__ __forceinline _T& CoordsToRef(_Ts... Coords) const {
@@ -88,7 +86,7 @@ namespace BrendanCUDA {
 
 #pragma region OperatorInvoke
             __device__ __forceinline _T& operator()(uint64_t Idx) const;
-            __device__ __forceinline _T& operator()(const vector_t& Coords) const;
+            __device__ __forceinline _T& operator()(const this_t::vector_t& Coords) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __device__ __forceinline _T& operator()(_Ts... Coords) const {
@@ -116,31 +114,31 @@ namespace BrendanCUDA {
 
 #pragma region CpyVal
             __host__ __device__ __forceinline void CpyValIn(uint64_t Idx, const _T& Val) const;
-            __host__ __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T& Val) const;
+            __host__ __device__ __forceinline void CpyValIn(const this_t::vector_t& Coords, const _T& Val) const;
             template <bool _CopyFromHost>
             __host__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) const;
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValIn(uint64_t Idx, const _T* Val) const;
 #endif
             template <bool _CopyFromHost>
-            __host__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) const;
+            __host__ __forceinline void CpyValIn(const this_t::vector_t& Coords, const _T* Val) const;
 #ifdef __CUDACC__
-            __device__ __forceinline void CpyValIn(const vector_t& Coords, const _T* Val) const;
+            __device__ __forceinline void CpyValIn(const this_t::vector_t& Coords, const _T* Val) const;
 #endif
             __host__ __device__ __forceinline void CpyValOut(uint64_t Idx, _T& Val) const;
-            __host__ __device__ __forceinline void CpyValOut(const vector_t& Coords, _T& Val) const;
+            __host__ __device__ __forceinline void CpyValOut(const this_t::vector_t& Coords, _T& Val) const;
             template <bool _CopyToHost>
             __host__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const;
 #ifdef __CUDACC__
             __device__ __forceinline void CpyValOut(uint64_t Idx, _T* Val) const;
 #endif
             template <bool _CopyToHost>
-            __host__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const;
+            __host__ __forceinline void CpyValOut(const this_t::vector_t& Coords, _T* Val) const;
 #ifdef __CUDACC__
-            __device__ __forceinline void CpyValOut(const vector_t& Coords, _T* Val) const;
+            __device__ __forceinline void CpyValOut(const this_t::vector_t& Coords, _T* Val) const;
 #endif
             __host__ __device__ __forceinline _T CpyValOut(uint64_t Idx) const;
-            __host__ __device__ __forceinline _T CpyValOut(const vector_t& Coords) const;
+            __host__ __device__ __forceinline _T CpyValOut(const this_t::vector_t& Coords) const;
 #pragma endregion
 
             __host__ __device__ __forceinline void Dispose();
@@ -148,14 +146,14 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline _T* Data() const;
 
             template <bool _InputOnHost>
-            __host__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const;
+            __host__ __forceinline void CopyBlockIn(const _T* Input, const this_t::vector_t& InputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const;
 #ifdef __CUDACC__
-            __device__ __forceinline void CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const;
+            __device__ __forceinline void CopyBlockIn(const _T* Input, const this_t::vector_t& InputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const;
 #endif
             template <bool _OutputOnHost>
-            __host__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const;
+            __host__ __forceinline void CopyBlockOut(_T* Output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const;
 #ifdef __CUDACC__
-            __device__ __forceinline void CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const;
+            __device__ __forceinline void CopyBlockOut(_T* Output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const;
 #endif
             
             __host__ __device__ this_t Clone() const;
@@ -171,7 +169,7 @@ namespace BrendanCUDA {
 }
 
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline BrendanCUDA::details::FieldBase<_T, _DimensionCount>::FieldBase(const vector_t& Dimensions)
+__host__ __device__ __forceinline BrendanCUDA::details::FieldBase<_T, _DimensionCount>::FieldBase(const this_t::vector_t& Dimensions)
     : basedb_t(Dimensions) {
     if (!(this->Length(0))) {
         darr = 0;
@@ -196,15 +194,15 @@ __host__ __forceinline thrust::device_reference<_T> BrendanCUDA::details::FieldB
     return *thrust::device_ptr<_T>(darr + Idx);
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToPtr(const vector_t& Coords) const {
+__host__ __device__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToPtr(const this_t::vector_t& Coords) const {
     return IdxToPtr(this->CoordsToIdx(Coords));
 }
 template <typename _T, size_t _DimensionCount>
-__device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToRef(const vector_t& Coords) const {
+__device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToRef(const this_t::vector_t& Coords) const {
     return IdxToRef(this->CoordsToIdx(Coords));
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __forceinline thrust::device_reference<_T> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToDRef(const vector_t& Coords) const {
+__host__ __forceinline thrust::device_reference<_T> BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CoordsToDRef(const this_t::vector_t& Coords) const {
     return IdxToDRef(this->CoordsToIdx(Coords));
 }
 template <typename _T, size_t _DimensionCount>
@@ -270,7 +268,7 @@ __device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount
     return IdxToRef(Idx);
 }
 template <typename _T, size_t _DimensionCount>
-__device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount>::operator()(const vector_t& Coords) const {
+__device__ __forceinline _T& BrendanCUDA::details::FieldBase<_T, _DimensionCount>::operator()(const this_t::vector_t& Coords) const {
     return CoordsToRef(Coords);
 }
 template <typename _T, size_t _DimensionCount>
@@ -325,7 +323,7 @@ __host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _Dime
 #endif
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(const vector_t& Coords, const _T& Val) const {
+__host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(const this_t::vector_t& Coords, const _T& Val) const {
 #ifdef __CUDA_ARCH__
     memcpy(CoordsToPtr(Coords), &Val, sizeof(_T));
 #else
@@ -345,12 +343,12 @@ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCoun
 #endif
 template <typename _T, size_t _DimensionCount>
 template <bool _CopyFromHost>
-__host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(const vector_t& Coords, const _T* Val) const {
+__host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(const this_t::vector_t& Coords, const _T* Val) const {
     cudaMemcpy(CoordsToPtr(Coords), Val, sizeof(_T), _CopyFromHost ? cudaMemcpyHostToDevice : cudaMemcpyDeviceToDevice);
 }
 #ifdef __CUDACC__
 template <typename _T, size_t _DimensionCount>
-__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(const vector_t& Coords, const _T* Val) const {
+__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValIn(const this_t::vector_t& Coords, const _T* Val) const {
     memcpy(CoordsToPtr(Coords), &Val, sizeof(_T));
 }
 #endif
@@ -363,7 +361,7 @@ __host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _Dime
 #endif
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const vector_t& Coords, _T& Val) const {
+__host__ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const this_t::vector_t& Coords, _T& Val) const {
 #ifdef __CUDA_ARCH__
     memcpy(&Val, CoordsToPtr(Coords), sizeof(_T));
 #else
@@ -383,12 +381,12 @@ __device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCoun
 #endif
 template <typename _T, size_t _DimensionCount>
 template <bool _CopyToHost>
-__host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const vector_t& Coords, _T* Val) const {
+__host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const this_t::vector_t& Coords, _T* Val) const {
     cudaMemcpy(Val, CoordsToPtr(Coords), sizeof(_T), _CopyToHost ? cudaMemcpyDeviceToHost : cudaMemcpyDeviceToDevice);
 }
 #ifdef __CUDACC__
 template <typename _T, size_t _DimensionCount>
-__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const vector_t& Coords, _T* Val) const {
+__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const this_t::vector_t& Coords, _T* Val) const {
     memcpy(Val, CoordsToPtr(Coords), sizeof(_T));
 }
 #endif
@@ -399,7 +397,7 @@ __host__ __device__ __forceinline _T BrendanCUDA::details::FieldBase<_T, _Dimens
     return val;
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline _T BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const vector_t& Coords) const {
+__host__ __device__ __forceinline _T BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CpyValOut(const this_t::vector_t& Coords) const {
     _T val;
     CpyValOut(Coords, val);
     return val;
@@ -418,23 +416,23 @@ __host__ __device__ __forceinline _T* BrendanCUDA::details::FieldBase<_T, _Dimen
 }
 template <typename _T, size_t _DimensionCount>
 template <bool _InputOnHost>
-__host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
+__host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockIn(const _T* Input, const this_t::vector_t& InputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
     CopyBlock<_T, _DimensionCount, _InputOnHost, false, true>(Input, darr, InputDimensions, this->Dimensions(), RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #ifdef __CUDACC__
 template <typename _T, size_t _DimensionCount>
-__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockIn(const _T* Input, const vector_t& InputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
+__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockIn(const _T* Input, const this_t::vector_t& InputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
     CopyBlock<_T, _DimensionCount, true>(Input, darr, InputDimensions, this->Dimensions(), RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #endif
 template <typename _T, size_t _DimensionCount>
 template <bool _OutputOnHost>
-__host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
+__host__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* Output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
     CopyBlock<_T, _DimensionCount, false, _OutputOnHost, true>(darr, Output, this->Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #ifdef __CUDACC__
 template <typename _T, size_t _DimensionCount>
-__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* Output, const vector_t& OutputDimensions, const vector_t& RangeDimensions, const vector_t& RangeInInputsCoordinates, const vector_t& RangeInOutputsCoordinates) const {
+__device__ __forceinline void BrendanCUDA::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* Output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
     CopyBlock<_T, _DimensionCount, true>(darr, Output, this->Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #endif
@@ -463,7 +461,7 @@ __forceinline auto BrendanCUDA::details::FieldBase<_T, _DimensionCount>::Deseria
     FieldBase<_T, _DimensionCount> field(dimensions);
     size_t l = field.ValueCount();
     for (size_t i = 0; i < l; ++i)
-        field.SetValueAt(i, BSerializer::Deserialize<_T>(Data));
+        field.CpyValIn(i, BSerializer::Deserialize<_T>(Data));
     return field;
 }
 template <typename _T, size_t _DimensionCount>

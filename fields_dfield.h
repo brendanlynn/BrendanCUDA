@@ -20,9 +20,9 @@ namespace BrendanCUDA {
             using this_t = DField<_T, _DimensionCount>;
             using basefb_t = details::DFieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
-        protected:
-            using vector_t = basefb_t::vector_t;
         public:
+            using vector_t = basefb_t::vector_t;
+
 #pragma region Wrapper
             __host__ __device__ __forceinline DField(const vector_t& Dimensions)
                 : basefb_t(Dimensions) { }
@@ -250,9 +250,9 @@ namespace BrendanCUDA {
         class DFieldProxy : private details::DFieldBase<_T, _DimensionCount> {
             using basefb_t = details::DFieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
-        protected:
-            using vector_t = basefb_t::vector_t;
         public:
+            using vector_t = basefb_t::vector_t;
+
 #pragma region Wrapper
             __host__ __device__ __forceinline DFieldProxy(const vector_t& Dimensions)
                 : basefb_t(Dimensions) { }
@@ -426,7 +426,7 @@ namespace BrendanCUDA {
 #pragma endregion
 
             __host__ __device__ __forceinline DField<_T, _DimensionCount> Clone() const {
-                return *(DField<_T, _DimensionCount>*)basefb_t::Clone();
+                return *(DField<_T, _DimensionCount>*)&basefb_t::Clone();
             }
 
             __host__ __device__ DFieldProxy(const vector_t& Dimensions, _T* ArrF, _T* ArrB)
@@ -438,9 +438,9 @@ namespace BrendanCUDA {
         class DFieldProxyConst : private details::DFieldBase<_T, _DimensionCount> {
             using basefb_t = details::DFieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
-        protected:
-            using vector_t = basefb_t::vector_t;
         public:
+            using vector_t = basefb_t::vector_t;
+
 #pragma region Wrapper
             __host__ __device__ __forceinline DFieldProxyConst(const vector_t& Dimensions)
                 : basefb_t(Dimensions) { }
@@ -566,7 +566,7 @@ namespace BrendanCUDA {
 #pragma endregion
 
             __host__ __device__ __forceinline DField<_T, _DimensionCount> Clone() const {
-                return *(DField<_T, _DimensionCount>*)basefb_t::Clone();
+                return *(DField<_T, _DimensionCount>*)&basefb_t::Clone();
             }
 
             __host__ __device__ DFieldProxyConst(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)
