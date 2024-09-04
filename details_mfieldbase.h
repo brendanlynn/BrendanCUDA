@@ -12,54 +12,64 @@ namespace BrendanCUDA {
         template <template <typename, uintmax_t> typename _TFunction, uintmax_t _StartIndex, typename _T1, typename... _Ts>
         struct RunFunctionsOverTypeWrapper<_TFunction, _StartIndex, _T1, _Ts...> {
             template <typename... _TParameters>
-            void RunFunctionsOverType(_TParameters... Params) {
-                _TFunction<_T1, _StartIndex>(Params...);
-                RunFunctionsOverTypeWrapper<_TFunction, _StartIndex, _Ts...>::RunFunctionsOverType<_TParameters>(Params...);
+            static void RunFunctionsOverType(_TParameters... Params) {
+                _TFunction<_T1, _StartIndex>::Run(Params...);
+                RunFunctionsOverTypeWrapper<_TFunction, _StartIndex, _Ts...>::template RunFunctionsOverType<_TParameters...>(Params...);
             }
         };
 
         template <typename _T, uintmax_t _Idx>
-        __host__ __device__ void MFieldBase_MallocMem(void** Dests, size_t VCount) {
+        struct MFieldBase_MallocMem {
+            __host__ __device__ static void Run(void** Dests, size_t VCount) {
 #ifdef __CUDA_ARCH__
-            Dests[_Idx] = (_T*)malloc(VCount * sizeof(_T));
+                Dests[_Idx] = (_T*)malloc(VCount * sizeof(_T));
 #else
-            ThrowIfBad(cudaMalloc(Dests + _Idx, VCount * sizeof(_T)));
+                ThrowIfBad(cudaMalloc(Dests + _Idx, VCount * sizeof(_T)));
 #endif
-        }
+            }
+        };
 
         template <typename _T, uintmax_t _Idx>
-        __host__ __device__ void MFieldBase_Clone(void** DestsD, void** DestsS, size_t VCount) {
+        struct MFieldBase_Clone {
+            __host__ __device__ static void Run(void** DestsD, void** DestsS, size_t VCount) {
 #ifdef __CUDA_ARCH__
-            memcpy(DestsD[_Idx], DestsS[_Idx], VCount * sizeof(_T));
+                memcpy(DestsD[_Idx], DestsS[_Idx], VCount * sizeof(_T));
 #else
-            ThrowIfBad(cudaMemcpy(DestsD[_Idx], DestsS[_Idx], VCount * sizeof(_T), cudaMemcpyDeviceToDevice));
+                ThrowIfBad(cudaMemcpy(DestsD[_Idx], DestsS[_Idx], VCount * sizeof(_T), cudaMemcpyDeviceToDevice));
 #endif
-        }
+            }
+        };
 
         template <size_t _DimensionCount>
         struct MFieldBase_SerializedSize_Wrapper {
             template <typename _T, uintmax_t _Idx>
-            static void MFieldBase_SerializedSize(void** Arrs, size_t VCount, const FixedVector<uint32_t, _DimensionCount>& Dimensions, size_t& Total) {
-                Total += Fields::FieldProxyConst<_T, _DimensionCount>(Dimensions, Arrs[_Idx]).SerializedSize();
-            }
+            struct MFieldBase_SerializedSize {
+                static void Run(void** Arrs, size_t VCount, const FixedVector<uint32_t, _DimensionCount>& Dimensions, size_t& Total) {
+                    Total += Fields::FieldProxyConst<_T, _DimensionCount>(Dimensions, Arrs[_Idx]).SerializedSize();
+                }
+            };
         };
 
         template <size_t _DimensionCount>
         struct MFieldBase_Serialize_Wrapper {
             template <typename _T, uintmax_t _Idx>
-            static void MFieldBase_Serialize(void** Arrs, size_t VCount, const FixedVector<uint32_t, _DimensionCount>& Dimensions, void*& Data) {
-                Fields::FieldProxyConst<_T, _DimensionCount>(Dimensions, Arrs[_Idx]).Serialize(Data);
-            }
+            struct MFieldBase_Serialize {
+                static void Run(void** Arrs, size_t VCount, const FixedVector<uint32_t, _DimensionCount>& Dimensions, void*& Data) {
+                    Fields::FieldProxyConst<_T, _DimensionCount>(Dimensions, Arrs[_Idx]).Serialize(Data);
+                }
+            };
         };
 
         template <size_t _DimensionCount>
         struct MFieldBase_Deserialize_Wrapper {
             template <typename _T, uintmax_t _Idx>
-            static void MFieldBase_Deserialize(void** Arrs, size_t VCount, const FixedVector<uint32_t, _DimensionCount>& Dimensions, const void*& Data) {
-                auto field = Fields::FieldProxy<_T, _DimensionCount>(Dimensions, Arrs[_Idx]);
-                for (size_t i = 0; i < VCount; ++i)
-                    field.CpyValIn(i, BSerializer::Deserialize<_T>(Data));
-            }
+            struct MFieldBase_Deserialize {
+                static void Run(void** Arrs, size_t VCount, const FixedVector<uint32_t, _DimensionCount>& Dimensions, const void*& Data) {
+                    auto field = Fields::FieldProxy<_T, _DimensionCount>(Dimensions, Arrs[_Idx]);
+                    for (size_t i = 0; i < VCount; ++i)
+                        field.CpyValIn(i, BSerializer::Deserialize<_T>(Data));
+                }
+            };
         };
 
         template <size_t _DimensionCount, typename... _Ts>
@@ -73,7 +83,7 @@ namespace BrendanCUDA {
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
 
-            __host__ __device__ __forceinline MFieldBase(const this_t::vector_t& Dimensions)
+            __host__ __device__ __forceinline MFieldBase(const typename this_t::vector_t& Dimensions)
                 : basedb_t(Dimensions) {
                 if (!this->Length(0)) {
                     for (size_t i = 0; i < sizeof...(_Ts); ++i)
@@ -82,7 +92,7 @@ namespace BrendanCUDA {
                 }
                 RunFunctionsOverTypeWrapper<MFieldBase_MallocMem, 0, _Ts...>::RunFunctionsOverType(&darrs, basedb_t::ValueCount());
             }
-            __host__ __device__ __forceinline MFieldBase(const this_t::vector_t& Dimensions, void* const* Arrays)
+            __host__ __device__ __forceinline MFieldBase(const typename this_t::vector_t& Dimensions, void* const* Arrays)
                 : basedb_t(Dimensions) {
                 for (size_t i = 0; i < sizeof...(_Ts); ++i)
                     darrs[i] = Arrays[i];
@@ -133,7 +143,7 @@ namespace BrendanCUDA {
             }
 
             __forceinline size_t SerializedSize() const requires (BSerializer::Serializable<_Ts> && ...) {
-                size_t t = sizeof(vector_t);
+                size_t t = sizeof(typename this_t::vector_t);
                 RunFunctionsOverTypeWrapper<MFieldBase_SerializedSize_Wrapper<_DimensionCount>::MFieldBase_SerializedSize, 0, _Ts...>::RunFunctionsOverType(&darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), t);
             }
             __forceinline void Serialize(void*& Data) const requires (BSerializer::Serializable<_Ts> && ...) {
@@ -141,9 +151,9 @@ namespace BrendanCUDA {
                 RunFunctionsOverTypeWrapper<MFieldBase_Serialize_Wrapper<_DimensionCount>::MFieldBase_Serialize, 0, _Ts...>::RunFunctionOverType(&darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), Data);
             }
             static __forceinline this_t Deserialize(const void*& Data) requires (BSerializer::Serializable<_Ts> && ...) {
-                vector_t dims = BSerializer::Deserialize<vector_t>(Data);
+                typename this_t::vector_t dims = BSerializer::Deserialize<typename this_t::vector_t>(Data);
                 this_t value(dims);
-                RunFunctionsOverTypeWrapper<MFieldBase_Deserialize_Wrapper<_DimensionCount>::MFieldBase_Deserialize, 0, _Ts...>::RunFunctionOverType(&darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), Data);
+                RunFunctionsOverTypeWrapper<MFieldBase_Deserialize_Wrapper<_DimensionCount>::MFieldBase_Deserialize, 0, _Ts...>::RunFunctionOverType(&value.darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), Data);
                 return value;
             }
             static __forceinline void Deserialize(const void*& Data, void* Value) requires (BSerializer::Serializable<_Ts> && ...) {

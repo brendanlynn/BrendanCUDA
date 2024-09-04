@@ -2,6 +2,7 @@
 
 #include "errorhelp.h"
 #include "details_mfieldbase.h"
+#include "fields_field.h"
 #include "points.h"
 #include <stdexcept>
 #include <string>
@@ -115,7 +116,7 @@ namespace BrendanCUDA {
                 : MField(Other.Clone()) { }
             __host__ __device__ __forceinline MField(this_t&& Other)
                 : basefb_t(Other.Dimensions(), Other.FieldDataArray()) {
-                void* arrs[sizeof...(_T)];
+                void* arrs[sizeof...(_Ts)];
                 for (size_t i = 0; i < sizeof...(_Ts); ++i)
                     arrs[i] = 0;
                 new (&Other) basefb_t(this->Dimensions(), &arrs);
@@ -137,7 +138,7 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline MFieldProxy<_DimensionCount, _Ts...> MakeProxy() {
                 return MFieldProxy<_DimensionCount, _Ts...>(*this);
             }
-            __host__ __device__ __forceinline MFieldProxyConst<DimensionCount, _Ts...> MakeProxyConst() const {
+            __host__ __device__ __forceinline MFieldProxyConst<_DimensionCount, _Ts...> MakeProxyConst() const {
                 return MFieldProxyConst<_DimensionCount, _Ts...>(*this);
             }
         };
@@ -206,15 +207,15 @@ namespace BrendanCUDA {
                 return basefb_t::TotalSizeOnGPU();
             }
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxy<this_t::template element_t<_Idx>, _DimensionCount> F() const {
+            __host__ __device__ Fields::FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
                 return basefb_t::template F<_Idx>();
             }
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxyConst<this_t::template element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ Fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 return basefb_t::template FConst<_Idx>();
             }
             template <size_t _Idx>
-            __host__ __device__ this_t::template element_t<_Idx>* FData() const {
+            __host__ __device__ element_t<_Idx>* FData() const {
                 return basefb_t::template FData<_Idx>();
             }
             __forceinline size_t SerializedSize() const requires (BSerializer::Serializable<_Ts> && ...) {
@@ -230,7 +231,7 @@ namespace BrendanCUDA {
             }
 
             __host__ __device__ MFieldProxy(const vector_t& Dimensions, void* const* Arrays)
-                : basefb_t(Dimensions, ArrF, ArrB) { }
+                : basefb_t(Dimensions, Arrays) { }
             __host__ __device__ MFieldProxy(MField<_DimensionCount, _Ts...>& Parent)
                 : basefb_t(Parent.Dimensions(), Parent.FieldDataArray()) { }
         };
@@ -299,11 +300,11 @@ namespace BrendanCUDA {
                 return basefb_t::TotalSizeOnGPU();
             }
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxyConst<this_t::template element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ Fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 return basefb_t::template FConst<_Idx>();
             }
             template <size_t _Idx>
-            __host__ __device__ const this_t::template element_t<_Idx>* FData() const {
+            __host__ __device__ const element_t<_Idx>* FData() const {
                 return basefb_t::template FData<_Idx>();
             }
             __forceinline size_t SerializedSize() const requires (BSerializer::Serializable<_Ts> && ...) {
