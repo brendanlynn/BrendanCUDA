@@ -153,13 +153,6 @@ namespace BrendanCUDA {
             using element_t = basefb_t::template element_t<_Idx>;
 
 #pragma region Wrapper
-            __host__ __device__ __forceinline MFieldProxy(const vector_t& Dimensions)
-                : basefb_t(Dimensions) { }
-            template <std::convertible_to<uint32_t>... _Ts>
-                requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline MFieldProxy(_Ts... Dimensions)
-                : basefb_t(Dimensions...) { }
-
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {
                 return basedb_t::LengthX();
             }
@@ -246,13 +239,6 @@ namespace BrendanCUDA {
             using element_t = basefb_t::template element_t<_Idx>;
 
 #pragma region Wrapper
-            __host__ __device__ __forceinline MFieldProxyConst(const vector_t& Dimensions)
-                : basefb_t(Dimensions) { }
-            template <std::convertible_to<uint32_t>... _Ts>
-                requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline MFieldProxyConst(_Ts... Dimensions)
-                : basefb_t(Dimensions...) { }
-
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {
                 return basedb_t::LengthX();
             }

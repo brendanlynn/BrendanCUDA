@@ -385,12 +385,6 @@ namespace BrendanCUDA {
             using vector_t = basedb_t::vector_t;
 
 #pragma region Wrapper
-            __host__ __device__ __forceinline FieldProxy(const vector_t& Dimensions)
-                : basefb_t(Dimensions) { }
-            template <std::convertible_to<uint32_t>... _Ts>
-                requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline FieldProxy(_Ts... Dimensions)
-                : basefb_t(vector_t(Dimensions...)) { }
             __host__ __device__ __forceinline FieldProxy(const vector_t& Dimensions, _T* All)
                 : basefb_t(Dimensions, All) { }
             template <std::convertible_to<uint32_t>... _Ts>
@@ -656,12 +650,6 @@ namespace BrendanCUDA {
             using vector_t = basedb_t::vector_t;
 
 #pragma region Wrapper
-            __host__ __device__ __forceinline FieldProxyConst(const vector_t& Dimensions)
-                : basefb_t(Dimensions) { }
-            template <std::convertible_to<uint32_t>... _Ts>
-                requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline FieldProxyConst(_Ts... Dimensions)
-                : basefb_t(vector_t(Dimensions...)) { }
             __host__ __device__ __forceinline FieldProxyConst(const vector_t& Dimensions, const _T* All)
                 : basefb_t(Dimensions, const_cast<_T*>(All)) { }
             template <std::convertible_to<uint32_t>... _Ts>

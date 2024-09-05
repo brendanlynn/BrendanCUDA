@@ -116,6 +116,7 @@
     <ClInclude Include="errorhelp.h" />
     <ClInclude Include="fields_instance.h" />
     <ClInclude Include="ai_mlp_fixedmlp.h" />
+    <ClInclude Include="fields_mdfield.h" />
     <ClInclude Include="fields_mfield.h" />
     <ClInclude Include="kernellaunch.cuh" />
     <ClInclude Include="nets_makenet.h" />

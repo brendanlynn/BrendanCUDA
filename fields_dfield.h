@@ -254,12 +254,8 @@ namespace BrendanCUDA {
             using vector_t = basefb_t::vector_t;
 
 #pragma region Wrapper
-            __host__ __device__ __forceinline DFieldProxy(const vector_t& Dimensions)
-                : basefb_t(Dimensions) { }
-            template <std::convertible_to<uint32_t>... _Ts>
-                requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline DFieldProxy(_Ts... Dimensions)
-                : basefb_t(Dimensions...) { }
+            __host__ __device__ DFieldProxy(const vector_t& Dimensions, _T* ArrF, _T* ArrB)
+                : basefb_t(Dimensions, ArrF, ArrB) { }
 
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {
                 return basedb_t::LengthX();
@@ -429,8 +425,6 @@ namespace BrendanCUDA {
                 return *(DField<_T, _DimensionCount>*)&basefb_t::Clone();
             }
 
-            __host__ __device__ DFieldProxy(const vector_t& Dimensions, _T* ArrF, _T* ArrB)
-                : basefb_t(Dimensions, ArrF, ArrB) { }
             __host__ __device__ DFieldProxy(DField<_T, _DimensionCount>& Parent)
                 : basefb_t(Parent.Dimensions(), Parent.FData(), Parent.BData()) { }
         };
@@ -442,12 +436,8 @@ namespace BrendanCUDA {
             using vector_t = basefb_t::vector_t;
 
 #pragma region Wrapper
-            __host__ __device__ __forceinline DFieldProxyConst(const vector_t& Dimensions)
-                : basefb_t(Dimensions) { }
-            template <std::convertible_to<uint32_t>... _Ts>
-                requires (sizeof...(_Ts) == _DimensionCount)
-            __host__ __device__ __forceinline DFieldProxyConst(_Ts... Dimensions)
-                : basefb_t(Dimensions...) { }
+            __host__ __device__ DFieldProxyConst(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)
+                : basefb_t(Dimensions, const_cast<_T*>(ArrF), const_cast<_T*>(ArrB)) { }
 
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {
                 return basedb_t::LengthX();
@@ -569,8 +559,6 @@ namespace BrendanCUDA {
                 return *(DField<_T, _DimensionCount>*)&basefb_t::Clone();
             }
 
-            __host__ __device__ DFieldProxyConst(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)
-                : basefb_t(Dimensions, const_cast<_T*>(ArrF), const_cast<_T*>(ArrB)) { }
             __host__ __device__ DFieldProxyConst(const DField<_T, _DimensionCount>& Parent)
                 : basefb_t(Parent.Dimensions(), Parent.FData(), Parent.BData()) { }
             __host__ __device__ DFieldProxyConst(const DFieldProxy<_T, _DimensionCount>& Partner)
