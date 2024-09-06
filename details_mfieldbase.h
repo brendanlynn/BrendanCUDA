@@ -7,7 +7,7 @@ namespace BrendanCUDA {
         template <template <typename, uintmax_t> typename _TFunction, uintmax_t _StartIndex, typename... _Ts>
         struct RunFunctionsOverTypeWrapper {
             template <typename... _TParameters>
-            void RunFunctionsOverType(_TParameters... Params) { }
+            static void RunFunctionsOverType(_TParameters... Params) { }
         };
         template <template <typename, uintmax_t> typename _TFunction, uintmax_t _StartIndex, typename _T1, typename... _Ts>
         struct RunFunctionsOverTypeWrapper<_TFunction, _StartIndex, _T1, _Ts...> {
@@ -90,7 +90,7 @@ namespace BrendanCUDA {
                         darrs[i] = 0;
                     return;
                 }
-                RunFunctionsOverTypeWrapper<MFieldBase_MallocMem, 0, _Ts...>::RunFunctionsOverType(&darrs, basedb_t::ValueCount());
+                RunFunctionsOverTypeWrapper<MFieldBase_MallocMem, 0, _Ts...>::RunFunctionsOverType((void**)&darrs, basedb_t::ValueCount());
             }
             __host__ __device__ __forceinline MFieldBase(const typename this_t::vector_t& Dimensions, void* const* Arrays)
                 : basedb_t(Dimensions) {
@@ -115,11 +115,11 @@ namespace BrendanCUDA {
 #pragma region ProxyAccess
             template <size_t _Idx>
             __host__ __device__ Fields::FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
-                return Fields::FieldProxy<element_t<_Idx>, _DimensionCount>(this->Dimensions(), darrs[_Idx]);
+                return Fields::FieldProxy<element_t<_Idx>, _DimensionCount>(this->Dimensions(), (element_t<_Idx>*)darrs[_Idx]);
             }
             template <size_t _Idx>
             __host__ __device__ Fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
-                return Fields::FieldProxyConst<element_t<_Idx>, _DimensionCount>(this->Dimensions(), darrs[_Idx]);
+                return Fields::FieldProxyConst<element_t<_Idx>, _DimensionCount>(this->Dimensions(), (element_t<_Idx>*)darrs[_Idx]);
             }
             template <size_t _Idx>
             __host__ __device__ element_t<_Idx>* FData() const {
@@ -138,22 +138,22 @@ namespace BrendanCUDA {
 
             __host__ __device__ this_t Clone() const {
                 this_t clone(this->Dimensions());
-                RunFunctionsOverTypeWrapper<MFieldBase_Clone, 0, _Ts...>::RunFunctionsOverType(&clone.darrs, &darrs, basedb_t::ValueCount());
+                RunFunctionsOverTypeWrapper<MFieldBase_Clone, 0, _Ts...>::RunFunctionsOverType(&clone.darrs, (void**)&darrs, basedb_t::ValueCount());
                 return clone;
             }
 
             __forceinline size_t SerializedSize() const requires (BSerializer::Serializable<_Ts> && ...) {
                 size_t t = sizeof(typename this_t::vector_t);
-                RunFunctionsOverTypeWrapper<MFieldBase_SerializedSize_Wrapper<_DimensionCount>::MFieldBase_SerializedSize, 0, _Ts...>::RunFunctionsOverType(&darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), t);
+                RunFunctionsOverTypeWrapper<MFieldBase_SerializedSize_Wrapper<_DimensionCount>::MFieldBase_SerializedSize, 0, _Ts...>::RunFunctionsOverType((void**)&darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), t);
             }
             __forceinline void Serialize(void*& Data) const requires (BSerializer::Serializable<_Ts> && ...) {
                 BSerializer::Serialize(Data, basedb_t::Dimensions());
-                RunFunctionsOverTypeWrapper<MFieldBase_Serialize_Wrapper<_DimensionCount>::MFieldBase_Serialize, 0, _Ts...>::RunFunctionOverType(&darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), Data);
+                RunFunctionsOverTypeWrapper<MFieldBase_Serialize_Wrapper<_DimensionCount>::MFieldBase_Serialize, 0, _Ts...>::RunFunctionOverType((void**)&darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), Data);
             }
             static __forceinline this_t Deserialize(const void*& Data) requires (BSerializer::Serializable<_Ts> && ...) {
                 typename this_t::vector_t dims = BSerializer::Deserialize<typename this_t::vector_t>(Data);
                 this_t value(dims);
-                RunFunctionsOverTypeWrapper<MFieldBase_Deserialize_Wrapper<_DimensionCount>::MFieldBase_Deserialize, 0, _Ts...>::RunFunctionOverType(&value.darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), Data);
+                RunFunctionsOverTypeWrapper<MFieldBase_Deserialize_Wrapper<_DimensionCount>::MFieldBase_Deserialize, 0, _Ts...>::RunFunctionOverType((void**)&value.darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), Data);
                 return value;
             }
             static __forceinline void Deserialize(const void*& Data, void* Value) requires (BSerializer::Serializable<_Ts> && ...) {

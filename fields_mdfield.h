@@ -150,7 +150,7 @@ namespace BrendanCUDA {
 
                 vector_t dims = Dimensions();
 
-                new (this) MDFieldProxy(dims, &arrs);
+                new (this) MDFieldProxy<_DimensionCount, _Ts...>(dims, (void* const*)&arrs);
             }
         };
         template <size_t _DimensionCount, typename... _Ts>
@@ -249,13 +249,13 @@ namespace BrendanCUDA {
 #pragma endregion
 
             __host__ __device__ __forceinline MDField<_DimensionCount, _Ts...> Clone() const {
-                return *(MDField<_DimensionCount, _Ts...>*)&((details::MFieldBase<_DimensionCount, _Ts..., _Ts...>)&field)->Clone();
+                return *(MDField<_DimensionCount, _Ts...>*)&((details::MFieldBase<_DimensionCount, _Ts..., _Ts...>)&fields)->Clone();
             }
 
             __host__ __device__ MDFieldProxy(const vector_t& Dimensions, void* const* Arrays)
                 : fields(Dimensions, Arrays) { }
             __host__ __device__ MDFieldProxy(MDField<_DimensionCount, _Ts...>& Parent)
-                : fields(Parent.Dimensions(), &((this_t*)&Parent)->fields) { }
+                : fields(Parent.Dimensions(), ((details::MFieldBase<_DimensionCount, _Ts..., _Ts...>*)&(((this_t*)&Parent)->fields))->FieldDataArray()) { }
         };
         template <size_t _DimensionCount, typename... _Ts>
         class MDFieldProxyConst {
@@ -342,7 +342,7 @@ namespace BrendanCUDA {
 #pragma endregion
 
             __host__ __device__ __forceinline MDField<_DimensionCount, _Ts...> Clone() const {
-                return *(MDField<_DimensionCount, _Ts...>*)&((details::MFieldBase<_DimensionCount, _Ts..., _Ts...>) & field)->Clone();
+                return *(MDField<_DimensionCount, _Ts...>*)&(((details::MFieldBase<_DimensionCount, _Ts..., _Ts...>*)&fields)->Clone());
             }
 
             __host__ __device__ MDFieldProxyConst(const vector_t& Dimensions, void* const* Arrays)
