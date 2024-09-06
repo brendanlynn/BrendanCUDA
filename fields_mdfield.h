@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fields_mfield.h"
+#include "fields_dfield.h"
 
 namespace BrendanCUDA {
     namespace Fields {
@@ -88,6 +89,16 @@ namespace BrendanCUDA {
             __host__ __device__ FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FConst<tIdx>();
+            }
+            template <size_t _Idx>
+                requires (_Idx < sizeof...(_Ts))
+            __host__ __device__ DFieldProxy<element_t<_Idx>, _DimensionCount> F() {
+                return DFieldProxy<element_t<_Idx>, _DimensionCount>(Dimensions(), fields.FData<_Idx>(), fields.FData<_Idx + sizeof...(_Ts)>());
+            }
+            template <size_t _Idx>
+                requires (_Idx < sizeof...(_Ts))
+            __host__ __device__ DFieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+                return DFieldProxyConst<element_t<_Idx>, _DimensionCount>(Dimensions(), fields.FData<_Idx>(), fields.FData<_Idx + sizeof...(_Ts)>());
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
@@ -189,7 +200,7 @@ namespace BrendanCUDA {
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ FieldProxy<element_t<_Idx>, _DimensionCount> F() {
+            __host__ __device__ FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.F<tIdx>();
             }
@@ -199,15 +210,19 @@ namespace BrendanCUDA {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FConst<tIdx>();
             }
-            template <bool _Front, size_t _Idx>
+            template <size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ element_t<_Idx>* FData() {
-                constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
-                return fields.FData<tIdx>();
+            __host__ __device__ DFieldProxy<element_t<_Idx>, _DimensionCount> F() const {
+                return DFieldProxy<element_t<_Idx>, _DimensionCount>(Dimensions(), const_cast<element_t<_Idx>*>(fields.FData<_Idx>()), const_cast<element_t<_Idx>*>(fields.FData<_Idx + sizeof...(_Ts)>()));
+            }
+            template <size_t _Idx>
+                requires (_Idx < sizeof...(_Ts))
+            __host__ __device__ DFieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+                return DFieldProxyConst<element_t<_Idx>, _DimensionCount>(Dimensions(), fields.FData<_Idx>(), fields.FData<_Idx + sizeof...(_Ts)>());
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ const element_t<_Idx>* FData() const {
+            __host__ __device__ element_t<_Idx>* FData() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FData<tIdx>();
             }
@@ -289,21 +304,14 @@ namespace BrendanCUDA {
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ FieldProxy<element_t<_Idx>, _DimensionCount> F() {
-                constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
-                return fields.F<tIdx>();
-            }
-            template <bool _Front, size_t _Idx>
-                requires (_Idx < sizeof...(_Ts))
             __host__ __device__ FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FConst<tIdx>();
             }
-            template <bool _Front, size_t _Idx>
+            template <size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ element_t<_Idx>* FData() {
-                constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
-                return fields.FData<tIdx>();
+            __host__ __device__ DFieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+                return DFieldProxyConst<element_t<_Idx>, _DimensionCount>(Dimensions(), fields.FData<_Idx>(), fields.FData<_Idx + sizeof...(_Ts)>());
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
