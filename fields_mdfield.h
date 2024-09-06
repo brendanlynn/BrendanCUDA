@@ -138,6 +138,20 @@ namespace BrendanCUDA {
             __host__ __device__ __forceinline MDFieldProxyConst<_DimensionCount, _Ts...> MakeProxyConst() const {
                 return MDFieldProxyConst<_DimensionCount, _Ts...>(*this);
             }
+
+            __host__ __device__ __forceinline void Reverse() {
+                void* const* oldArrs = ((details::MFieldBase<_DimensionCount, _Ts..., _Ts...>*)&fields)->FieldDataArray();
+                void* arrs[sizeof...(_Ts) << 1];
+
+                for (size_t i = 0; i < sizeof...(_Ts); ++i) {
+                    arrs[i] = oldArrs[i + sizeof...(_Ts)];
+                    arrs[i + sizeof...(_Ts)] = oldArrs[i];
+                }
+
+                vector_t dims = Dimensions();
+
+                new (this) MDFieldProxy(dims, &arrs);
+            }
         };
         template <size_t _DimensionCount, typename... _Ts>
         class MDFieldProxy {
