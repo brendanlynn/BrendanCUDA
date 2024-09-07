@@ -4,6 +4,18 @@
 #include "fields_dfield.h"
 
 namespace BrendanCUDA {
+    namespace details {
+        template <size_t _DimensionCount, bool _Public, typename _T>
+        using publicPrivateSelector_t = std::conditional_t<_Public, Fields::FieldProxyConst<_T, _DimensionCount>, _T>;
+
+        template <size_t _DimensionCount, typename... _Ts>
+        struct MDFPPIKW {
+            template <bool... _Publics>
+                requires (sizeof...(_Publics) == sizeof...(_Ts))
+            using mDFPPIK_t = void(*)(const FixedVector<uint32_t, _DimensionCount>& Pos, const publicPrivateSelector_t<_DimensionCount, _Publics, _Ts>&... Prev, _Ts&... Next);
+        };
+    }
+
     namespace Fields {
         template <size_t _DimensionCount, typename... _Ts>
         class MDField;
@@ -22,6 +34,8 @@ namespace BrendanCUDA {
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
+            template <bool... _Publics>
+            using publicPrivateIterator_t = details::MDFPPIKW<_DimensionCount, _Ts...>::template mDFPPIK_t<_Publics...>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline MDField(const vector_t& Dimensions)
@@ -163,6 +177,8 @@ namespace BrendanCUDA {
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
+            template <bool... _Publics>
+            using publicPrivateIterator_t = details::MDFPPIKW<_DimensionCount, _Ts...>::template mDFPPIK_t<_Publics...>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {
@@ -267,6 +283,8 @@ namespace BrendanCUDA {
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
+            template <bool... _Publics>
+            using publicPrivateIterator_t = details::MDFPPIKW<_DimensionCount, _Ts...>::template mDFPPIK_t<_Publics...>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {
