@@ -14,7 +14,7 @@ namespace BrendanCUDA {
             template <typename... _TParameters>
             static void RunFunctionsOverType(_TParameters... Params) {
                 _TFunction<_T1, _StartIndex>::Run(Params...);
-                RunFunctionsOverTypeWrapper<_TFunction, _StartIndex, _Ts...>::template RunFunctionsOverType<_TParameters...>(Params...);
+                RunFunctionsOverTypeWrapper<_TFunction, _StartIndex + 1, _Ts...>::template RunFunctionsOverType<_TParameters...>(Params...);
             }
         };
 
