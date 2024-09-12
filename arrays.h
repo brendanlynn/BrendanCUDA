@@ -70,7 +70,7 @@ namespace BrendanCUDA {
     struct Span {
     private:
         using arrref_t = std::conditional_t<std::is_const_v<_T>, const std::array<std::remove_const_t<_T>, _Size>&, std::array<_T, _Size>&>;
-        using vecref_t = const std::vector<std::remove_const_t<_T>>&;
+        using vecref_t = std::conditional_t<std::is_const_v<_T>, const std::vector<std::remove_const_t<_T>>&, std::vector<_T>&>;
     public:
         using element_t = _T;
 
