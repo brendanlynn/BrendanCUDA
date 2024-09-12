@@ -158,6 +158,24 @@ namespace BrendanCUDA {
             }
         };
 
+        template <typename _T>
+            requires std::is_arithmetic_v<_T>
+        struct ModBlock : public Expr<_T> {
+            Expr<_T>* a;
+            Expr<_T>* b;
+
+            _T Calc(const varmap_t& Map) {
+                _T av = a->Calc(Map);
+                _T bv = b->Calc(Map);
+
+                _T v;
+                if constexpr (std::floating_point<_T>) v = std::fmod(av, bv);
+                else v = av % bv;
+
+                return v < (_T)0 ? v + bv : v;
+            }
+        };
+
         template <size_t _Count = -1>
         struct And : public Expr<bool> {
             constexpr size_t size = _Count;
