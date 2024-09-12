@@ -9,13 +9,12 @@ namespace BrendanCUDA {
     struct Span;
 
     template <typename _T>
-    struct SpanConst;
-
-    template <typename _T>
     class ArrayV {
         _T* ptr;
         size_t size;
     public:
+        using element_t = _T;
+
         __forceinline ArrayV() = default;
         __host__ __device__ __forceinline ArrayV(_T* Ptr, size_t Size)
             : ptr(Ptr), size(Size) { }
@@ -45,7 +44,7 @@ namespace BrendanCUDA {
             return *this;
         }
 
-        __host__ __device__ _T* Data() {
+        __host__ __device__ _T* Data() requires (!std::is_const_v<_T>) {
             return ptr;
         }
         __host__ __device__ const _T* Data() const {
@@ -55,82 +54,53 @@ namespace BrendanCUDA {
             return size;
         }
 
-        __host__ __device__ __forceinline _T& operator[](size_t Idx) {
+        __host__ __device__ __forceinline _T& operator[](size_t Idx) requires (!std::is_const_v<_T>) {
             return ptr[Idx];
         }
         __host__ __device__ __forceinline const _T& operator[](size_t Idx) const {
             return ptr[Idx];
         }
 
-        __host__ __device__ __forceinline operator Span<_T>() {
+        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) requires (!std::is_const_v<_T>) {
             return Span<_T>(*this);
         }
-        __host__ __device__ __forceinline operator SpanConst<_T>() const {
-            return SpanConst<_T>(*this);
-        }
-        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) {
-            return Span<_T>(*this);
-        }
-        __host__ __device__ __forceinline SpanConst<_T> Split(size_t Start, size_t NewSize) const {
-            return SpanConst<_T>(*this);
+
+        __host__ __device__ __forceinline Span<const _T> Split(size_t Start, size_t NewSize) const {
+            return Span<const _T>(*this);
         }
     };
 
     template <typename _T>
     struct Span {
+    private:
+        using arrref_t = std::conditional_t<std::is_const_v<_T>, const std::array<std::remove_const_t<_T>, _Size>&, std::array<_T, _Size>&>;
+        using vecref_t = const std::vector<std::remove_const_t<_T>>&;
+    public:
+        using element_t = _T;
+
         _T* ptr;
         size_t size;
         __host__ __device__ __forceinline Span(_T* Ptr, size_t Size)
             : ptr(Ptr), size(Size) { }
 
         template <size_t _Size>
-        __host__ __device__ __forceinline Span(std::array<_T, _Size>& Array)
+        __host__ __device__ __forceinline Span(arrref_t Array)
             : ptr(Array.data()), size(Array.size()) { }
-        __host__ __device__ __forceinline Span(std::vector<_T>& Vector)
+        __host__ __device__ __forceinline Span(vecref_t Vector)
             : ptr(Vector.data()), size(Vector.size()) { }
-        __host__ __device__ __forceinline Span(ArrayV<_T>& Array)
+        __host__ __device__ __forceinline Span(const ArrayV<_T>& Array) requires (std::is_const_v<_T>)
             : ptr(Array.Data()), size(Array.Size()) { }
+        __host__ __device__ __forceinline Span(const ArrayV<std::remove_const_t<_T>>& Array)
+            : ptr(Array.Data()), size(Array.Size()) { }
+        __host__ __device__ __forceinline Span(const Span<std::remove_const_t<_T>>& Span) requires std::is_const_v<_T>
+            : ptr(Span.ptr), size(Span.size) { }
 
-        __host__ __device__ __forceinline _T& operator[](size_t Idx) {
-            return ptr[Idx];
-        }
-        __host__ __device__ __forceinline const _T& operator[](size_t Idx) const {
+        __host__ __device__ __forceinline _T& operator[](size_t Idx) const {
             return ptr[Idx];
         }
 
         __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) const {
             return Span<_T>(ptr + Start, NewSize);
-        }
-
-        __host__ __device__ __forceinline operator SpanConst<_T>() const {
-            return SpanConst<_T>(*this);
-        }
-    };
-
-    template <typename _T>
-    struct SpanConst {
-        const _T* ptr;
-        size_t size;
-        __host__ __device__ __forceinline SpanConst(const _T* Ptr, size_t Size)
-            : ptr(Ptr), size(Size) { }
-
-        template <size_t _Size>
-        __host__ __device__ __forceinline SpanConst(const std::array<_T, _Size>& Array)
-            : ptr(Array.data()), size(Array.size()) { }
-        template <typename _TAlloc>
-        __host__ __device__ __forceinline SpanConst(const std::vector<_T, _TAlloc>& Vector)
-            : ptr(Vector.data()), size(Vector.size()) { }
-        __host__ __device__ __forceinline SpanConst(const ArrayV<_T>& Array)
-            : ptr(Array.Data()), size(Array.Size()) { }
-        __host__ __device__ __forceinline SpanConst(const Span<_T>& Span)
-            : ptr(Span.ptr), size(Span.size) { }
-
-        __host__ __device__ __forceinline const _T& operator[](size_t Idx) const {
-            return ptr[Idx];
-        }
-
-        __host__ __device__ __forceinline SpanConst<_T> Split(size_t Start, size_t NewSize) const {
-            return SpanConst<_T>(ptr + Start, NewSize);
         }
     };
 }
