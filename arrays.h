@@ -84,9 +84,9 @@ namespace BrendanCUDA {
             : ptr(Array.data()), size(Array.size()) { }
         __host__ __device__ __forceinline Span(vecref_t Vector)
             : ptr(Vector.data()), size(Vector.size()) { }
-        __host__ __device__ __forceinline Span(const ArrayV<_T>& Array) requires (std::is_const_v<_T>)
+        __host__ __device__ __forceinline Span(const ArrayV<_T>& Array)
             : ptr(Array.Data()), size(Array.Size()) { }
-        __host__ __device__ __forceinline Span(const ArrayV<std::remove_const_t<_T>>& Array)
+        __host__ __device__ __forceinline Span(const ArrayV<std::remove_const_t<_T>>& Array) requires (std::is_const_v<_T>)
             : ptr(Array.Data()), size(Array.Size()) { }
         __host__ __device__ __forceinline Span(const Span<std::remove_const_t<_T>>& Span) requires std::is_const_v<_T>
             : ptr(Span.ptr), size(Span.size) { }
