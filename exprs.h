@@ -153,7 +153,7 @@ namespace BrendanCUDA {
                     return std::fmod(av, bv);
                 }
                 else {
-                    return av % bc;
+                    return av % bv;
                 }
             }
         };
