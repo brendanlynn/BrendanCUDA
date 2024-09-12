@@ -68,21 +68,23 @@ namespace BrendanCUDA {
 
     template <typename _T>
     struct Span {
-    private:
-        using arrref_t = std::conditional_t<std::is_const_v<_T>, const std::array<std::remove_const_t<_T>, _Size>&, std::array<_T, _Size>&>;
-        using vecref_t = std::conditional_t<std::is_const_v<_T>, const std::vector<std::remove_const_t<_T>>&, std::vector<_T>&>;
-    public:
         using element_t = _T;
 
         _T* ptr;
         size_t size;
+
         __host__ __device__ __forceinline Span(_T* Ptr, size_t Size)
             : ptr(Ptr), size(Size) { }
 
         template <size_t _Size>
-        __host__ __device__ __forceinline Span(arrref_t Array)
+        __host__ __device__ __forceinline Span(std::array<std::remove_const_t<_T>, _Size>& Array)
             : ptr(Array.data()), size(Array.size()) { }
-        __host__ __device__ __forceinline Span(vecref_t Vector)
+        template <size_t _Size>
+        __host__ __device__ __forceinline Span(const std::array<std::remove_const_t<_T>, _Size>& Array) requires (std::is_const_v<_T>)
+            : ptr(Array.data()), size(Array.size()) { }
+        __host__ __device__ __forceinline Span(std::vector<std::remove_const_t<_T>>& Vector)
+            : ptr(Vector.data()), size(Vector.size()) { }
+        __host__ __device__ __forceinline Span(const std::vector<std::remove_const_t<_T>>& Vector) requires (std::is_const_v<_T>)
             : ptr(Vector.data()), size(Vector.size()) { }
         __host__ __device__ __forceinline Span(const ArrayV<_T>& Array)
             : ptr(Array.Data()), size(Array.Size()) { }
