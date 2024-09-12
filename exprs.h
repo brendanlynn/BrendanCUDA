@@ -4,7 +4,7 @@
 #include <cmath>
 
 namespace BrendanCUDA {
-    namespace DExpr {
+    namespace Exprs {
         template <typename _TOutput>
         struct Expr {
             virtual _TOutput Calc(const std::unordered_map<uint64_t, void*>&);
