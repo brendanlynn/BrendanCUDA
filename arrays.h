@@ -34,14 +34,9 @@ namespace BrendanCUDA {
             delete[] ptr;
         }
 
-        __host__ __device__ __forceinline ArrayV<_T>& operator=(const ArrayV<_T>& Array) {
-            this->~ArrayV();
-            new (this) ArrayV<_T>(Array);
-            return *this;
-        }
-        __host__ __device__ __forceinline ArrayV<_T>& operator=(ArrayV<_T>&& Array) {
-            this->~ArrayV();
-            new (this) ArrayV<_T>(Array);
+        __host__ __device__ __forceinline ArrayV<_T>& operator=(ArrayV<_T> Array) {
+            std::swap(ptr, Array.ptr);
+            std::swap(size, Array.size);
             return *this;
         }
 
