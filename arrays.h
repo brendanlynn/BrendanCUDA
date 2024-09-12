@@ -9,6 +9,7 @@ namespace BrendanCUDA {
     struct Span;
 
     template <typename _T>
+        requires (!std::is_const_v<_T>)
     class ArrayV {
         _T* ptr;
         size_t size;
@@ -22,7 +23,7 @@ namespace BrendanCUDA {
             : ptr(new _T[Size]), size(Size) { }
         __host__ __device__ __forceinline ArrayV(const ArrayV<_T>& Array)
             : ArrayV(Array.size) {
-            std::copy(Array.ptr, Array.ptr + Array.size, ptr);
+            std::copy_n(Array.ptr, Array.size, ptr);
         }
         __host__ __device__ __forceinline ArrayV(ArrayV<_T>&& Array)
             : ArrayV(Array.ptr, Array.size) {
@@ -44,7 +45,7 @@ namespace BrendanCUDA {
             return *this;
         }
 
-        __host__ __device__ _T* Data() requires (!std::is_const_v<_T>) {
+        __host__ __device__ _T* Data() {
             return ptr;
         }
         __host__ __device__ const _T* Data() const {
@@ -54,19 +55,19 @@ namespace BrendanCUDA {
             return size;
         }
 
-        __host__ __device__ __forceinline _T& operator[](size_t Idx) requires (!std::is_const_v<_T>) {
+        __host__ __device__ __forceinline _T& operator[](size_t Idx) {
             return ptr[Idx];
         }
         __host__ __device__ __forceinline const _T& operator[](size_t Idx) const {
             return ptr[Idx];
         }
 
-        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) requires (!std::is_const_v<_T>) {
-            return Span<_T>(*this);
+        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) {
+            return Span<_T>(*this).Split(Start, NewSize);
         }
 
         __host__ __device__ __forceinline Span<const _T> Split(size_t Start, size_t NewSize) const {
-            return Span<const _T>(*this);
+            return Span<const _T>(*this).Split(Start, NewSize);
         }
     };
 
