@@ -34,6 +34,14 @@ namespace BrendanCUDA {
         __forceinline operator _T*() const {
             return Get();
         }
+
+        __forceinline _T* Release() {
+            return (_T*)ptr.release();
+        }
+
+        __forceinline void Reset(_T* newPtr = 0) {
+            ptr.reset(newPtr);
+        }
     };
 
     template <typename _T>
