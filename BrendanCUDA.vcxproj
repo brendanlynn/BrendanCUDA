@@ -103,6 +103,7 @@
     <ClInclude Include="allheaders.h" />
     <ClInclude Include="arrays.h" />
     <ClInclude Include="copyblock.h" />
+    <ClInclude Include="copyptr.h" />
     <ClInclude Include="copytype.h" />
     <ClInclude Include="crossassigns.h" />
     <ClInclude Include="cudaconstexpr.h" />
