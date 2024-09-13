@@ -24,6 +24,7 @@ namespace BrendanCUDA {
 
         __forceinline CopyPtr<_T>& operator=(CopyPtr<_T> Other) {
             std::swap(ptr, Other.ptr);
+            return *this;
         }
 
         __forceinline _T* Get() const {
