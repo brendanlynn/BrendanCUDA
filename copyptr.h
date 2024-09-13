@@ -34,4 +34,9 @@ namespace BrendanCUDA {
             return ptr.get();
         }
     };
+
+    template <typename _T>
+    CopyPtr<_T> MakeCopyPtr(_T Val) {
+        return CopyPtr<_T>(new _T(Val));
+    }
 }
