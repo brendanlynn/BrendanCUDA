@@ -31,7 +31,7 @@ namespace BrendanCUDA {
         }
 
         __forceinline operator _T*() const {
-            return ptr.get();
+            return Get();
         }
     };
 
