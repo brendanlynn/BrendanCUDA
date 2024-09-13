@@ -9,7 +9,7 @@ namespace BrendanCUDA {
         std::unique_ptr<_T> ptr;
     public:
         using element_t = _T;
-        constexpr bool copyable = std::copy_constructible<_T>;
+        static constexpr bool copyable = std::copy_constructible<_T>;
 
         explicit CopyPtr(std::unique_ptr<_T> UniPtr)
             : ptr(std::move(UniPtr)) { }
