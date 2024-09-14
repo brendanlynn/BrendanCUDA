@@ -46,7 +46,7 @@ namespace BrendanCUDA {
 
             ~Val() override = default;
 
-            _T Calc(const varmap_t&) {
+            _T Calc(const varmap_t&) override {
                 return val;
             }
 
@@ -61,7 +61,7 @@ namespace BrendanCUDA {
 
             ~Var() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 return std::any_cast<_T>(Map.at(_Key));
             }
 
@@ -75,7 +75,7 @@ namespace BrendanCUDA {
 
             ~Var() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 return std::any_cast<_T>(Map.at(key));
             }
 
@@ -93,7 +93,7 @@ namespace BrendanCUDA {
 
             ~Add() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 _T t = _T{};
                 for (size_t i = 0; i < _Count; ++i)
                     t += exprs[i]->Calc(Map);
@@ -113,7 +113,7 @@ namespace BrendanCUDA {
 
             ~Add() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 _T t = _T{};
                 for (size_t i = 0; i < exprs.size(); ++i)
                     t += exprs[i]->Calc(Map);
@@ -135,7 +135,7 @@ namespace BrendanCUDA {
 
             ~Subtract() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 return a->Calc(Map) - b->Calc(Map);
             }
 
@@ -153,7 +153,7 @@ namespace BrendanCUDA {
 
             ~Multiply() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 _T t = (_T)1;
                 for (size_t i = 0; i < _Count; ++i)
                     t *= exprs[i]->Calc(Map);
@@ -173,7 +173,7 @@ namespace BrendanCUDA {
 
             ~Multiply() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 _T t = (_T)1;
                 for (size_t i = 0; i < exprs.size(); ++i)
                     t *= exprs[i]->Calc(Map);
@@ -211,7 +211,7 @@ namespace BrendanCUDA {
 
             ~DivideRoundUp() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 _T av = a->Calc(Map);
                 _T bv = b->Calc(Map);
                 return (av + bv - 1) / bv;
@@ -230,7 +230,7 @@ namespace BrendanCUDA {
 
             ~Mod() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 _T av = a->Calc(Map);
                 _T bv = b->Calc(Map);
                 if constexpr (std::floating_point<_T>) {
@@ -254,7 +254,7 @@ namespace BrendanCUDA {
 
             ~ModBlock() override = default;
 
-            _T Calc(const varmap_t& Map) {
+            _T Calc(const varmap_t& Map) override {
                 _T av = a->Calc(Map);
                 _T bv = b->Calc(Map);
 
@@ -278,7 +278,7 @@ namespace BrendanCUDA {
 
             ~And() override = default;
 
-            bool Calc(const varmap_t& Map) {
+            bool Calc(const varmap_t& Map) override {
                 bool t = true;
                 for (size_t i = 0; i < _Count; ++i)
                     t &= exprs[i]->Calc(Map);
@@ -297,7 +297,7 @@ namespace BrendanCUDA {
 
             ~And() override = default;
 
-            bool Calc(const varmap_t& Map) {
+            bool Calc(const varmap_t& Map) override {
                 bool t = true;
                 for (size_t i = 0; i < exprs.size(); ++i)
                     t &= exprs[i]->Calc(Map);
@@ -319,7 +319,7 @@ namespace BrendanCUDA {
 
             ~Or() override = default;
 
-            bool Calc(const varmap_t& Map) {
+            bool Calc(const varmap_t& Map) override {
                 bool t = true;
                 for (size_t i = 0; i < _Count; ++i)
                     t |= exprs[i]->Calc(Map);
@@ -338,7 +338,7 @@ namespace BrendanCUDA {
 
             ~Or() override = default;
 
-            bool Calc(const varmap_t& Map) {
+            bool Calc(const varmap_t& Map) override {
                 bool t = true;
                 for (size_t i = 0; i < exprs.size(); ++i)
                     t |= exprs[i]->Calc(Map);
@@ -360,7 +360,7 @@ namespace BrendanCUDA {
 
             ~Xor() override = default;
 
-            bool Calc(const varmap_t& Map) {
+            bool Calc(const varmap_t& Map) override {
                 bool t = true;
                 for (size_t i = 0; i < _Count; ++i)
                     t ^= v[i]->Calc(Map);
@@ -379,7 +379,7 @@ namespace BrendanCUDA {
 
             ~Xor() override = default;
 
-            bool Calc(const varmap_t& Map) {
+            bool Calc(const varmap_t& Map) override {
                 bool t = true;
                 for (size_t i = 0; i < exprs.size(); ++i)
                     t ^= exprs[i]->Calc(Map);
@@ -398,7 +398,7 @@ namespace BrendanCUDA {
 
             ~Not() override = default;
 
-            bool Calc(const varmap_t& Map) {
+            bool Calc(const varmap_t& Map) override {
                 return !v->Calc(Map);
             }
 
@@ -445,7 +445,7 @@ namespace BrendanCUDA {
 
             ~Func() override = default;
 
-            Func<_Func>::output_t Calc(const varmap_t& Map) {
+            Func<_Func>::output_t Calc(const varmap_t& Map) override {
                 std::aligned_storage_t<sizeof(params_t), alignof(params_t)> paramsDat;
                 params_t& evaledParams = *(params_t*)&paramsDat;
                 
