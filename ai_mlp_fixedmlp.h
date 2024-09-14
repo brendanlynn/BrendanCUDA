@@ -5,10 +5,10 @@
 #include "curandkernelgens.h"
 #include "mathfuncs.h"
 #include "rand_anyrng.h"
+#include <cublas_v2.h>
 #include <cuda_runtime.h>
 #include <random>
 #include <type_traits>
-#include <cublas_v2.h>
 
 namespace BrendanCUDA {
     namespace AI {
