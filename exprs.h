@@ -1,8 +1,9 @@
 #pragma once
 
-#include <unordered_map>
-#include <cmath>
+#include "copyptr.h"
 #include <any>
+#include <cmath>
+#include <unordered_map>
 
 namespace BrendanCUDA {
     namespace Exprs {
@@ -57,7 +58,7 @@ namespace BrendanCUDA {
         struct Add : public Expr<_T> {
             constexpr size_t size = _Count;
 
-            Expr<_T>* exprs[_Count];
+            CopyPtr<Expr<_T>> exprs[_Count];
 
             _T Calc(const varmap_t& Map) {
                 _T t = _T{};
@@ -69,7 +70,7 @@ namespace BrendanCUDA {
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Add : public Expr<_T> {
-            std::vector<Expr<_T>*> exprs;
+            std::vector<CopyPtr<Expr<_T>>> exprs;
 
             _T Calc(const varmap_t& Map) {
                 _T t = _T{};
@@ -82,8 +83,8 @@ namespace BrendanCUDA {
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Subtract : public Expr<_T> {
-            Expr<_T>* a;
-            Expr<_T>* b;
+            CopyPtr<Expr<_T>> a;
+            CopyPtr<Expr<_T>> b;
 
             _T Calc(const varmap_t& Map) {
                 return a->Calc(Map) - b->Calc(Map);
@@ -95,7 +96,7 @@ namespace BrendanCUDA {
         struct Multiply : public Expr<_T> {
             constexpr size_t size = _Count;
 
-            Expr<_T>* exprs[_Count];
+            CopyPtr<Expr<_T>> exprs[_Count];
 
             _T Calc(const varmap_t& Map) {
                 _T t = (_T)1;
@@ -107,7 +108,7 @@ namespace BrendanCUDA {
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Multiply : public Expr<_T> {
-            std::vector<Expr<_T>*> exprs;
+            std::vector<CopyPtr<Expr<_T>>> exprs;
 
             _T Calc(const varmap_t& Map) {
                 _T t = (_T)1;
@@ -120,8 +121,8 @@ namespace BrendanCUDA {
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Divide : public Expr<_T> {
-            Expr<_T>* a;
-            Expr<_T>* b;
+            CopyPtr<Expr<_T>> a;
+            CopyPtr<Expr<_T>> b;
 
             _T Calc(const varmap_t& Map) {
                 return a->Calc(Map) / b->Calc(Map);
@@ -130,8 +131,8 @@ namespace BrendanCUDA {
 
         template <std::integral _T>
         struct DivideRoundUp : public Expr<_T> {
-            Expr<_T>* a;
-            Expr<_T>* b;
+            CopyPtr<Expr<_T>> a;
+            CopyPtr<Expr<_T>> b;
 
             _T Calc(const varmap_t& Map) {
                 _T av = a->Calc(Map);
@@ -143,8 +144,8 @@ namespace BrendanCUDA {
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Mod : public Expr<_T> {
-            Expr<_T>* a;
-            Expr<_T>* b;
+            CopyPtr<Expr<_T>> a;
+            CopyPtr<Expr<_T>> b;
 
             _T Calc(const varmap_t& Map) {
                 _T av = a->Calc(Map);
@@ -161,8 +162,8 @@ namespace BrendanCUDA {
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct ModBlock : public Expr<_T> {
-            Expr<_T>* a;
-            Expr<_T>* b;
+            CopyPtr<Expr<_T>> a;
+            CopyPtr<Expr<_T>> b;
 
             _T Calc(const varmap_t& Map) {
                 _T av = a->Calc(Map);
@@ -180,7 +181,7 @@ namespace BrendanCUDA {
         struct And : public Expr<bool> {
             constexpr size_t size = _Count;
 
-            Expr<bool>* exprs[_Count];
+            CopyPtr<Expr<bool>> exprs[_Count];
 
             bool Calc(const varmap_t& Map) {
                 bool t = true;
@@ -191,7 +192,7 @@ namespace BrendanCUDA {
         };
         template <>
         struct And<-1> : public Expr<bool> {
-            std::vector<Expr<bool>*> exprs;
+            std::vector<CopyPtr<Expr<bool>>> exprs;
 
             bool Calc(const varmap_t& Map) {
                 bool t = true;
@@ -205,7 +206,7 @@ namespace BrendanCUDA {
         struct Or : public Expr<bool> {
             constexpr size_t size = _Count;
 
-            Expr<bool>* exprs[_Count];
+            CopyPtr<Expr<bool>> exprs[_Count];
 
             bool Calc(const varmap_t& Map) {
                 bool t = true;
@@ -216,7 +217,7 @@ namespace BrendanCUDA {
         };
         template <>
         struct Or<-1> : public Expr<bool> {
-            std::vector<Expr<bool>*> exprs;
+            std::vector<CopyPtr<Expr<bool>>> exprs;
 
             bool Calc(const varmap_t& Map) {
                 bool t = true;
@@ -230,7 +231,7 @@ namespace BrendanCUDA {
         struct Xor : public Expr<bool> {
             constexpr size_t size = _Count;
 
-            Expr<bool>* v[_Count];
+            CopyPtr<Expr<bool>> v[_Count];
 
             bool Calc(const varmap_t& Map) {
                 bool t = true;
@@ -241,7 +242,7 @@ namespace BrendanCUDA {
         };
         template <>
         struct Xor<-1> : public Expr<bool> {
-            std::vector<Expr<bool>*> exprs;
+            std::vector<CopyPtr<Expr<bool>>> exprs;
 
             bool Calc(const varmap_t& Map) {
                 bool t = true;
@@ -252,7 +253,7 @@ namespace BrendanCUDA {
         };
 
         struct Not : public Expr<bool> {
-            Expr<bool>* v;
+            CopyPtr<Expr<bool>> v;
 
             bool Calc(const varmap_t& Map) {
                 return !v->Calc(Map);
@@ -266,7 +267,7 @@ namespace BrendanCUDA {
             struct FuncParamsTuple<_TOutput(*)(_Ts...)> {
                 using output_t = _TOutput;
                 using params_t = std::tuple<_Ts...>;
-                using exprptrs_t = std::tuple<Expr<_Ts>*...>;
+                using exprptrs_t = std::tuple<CopyPtr<Expr<_Ts>>...>;
             };
 
             template <typename _TTupleI, typename _TTupleO, size_t _Idx = 0>
