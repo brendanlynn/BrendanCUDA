@@ -34,6 +34,9 @@ namespace BrendanCUDA {
         __forceinline operator _T*() const {
             return Get();
         }
+        __forceinline _T* operator->() const {
+            return Get();
+        }
 
         __forceinline _T* Release() {
             return (_T*)ptr.release();
