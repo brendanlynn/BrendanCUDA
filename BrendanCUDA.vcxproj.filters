@@ -45,6 +45,7 @@
     <ClInclude Include="fields_mfield.h" />
     <ClInclude Include="fields_mdfield.h" />
     <ClInclude Include="exprs.h" />
+    <ClInclude Include="copyptr.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="binary_basic.cu" />
