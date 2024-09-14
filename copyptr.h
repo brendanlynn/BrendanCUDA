@@ -19,7 +19,7 @@ namespace BrendanCUDA {
             : ptr(std::move(Other.ptr)) { }
         __forceinline explicit CopyPtr(element_t* Val)
             : ptr(Val) { }
-        __forceinline explicit CopyPtr(std::nullptr_t)
+        __forceinline explicit CopyPtr(std::nullptr_t = nullptr)
             : ptr(nullptr) { }
 
         __forceinline CopyPtr<_T>& operator=(CopyPtr<_T> Other) {
@@ -47,6 +47,10 @@ namespace BrendanCUDA {
         }
     };
 
+    template <typename _T>
+    CopyPtr<_T> MakeCopyPtr() requires std::is_default_constructible_v<_T> {
+        return CopyPtr<_T>(new _T());
+    }
     template <typename _T>
     CopyPtr<_T> MakeCopyPtr(_T Val) {
         return CopyPtr<_T>(new _T(Val));
