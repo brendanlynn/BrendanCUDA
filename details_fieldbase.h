@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BSerializer/Serializer.h"
 #include "copyblock.h"
 #include "copytype.h"
 #include "cudaconstexpr.h"
@@ -7,7 +8,6 @@
 #include "dimensionedbase.h"
 #include "errorhelp.h"
 #include "points.h"
-#include "BSerializer/Serializer.h"
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <memory>
