@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mathfuncs.h"
 #include "BSerializer/Serializer.h"
+#include "mathfuncs.h"
 #include <cmath>
 #include <concepts>
 #include <cstdarg>

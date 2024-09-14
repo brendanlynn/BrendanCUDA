@@ -1,12 +1,12 @@
 #pragma once
 
 #include "ai.h"
+#include "BSerializer/Serializer.h"
 #include "curandkernelgens.h"
 #include "details_getintbin.h"
 #include "mathfuncs.h"
 #include "rand_anyrng.h"
 #include "rand_randomizer.h"
-#include "BSerializer/Serializer.h"
 #include <cuda_runtime.h>
 #include <random>
 #include <type_traits>

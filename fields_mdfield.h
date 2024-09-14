@@ -1,7 +1,7 @@
 #pragma once
 
-#include "fields_mfield.h"
 #include "fields_dfield.h"
+#include "fields_mfield.h"
 
 namespace BrendanCUDA {
     namespace details {
