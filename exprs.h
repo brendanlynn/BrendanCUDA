@@ -34,9 +34,9 @@ namespace BrendanCUDA {
 
 #pragma region ExprImpl
         template <auto _Val>
-        struct Val : public Expr<decltype(_Val)> {
-            Val() { }
-            ~Val() override = default;
+        struct ValCC : public Expr<decltype(_Val)> {
+            ValCC() { }
+            ~ValCC() override = default;
 
             auto Calc(const varmap_t&) override {
                 return _Val;
@@ -46,8 +46,8 @@ namespace BrendanCUDA {
                 return ArrayV<ExprBase*>();
             }
 
-            Val<_Val>* Clone() override {
-                return new Val<_Val>(*this);
+            ValCC<_Val>* Clone() override {
+                return new ValCC<_Val>(*this);
             }
         };
         template <typename _T>
@@ -72,11 +72,11 @@ namespace BrendanCUDA {
         };
 
         template <typename _T, uint64_t _Key>
-        struct Var : public Expr<_T> {
+        struct VarCC : public Expr<_T> {
             static constexpr uint64_t key = _Key;
 
-            Var() { }
-            ~Var() override = default;
+            VarCC() { }
+            ~VarCC() override = default;
 
             _T Calc(const varmap_t& Map) override {
                 return std::any_cast<_T>(Map.at(_Key));
@@ -86,8 +86,8 @@ namespace BrendanCUDA {
                 return ArrayV<ExprBase*>();
             }
 
-            Var<_T, _Key>* Clone() override {
-                return new Var<_T, _Key>(*this);
+            VarCC<_T, _Key>* Clone() override {
+                return new VarCC<_T, _Key>(*this);
             }
         };
         template <typename _T>
@@ -111,7 +111,7 @@ namespace BrendanCUDA {
             }
         };
 
-        template <typename _T, size_t _Count>
+        template <typename _T, size_t _Count = (size_t)-1>
             requires std::is_arithmetic_v<_T>
         struct Add : public Expr<_T> {
             static constexpr size_t size = _Count;
@@ -148,7 +148,7 @@ namespace BrendanCUDA {
         };
         template <typename _T>
             requires std::is_arithmetic_v<_T>
-        struct Add : public Expr<_T> {
+        struct Add<_T, (size_t)-1> : public Expr<_T> {
             std::vector<std::unique_ptr<Expr<_T>>> exprs;
 
             Add(const Add<_T>& OtherExpr) {
@@ -209,7 +209,7 @@ namespace BrendanCUDA {
             }
         };
 
-        template <typename _T, size_t _Count>
+        template <typename _T, size_t _Count = (size_t)-1>
             requires std::is_arithmetic_v<_T>
         struct Multiply : public Expr<_T> {
             static constexpr size_t size = _Count;
@@ -246,7 +246,7 @@ namespace BrendanCUDA {
         };
         template <typename _T>
             requires std::is_arithmetic_v<_T>
-        struct Multiply : public Expr<_T> {
+        struct Multiply<_T, (size_t)-1> : public Expr<_T> {
             std::vector<std::unique_ptr<Expr<_T>>> exprs;
 
             Multiply(const Multiply<_T>& OtherExpr) {
@@ -447,12 +447,12 @@ namespace BrendanCUDA {
         struct And<(size_t)-1> : public Expr<bool> {
             std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
-            And(const And<(size_t)-1>& OtherExpr) {
+            And(const And& OtherExpr) {
                 for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
-            And(And<(size_t)-1>&&) = default;
-            And<(size_t)-1>& operator=(And<(size_t)-1> Other) {
+            And(And&&) = default;
+            And& operator=(And Other) {
                 std::swap(exprs, Other.exprs);
                 return *this;
             }
@@ -471,8 +471,8 @@ namespace BrendanCUDA {
                 return arr;
             }
 
-            And<(size_t)-1>* Clone() override {
-                return new And<(size_t)-1>(*this);
+            And* Clone() override {
+                return new And(*this);
             }
         };
 
@@ -514,12 +514,12 @@ namespace BrendanCUDA {
         struct Or<(size_t)-1> : public Expr<bool> {
             std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
-            Or(const Or<(size_t)-1>& OtherExpr) {
+            Or(const Or& OtherExpr) {
                 for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
-            Or(Or<(size_t)-1>&&) = default;
-            Or<(size_t)-1>& operator=(Or<(size_t)-1> Other) {
+            Or(Or&&) = default;
+            Or& operator=(Or Other) {
                 std::swap(exprs, Other.exprs);
                 return *this;
             }
@@ -581,12 +581,12 @@ namespace BrendanCUDA {
         struct Xor<(size_t)-1> : public Expr<bool> {
             std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
-            Xor(const Xor<(size_t)-1>& OtherExpr) {
+            Xor(const Xor& OtherExpr) {
                 for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
-            Xor(Xor<(size_t)-1>&&) = default;
-            Xor<(size_t)-1>& operator=(Xor<(size_t)-1> Other) {
+            Xor(Xor&&) = default;
+            Xor& operator=(Xor Other) {
                 std::swap(exprs, Other.exprs);
                 return *this;
             }
@@ -605,8 +605,8 @@ namespace BrendanCUDA {
                 return arr;
             }
 
-            Xor<(size_t)-1>* Clone() override {
-                return new Xor<(size_t)-1>(*this);
+            Xor* Clone() override {
+                return new Xor(*this);
             }
         };
 
@@ -691,7 +691,7 @@ namespace BrendanCUDA {
             Func<_Func>::output_t Calc(const varmap_t& Map) override {
                 std::aligned_storage_t<sizeof(params_t), alignof(params_t)> paramsDat;
                 params_t& evaledParams = *(params_t*)&paramsDat;
-                
+
                 details::CalcTuple(params, evaledParams, Map);
 
                 return std::apply(_Func, evaledParams);
@@ -711,7 +711,7 @@ namespace BrendanCUDA {
         template <typename _T>
         struct Expression {
             std::unique_ptr<Expr<_T>> ptr;
-            
+
             Expression(std::unique_ptr<Expr<_T>>&& Ptr)
                 : ptr(Ptr) { }
             Expression(const Expression<_T>& OtherExpr)
