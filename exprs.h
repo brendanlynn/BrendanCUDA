@@ -73,7 +73,7 @@ namespace BrendanCUDA {
 
         template <typename _T, uint64_t _Key>
         struct Var : public Expr<_T> {
-            constexpr uint64_t key = _Key;
+            static constexpr uint64_t key = _Key;
 
             Var() { }
             ~Var() override = default;
@@ -114,7 +114,7 @@ namespace BrendanCUDA {
         template <typename _T, size_t _Count>
             requires std::is_arithmetic_v<_T>
         struct Add : public Expr<_T> {
-            constexpr size_t size = _Count;
+            static constexpr size_t size = _Count;
 
             std::unique_ptr<Expr<_T>> exprs[_Count];
 
@@ -199,7 +199,7 @@ namespace BrendanCUDA {
         template <typename _T, size_t _Count>
             requires std::is_arithmetic_v<_T>
         struct Multiply : public Expr<_T> {
-            constexpr size_t size = _Count;
+            static constexpr size_t size = _Count;
 
             std::unique_ptr<Expr<_T>> exprs[_Count];
 
@@ -370,7 +370,7 @@ namespace BrendanCUDA {
 
         template <size_t _Count = (size_t)-1>
         struct And : public Expr<bool> {
-            constexpr size_t size = _Count;
+            static constexpr size_t size = _Count;
 
             std::unique_ptr<Expr<bool>> exprs[_Count];
 
@@ -429,7 +429,7 @@ namespace BrendanCUDA {
 
         template <size_t _Count = (size_t)-1>
         struct Or : public Expr<bool> {
-            constexpr size_t size = _Count;
+            static constexpr size_t size = _Count;
 
             std::unique_ptr<Expr<bool>> exprs[_Count];
 
@@ -488,7 +488,7 @@ namespace BrendanCUDA {
 
         template <size_t _Count = (size_t)-1>
         struct Xor : public Expr<bool> {
-            constexpr size_t size = _Count;
+            static constexpr size_t size = _Count;
 
             std::unique_ptr<Expr<bool>> v[_Count];
 
@@ -605,7 +605,7 @@ namespace BrendanCUDA {
             using func_t = decltype(_Func);
             using params_t = details::FuncParamsTuple<func_t>::params_t;
             using exprptrs_t = details::FuncParamsTuple<func_t>::exprptrs_t;
-            constexpr paramCount = std::tuple_size_v<params_t>;
+            static constexpr paramCount = std::tuple_size_v<params_t>;
 
             exprptrs_t params;
 
