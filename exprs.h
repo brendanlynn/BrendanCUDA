@@ -490,7 +490,7 @@ namespace BrendanCUDA {
         struct Xor : public Expr<bool> {
             static constexpr size_t size = _Count;
 
-            std::unique_ptr<Expr<bool>> v[_Count];
+            std::unique_ptr<Expr<bool>> exprs[_Count];
 
             Xor(const Xor<_Count>& OtherExpr) {
                 for (size_t i = 0; i < _Count; ++i)
@@ -502,7 +502,7 @@ namespace BrendanCUDA {
             bool Calc(const varmap_t& Map) override {
                 bool t = true;
                 for (size_t i = 0; i < _Count; ++i)
-                    t ^= v[i]->Calc(Map);
+                    t ^= exprs[i]->Calc(Map);
                 return t;
             }
 
