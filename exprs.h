@@ -601,11 +601,11 @@ namespace BrendanCUDA {
 
         template <auto _Func>
             requires std::is_function_v<decltype(_Func)>
-        struct Func : public Expr<details::FuncParamsTuple<decltype(_Func)>::output_t> {
+        struct Func : public Expr<typename details::FuncParamsTuple<decltype(_Func)>::output_t> {
             using func_t = decltype(_Func);
             using params_t = details::FuncParamsTuple<func_t>::params_t;
             using exprptrs_t = details::FuncParamsTuple<func_t>::exprptrs_t;
-            static constexpr paramCount = std::tuple_size_v<params_t>;
+            static constexpr size_t paramCount = std::tuple_size_v<params_t>;
 
             exprptrs_t params;
 
