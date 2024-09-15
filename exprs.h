@@ -376,7 +376,7 @@ namespace BrendanCUDA {
 
             And(const And<_Count>& OtherExpr) {
                 for (size_t i = 0; i < _Count; ++i)
-                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+                    exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
             And(And<_Count>&&) = default;
             ~And() override = default;
@@ -435,7 +435,7 @@ namespace BrendanCUDA {
 
             Or(const Or<_Count>& OtherExpr) {
                 for (size_t i = 0; i < _Count; ++i)
-                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+                    exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
             Or(Or<_Count>&&) = default;
             ~Or() override = default;
@@ -494,7 +494,7 @@ namespace BrendanCUDA {
 
             Xor(const Xor<_Count>& OtherExpr) {
                 for (size_t i = 0; i < _Count; ++i)
-                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+                    exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
             Xor(Xor<_Count>&&) = default;
             ~Xor() override = default;
