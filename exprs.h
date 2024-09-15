@@ -1,9 +1,9 @@
 #pragma once
 
 #include "arrays.h"
-#include "copyptr.h"
 #include <any>
 #include <cmath>
+#include <memory>
 #include <unordered_map>
 
 namespace BrendanCUDA {
@@ -16,6 +16,8 @@ namespace BrendanCUDA {
             virtual std::any CalcToAny(const varmap_t&) = 0;
 
             virtual ArrayV<ExprBase*> GetSubExprs() = 0;
+
+            virtual ExprBase* Clone() = 0;
         };
         template <typename _TOutput>
         struct Expr : ExprBase {
@@ -26,10 +28,13 @@ namespace BrendanCUDA {
             std::any CalcToAny(const varmap_t& VarMap) override {
                 return Calc(VarMap);
             }
+
+            virtual Expr<_TOutput>* Clone() override = 0;
         };
 
         template <auto _Val>
         struct Val : public Expr<decltype(_Val)> {
+            Val() { }
             ~Val() override = default;
 
             auto Calc(const varmap_t&) override {
@@ -39,11 +44,17 @@ namespace BrendanCUDA {
             auto GetSubExprs() override {
                 return ArrayV<ExprBase*>();
             }
+
+            Val<_Val>* Clone() override {
+                return new Val<_Val>(*this);
+            }
         };
         template <typename _T>
         struct Val : public Expr<_T> {
             _T val;
 
+            Val(_T Val)
+                : val(Val) { }
             ~Val() override = default;
 
             _T Calc(const varmap_t&) override {
@@ -53,12 +64,17 @@ namespace BrendanCUDA {
             auto GetSubExprs() override {
                 return ArrayV<ExprBase*>();
             }
+
+            Val<_T>* Clone() override {
+                return new Val<_T>(*this);
+            }
         };
 
         template <typename _T, uint64_t _Key>
         struct Var : public Expr<_T> {
             constexpr uint64_t key = _Key;
 
+            Var() { }
             ~Var() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -68,11 +84,17 @@ namespace BrendanCUDA {
             auto GetSubExprs() override {
                 return ArrayV<ExprBase*>();
             }
+
+            Var<_T, _Key>* Clone() override {
+                return new Var<_T, _Key>(*this);
+            }
         };
         template <typename _T>
         struct Var : public Expr<_T> {
             uint64_t key;
 
+            Var(uint64_t Key)
+                : key(Key) { }
             ~Var() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -82,6 +104,10 @@ namespace BrendanCUDA {
             auto GetSubExprs() override {
                 return ArrayV<ExprBase*>();
             }
+
+            Var<_T>* Clone() override {
+                return new Var<_T>(*this);
+            }
         };
 
         template <typename _T, size_t _Count>
@@ -89,8 +115,13 @@ namespace BrendanCUDA {
         struct Add : public Expr<_T> {
             constexpr size_t size = _Count;
 
-            CopyPtr<Expr<_T>> exprs[_Count];
+            std::unique_ptr<Expr<_T>> exprs[_Count];
 
+            Add(const Add<_T, _Count>& OtherExpr) {
+                for (size_t i = 0; i < _Count; ++i)
+                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+            }
+            Add(Add<_T, _Count>&&) = default;
             ~Add() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -105,12 +136,21 @@ namespace BrendanCUDA {
                 for (size_t i = 0; i < _Count; ++i) arr[i] = exprs[i].Get();
                 return arr;
             }
+
+            Add<_T, _Count>* Clone() override {
+                return Add<_T, _Count>(*this);
+            }
         };
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Add : public Expr<_T> {
-            std::vector<CopyPtr<Expr<_T>>> exprs;
+            std::vector<std::unique_ptr<Expr<_T>>> exprs;
 
+            Add(const Add<_T>& OtherExpr) {
+                for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
+                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+            }
+            Add(Add<_T>&&) = default;
             ~Add() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -125,14 +165,21 @@ namespace BrendanCUDA {
                 for (size_t i = 0; i < arr.Size(); ++i) arr[i] = exprs[i].Get();
                 return arr;
             }
+
+            Add<_T>* Clone() override {
+                return new Add<_T>(*this);
+            }
         };
 
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Subtract : public Expr<_T> {
-            CopyPtr<Expr<_T>> a;
-            CopyPtr<Expr<_T>> b;
+            std::unique_ptr<Expr<_T>> a;
+            std::unique_ptr<Expr<_T>> b;
 
+            Subtract(const Subtract<_T>& OtherExpr)
+                : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
+            Subtract(Subtract<_T>&&) = default;
             ~Subtract() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -142,6 +189,10 @@ namespace BrendanCUDA {
             ArrayV<ExprBase*> GetSubExprs() override {
                 return ArrayV<ExprBase*>({ a.Get(), b.Get() });
             }
+
+            Subtract<_T>* Clone() override {
+                return new Subtract<_T>(*this);
+            }
         };
 
         template <typename _T, size_t _Count>
@@ -149,8 +200,13 @@ namespace BrendanCUDA {
         struct Multiply : public Expr<_T> {
             constexpr size_t size = _Count;
 
-            CopyPtr<Expr<_T>> exprs[_Count];
+            std::unique_ptr<Expr<_T>> exprs[_Count];
 
+            Multiply(const Multiply<_T, _Count>& OtherExpr) {
+                for (size_t i = 0; i < _Count; ++i)
+                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+            }
+            Multiply(Multiply<_T, _Count>&&) = default;
             ~Multiply() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -165,12 +221,21 @@ namespace BrendanCUDA {
                 for (size_t i = 0; i < _Count; ++i) arr[i] = exprs[i].Get();
                 return arr;
             }
+
+            Multiply<_T, _Count>* Clone() override {
+                return new Multiply<_T, _Count>(*this);
+            }
         };
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Multiply : public Expr<_T> {
-            std::vector<CopyPtr<Expr<_T>>> exprs;
+            std::vector<std::unique_ptr<Expr<_T>>> exprs;
 
+            Multiply(const Multiply<_T>& OtherExpr) {
+                for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
+                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+            }
+            Multiply(Multiply<_T>&&) = default;
             ~Multiply() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -185,14 +250,21 @@ namespace BrendanCUDA {
                 for (size_t i = 0; i < arr.Size(); ++i) arr[i] = exprs[i].Get();
                 return arr;
             }
+
+            Multiply<_T>* Clone() override {
+                return new Multiply<_T>(*this);
+            }
         };
 
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Divide : public Expr<_T> {
-            CopyPtr<Expr<_T>> a;
-            CopyPtr<Expr<_T>> b;
+            std::unique_ptr<Expr<_T>> a;
+            std::unique_ptr<Expr<_T>> b;
 
+            Divide(const Divide<_T>& OtherExpr)
+                : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
+            Divide(Divide<_T>&&) = default;
             ~Divide() override = default;
 
             _T Calc(const varmap_t& Map) {
@@ -202,13 +274,20 @@ namespace BrendanCUDA {
             ArrayV<ExprBase*> GetSubExprs() override {
                 return ArrayV<ExprBase*>({ a.Get(), b.Get() });
             }
+
+            Divide<_T>* Clone() override {
+                return new Divide<_T>(*this);
+            }
         };
 
         template <std::integral _T>
         struct DivideRoundUp : public Expr<_T> {
-            CopyPtr<Expr<_T>> a;
-            CopyPtr<Expr<_T>> b;
+            std::unique_ptr<Expr<_T>> a;
+            std::unique_ptr<Expr<_T>> b;
 
+            DivideRoundUp(const DivideRoundUp<_T>& OtherExpr)
+                : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
+            DivideRoundUp(DivideRoundUp<_T>&&) = default;
             ~DivideRoundUp() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -220,14 +299,21 @@ namespace BrendanCUDA {
             ArrayV<ExprBase*> GetSubExprs() override {
                 return ArrayV<ExprBase*>({ a.Get(), b.Get() });
             }
+
+            DivideRoundUp<_T>* Clone() override {
+                return new DivideRoundUp<_T>(*this);
+            }
         };
 
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct Mod : public Expr<_T> {
-            CopyPtr<Expr<_T>> a;
-            CopyPtr<Expr<_T>> b;
+            std::unique_ptr<Expr<_T>> a;
+            std::unique_ptr<Expr<_T>> b;
 
+            Mod(const Mod<_T>& OtherExpr)
+                : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
+            Mod(Mod<_T>&&) = default;
             ~Mod() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -244,14 +330,21 @@ namespace BrendanCUDA {
             ArrayV<ExprBase*> GetSubExprs() override {
                 return ArrayV<ExprBase*>({ a.Get(), b.Get() });
             }
+
+            Mod<_T>* Clone() override {
+                return new Mod<_T>(*this);
+            }
         };
 
         template <typename _T>
             requires std::is_arithmetic_v<_T>
         struct ModBlock : public Expr<_T> {
-            CopyPtr<Expr<_T>> a;
-            CopyPtr<Expr<_T>> b;
+            std::unique_ptr<Expr<_T>> a;
+            std::unique_ptr<Expr<_T>> b;
 
+            ModBlock(const ModBlock<_T>& OtherExpr)
+                : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
+            ModBlock(ModBlock<_T>&&) = default;
             ~ModBlock() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -268,14 +361,23 @@ namespace BrendanCUDA {
             ArrayV<ExprBase*> GetSubExprs() override {
                 return ArrayV<ExprBase*>({ a.Get(), b.Get() });
             }
+
+            ModBlock<_T>* Clone() override {
+                return new ModBlock<_T>(*this);
+            }
         };
 
         template <size_t _Count = -1>
         struct And : public Expr<bool> {
             constexpr size_t size = _Count;
 
-            CopyPtr<Expr<bool>> exprs[_Count];
+            std::unique_ptr<Expr<bool>> exprs[_Count];
 
+            And(const And<_Count>& OtherExpr) {
+                for (size_t i = 0; i < _Count; ++i)
+                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+            }
+            And(And<_Count>&&) = default;
             ~And() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -290,11 +392,20 @@ namespace BrendanCUDA {
                 for (size_t i = 0; i < _Count; ++i) arr[i] = exprs[i].Get();
                 return arr;
             }
+
+            And<_Count>* Clone() override {
+                return new And<_Count>(*this);
+            }
         };
         template <>
         struct And<-1> : public Expr<bool> {
-            std::vector<CopyPtr<Expr<bool>>> exprs;
+            std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
+            And(const And<-1>& OtherExpr) {
+                for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
+                    exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
+            }
+            And(And<-1>&&) = default;
             ~And() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -306,8 +417,12 @@ namespace BrendanCUDA {
 
             ArrayV<ExprBase*> GetSubExprs() override {
                 ArrayV<ExprBase*> arr(exprs.size());
-                for (size_t i = 0; i < arr.Size(); ++i) arr[i] = exprs[i].Get();
+                for (size_t i = 0; i < arr.Size(); ++i) arr[i] = exprs[i].get();
                 return arr;
+            }
+
+            And<-1>* Clone() override {
+                return new And<-1>(*this);
             }
         };
 
@@ -315,8 +430,13 @@ namespace BrendanCUDA {
         struct Or : public Expr<bool> {
             constexpr size_t size = _Count;
 
-            CopyPtr<Expr<bool>> exprs[_Count];
+            std::unique_ptr<Expr<bool>> exprs[_Count];
 
+            Or(const Or<_Count>& OtherExpr) {
+                for (size_t i = 0; i < _Count; ++i)
+                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+            }
+            Or(Or<_Count>&&) = default;
             ~Or() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -331,11 +451,20 @@ namespace BrendanCUDA {
                 for (size_t i = 0; i < _Count; ++i) arr[i] = exprs[i].Get();
                 return arr;
             }
+
+            Or<_Count>* Clone() override {
+                return new Or<_Count>(*this);
+            }
         };
         template <>
         struct Or<-1> : public Expr<bool> {
-            std::vector<CopyPtr<Expr<bool>>> exprs;
+            std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
+            Or(const Or<-1>& OtherExpr) {
+                for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
+                    exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
+            }
+            Or(Or<-1>&&) = default;
             ~Or() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -347,8 +476,12 @@ namespace BrendanCUDA {
 
             ArrayV<ExprBase*> GetSubExprs() override {
                 ArrayV<ExprBase*> arr(exprs.size());
-                for (size_t i = 0; i < arr.Size(); ++i) arr[i] = exprs[i].Get();
+                for (size_t i = 0; i < arr.Size(); ++i) arr[i] = exprs[i].get();
                 return arr;
+            }
+
+            Or<-1>* Clone() override {
+                return new Or<-1>(*this);
             }
         };
 
@@ -356,8 +489,13 @@ namespace BrendanCUDA {
         struct Xor : public Expr<bool> {
             constexpr size_t size = _Count;
 
-            CopyPtr<Expr<bool>> v[_Count];
+            std::unique_ptr<Expr<bool>> v[_Count];
 
+            Xor(const Xor<_Count>& OtherExpr) {
+                for (size_t i = 0; i < _Count; ++i)
+                    exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
+            }
+            Xor(Xor<_Count>&&) = default;
             ~Xor() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -372,11 +510,20 @@ namespace BrendanCUDA {
                 for (size_t i = 0; i < _Count; ++i) arr[i] = exprs[i].Get();
                 return arr;
             }
+
+            Xor<_Count>* Clone() override {
+                return new Xor<_Count>(*this);
+            }
         };
         template <>
         struct Xor<-1> : public Expr<bool> {
-            std::vector<CopyPtr<Expr<bool>>> exprs;
+            std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
+            Xor(const Xor<-1>& OtherExpr) {
+                for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
+                    exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
+            }
+            Xor(Xor<-1>&&) = default;
             ~Xor() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -388,14 +535,21 @@ namespace BrendanCUDA {
 
             ArrayV<ExprBase*> GetSubExprs() override {
                 ArrayV<ExprBase*> arr(exprs.size());
-                for (size_t i = 0; i < arr.Size(); ++i) arr[i] = exprs[i].Get();
+                for (size_t i = 0; i < arr.Size(); ++i) arr[i] = exprs[i].get();
                 return arr;
+            }
+
+            Xor<-1>* Clone() override {
+                return new Xor<-1>(*this);
             }
         };
 
         struct Not : public Expr<bool> {
-            CopyPtr<Expr<bool>> v;
+            std::unique_ptr<Expr<bool>> v;
 
+            Not(const Not& OtherExpr)
+                : v(OtherExpr.v->Clone()) { }
+            Not(Not&&) = default;
             ~Not() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -403,7 +557,11 @@ namespace BrendanCUDA {
             }
 
             ArrayV<ExprBase*> GetSubExprs() override {
-                return ArrayV<ExprBase*>({ v.Get() });
+                return ArrayV<ExprBase*>({ v.get() });
+            }
+
+            Not* Clone() override {
+                return new Not(*this);
             }
         };
 
@@ -414,7 +572,7 @@ namespace BrendanCUDA {
             struct FuncParamsTuple<_TOutput(*)(_Ts...)> {
                 using output_t = _TOutput;
                 using params_t = std::tuple<_Ts...>;
-                using exprptrs_t = std::tuple<CopyPtr<Expr<_Ts>>...>;
+                using exprptrs_t = std::tuple<std::unique_ptr<Expr<_Ts>>...>;
             };
 
             template <typename _TTupleI, typename _TTupleO, size_t _Idx = 0>
@@ -431,6 +589,12 @@ namespace BrendanCUDA {
                 Array[_Idx] = std::get<_Idx>(Tuple);
                 ConvertTupleToArray<_TTuple, _Idx + 1>(Tuple, Array);
             }
+
+            template <typename _TTuple, size_t _Idx = 0>
+            __forceinline void CloneTuple(const _TTuple& TupleOld, _TTuple& TupleNew) {
+                using type_t = std::tuple_element_t<_Idx, _TTuple>;
+                std::get<_Idx>(TupleNew) = type_t(std::get<_Idx>(TupleOld)->Clone());
+            }
         }
 
         template <auto _Func>
@@ -443,6 +607,10 @@ namespace BrendanCUDA {
 
             exprptrs_t params;
 
+            Func(const Func<_Func>& OtherExpr) {
+                details::CloneTuple(OtherExpr.params, params);
+            }
+            Func(Func<_Func>&&) = default;
             ~Func() override = default;
 
             Func<_Func>::output_t Calc(const varmap_t& Map) override {
@@ -458,6 +626,10 @@ namespace BrendanCUDA {
                 ArrayV<ExprBase*> arr(paramCount);
                 details::ConvertTupleToArray(params, arr);
                 return arr;
+            }
+
+            Func<_Func>* Clone() {
+                return new Func<_Func>(*this);
             }
         };
     }
