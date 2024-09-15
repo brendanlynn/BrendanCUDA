@@ -32,6 +32,7 @@ namespace BrendanCUDA {
             virtual Expr<_TOutput>* Clone() override = 0;
         };
 
+#pragma region ExprImpl
         template <auto _Val>
         struct Val : public Expr<decltype(_Val)> {
             Val() { }
@@ -564,6 +565,7 @@ namespace BrendanCUDA {
                 return new Not(*this);
             }
         };
+#pragma endregion
 
         namespace details {
             template <typename _TFunc>
