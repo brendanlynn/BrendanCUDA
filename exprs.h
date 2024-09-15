@@ -368,7 +368,7 @@ namespace BrendanCUDA {
             }
         };
 
-        template <size_t _Count = -1>
+        template <size_t _Count = (size_t)-1>
         struct And : public Expr<bool> {
             constexpr size_t size = _Count;
 
@@ -399,14 +399,14 @@ namespace BrendanCUDA {
             }
         };
         template <>
-        struct And<-1> : public Expr<bool> {
+        struct And<(size_t)-1> : public Expr<bool> {
             std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
-            And(const And<-1>& OtherExpr) {
+            And(const And<(size_t)-1>& OtherExpr) {
                 for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
-            And(And<-1>&&) = default;
+            And(And<(size_t)-1>&&) = default;
             ~And() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -422,12 +422,12 @@ namespace BrendanCUDA {
                 return arr;
             }
 
-            And<-1>* Clone() override {
-                return new And<-1>(*this);
+            And<(size_t)-1>* Clone() override {
+                return new And<(size_t)-1>(*this);
             }
         };
 
-        template <size_t _Count = -1>
+        template <size_t _Count = (size_t)-1>
         struct Or : public Expr<bool> {
             constexpr size_t size = _Count;
 
@@ -458,14 +458,14 @@ namespace BrendanCUDA {
             }
         };
         template <>
-        struct Or<-1> : public Expr<bool> {
+        struct Or<(size_t)-1> : public Expr<bool> {
             std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
-            Or(const Or<-1>& OtherExpr) {
+            Or(const Or<(size_t)-1>& OtherExpr) {
                 for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
-            Or(Or<-1>&&) = default;
+            Or(Or<(size_t)-1>&&) = default;
             ~Or() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -481,12 +481,12 @@ namespace BrendanCUDA {
                 return arr;
             }
 
-            Or<-1>* Clone() override {
-                return new Or<-1>(*this);
+            Or<(size_t)-1>* Clone() override {
+                return new Or<(size_t)-1>(*this);
             }
         };
 
-        template <size_t _Count = -1>
+        template <size_t _Count = (size_t)-1>
         struct Xor : public Expr<bool> {
             constexpr size_t size = _Count;
 
@@ -517,14 +517,14 @@ namespace BrendanCUDA {
             }
         };
         template <>
-        struct Xor<-1> : public Expr<bool> {
+        struct Xor<(size_t)-1> : public Expr<bool> {
             std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
-            Xor(const Xor<-1>& OtherExpr) {
+            Xor(const Xor<(size_t)-1>& OtherExpr) {
                 for (size_t i = 0; i < OtherExpr.exprs.size(); ++i)
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
-            Xor(Xor<-1>&&) = default;
+            Xor(Xor<(size_t)-1>&&) = default;
             ~Xor() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -540,8 +540,8 @@ namespace BrendanCUDA {
                 return arr;
             }
 
-            Xor<-1>* Clone() override {
-                return new Xor<-1>(*this);
+            Xor<(size_t)-1>* Clone() override {
+                return new Xor<(size_t)-1>(*this);
             }
         };
 
