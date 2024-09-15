@@ -29,6 +29,10 @@ namespace BrendanCUDA {
             : ArrayV(Array.ptr, Array.size) {
             Array.ptr = 0;
         }
+        __host__ __device__ __forceinline ArrayV(std::initializer_list<_T> InitList)
+            : size(InitList.size()), ptr(new _T[InitList.size()]) {
+            std::copy(InitList.begin(), InitList.end(), ptr);
+        }
 
         __host__ __device__ __forceinline ~ArrayV() {
             delete[] ptr;
