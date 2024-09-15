@@ -38,11 +38,11 @@ namespace BrendanCUDA {
             ValCC() { }
             ~ValCC() override = default;
 
-            auto Calc(const varmap_t&) override {
+            decltype(_Val) Calc(const varmap_t&) override {
                 return _Val;
             }
 
-            auto GetSubExprs() override {
+            ArrayV<ExprBase*> GetSubExprs() override {
                 return ArrayV<ExprBase*>();
             }
 
@@ -62,7 +62,7 @@ namespace BrendanCUDA {
                 return val;
             }
 
-            auto GetSubExprs() override {
+            ArrayV<ExprBase*> GetSubExprs() override {
                 return ArrayV<ExprBase*>();
             }
 
@@ -82,7 +82,7 @@ namespace BrendanCUDA {
                 return std::any_cast<_T>(Map.at(_Key));
             }
 
-            auto GetSubExprs() override {
+            ArrayV<ExprBase*> GetSubExprs() override {
                 return ArrayV<ExprBase*>();
             }
 
@@ -102,7 +102,7 @@ namespace BrendanCUDA {
                 return std::any_cast<_T>(Map.at(key));
             }
 
-            auto GetSubExprs() override {
+            ArrayV<ExprBase*> GetSubExprs() override {
                 return ArrayV<ExprBase*>();
             }
 
