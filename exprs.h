@@ -630,7 +630,7 @@ namespace BrendanCUDA {
                 return arr;
             }
 
-            Func<_Func>* Clone() {
+            Func<_Func>* Clone() override {
                 return new Func<_Func>(*this);
             }
         };
