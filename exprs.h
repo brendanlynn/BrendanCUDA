@@ -123,6 +123,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
             }
             Add(Add<_T, _Count>&&) = default;
+            Add<_T, _Count>& operator=(Add<_T, _Count> Other) {
+                for (size_t i = 0; i < _Count; ++i) std::swap(exprs[i], Other.exprs[i]);
+                return *this;
+            }
             ~Add() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -152,6 +156,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
             }
             Add(Add<_T>&&) = default;
+            Add<_T>& operator=(Add<_T> Other) {
+                std::swap(exprs, Other.exprs);
+                return *this;
+            }
             ~Add() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -181,6 +189,11 @@ namespace BrendanCUDA {
             Subtract(const Subtract<_T>& OtherExpr)
                 : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
             Subtract(Subtract<_T>&&) = default;
+            Subtract<_T>& operator=(Subtract<_T> Other) {
+                std::swap(a, Other.a);
+                std::swap(b, Other.b);
+                return *this;
+            }
             ~Subtract() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -208,6 +221,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
             }
             Multiply(Multiply<_T, _Count>&&) = default;
+            Multiply<_T, _Count>& operator=(Multiply<_T, _Count> Other) {
+                for (size_t i = 0; i < _Count; ++i) std::swap(exprs[i], Other.exprs[i]);
+                return *this;
+            }
             ~Multiply() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -237,6 +254,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<_T>>(OtherExpr.exprs[i]->Clone());
             }
             Multiply(Multiply<_T>&&) = default;
+            Multiply<_T>& operator=(Multiply<_T> Other) {
+                std::swap(exprs, Other.exprs);
+                return *this;
+            }
             ~Multiply() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -266,6 +287,11 @@ namespace BrendanCUDA {
             Divide(const Divide<_T>& OtherExpr)
                 : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
             Divide(Divide<_T>&&) = default;
+            Divide<_T>& operator=(Divide<_T> Other) {
+                std::swap(a, Other.a);
+                std::swap(b, Other.b);
+                return *this;
+            }
             ~Divide() override = default;
 
             _T Calc(const varmap_t& Map) {
@@ -289,6 +315,11 @@ namespace BrendanCUDA {
             DivideRoundUp(const DivideRoundUp<_T>& OtherExpr)
                 : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
             DivideRoundUp(DivideRoundUp<_T>&&) = default;
+            DivideRoundUp<_T>& operator=(DivideRoundUp<_T> Other) {
+                std::swap(a, Other.a);
+                std::swap(b, Other.b);
+                return *this;
+            }
             ~DivideRoundUp() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -315,6 +346,11 @@ namespace BrendanCUDA {
             Mod(const Mod<_T>& OtherExpr)
                 : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
             Mod(Mod<_T>&&) = default;
+            Mod<_T>& operator=(Mod<_T> Other) {
+                std::swap(a, Other.a);
+                std::swap(b, Other.b);
+                return *this;
+            }
             ~Mod() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -346,6 +382,11 @@ namespace BrendanCUDA {
             ModBlock(const ModBlock<_T>& OtherExpr)
                 : a(OtherExpr.a->Clone()), b(OtherExpr.b->Clone()) { }
             ModBlock(ModBlock<_T>&&) = default;
+            ModBlock<_T>& operator=(ModBlock<_T> Other) {
+                std::swap(a, Other.a);
+                std::swap(b, Other.b);
+                return *this;
+            }
             ~ModBlock() override = default;
 
             _T Calc(const varmap_t& Map) override {
@@ -379,6 +420,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
             And(And<_Count>&&) = default;
+            And<_Count>& operator=(And<_Count> Other) {
+                for (size_t i = 0; i < _Count; ++i) std::swap(exprs[i], Other.exprs[i]);
+                return *this;
+            }
             ~And() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -407,6 +452,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
             And(And<(size_t)-1>&&) = default;
+            And<(size_t)-1>& operator=(And<(size_t)-1> Other) {
+                std::swap(exprs, Other.exprs);
+                return *this;
+            }
             ~And() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -438,6 +487,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
             Or(Or<_Count>&&) = default;
+            Or<_Count>& operator=(Or<_Count> Other) {
+                for (size_t i = 0; i < _Count; ++i) std::swap(exprs[i], Other.exprs[i]);
+                return *this;
+            }
             ~Or() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -466,6 +519,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
             Or(Or<(size_t)-1>&&) = default;
+            Or<(size_t)-1>& operator=(Or<(size_t)-1> Other) {
+                std::swap(exprs, Other.exprs);
+                return *this;
+            }
             ~Or() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -497,6 +554,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
             Xor(Xor<_Count>&&) = default;
+            Xor<_Count>& operator=(Xor<_Count> Other) {
+                for (size_t i = 0; i < _Count; ++i) std::swap(exprs[i], Other.exprs[i]);
+                return *this;
+            }
             ~Xor() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -525,6 +586,10 @@ namespace BrendanCUDA {
                     exprs[i] = std::unique_ptr<Expr<bool>>(OtherExpr.exprs[i]->Clone());
             }
             Xor(Xor<(size_t)-1>&&) = default;
+            Xor<(size_t)-1>& operator=(Xor<(size_t)-1> Other) {
+                std::swap(exprs, Other.exprs);
+                return *this;
+            }
             ~Xor() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -551,6 +616,10 @@ namespace BrendanCUDA {
             Not(const Not& OtherExpr)
                 : v(OtherExpr.v->Clone()) { }
             Not(Not&&) = default;
+            Not& operator=(Not Other) {
+                std::swap(v, Other.v);
+                return *this;
+            }
             ~Not() override = default;
 
             bool Calc(const varmap_t& Map) override {
@@ -613,6 +682,10 @@ namespace BrendanCUDA {
                 details::CloneTuple(OtherExpr.params, params);
             }
             Func(Func<_Func>&&) = default;
+            Func<_Func>& operator=(Func<_Func> Other) {
+                std::swap(params, Other.params);
+                return *this;
+            }
             ~Func() override = default;
 
             Func<_Func>::output_t Calc(const varmap_t& Map) override {
