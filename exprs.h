@@ -707,27 +707,26 @@ namespace BrendanCUDA {
                 return new Func<_Func>(*this);
             }
         };
-
-        template <typename _T>
-        struct Expression {
-            std::unique_ptr<Expr<_T>> ptr;
-
-            Expression(std::nullptr_t = nullptr)
-                : ptr(nullptr) { }
-            Expression(std::unique_ptr<Expr<_T>>&& Ptr)
-                : ptr(Ptr) { }
-            Expression(const Expression<_T>& OtherExpr)
-                : ptr(OtherExpr.ptr->Clone()) { }
-            Expression(Expression<_T>&&) = default;
-
-            Expression<_T>& operator=(Expression<_T> Other) {
-                std::swap(ptr, Other.ptr);
-                return *this;
-            }
-
-            _T Calculate(const varmap_t& Map) {
-                ptr->Calc(Map);
-            }
-        };
     }
+    template <typename _T>
+    struct Expression {
+        std::unique_ptr<Exprs::Expr<_T>> ptr;
+
+        Expression(std::nullptr_t = nullptr)
+            : ptr(nullptr) { }
+        Expression(std::unique_ptr<Exprs::Expr<_T>>&& Ptr)
+            : ptr(Ptr) { }
+        Expression(const Expression<_T>& OtherExpr)
+            : ptr(OtherExpr.ptr->Clone()) { }
+        Expression(Expression<_T>&&) = default;
+
+        Expression<_T>& operator=(Expression<_T> Other) {
+            std::swap(ptr, Other.ptr);
+            return *this;
+        }
+
+        _T Calculate(const Exprs::varmap_t& Map) {
+            ptr->Calc(Map);
+        }
+    };
 }
