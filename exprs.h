@@ -712,6 +712,8 @@ namespace BrendanCUDA {
         struct Expression {
             std::unique_ptr<Expr<_T>> ptr;
 
+            Expression(std::nullptr_t = nullptr)
+                : ptr(nullptr) { }
             Expression(std::unique_ptr<Expr<_T>>&& Ptr)
                 : ptr(Ptr) { }
             Expression(const Expression<_T>& OtherExpr)
