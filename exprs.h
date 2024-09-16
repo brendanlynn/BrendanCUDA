@@ -726,7 +726,7 @@ namespace BrendanCUDA {
         }
 
         _T Calculate(const Exprs::varmap_t& Map) {
-            ptr->Calc(Map);
+            return ptr->Calc(Map);
         }
     };
 }
