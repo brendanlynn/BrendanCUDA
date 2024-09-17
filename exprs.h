@@ -203,6 +203,8 @@ namespace BrendanCUDA {
             std::unique_ptr<Expr<_T>> a;
             std::unique_ptr<Expr<_T>> b;
 
+            Subtract(Expr<_T>* A, Expr<_T>* B)
+                : a(A), b(B) { }
             Subtract(std::unique_ptr<Expr<_T>>&& A, std::unique_ptr<Expr<_T>>&& B)
                 : a(A), b(B) { }
             Subtract(const Subtract<_T>& OtherExpr)
@@ -320,6 +322,8 @@ namespace BrendanCUDA {
             std::unique_ptr<Expr<_T>> a;
             std::unique_ptr<Expr<_T>> b;
 
+            Divide(Expr<_T>* A, Expr<_T>* B)
+                : a(A), b(B) { }
             Divide(std::unique_ptr<Expr<_T>>&& A, std::unique_ptr<Expr<_T>>&& B)
                 : a(A), b(B) { }
             Divide(const Divide<_T>& OtherExpr)
@@ -350,6 +354,8 @@ namespace BrendanCUDA {
             std::unique_ptr<Expr<_T>> a;
             std::unique_ptr<Expr<_T>> b;
 
+            DivideRoundUp(Expr<_T>* A, Expr<_T>* B)
+                : a(A), b(B) { }
             DivideRoundUp(std::unique_ptr<Expr<_T>>&& A, std::unique_ptr<Expr<_T>>&& B)
                 : a(A), b(B) { }
             DivideRoundUp(const DivideRoundUp<_T>& OtherExpr)
@@ -383,6 +389,8 @@ namespace BrendanCUDA {
             std::unique_ptr<Expr<_T>> a;
             std::unique_ptr<Expr<_T>> b;
 
+            Mod(Expr<_T>* A, Expr<_T>* B)
+                : a(A), b(B) { }
             Mod(std::unique_ptr<Expr<_T>>&& A, std::unique_ptr<Expr<_T>>&& B)
                 : a(A), b(B) { }
             Mod(const Mod<_T>& OtherExpr)
@@ -421,6 +429,8 @@ namespace BrendanCUDA {
             std::unique_ptr<Expr<_T>> a;
             std::unique_ptr<Expr<_T>> b;
 
+            ModBlock(Expr<_T>* A, Expr<_T>* B)
+                : a(A), b(B) { }
             ModBlock(std::unique_ptr<Expr<_T>>&& A, std::unique_ptr<Expr<_T>>&& B)
                 : a(A), b(B) { }
             ModBlock(const ModBlock<_T>& OtherExpr)
@@ -708,6 +718,8 @@ namespace BrendanCUDA {
         struct Not : public Expr<bool> {
             std::unique_ptr<Expr<bool>> v;
 
+            Not(Expr<bool>* V)
+                : v(V) { }
             Not(std::unique_ptr<Expr<bool>>&& V)
                 : v(std::move(V)) { }
             Not(const Not& OtherExpr)
