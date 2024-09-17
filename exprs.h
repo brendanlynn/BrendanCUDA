@@ -118,12 +118,14 @@ namespace BrendanCUDA {
 
             std::unique_ptr<Expr<_T>> exprs[_Count];
 
-            Add(std::initializer_list<std::unique_ptr<Expr<_T>>> Exprs) {
+            Add(std::initializer_list<Expr<_T>*> Exprs) {
                 if (Exprs.size() != _Count)
                     throw std::exception("Exprs.size() must equal _Count");
-                
-                for (size_t i = 0; i < _Count; ++i)
-                    exprs[i] = std::move(Exprs[i]);
+
+                std::unique_ptr<Expr<_T>>* p_up = exprs;
+                Expr<_T>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             Add(const Add<_T, _Count>& OtherExpr) {
                 for (size_t i = 0; i < _Count; ++i)
@@ -158,10 +160,12 @@ namespace BrendanCUDA {
         struct Add<_T, (size_t)-1> : public Expr<_T> {
             std::vector<std::unique_ptr<Expr<_T>>> exprs;
 
-            Add(std::initializer_list<std::unique_ptr<Expr<_T>>> Exprs)
+            Add(std::initializer_list<Expr<_T>*> Exprs)
                 : exprs(Exprs.size()) {
-                for (size_t i = 0; i < Exprs.size(); ++i)
-                    exprs[i] = std::move(Exprs[i]);
+                std::unique_ptr<Expr<_T>>* p_up = exprs.data();
+                Expr<_T>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             Add(const Add<_T>& OtherExpr)
                 : exprs(OtherExpr.exprs.size()) {
@@ -231,12 +235,14 @@ namespace BrendanCUDA {
 
             std::unique_ptr<Expr<_T>> exprs[_Count];
 
-            Multiply(std::initializer_list<std::unique_ptr<Expr<_T>>> Exprs) {
+            Multiply(std::initializer_list<Expr<_T>*> Exprs) {
                 if (Exprs.size() != _Count)
                     throw std::exception("Exprs.size() must equal _Count");
 
-                for (size_t i = 0; i < _Count; ++i)
-                    exprs[i] = std::move(Exprs[i]);
+                std::unique_ptr<Expr<_T>>* p_up = exprs;
+                Expr<_T>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             Multiply(const Multiply<_T, _Count>& OtherExpr) {
                 for (size_t i = 0; i < _Count; ++i)
@@ -271,10 +277,12 @@ namespace BrendanCUDA {
         struct Multiply<_T, (size_t)-1> : public Expr<_T> {
             std::vector<std::unique_ptr<Expr<_T>>> exprs;
 
-            Multiply(std::initializer_list<std::unique_ptr<Expr<_T>>> Exprs)
+            Multiply(std::initializer_list<Expr<_T>*> Exprs)
                 : exprs(Exprs.size()) {
-                for (size_t i = 0; i < Exprs.size(); ++i)
-                    exprs[i] = std::move(Exprs[i]);
+                std::unique_ptr<Expr<_T>>* p_up = exprs.data();
+                Expr<_T>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             Multiply(const Multiply<_T>& OtherExpr)
                 : exprs(OtherExpr.exprs.size()) {
@@ -451,12 +459,14 @@ namespace BrendanCUDA {
 
             std::unique_ptr<Expr<bool>> exprs[_Count];
 
-            And(std::initializer_list<std::unique_ptr<Expr<bool>>> Exprs) {
+            And(std::initializer_list<Expr<bool>*> Exprs) {
                 if (Exprs.size() != _Count)
                     throw std::exception("Exprs.size() must equal _Count");
 
-                for (size_t i = 0; i < _Count; ++i)
-                    exprs[i] = std::move(Exprs[i]);
+                std::unique_ptr<Expr<bool>>* p_up = exprs;
+                Expr<bool>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             And(const And<_Count>& OtherExpr) {
                 for (size_t i = 0; i < _Count; ++i)
@@ -490,10 +500,12 @@ namespace BrendanCUDA {
         struct And<(size_t)-1> : public Expr<bool> {
             std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
-            And(std::initializer_list<std::unique_ptr<Expr<bool>>> Exprs)
+            And(std::initializer_list<Expr<bool>*> Exprs)
                 : exprs(Exprs.size()) {
-                for (size_t i = 0; i < Exprs.size(); ++i)
-                    exprs[i] = std::move(Exprs[i]);
+                std::unique_ptr<Expr<bool>>* p_up = exprs.data();
+                Expr<bool>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             And(const And& OtherExpr)
                 : exprs(OtherExpr.exprs.size()) {
@@ -531,12 +543,14 @@ namespace BrendanCUDA {
 
             std::unique_ptr<Expr<bool>> exprs[_Count];
 
-            Or(std::initializer_list<std::unique_ptr<Expr<bool>>> Exprs) {
+            Or(std::initializer_list<Expr<bool>*> Exprs) {
                 if (Exprs.size() != _Count)
                     throw std::exception("Exprs.size() must equal _Count");
 
-                for (size_t i = 0; i < _Count; ++i)
-                    exprs[i] = std::move(Exprs[i]);
+                std::unique_ptr<Expr<bool>>* p_up = exprs;
+                Expr<bool>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             Or(const Or<_Count>& OtherExpr) {
                 for (size_t i = 0; i < _Count; ++i)
@@ -570,10 +584,12 @@ namespace BrendanCUDA {
         struct Or<(size_t)-1> : public Expr<bool> {
             std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
-            Or(std::initializer_list<std::unique_ptr<Expr<bool>>> Exprs)
+            Or(std::initializer_list<Expr<bool>*> Exprs)
                 : exprs(Exprs.size()) {
-                for (size_t i = 0; i < Exprs.size(); ++i)
-                    exprs[i] = std::move(Exprs[i]);
+                std::unique_ptr<Expr<bool>>* p_up = exprs.data();
+                Expr<bool>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             Or(const Or& OtherExpr)
                 : exprs(OtherExpr.exprs.size()) {
@@ -611,12 +627,14 @@ namespace BrendanCUDA {
 
             std::unique_ptr<Expr<bool>> exprs[_Count];
 
-            Xor(std::initializer_list<std::unique_ptr<Expr<bool>>> Exprs) {
+            Xor(std::initializer_list<Expr<bool>*> Exprs) {
                 if (Exprs.size() != _Count)
                     throw std::exception("Exprs.size() must equal _Count");
 
-                for (size_t i = 0; i < _Count; ++i)
-                    exprs[i] = std::move(Exprs[i]);
+                std::unique_ptr<Expr<bool>>* p_up = exprs;
+                Expr<bool>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             Xor(const Xor<_Count>& OtherExpr) {
                 for (size_t i = 0; i < _Count; ++i)
@@ -650,10 +668,12 @@ namespace BrendanCUDA {
         struct Xor<(size_t)-1> : public Expr<bool> {
             std::vector<std::unique_ptr<Expr<bool>>> exprs;
 
-            Xor(std::initializer_list<std::unique_ptr<Expr<bool>>> Exprs)
+            Xor(std::initializer_list<Expr<bool>*> Exprs)
                 : exprs(Exprs.size()) {
-                for (size_t i = 0; i < Exprs.size(); ++i)
-                    exprs[i] = std::move(Exprs[i]);
+                std::unique_ptr<Expr<bool>>* p_up = exprs.data();
+                Expr<bool>* const* p_op = Exprs.begin();
+                for (; p_op < Exprs.end(); ++p_up, ++p_op)
+                    p_up->reset(*p_op);
             }
             Xor(const Xor& OtherExpr)
                 : exprs(OtherExpr.exprs.size()) {
@@ -689,7 +709,7 @@ namespace BrendanCUDA {
             std::unique_ptr<Expr<bool>> v;
 
             Not(std::unique_ptr<Expr<bool>>&& V)
-                : v(V) { }
+                : v(std::move(V)) { }
             Not(const Not& OtherExpr)
                 : v(OtherExpr.v->Clone()) { }
             Not(Not&&) = default;
@@ -756,7 +776,7 @@ namespace BrendanCUDA {
             exprptrs_t params;
 
             Func(exprptrs_t&& Exprs)
-                : params(Exprs) { }
+                : params(std::move(Exprs)) { }
             Func(const Func<_Func>& OtherExpr) {
                 details::CloneTuple(OtherExpr.params, params);
             }
