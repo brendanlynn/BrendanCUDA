@@ -134,14 +134,11 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="allheaders.cuh">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="ai.cu">
-      <Filter>Source Files</Filter>
-    </CudaCompile>
-    <CudaCompile Include="ai_evol_evolver.cpp">
       <Filter>Source Files</Filter>
     </CudaCompile>
     <CudaCompile Include="binary_basic.cu">
@@ -171,6 +168,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="copyblock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ai_evol_evolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
