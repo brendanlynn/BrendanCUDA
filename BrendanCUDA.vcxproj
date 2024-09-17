@@ -139,11 +139,7 @@
     <ClInclude Include="rand_bits.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="copyblock.cpp" />
     <CudaCompile Include="ai.cu" />
-    <CudaCompile Include="ai_evol_evolver.cpp">
-      <FileType>CppCode</FileType>
-    </CudaCompile>
     <CudaCompile Include="binary_basic.cu" />
     <CudaCompile Include="details_fillwith.cu" />
     <CudaCompile Include="dcopy.cu" />
@@ -152,6 +148,8 @@
     <CudaCompile Include="rand_randomizer.cu" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="copyblock.cpp" />
+    <ClCompile Include="ai_evol_evolver.cpp" />
     <ClCompile Include="ai_evol_eval_output_impl_proliferation.cpp" />
     <ClCompile Include="ai_evol_eval_output_impl_uniquevalues.cpp" />
   </ItemGroup>
