@@ -1,65 +1,185 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="dcopy.cuh" />
-    <ClInclude Include="binary_basic.h" />
-    <ClInclude Include="fixedvectors.h" />
-    <ClInclude Include="mathfuncs.h" />
-    <ClInclude Include="errorhelp.h" />
-    <ClInclude Include="crossassigns.h" />
-    <ClInclude Include="points.h" />
-    <ClInclude Include="arrays.h" />
-    <ClInclude Include="kernellaunch.cuh" />
-    <ClInclude Include="cudaconstexpr.h" />
-    <ClInclude Include="allheaders.h" />
-    <ClInclude Include="allheaders.cuh" />
-    <ClInclude Include="copyblock.h" />
-    <ClInclude Include="threadid.h" />
-    <ClInclude Include="dimensionedbase.h" />
-    <ClInclude Include="copytype.h" />
-    <ClInclude Include="curandkernelgens.h" />
-    <ClInclude Include="packs.h" />
-    <ClInclude Include="ai_evol_eval_output.h" />
-    <ClInclude Include="ai_evol_eval_output_impl_proliferation.h" />
-    <ClInclude Include="ai_evol_eval_output_impl_uniquevalues.h" />
-    <ClInclude Include="ai_evol_eval_multieval.h" />
-    <ClInclude Include="ai_evol.h" />
-    <ClInclude Include="ai_evol_evolver.h" />
-    <ClInclude Include="ai_genetics_genefixedmlp.h" />
-    <ClInclude Include="ai_mlp_fixedmlp.h" />
-    <ClInclude Include="ai_mlpb_fixedmlpb.h" />
-    <ClInclude Include="ai.h" />
-    <ClInclude Include="details_dfieldbase.h" />
-    <ClInclude Include="details_fieldbase.h" />
-    <ClInclude Include="details_fillwith.h" />
-    <ClInclude Include="details_getintbin.h" />
-    <ClInclude Include="fields_dfield.h" />
-    <ClInclude Include="fields_field.h" />
-    <ClInclude Include="fields_instance.h" />
-    <ClInclude Include="nets_makenet.h" />
-    <ClInclude Include="nets_net.h" />
-    <ClInclude Include="rand_anyrng.h" />
-    <ClInclude Include="rand_bits.h" />
-    <ClInclude Include="rand_randomizer.h" />
-    <ClInclude Include="details_mfieldbase.h" />
-    <ClInclude Include="fields_mfield.h" />
-    <ClInclude Include="fields_mdfield.h" />
-    <ClInclude Include="exprs.h" />
-    <ClInclude Include="copyptr.h" />
+    <ClInclude Include="ai.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_evol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_evol_eval_multieval.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_evol_eval_output.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_evol_eval_output_impl_proliferation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_evol_eval_output_impl_uniquevalues.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_evol_evolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_genetics_genefixedmlp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_mlp_fixedmlp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai_mlpb_fixedmlpb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="allheaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="arrays.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="binary_basic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="copyblock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="copyptr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="copytype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crossassigns.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cudaconstexpr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="curandkernelgens.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dcopy.cuh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="details_dfieldbase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="details_fieldbase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="details_getintbin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="details_fillwith.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="details_mfieldbase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dimensionedbase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="errorhelp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exprs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fields_dfield.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fields_field.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fields_instance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fields_mdfield.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fields_mfield.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fixedvectors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mathfuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kernellaunch.cuh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nets_makenet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nets_net.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="packs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="points.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rand_anyrng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rand_bits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rand_randomizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="threadid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="allheaders.cuh">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="binary_basic.cu" />
-    <CudaCompile Include="dcopy.cu" />
-    <CudaCompile Include="ai_evol_evolver.cpp" />
-    <CudaCompile Include="ai.cu" />
-    <CudaCompile Include="details_fillwith.cu" />
-    <CudaCompile Include="nets_makenet.cu" />
-    <CudaCompile Include="nets_net.cu" />
-    <CudaCompile Include="rand_randomizer.cu" />
+    <CudaCompile Include="ai.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="ai_evol_evolver.cpp">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="binary_basic.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="dcopy.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="details_fillwith.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="nets_makenet.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="nets_net.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="rand_randomizer.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="copyblock.cpp" />
-    <ClCompile Include="ai_evol_eval_output_impl_proliferation.cpp" />
-    <ClCompile Include="ai_evol_eval_output_impl_uniquevalues.cpp" />
+    <ClCompile Include="ai_evol_eval_output_impl_proliferation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ai_evol_eval_output_impl_uniquevalues.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="copyblock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{a6cf5eae-0199-4a4c-b735-56e793ad82e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{af3a5e1a-117c-4fb2-8cf8-2c62f5420324}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
