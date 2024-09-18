@@ -37,6 +37,9 @@ namespace BrendanCUDA {
 
         template <size_t _DimensionCount, typename _TTypes, typename _TPublics>
         using mdfppik_t = typename MDFPPIK<_DimensionCount, _TTypes, _TPublics>::type_t;
+
+        template <size_t _DimensionCount, typename... _Ts>
+        using mdfkf_t = void(*)(const FixedVector<uint32_t, _DimensionCount>& Pos, const Fields::FieldProxyConst<_Ts, _DimensionCount>&... Prevs, _Ts&... Next);
     }
 
     namespace Fields {
@@ -57,9 +60,10 @@ namespace BrendanCUDA {
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
+            using kernelFunc_t = details::mdfkf_t<_DimensionCount, _Ts...>;
             template <bool... _Publics>
                 requires (sizeof...(_Publics) == sizeof...(_Ts))
-            using publicPrivateIterator_t = details::mdfppik_t<_DimensionCount, std::tuple<_Ts...>, std::integer_sequence<bool, _Publics...>>;
+            using publicPrivateKernelFunc_t = details::mdfppik_t<_DimensionCount, std::tuple<_Ts...>, std::integer_sequence<bool, _Publics...>>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline MDField(const vector_t& Dimensions)
@@ -201,9 +205,10 @@ namespace BrendanCUDA {
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
+            using kernelFunc_t = details::mdfkf_t<_DimensionCount, _Ts...>;
             template <bool... _Publics>
                 requires (sizeof...(_Publics) == sizeof...(_Ts))
-            using publicPrivateIterator_t = details::mdfppik_t<_DimensionCount, std::tuple<_Ts...>, std::integer_sequence<bool, _Publics...>>;
+            using publicPrivateKernelFunc_t = details::mdfppik_t<_DimensionCount, std::tuple<_Ts...>, std::integer_sequence<bool, _Publics...>>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {

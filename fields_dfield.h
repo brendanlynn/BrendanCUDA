@@ -7,6 +7,10 @@
 #include <string>
 
 namespace BrendanCUDA {
+    namespace details {
+        template <typename _T, size_t _DimensionCount>
+        using dfieldIK_t = void(*)(FixedVector<uint32_t, _DimensionCount> Pos, Fields::FieldProxyConst<_T, _DimensionCount> Previous, _T& NextVal);
+    }
     namespace Fields {
         template <typename _T, size_t _DimensionCount>
         class DField;
@@ -22,6 +26,7 @@ namespace BrendanCUDA {
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
             using vector_t = basefb_t::vector_t;
+            using kernelFunc_t = details::dfieldIK_t<_T, _DimensionCount>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline DField(const vector_t& Dimensions)
@@ -252,6 +257,7 @@ namespace BrendanCUDA {
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
             using vector_t = basefb_t::vector_t;
+            using kernelFunc_t = details::dfieldIK_t<_T, _DimensionCount>;
 
 #pragma region Wrapper
             __host__ __device__ DFieldProxy(const vector_t& Dimensions, _T* ArrF, _T* ArrB)
@@ -564,8 +570,5 @@ namespace BrendanCUDA {
             __host__ __device__ DFieldProxyConst(const DFieldProxy<_T, _DimensionCount>& Partner)
                 : basefb_t(Partner.Dimensions(), Partner.FData(), Partner.BData()) { }
         };
-
-        template <typename _T, size_t _DimensionCount>
-        using dfieldIteratorKernel_t = void(*)(FixedVector<uint32_t, _DimensionCount> Pos, FieldProxyConst<_T, _DimensionCount> Previous, _T& NextVal);
     }
 }
