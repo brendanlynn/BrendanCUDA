@@ -36,7 +36,7 @@ namespace BrendanCUDA {
 
         template <size_t _Index, std::floating_point _T, AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
         using mlpLayerType_t = MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _ContinuedOutputCounts...>;
-    
+
         template <uintmax_t _Idx, size_t... _Ints>
         struct getIntsByIndex;
         template <size_t _Int1, size_t... _ContinuedInts>
@@ -101,7 +101,7 @@ namespace BrendanCUDA {
                 using elementType_t = _T;
                 static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
                 template <size_t _Index>
-                static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
+                static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::value;
                 template <size_t _Index>
                 using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
 
@@ -152,7 +152,7 @@ namespace BrendanCUDA {
                 using elementType_t = _T;
                 static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
                 template <size_t _Index>
-                static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count>;
+                static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count>::value;
                 template <size_t _Index>
                 using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count>;
 
@@ -508,7 +508,7 @@ template <std::floating_point _T, BrendanCUDA::AI::activationFunction_t<_T> _Act
 __host__ __device__ void BrendanCUDA::AI::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
     _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
     _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
-    
+
     layer.Run(Input, i1);
     nextLayers.Run(i1, i2, i1, Output);
 
@@ -662,14 +662,14 @@ void BrendanCUDA::AI::MLP::RunFixedMLPLOnDevice(const _TFixedMLPL* MLPL, const t
             ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(value_t) * _TFixedMLPL::inputCount, cudaMemcpyHostToDevice));
             value_t* dOutputs;
             ThrowIfBad(cudaMalloc(&dOutputs, sizeof(value_t) * _TFixedMLPL::outputCount));
-            
+
             RunFixedMLPLOnDevice<_TFixedMLPL, false, false>(MLPL, dInputs, dOutputs);
         }
         else {
             value_t* dInputs;
             ThrowIfBad(cudaMalloc(&dInputs, sizeof(value_t) * _TFixedMLPL::inputCount));
             ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(value_t) * _TFixedMLPL::inputCount, cudaMemcpyHostToDevice));
-            
+
             RunFixedMLPLOnDevice<_TFixedMLPL, false, false>(MLPL, dInputs, Outputs);
         }
     }
@@ -688,7 +688,7 @@ void BrendanCUDA::AI::MLP::RunFixedMLPLOnDevice(const _TFixedMLPL* MLPL, const t
 
             float oneF = 1.f;
             ThrowIfBad(cublasSgemv(cublasH, CUBLAS_OP_N, _TFixedMLPL::outputCount, _TFixedMLPL::inputCount, &oneF, &MLPL->weights, _TFixedMLPL::outputCount, Inputs, 1, &oneF, Outputs, 1));
-            
+
             ThrowIfBad(cublasDestroy(cublasH));
         }
     }
@@ -705,14 +705,14 @@ void BrendanCUDA::AI::MLP::RunFixedMLPOnDevice(const _TFixedMLP* MLP, const type
             value_t* dOutputs;
             ThrowIfBad(cudaMalloc(&dOutputs, sizeof(value_t) * _TFixedMLP::OutputCount()));
 
-            RunFixedMLPOnDevice<_TFixedMLP, false, false>(MLPL, dInputs, dOutputs);
+            RunFixedMLPOnDevice<_TFixedMLP, false, false>(MLP, dInputs, dOutputs);
         }
         else {
             value_t* dInputs;
-            ThrowIfBad(cudaMalloc(&dInputs, sizeof(value_t) * _TFixedMLPL::InputCount()));
-            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(value_t) * _TFixedMLPL::InputCount(), cudaMemcpyHostToDevice));
+            ThrowIfBad(cudaMalloc(&dInputs, sizeof(value_t) * _TFixedMLP::InputCount()));
+            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(value_t) * _TFixedMLP::InputCount(), cudaMemcpyHostToDevice));
 
-            RunFixedMLPOnDevice<_TFixedMLP, false, false>(MLPL, dInputs, Outputs);
+            RunFixedMLPOnDevice<_TFixedMLP, false, false>(MLP, dInputs, Outputs);
         }
     }
     else {
