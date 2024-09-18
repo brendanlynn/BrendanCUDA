@@ -2,18 +2,44 @@
 
 #include "fields_dfield.h"
 #include "fields_mfield.h"
+#include <array>
 
 namespace BrendanCUDA {
     namespace details {
         template <size_t _DimensionCount, bool _Public, typename _T>
         using publicPrivateSelector_t = std::conditional_t<_Public, Fields::FieldProxyConst<_T, _DimensionCount>, _T>;
 
-        template <size_t _DimensionCount, typename... _Ts>
-        struct MDFPPIKW {
-            template <bool... _Publics>
-                requires (sizeof...(_Publics) == sizeof...(_Ts))
-            using mDFPPIK_t = void(*)(const FixedVector<uint32_t, _DimensionCount>& Pos, const publicPrivateSelector_t<_DimensionCount, _Publics, _Ts>&... Prev, _Ts&... Next);
+        template <size_t _DimensionCount, typename _TTypes, typename _TPublics>
+        struct MDFPPIK;
+        template <size_t _DimensionCount, typename... _Ts, bool... _Publics>
+            requires (sizeof...(_Ts) == sizeof...(_Publics))
+        struct MDFPPIK<_DimensionCount, std::tuple<_Ts...>, std::integer_sequence<bool, _Publics...>> {
+            static constexpr size_t size = sizeof...(_Ts);
+            static constexpr std::array<bool, size> pubArr{ _Publics... };
+
+            template <uintmax_t _Idx>
+            using idx_type_t = std::tuple_element_t<_Idx, std::tuple<_Ts...>>;
+            template <uintmax_t _Idx>
+            static constexpr bool idx_val = pubArr[_Idx];
+
+            template <uintmax_t _Idx>
+            using idx_fieldType_t = publicPrivateSelector_t<_DimensionCount, idx_val<_Idx>, idx_type_t<_Idx>>;
+        
+            template <typename _TIndicies>
+            struct Type2;
+            template <size_t... _Idxs>
+            struct Type2<std::index_sequence<_Idxs...>> {
+                using type_t = void(*)(const FixedVector<uint32_t, _DimensionCount>& Pos, const idx_fieldType_t<_Idxs>&... Prevs, idx_type_t<_Idxs>&... Next);
+            };
+
+            using type_t = Type2<std::make_index_sequence<size>>::type_t;
         };
+
+        template <size_t _DimensionCount, typename _TTypes, typename _TPublics>
+        using mdfppik_t = typename MDFPPIK<_DimensionCount, _TTypes, _TPublics>::type_t;
+
+        template <size_t _DimensionCount, typename... _Ts>
+        using mdfkf_t = void(*)(const FixedVector<uint32_t, _DimensionCount>& Pos, const Fields::FieldProxyConst<_Ts, _DimensionCount>&... Prevs, _Ts&... Next);
     }
 
     namespace Fields {
@@ -34,8 +60,10 @@ namespace BrendanCUDA {
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
+            using kernelFunc_t = details::mdfkf_t<_DimensionCount, _Ts...>;
             template <bool... _Publics>
-            using publicPrivateIterator_t = details::MDFPPIKW<_DimensionCount, _Ts...>::template mDFPPIK_t<_Publics...>;
+                requires (sizeof...(_Publics) == sizeof...(_Ts))
+            using publicPrivateKernelFunc_t = details::mdfppik_t<_DimensionCount, std::tuple<_Ts...>, std::integer_sequence<bool, _Publics...>>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline MDField(const vector_t& Dimensions)
@@ -177,8 +205,10 @@ namespace BrendanCUDA {
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
+            using kernelFunc_t = details::mdfkf_t<_DimensionCount, _Ts...>;
             template <bool... _Publics>
-            using publicPrivateIterator_t = details::MDFPPIKW<_DimensionCount, _Ts...>::template mDFPPIK_t<_Publics...>;
+                requires (sizeof...(_Publics) == sizeof...(_Ts))
+            using publicPrivateKernelFunc_t = details::mdfppik_t<_DimensionCount, std::tuple<_Ts...>, std::integer_sequence<bool, _Publics...>>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {
@@ -283,8 +313,6 @@ namespace BrendanCUDA {
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
-            template <bool... _Publics>
-            using publicPrivateIterator_t = details::MDFPPIKW<_DimensionCount, _Ts...>::template mDFPPIK_t<_Publics...>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {

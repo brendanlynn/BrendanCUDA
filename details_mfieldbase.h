@@ -75,7 +75,7 @@ namespace BrendanCUDA {
         template <size_t _DimensionCount, typename... _Ts>
         class MFieldBase : public DimensionedBase<_DimensionCount> {
             static_assert(sizeof...(_Ts), "The parameter pack _Ts must contain at least one element.");
-            
+
             using this_t = MFieldBase<_DimensionCount, _Ts...>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
@@ -123,7 +123,7 @@ namespace BrendanCUDA {
             }
             template <size_t _Idx>
             __host__ __device__ element_t<_Idx>* FData() const {
-                return darrs[_Idx];
+                return (element_t<_Idx>*)darrs[_Idx];
             }
 #pragma endregion
 
