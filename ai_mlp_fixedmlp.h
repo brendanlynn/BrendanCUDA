@@ -3,8 +3,10 @@
 #include "ai.h"
 #include "BSerializer/Serializer.h"
 #include "curandkernelgens.h"
+#include "errorhelp.h"
 #include "mathfuncs.h"
 #include "rand_anyrng.h"
+#include "rand_randomizer.h"
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
 #include <random>
