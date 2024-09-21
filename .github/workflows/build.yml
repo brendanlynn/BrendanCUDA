@@ -20,6 +20,8 @@ jobs:
       uses: Jimver/cuda-toolkit@v0.2.17
       with:
         cuda: '12.1.0'
+        method: 'network'
+        sub-packages: '["nvcc", "cudart", "cublas", "cublas_dev", "thrust", "visual_studio_integration"]'
 
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
