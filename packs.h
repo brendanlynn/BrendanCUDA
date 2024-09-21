@@ -3,7 +3,7 @@
 #include <type_traits>
 
 namespace brendancuda {
-    namespace Packs {
+    namespace packs {
         namespace details {
             template <uintmax_t _Idx, typename... _Ts>
             struct typeAt;
