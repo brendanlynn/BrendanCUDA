@@ -1,0 +1,29 @@
+name: Build CUDA Project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up CUDA
+      uses: NVIDIA/setup-cuda@v1
+      with:
+        version: '12.6'
+
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v1.0.3
+
+    - name: Build the project
+      run: |
+        msbuild YourProject.sln /p:Configuration=Release
