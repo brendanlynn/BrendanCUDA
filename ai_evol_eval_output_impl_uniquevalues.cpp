@@ -3,7 +3,7 @@
 #include <unordered_set>
 
 template <typename _T>
-float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues(void* Object, Evaluate_UniqueValues_SD<_T>& Settings) {
+float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues(void* Object, Evaluate_UniqueValues_SD<_T>& Settings) {
     Instance_V<_T*, _T*> oi(Settings.instanceFunctions, Object, Settings.sd_ci);
     if (Settings.individual) {
         std::unordered_set<_T>* s = new std::unordered_set<_T>[Settings.outputCount];
@@ -40,24 +40,24 @@ float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues(void
 }
 
 template <typename _T>
-float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues(void* Object, void* Settings) {
+float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues(void* Object, void* Settings) {
     return Evaluate_UniqueValues(Object, *(Evaluate_UniqueValues_SD<_T>*)Settings);
 }
 
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint8_t>(void*, Evaluate_UniqueValues_SD<uint8_t>&);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int8_t>(void*, Evaluate_UniqueValues_SD<int8_t>&);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint16_t>(void*, Evaluate_UniqueValues_SD<uint16_t>&);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int16_t>(void*, Evaluate_UniqueValues_SD<int16_t>&);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint32_t>(void*, Evaluate_UniqueValues_SD<uint32_t>&);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int32_t>(void*, Evaluate_UniqueValues_SD<int32_t>&);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint64_t>(void*, Evaluate_UniqueValues_SD<uint64_t>&);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int64_t>(void*, Evaluate_UniqueValues_SD<int64_t>&);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint8_t>(void*, Evaluate_UniqueValues_SD<uint8_t>&);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<int8_t>(void*, Evaluate_UniqueValues_SD<int8_t>&);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint16_t>(void*, Evaluate_UniqueValues_SD<uint16_t>&);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<int16_t>(void*, Evaluate_UniqueValues_SD<int16_t>&);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint32_t>(void*, Evaluate_UniqueValues_SD<uint32_t>&);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<int32_t>(void*, Evaluate_UniqueValues_SD<int32_t>&);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint64_t>(void*, Evaluate_UniqueValues_SD<uint64_t>&);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<int64_t>(void*, Evaluate_UniqueValues_SD<int64_t>&);
 
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint8_t>(void*, void*);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int8_t>(void*, void*);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint16_t>(void*, void*);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int16_t>(void*, void*);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint32_t>(void*, void*);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int32_t>(void*, void*);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint64_t>(void*, void*);
-template float brendancuda::AI::Evolution::Evaluation::Output::Evaluate_UniqueValues<int64_t>(void*, void*);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint8_t>(void*, void*);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<int8_t>(void*, void*);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint16_t>(void*, void*);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<int16_t>(void*, void*);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint32_t>(void*, void*);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<int32_t>(void*, void*);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<uint64_t>(void*, void*);
+template float brendancuda::ai::Evolution::Evaluation::Output::Evaluate_UniqueValues<int64_t>(void*, void*);

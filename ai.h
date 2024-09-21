@@ -7,7 +7,7 @@
 #include <limits>
 
 namespace brendancuda {
-    namespace AI {
+    namespace ai {
         template <typename _T>
         using activationFunction_t = _T(*)(_T Value);
 
@@ -53,31 +53,31 @@ namespace brendancuda {
 }
 
 template <typename _T>
-__host__ __device__ constexpr _T brendancuda::AI::ReLU(_T Value) {
+__host__ __device__ constexpr _T brendancuda::ai::ReLU(_T Value) {
     return (Value < (_T)0.) ? (_T)0. : Value;
 }
 template <typename _T, _T _Slope>
-__host__ __device__ constexpr _T brendancuda::AI::LeakyReLU(_T Value) {
+__host__ __device__ constexpr _T brendancuda::ai::LeakyReLU(_T Value) {
     return (Value < (_T)0.) ? Value * _Slope : Value;
 }
 template <typename _T, _T _Lower, _T _Upper>
-__host__ __device__ constexpr _T brendancuda::AI::BoundReLU(_T Value) {
+__host__ __device__ constexpr _T brendancuda::ai::BoundReLU(_T Value) {
     if (Value < _Lower) return (_T)0.;
     if (Value > _Upper) return (_T)1.;
     return Value;
 }
 template <typename _T, _T _Slope, _T _Lower, _T _Upper>
-__host__ __device__ constexpr _T brendancuda::AI::LeakyBoundReLU(_T Value) {
+__host__ __device__ constexpr _T brendancuda::ai::LeakyBoundReLU(_T Value) {
     if (Value < _Lower) return Value * _Slope;
     if (Value > _Upper) return (_T)1. + (Value - _Upper) * _Slope;
     return Value;
 }
 template <typename _T>
-__host__ __device__ _T brendancuda::AI::TanH(_T Value) {
+__host__ __device__ _T brendancuda::ai::TanH(_T Value) {
     return std::tanh(Value);
 }
 template <typename _T>
-__host__ __device__ _T brendancuda::AI::Sigmoid(_T Value) {
+__host__ __device__ _T brendancuda::ai::Sigmoid(_T Value) {
     Value = std::exp(Value);
     return Value / ((_T)1. + Value);
 }

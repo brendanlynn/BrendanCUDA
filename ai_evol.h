@@ -1,7 +1,7 @@
 #pragma once
 
 namespace brendancuda {
-    namespace AI {
+    namespace ai {
         namespace Evolution {
             //A function that creates an object.
             using creationFunction_t = void*(*)(void* CreationSharedData);

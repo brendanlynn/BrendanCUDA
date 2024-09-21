@@ -12,7 +12,7 @@
 #include <type_traits>
 
 namespace brendancuda {
-    namespace AI {
+    namespace ai {
         namespace MLPB {
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
             struct FixedMLPBL;
@@ -27,12 +27,12 @@ namespace brendancuda {
         };
         template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
         struct MLPBLayerType<0, _TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> {
-            using type = AI::MLPB::FixedMLPBL<_TInput, _TOutput1>;
+            using type = ai::MLPB::FixedMLPBL<_TInput, _TOutput1>;
         };
         template <size_t _Index, std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
         struct MLPBLayerType<_Index, _TInput, _TOutput1> {
             static_assert(!_Index, "_Index is out of bounds.");
-            using type = AI::MLPB::FixedMLPBL<_TInput, _TOutput1>;
+            using type = ai::MLPB::FixedMLPBL<_TInput, _TOutput1>;
         };
 
         template <size_t _Index, std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral... _TsContinuedOutputs>
@@ -41,7 +41,7 @@ namespace brendancuda {
         template <std::integral _T>
         constexpr size_t BitCount = sizeof(_T) << 3;
     }
-    namespace AI {
+    namespace ai {
         namespace MLPB {
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
             struct FixedMLPBL {
@@ -192,7 +192,7 @@ namespace brendancuda {
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-__host__ __device__ void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWith0() {
+__host__ __device__ void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWith0() {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i) {
         weights[i] = (_TInput)0;
     }
@@ -201,7 +201,7 @@ __host__ __device__ void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::F
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWithRandom(_TRNG& RNG) {
+__host__ void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWithRandom(_TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i) {
         weights[i] = details::GetIntBin<_TInput>(RNG);
     }
@@ -211,7 +211,7 @@ __host__ void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWithRand
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWithRandom(_TRNG& RNG) {
+__device__ void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWithRandom(_TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i) {
         weights[i] = details::GetIntBin<_TInput>(RNG);
     }
@@ -221,7 +221,7 @@ __device__ void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::FillWithRa
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__host__ __forceinline void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
         weights[i] = brendancuda::Random::RandomizeWFlips(weights[i], WeightsFlipProb, RNG);
     bias = brendancuda::Random::RandomizeWFlips(bias, BiasFlipProb, RNG);
@@ -230,7 +230,7 @@ __host__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__device__ __forceinline void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
         weights[i] = brendancuda::Random::RandomizeWFlips(weights[i], WeightsFlipProb, RNG);
     bias = brendancuda::Random::RandomizeWFlips(bias, BiasFlipProb, RNG);
@@ -239,7 +239,7 @@ __device__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutpu
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__host__ __forceinline void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
         weights[i] = brendancuda::Random::RandomizeWTargets(weights[i], WeightsFlipProb, RNG);
     bias = brendancuda::Random::RandomizeWTargets(bias, BiasFlipProb, RNG);
@@ -248,7 +248,7 @@ __host__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__device__ __forceinline void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
         weights[i] = brendancuda::Random::RandomizeWTargets(weights[i], WeightsFlipProb, RNG);
     bias = brendancuda::Random::RandomizeWTargets(bias, BiasFlipProb, RNG);
@@ -257,7 +257,7 @@ __device__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutpu
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+__host__ __forceinline void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
         weights[i] = brendancuda::Random::RandomizeWMutations(weights[i], WeightsProbOf1, RNG);
     bias = brendancuda::Random::RandomizeWMutations(bias, BiasProbOf1, RNG);
@@ -266,7 +266,7 @@ __host__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+__device__ __forceinline void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
         weights[i] = brendancuda::Random::RandomizeWMutations(weights[i], WeightsProbOf1, RNG);
     bias = brendancuda::Random::RandomizeWMutations(bias, BiasProbOf1, RNG);
@@ -274,7 +274,7 @@ __device__ __forceinline void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutpu
 #endif
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-__host__ __device__ _TOutput brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::Run(_TInput Input) const {
+__host__ __device__ _TOutput brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::Run(_TInput Input) const {
     _TOutput o = bias;
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i) {
         if (Input & weights[i]) o |= ((_TOutput)1) << i;
@@ -283,116 +283,116 @@ __host__ __device__ _TOutput brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-__host__ __device__ uint64_t brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::RunG(uint64_t Input) const {
+__host__ __device__ uint64_t brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::RunG(uint64_t Input) const {
     return (uint64_t)Run((_TInput)Input);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-size_t brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::SerializedSize() const {
+size_t brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::SerializedSize() const {
     return sizeof(this_t);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::Serialize(void*& Data) const {
+void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::Serialize(void*& Data) const {
     BSerializer::SerializeArray(Data, weights, details::BitCount<_TOutput>);
     BSerializer::Serialize(Data, bias);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput> brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::Deserialize(const void*& Data) {
+brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput> brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::Deserialize(const void*& Data) {
     uint8_t bytes[sizeof(this_t)];
     Deserialize(Data, &bytes);
     return *(this_t*)&bytes;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
-void brendancuda::AI::MLPB::FixedMLPBL<_TInput, _TOutput>::Deserialize(const void*& Data, void* ObjMem) {
+void brendancuda::ai::MLPB::FixedMLPBL<_TInput, _TOutput>::Deserialize(const void*& Data, void* ObjMem) {
     this_t& obj = *(this_t*)ObjMem;
     BSerializer::DeserializeArray(Data, obj.weights, details::BitCount<_TOutput>);
     BSerializer::Deserialize(Data, &obj.bias);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-__host__ __device__ void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWith0() {
+__host__ __device__ void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWith0() {
     layer.FillWith0();
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWithRandom(_TRNG& RNG) {
+__host__ void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWithRandom(_TRNG& RNG) {
     layer.FillWithRandom(RNG);
 }
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWithRandom(_TRNG& RNG) {
+__device__ void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::FillWithRandom(_TRNG& RNG) {
     layer.FillWithRandom(RNG);
 }
 #endif
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__host__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
 }
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__device__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
 }
 #endif
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__host__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
 }
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__device__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
 }
 #endif
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+__host__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
 }
 
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+__device__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
 }
 #endif
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-__host__ __device__ auto brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::Run(_TInput Input) const -> output_t {
+__host__ __device__ auto brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::Run(_TInput Input) const -> output_t {
     return (output_t)RunG((uint64_t)Input);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-__host__ __device__ uint64_t brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::RunG(uint64_t Input) const {
+__host__ __device__ uint64_t brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::RunG(uint64_t Input) const {
     Input = layer.RunG(Input);
     return Input;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-__host__ __device__ void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWith0() {
+__host__ __device__ void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWith0() {
     layer.FillWith0();
     nextLayers.FillWith0();
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWithRandom(_TRNG& RNG) {
+__host__ void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWithRandom(_TRNG& RNG) {
     layer.FillWithRandom(RNG);
     nextLayers.FillWithRandom(RNG);
 }
@@ -400,7 +400,7 @@ __host__ void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _T
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWithRandom(_TRNG& RNG) {
+__device__ void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::FillWithRandom(_TRNG& RNG) {
     layer.FillWithRandom(RNG);
     nextLayers.FillWithRandom(RNG);
 }
@@ -408,7 +408,7 @@ __device__ void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, 
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__host__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
     nextLayers.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
 }
@@ -416,7 +416,7 @@ __host__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1,
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__device__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
     nextLayers.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
 }
@@ -424,7 +424,7 @@ __device__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__host__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
     nextLayers.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
 }
@@ -432,7 +432,7 @@ __host__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1,
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+__device__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
     nextLayers.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
 }
@@ -440,7 +440,7 @@ __device__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+__host__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
     nextLayers.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
 }
@@ -448,19 +448,19 @@ __host__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1,
 #ifdef __CUDACC__
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+__device__ __forceinline void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
     nextLayers.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
 }
 #endif
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-__host__ __device__ auto brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Run(_TInput Input) const -> output_t {
+__host__ __device__ auto brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Run(_TInput Input) const -> output_t {
     return (output_t)RunG((uint64_t)Input);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-__host__ __device__ uint64_t brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RunG(uint64_t Input) const {
+__host__ __device__ uint64_t brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::RunG(uint64_t Input) const {
     Input = layer.RunG(Input);
     Input = nextLayers.RunG(Input);
     return Input;
@@ -468,7 +468,7 @@ __host__ __device__ uint64_t brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
 template <size_t _Index>
-__host__ __device__ brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::layerType_t<_Index>& brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Layer() {
+__host__ __device__ brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::layerType_t<_Index>& brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Layer() {
     if constexpr (_Index) {
         return nextLayers.Layer<_Index - 1>();
     }
@@ -479,65 +479,65 @@ __host__ __device__ brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutpu
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
 template <size_t _Index>
-__host__ __device__ brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::layerType_t<_Index>& brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::Layer() {
+__host__ __device__ brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::layerType_t<_Index>& brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::Layer() {
     static_assert(!_Index, "_Index is out of bounds.");
     return layer;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-constexpr size_t brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::LayerCount() {
+constexpr size_t brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::LayerCount() {
     return FixedMLPB<_TOutput1, _TOutput2, _TsContinuedOutputs...>::LayerCount() + 1;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-size_t brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::SerializedSize() const {
+size_t brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::SerializedSize() const {
     return sizeof(this_t);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Serialize(void*& Data) const {
+void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Serialize(void*& Data) const {
     layer.Serialize(Data);
     nextLayers.Serialize(Data);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Deserialize(const void*& Data) {
+brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Deserialize(const void*& Data) {
     uint8_t bytes[sizeof(this_t)];
     Deserialize(Data, &bytes);
     return *(this_t*)&bytes;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
-void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Deserialize(const void*& Data, void* ObjMem) {
+void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>::Deserialize(const void*& Data, void* ObjMem) {
     this_t& obj = &(this_t*)ObjMem;
     BSerializer::Deserialize(Data, &obj.layer);
     BSerializer::Deserialize(Data, &obj.nextLayers);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-constexpr size_t brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::LayerCount() {
+constexpr size_t brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::LayerCount() {
     return 1;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-size_t brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::SerializedSize() const {
+size_t brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::SerializedSize() const {
     return sizeof(this_t);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::Serialize(void*& Data) const {
+void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::Serialize(void*& Data) const {
     layer.Serialize(Data);
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1> brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::Deserialize(const void*& Data) {
+brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1> brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::Deserialize(const void*& Data) {
     uint8_t bytes[sizeof(this_t)];
     Deserialize(Data, &bytes);
     return *(this_t*)&bytes;
 }
 
 template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
-void brendancuda::AI::MLPB::FixedMLPB<_TInput, _TOutput1>::Deserialize(const void*& Data, void* ObjMem) {
+void brendancuda::ai::MLPB::FixedMLPB<_TInput, _TOutput1>::Deserialize(const void*& Data, void* ObjMem) {
     this_t& obj = &(this_t*)ObjMem;
     BSerializer::Deserialize(Data, &obj.layer);
 }

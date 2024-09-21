@@ -4,7 +4,7 @@
 #include <utility>
 
 namespace brendancuda {
-    namespace AI {
+    namespace ai {
         namespace Evolution {
             namespace Evaluation {
                 namespace Output {

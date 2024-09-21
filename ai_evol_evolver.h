@@ -6,19 +6,19 @@
 #include <random>
 
 namespace brendancuda {
-    namespace AI {
+    namespace ai {
         namespace Evolution {
             //A class to reduce the boilerplate code of implementing an evolutionary algorithm.
             class Evolver {
             public:
-                //Creates an instance of the brendancuda::AI::Evolution::Evolver class.
+                //Creates an instance of the brendancuda::ai::Evolution::Evolver class.
                 Evolver(
                     size_t ContestantCount,
                     evaluationFunction_t EvaluationFunction,
                     reproductionFunction_t ReproductionFunction,
                     disposeFunction_t DisposeFunction
                 );
-                //Creates an instance of the brendancuda::AI::Evolution::Evolver class.
+                //Creates an instance of the brendancuda::ai::Evolution::Evolver class.
                 Evolver(
                     size_t ContestantCount,
                     evaluationFunction_t EvaluationFunction,

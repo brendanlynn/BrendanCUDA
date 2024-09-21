@@ -3,7 +3,7 @@
 #include "ai_evol_eval_output.h"
 
 namespace brendancuda {
-    namespace AI {
+    namespace ai {
         namespace Evolution {
             namespace Evaluation {
                 namespace Output {
