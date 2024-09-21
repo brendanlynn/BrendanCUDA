@@ -5,7 +5,7 @@
 
 namespace brendancuda {
     namespace ai {
-        namespace evolution {
+        namespace evol {
             namespace evaluation {
                 namespace output {
                     template <typename _T>
@@ -54,7 +54,7 @@ namespace brendancuda {
 }
 
 template <typename _T>
-__forceinline brendancuda::ai::evolution::evaluation::output::Evaluate_Proliferation_SD<_T>::Evaluate_Proliferation_SD(brendancuda::random::AnyRNG<uint64_t> RNG)
+__forceinline brendancuda::ai::evol::evaluation::output::Evaluate_Proliferation_SD<_T>::Evaluate_Proliferation_SD(brendancuda::random::AnyRNG<uint64_t> RNG)
     : rng(RNG),
     instanceFunctions() {
     iterationsPerRound = 0;
@@ -64,7 +64,7 @@ __forceinline brendancuda::ai::evolution::evaluation::output::Evaluate_Prolifera
     mask = 0;
     sd_ci = 0;
 }
-__forceinline brendancuda::ai::evolution::evaluation::output::Evaluate_Proliferation_SD<float>::Evaluate_Proliferation_SD(brendancuda::random::AnyRNG<uint64_t> RNG)
+__forceinline brendancuda::ai::evol::evaluation::output::Evaluate_Proliferation_SD<float>::Evaluate_Proliferation_SD(brendancuda::random::AnyRNG<uint64_t> RNG)
     : rng(RNG),
     instanceFunctions() {
     iterationsPerRound = 0;
@@ -73,7 +73,7 @@ __forceinline brendancuda::ai::evolution::evaluation::output::Evaluate_Prolifera
     outputCount = 0;
     sd_ci = 0;
 }
-__forceinline brendancuda::ai::evolution::evaluation::output::Evaluate_Proliferation_SD<double>::Evaluate_Proliferation_SD(brendancuda::random::AnyRNG<uint64_t> RNG)
+__forceinline brendancuda::ai::evol::evaluation::output::Evaluate_Proliferation_SD<double>::Evaluate_Proliferation_SD(brendancuda::random::AnyRNG<uint64_t> RNG)
     : rng(RNG),
     instanceFunctions() {
     iterationsPerRound = 0;
