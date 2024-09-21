@@ -10,7 +10,7 @@ __global__ void randomizeArrayKernel(bcuda::Span<float> Array, float Scalar, uin
     curandState state;
     curand_init(Seed, idx, 0, &state);
     float* l = Array.ptr + idx * Count;
-    float* u = l + Count;
+    float* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l += Scalar * (curand_uniform(&state) - 0.5f);
 }
@@ -21,7 +21,7 @@ __global__ void randomizeArrayKernel(bcuda::Span<double> Array, double Scalar, u
     curandState state;
     curand_init(Seed, idx, 0, &state);
     double* l = Array.ptr + idx * Count;
-    double* u = l + Count;
+    double* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l += Scalar * (curand_uniform(&state) - 0.5);
 }
@@ -32,7 +32,7 @@ __global__ void randomizeArrayKernel(bcuda::Span<float> Array, float Scalar, flo
     curandState state;
     curand_init(Seed, idx, 0, &state);
     float* l = Array.ptr + idx * Count;
-    float* u = l + Count;
+    float* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l += std::clamp(*l + curand_uniform(&state) * Scalar, Lower, Upper);
 }
@@ -43,7 +43,7 @@ __global__ void randomizeArrayKernel(bcuda::Span<double> Array, double Scalar, d
     curandState state;
     curand_init(Seed, idx, 0, &state);
     double* l = Array.ptr + idx * Count;
-    double* u = l + Count;
+    double* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l += std::clamp(*l + curand_uniform(&state) * Scalar, Lower, Upper);
 }
@@ -54,7 +54,7 @@ __global__ void randomizeArrayWFlipsKernel(bcuda::Span<uint32_t> Array, uint32_t
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
-    uint32_t* u = l + Count;
+    uint32_t* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l = bcuda::rand::RandomizeWFlips(*l, FlipProb, state);
 }
@@ -65,7 +65,7 @@ __global__ void randomizeArrayWTargetsKernel(bcuda::Span<uint32_t> Array, uint32
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
-    uint32_t* u = l + Count;
+    uint32_t* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l = bcuda::rand::RandomizeWTargets(*l, EachFlipProb, state);
 }
@@ -76,7 +76,7 @@ __global__ void randomizeArrayWMutationsKernel(bcuda::Span<uint32_t> Array, uint
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
-    uint32_t* u = l + Count;
+    uint32_t* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l = bcuda::rand::RandomizeWMutations(*l, MutationProb, state);
 }
@@ -87,7 +87,7 @@ __global__ void randomizeArrayWMutationsKernel(bcuda::Span<uint32_t> Array, uint
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
-    uint32_t* u = l + Count;
+    uint32_t* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l = bcuda::rand::RandomizeWMutations(*l, MutationProb, ProbabilityOf1, state);
 }
@@ -99,7 +99,7 @@ __global__ void initArrayKernel(bcuda::Span<float> Array, uint64_t Seed, uint64_
     curandState state;
     curand_init(Seed, idx, 0, &state);
     float* l = Array.ptr + idx * Count;
-    float* u = l + Count;
+    float* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l = curand_uniform(&state);
 }
@@ -110,7 +110,7 @@ __global__ void initArrayKernel(bcuda::Span<double> Array, uint64_t Seed, uint64
     curandState state;
     curand_init(Seed, idx, 0, &state);
     double* l = Array.ptr + idx * Count;
-    double* u = l + Count;
+    double* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l = curand_uniform(&state);
 }
@@ -121,7 +121,7 @@ __global__ void initArrayKernel(bcuda::Span<float> Array, float Lower, float Ran
     curandState state;
     curand_init(Seed, idx, 0, &state);
     float* l = Array.ptr + idx * Count;
-    float* u = l + Count;
+    float* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l = curand_uniform(&state) * Range + Lower;
 }
@@ -132,7 +132,7 @@ __global__ void initArrayKernel(bcuda::Span<double> Array, double Lower, double 
     curandState state;
     curand_init(Seed, idx, 0, &state);
     double* l = Array.ptr + idx * Count;
-    double* u = l + Count;
+    double* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
         *l = curand_uniform(&state) * Range + Lower;
 }
