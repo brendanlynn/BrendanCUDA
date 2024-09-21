@@ -17,8 +17,8 @@ namespace bcuda {
                         size_t outputCount;
                         _T mask;
                         void* sd_ci;
-                        bcuda::random::AnyRNG<uint64_t> rng;
-                        __forceinline Evaluate_Proliferation_SD(bcuda::random::AnyRNG<uint64_t> RNG);
+                        bcuda::rand::AnyRNG<uint64_t> rng;
+                        __forceinline Evaluate_Proliferation_SD(bcuda::rand::AnyRNG<uint64_t> RNG);
                     };
                     template <>
                     struct Evaluate_Proliferation_SD<float> final {
@@ -28,8 +28,8 @@ namespace bcuda {
                         size_t inputCount;
                         size_t outputCount;
                         void* sd_ci;
-                        bcuda::random::AnyRNG<uint64_t> rng;
-                        __forceinline Evaluate_Proliferation_SD(bcuda::random::AnyRNG<uint64_t> RNG);
+                        bcuda::rand::AnyRNG<uint64_t> rng;
+                        __forceinline Evaluate_Proliferation_SD(bcuda::rand::AnyRNG<uint64_t> RNG);
                     };
                     template <>
                     struct Evaluate_Proliferation_SD<double> final {
@@ -39,8 +39,8 @@ namespace bcuda {
                         size_t inputCount;
                         size_t outputCount;
                         void* sd_ci;
-                        bcuda::random::AnyRNG<uint64_t> rng;
-                        __forceinline Evaluate_Proliferation_SD(bcuda::random::AnyRNG<uint64_t> RNG);
+                        bcuda::rand::AnyRNG<uint64_t> rng;
+                        __forceinline Evaluate_Proliferation_SD(bcuda::rand::AnyRNG<uint64_t> RNG);
                     };
 
                     template <typename _T>
@@ -54,7 +54,7 @@ namespace bcuda {
 }
 
 template <typename _T>
-__forceinline bcuda::ai::evol::eval::output::Evaluate_Proliferation_SD<_T>::Evaluate_Proliferation_SD(bcuda::random::AnyRNG<uint64_t> RNG)
+__forceinline bcuda::ai::evol::eval::output::Evaluate_Proliferation_SD<_T>::Evaluate_Proliferation_SD(bcuda::rand::AnyRNG<uint64_t> RNG)
     : rng(RNG),
     instanceFunctions() {
     iterationsPerRound = 0;
@@ -64,7 +64,7 @@ __forceinline bcuda::ai::evol::eval::output::Evaluate_Proliferation_SD<_T>::Eval
     mask = 0;
     sd_ci = 0;
 }
-__forceinline bcuda::ai::evol::eval::output::Evaluate_Proliferation_SD<float>::Evaluate_Proliferation_SD(bcuda::random::AnyRNG<uint64_t> RNG)
+__forceinline bcuda::ai::evol::eval::output::Evaluate_Proliferation_SD<float>::Evaluate_Proliferation_SD(bcuda::rand::AnyRNG<uint64_t> RNG)
     : rng(RNG),
     instanceFunctions() {
     iterationsPerRound = 0;
@@ -73,7 +73,7 @@ __forceinline bcuda::ai::evol::eval::output::Evaluate_Proliferation_SD<float>::E
     outputCount = 0;
     sd_ci = 0;
 }
-__forceinline bcuda::ai::evol::eval::output::Evaluate_Proliferation_SD<double>::Evaluate_Proliferation_SD(bcuda::random::AnyRNG<uint64_t> RNG)
+__forceinline bcuda::ai::evol::eval::output::Evaluate_Proliferation_SD<double>::Evaluate_Proliferation_SD(bcuda::rand::AnyRNG<uint64_t> RNG)
     : rng(RNG),
     instanceFunctions() {
     iterationsPerRound = 0;

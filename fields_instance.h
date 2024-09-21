@@ -14,7 +14,7 @@ namespace bcuda {
             ArrayV<size_t> outputs;
             void* obj;
             void* objectRunner_sharedData;
-            random::AnyRNG<uint32_t> rng;
+            rand::AnyRNG<uint32_t> rng;
         };
     }
     namespace fields {
@@ -23,7 +23,7 @@ namespace bcuda {
         template <typename _T, size_t _DimensionCount>
         using fieldInstance_createField_t = DField<_T, _DimensionCount>*(*)(void* SharedData);
         struct FieldInstance_Construct_Settings final {
-            random::AnyRNG<uint32_t> rng;
+            rand::AnyRNG<uint32_t> rng;
             void* objectRunner_sharedData;
             void* createField_sharedData;
             size_t inputCount;
@@ -54,7 +54,7 @@ namespace bcuda {
 template <typename _T, size_t _DimensionCount, bcuda::fields::fieldInstance_createField_t<_T, _DimensionCount> _CreateField>
 void* bcuda::fields::FieldInstance_Construct(void* Object, void* Settings) {
     FieldInstance_Construct_Settings settings = *(FieldInstance_Construct_Settings*)Settings;
-    random::AnyRNG<uint32_t>& rng = settings.rng;
+    rand::AnyRNG<uint32_t>& rng = settings.rng;
 
     details::FieldInstance_CurrentInstance<_T, _DimensionCount>* p_rv = new details::FieldInstance_CurrentInstance<_T, _DimensionCount>{ _CreateField(settings.createField_sharedData), ArrayV<uint32_3>(settings.inputCount), ArrayV<uint32_3>(settings.outputCount), Object, settings.objectRunner_sharedData, rng };
     details::FieldInstance_CurrentInstance<_T, _DimensionCount>& rv = *p_rv;

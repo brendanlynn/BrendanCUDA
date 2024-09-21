@@ -8,7 +8,7 @@
 #include <curand_kernel.h>
 
 namespace bcuda {
-    namespace random {
+    namespace rand {
         template <std::uniform_random_bit_generator _TRNG>
         __host__ __forceinline uint32_t Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG);
         template <std::uniform_random_bit_generator _TRNG>
@@ -23,7 +23,7 @@ namespace bcuda {
 }
 
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline uint32_t bcuda::random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+__host__ __forceinline uint32_t bcuda::rand::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
     uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
@@ -42,7 +42,7 @@ __host__ __forceinline uint32_t bcuda::random::Get32Bits(uint32_t ProbabilityOf1
     return cr;
 }
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline uint64_t bcuda::random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+__host__ __forceinline uint64_t bcuda::rand::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
     uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
@@ -62,7 +62,7 @@ __host__ __forceinline uint64_t bcuda::random::Get64Bits(uint32_t ProbabilityOf1
 }
 #ifdef __CUDACC__
 template <bcuda::KernelCurandState _TRNG>
-__device__ __forceinline uint32_t bcuda::random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+__device__ __forceinline uint32_t bcuda::rand::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
     uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
@@ -80,7 +80,7 @@ __device__ __forceinline uint32_t bcuda::random::Get32Bits(uint32_t ProbabilityO
     return cr;
 }
 template <bcuda::KernelCurandState _TRNG>
-__device__ __forceinline uint64_t bcuda::random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+__device__ __forceinline uint64_t bcuda::rand::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
     uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;

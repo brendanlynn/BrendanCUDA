@@ -15,7 +15,7 @@ namespace bcuda {
         template <typename _TOutputType>
         using runRNGFunc_t = _TOutputType(*)(void*);
     }
-    namespace random {
+    namespace rand {
         template <std::unsigned_integral _TOutputType>
         class AnyRNG {
         public:
