@@ -3,7 +3,7 @@
 #include <memory>
 #include <type_traits>
 
-namespace BrendanCUDA {
+namespace brendancuda {
     template <typename _T>
     class CopyPtr {
         std::unique_ptr<_T> ptr;

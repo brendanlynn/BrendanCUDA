@@ -6,12 +6,12 @@
 #include <curand_kernel.h>
 #include <device_launch_parameters.h>
 
-using BrendanCUDA::float_3;
-using BrendanCUDA::CoordinatesToIndex;
-using BrendanCUDA::uint32_3;
-using BrendanCUDA::ThrowIfBad;
-using BrendanCUDA::Nets::NetNode;
-using BrendanCUDA::Nets::Net;
+using brendancuda::float_3;
+using brendancuda::CoordinatesToIndex;
+using brendancuda::uint32_3;
+using brendancuda::ThrowIfBad;
+using brendancuda::Nets::NetNode;
+using brendancuda::Nets::Net;
 using std::make_tuple;
 using thrust::device_vector;
 
@@ -116,7 +116,7 @@ __device__ void addToBucketTS(BucketTS& bucket, size_t value) {
     atomicExch(&bucket.lock, 0);
 }
 
-__global__ void fillBuckets1(BucketTS* bucketData, size_t bucketCountPerD, BrendanCUDA::float_3* data, size_t dataCount) {
+__global__ void fillBuckets1(BucketTS* bucketData, size_t bucketCountPerD, brendancuda::float_3* data, size_t dataCount) {
     float_3 p = data[blockIdx.x];
     
     uint32_3 bCs = whichBucket(p, bucketCountPerD);
@@ -126,7 +126,7 @@ __global__ void fillBuckets1(BucketTS* bucketData, size_t bucketCountPerD, Brend
     addToBucketTS(bucketData[bI], blockIdx.x);
 }
 
-__global__ void fillBuckets2(Bucket* nodeData, BucketTS* bucketData, uint32_t bucketCountPerD, BrendanCUDA::float_3* data, float ConnectionRange) {
+__global__ void fillBuckets2(Bucket* nodeData, BucketTS* bucketData, uint32_t bucketCountPerD, brendancuda::float_3* data, float ConnectionRange) {
     float_3 p = data[blockIdx.x];
     Bucket& mnd = nodeData[blockIdx.x];
 
@@ -189,7 +189,7 @@ __global__ void disposeOfBuckets(BucketTS* buckets) {
     delete[] buckets[blockIdx.x].data;
 }
 
-BrendanCUDA::Nets::Net BrendanCUDA::Nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, Random::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
+brendancuda::Nets::Net brendancuda::Nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, Random::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
     thrust::device_vector<float_3>* dv = new thrust::device_vector<float_3>(NodeCount);
 
     Random::InitRandomArray<false, float, Random::AnyRNG<uint64_t>>(Span<float>((float*)(dv->data().get()), NodeCount * 3), RNG);

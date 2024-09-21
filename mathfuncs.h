@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <cuda_runtime.h>
 
-namespace BrendanCUDA {
+namespace brendancuda {
     namespace Math {
         template <typename _T>
         __host__ __device__ static __forceinline _T sqrt(_T value);
@@ -16,7 +16,7 @@ namespace BrendanCUDA {
 }
 
 template <>
-__host__ __device__ static __forceinline int32_t BrendanCUDA::Math::sqrt<int32_t>(int32_t value) {
+__host__ __device__ static __forceinline int32_t brendancuda::Math::sqrt<int32_t>(int32_t value) {
     if (value < 0) {
         return -1;
     }
@@ -40,7 +40,7 @@ __host__ __device__ static __forceinline int32_t BrendanCUDA::Math::sqrt<int32_t
     return lower;
 }
 template <>
-__host__ __device__ static __forceinline uint32_t BrendanCUDA::Math::sqrt<uint32_t>(uint32_t value) {
+__host__ __device__ static __forceinline uint32_t brendancuda::Math::sqrt<uint32_t>(uint32_t value) {
     if (value < 2) {
         return value;
     }
@@ -61,7 +61,7 @@ __host__ __device__ static __forceinline uint32_t BrendanCUDA::Math::sqrt<uint32
     return lower;
 }
 template <>
-__host__ __device__ static __forceinline int64_t BrendanCUDA::Math::sqrt<int64_t>(int64_t value) {
+__host__ __device__ static __forceinline int64_t brendancuda::Math::sqrt<int64_t>(int64_t value) {
     if (value < 0) {
         return -1;
     }
@@ -85,7 +85,7 @@ __host__ __device__ static __forceinline int64_t BrendanCUDA::Math::sqrt<int64_t
     return lower;
 }
 template <>
-__host__ __device__ static __forceinline uint64_t BrendanCUDA::Math::sqrt<uint64_t>(uint64_t value) {
+__host__ __device__ static __forceinline uint64_t brendancuda::Math::sqrt<uint64_t>(uint64_t value) {
     if (value < 2) {
         return value;
     }
@@ -106,7 +106,7 @@ __host__ __device__ static __forceinline uint64_t BrendanCUDA::Math::sqrt<uint64
     return lower;
 }
 template <typename _T>
-__host__ __device__ static __forceinline _T BrendanCUDA::Math::sqrt(_T value) {
+__host__ __device__ static __forceinline _T brendancuda::Math::sqrt(_T value) {
     if constexpr (std::signed_integral<_T>)
         return (_T)sqrt((int32_t)value);
     else if constexpr (std::unsigned_integral<_T>)
@@ -116,7 +116,7 @@ __host__ __device__ static __forceinline _T BrendanCUDA::Math::sqrt(_T value) {
 }
 
 template <typename _T>
-__host__ __device__ static __forceinline _T BrendanCUDA::Math::clamp(_T value, _T lower, _T upper) {
+__host__ __device__ static __forceinline _T brendancuda::Math::clamp(_T value, _T lower, _T upper) {
     if (value < lower) {
         return lower;
     }

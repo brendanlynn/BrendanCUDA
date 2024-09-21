@@ -2,7 +2,7 @@
 
 #include "ai_evol_eval_output.h"
 
-namespace BrendanCUDA {
+namespace brendancuda {
     namespace AI {
         namespace Evolution {
             namespace Evaluation {

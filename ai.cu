@@ -196,7 +196,7 @@ __host__ __forceinline void convertInt32sToFloats(uint32_t* Int32s, _TFloat* Flo
 }
 
 template <bool _FloatsOnHost, std::floating_point _TFloat, bool _BoolsOnHost>
-__host__ void BrendanCUDA::AI::ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
+__host__ void brendancuda::AI::ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
     if constexpr (_FloatsOnHost) {
         if constexpr (_BoolsOnHost) {
             for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
@@ -223,12 +223,12 @@ __host__ void BrendanCUDA::AI::ConvertFloatsToBools(_TFloat* Floats, bool* Bools
     }
 }
 template <std::floating_point _TFloat>
-__device__ void BrendanCUDA::AI::ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
+__device__ void brendancuda::AI::ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
     for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
         *Bools = *Floats > Split;
 }
 template <bool _FloatsOnHost, std::floating_point _TFloat, bool _IntsOnHost, std::integral _TInt>
-__host__ void BrendanCUDA::AI::ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
+__host__ void brendancuda::AI::ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
     if constexpr (_FloatsOnHost) {
         if constexpr (_IntsOnHost) {
             size_t intLength = (FloatsLength + 31) >> 5;
@@ -257,13 +257,13 @@ __host__ void BrendanCUDA::AI::ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints,
     }
 }
 template <std::floating_point _TFloat, std::integral _TInt>
-__device__ void BrendanCUDA::AI::ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
+__device__ void brendancuda::AI::ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
     size_t intLength = (FloatsLength + 31) >> 5;
     for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
         *Ints = convertFloatsToInt32(Floats, FloatsLength, Split);
 }
 template <bool _FloatsOnHost, bool _BoolsOnHost, std::floating_point _TFloat>
-__host__ void BrendanCUDA::AI::ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
+__host__ void brendancuda::AI::ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
     if constexpr (_BoolsOnHost) {
         if constexpr (_FloatsOnHost) {
             for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
@@ -290,12 +290,12 @@ __host__ void BrendanCUDA::AI::ConvertBoolsToFloats(bool* Bools, _TFloat* Floats
     }
 }
 template <std::floating_point _TFloat>
-__device__ void BrendanCUDA::AI::ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
+__device__ void brendancuda::AI::ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
     for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
         *Floats = *Bools ? ValTrue : ValFalse;
 }
 template <bool _IntsOnHost, std::integral _TInt, bool _FloatsOnHost, std::floating_point _TFloat>
-__host__ void BrendanCUDA::AI::ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
+__host__ void brendancuda::AI::ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
     if constexpr (_IntsOnHost) {
         if constexpr (_FloatsOnHost) {
             size_t intLength = (FloatsLength + 31) >> 5;
@@ -324,7 +324,7 @@ __host__ void BrendanCUDA::AI::ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats,
     }
 }
 template <std::integral _TInt, std::floating_point _TFloat>
-__device__ void BrendanCUDA::AI::ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
+__device__ void brendancuda::AI::ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
     size_t intLength = (FloatsLength + 31) >> 5;
     for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
         convertInt32ToFloats(Ints, Floats, FloatsLength, ValTrue, ValFalse);

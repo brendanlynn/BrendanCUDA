@@ -5,7 +5,7 @@
 #include <cuda_runtime.h>
 #include <thrust/device_reference.h>
 
-namespace BrendanCUDA {
+namespace brendancuda {
     template <size_t _DimensionCount>
     class DimensionedBase {
         static_assert(_DimensionCount, "_DimensionCount may not be zero.");
@@ -43,7 +43,7 @@ namespace BrendanCUDA {
 }
 
 template <size_t _DimensionCount>
-BrendanCUDA::DimensionedBase<_DimensionCount>::DimensionedBase(vector_t Dimensions) {
+brendancuda::DimensionedBase<_DimensionCount>::DimensionedBase(vector_t Dimensions) {
     for (size_t i = 0; i < _DimensionCount; ++i)
         if (!Dimensions[i]) {
             dims = vector_t();
@@ -52,43 +52,43 @@ BrendanCUDA::DimensionedBase<_DimensionCount>::DimensionedBase(vector_t Dimensio
     dims = Dimensions;
 }
 template <size_t _DimensionCount>
-__host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::LengthX() const requires (_DimensionCount <= 4) {
+__host__ __device__ __forceinline uint32_t brendancuda::DimensionedBase<_DimensionCount>::LengthX() const requires (_DimensionCount <= 4) {
     return dims.x;
 }
 template <size_t _DimensionCount>
-__host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::LengthY() const requires (_DimensionCount >= 2 && _DimensionCount <= 4) {
+__host__ __device__ __forceinline uint32_t brendancuda::DimensionedBase<_DimensionCount>::LengthY() const requires (_DimensionCount >= 2 && _DimensionCount <= 4) {
     return dims.y;
 }
 template <size_t _DimensionCount>
-__host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::LengthZ() const requires (_DimensionCount >= 3 && _DimensionCount <= 4) {
+__host__ __device__ __forceinline uint32_t brendancuda::DimensionedBase<_DimensionCount>::LengthZ() const requires (_DimensionCount >= 3 && _DimensionCount <= 4) {
     return dims.z;
 }
 template <size_t _DimensionCount>
-__host__ __device__ __forceinline uint32_t BrendanCUDA::DimensionedBase<_DimensionCount>::LengthW() const requires (_DimensionCount == 4) {
+__host__ __device__ __forceinline uint32_t brendancuda::DimensionedBase<_DimensionCount>::LengthW() const requires (_DimensionCount == 4) {
     return dims.w;
 }
 template <size_t _DimensionCount>
-__host__ __device__ __forceinline auto BrendanCUDA::DimensionedBase<_DimensionCount>::Dimensions() const -> vector_t {
+__host__ __device__ __forceinline auto brendancuda::DimensionedBase<_DimensionCount>::Dimensions() const -> vector_t {
     return dims;
 }
 template <size_t _DimensionCount>
-__host__ __device__ __forceinline dim3 BrendanCUDA::DimensionedBase<_DimensionCount>::DimensionsD() const requires (_DimensionCount <= 3) {
+__host__ __device__ __forceinline dim3 brendancuda::DimensionedBase<_DimensionCount>::DimensionsD() const requires (_DimensionCount <= 3) {
     if constexpr (_DimensionCount == 1) return dim3(dims.x);
     else if constexpr (_DimensionCount == 2) return dim3(dims.x, dims.y);
     else return dim3(dims.x, dims.y, dims.z);
 }
 template <size_t _DimensionCount>
-__host__ __device__ __forceinline size_t BrendanCUDA::DimensionedBase<_DimensionCount>::ValueCount() const {
+__host__ __device__ __forceinline size_t brendancuda::DimensionedBase<_DimensionCount>::ValueCount() const {
     size_t s = 1;
     for (size_t i = 0; i < _DimensionCount; ++i)
         s *= dims[i];
     return s;
 }
 template <size_t _DimensionCount>
-__host__ __device__ __forceinline uint64_t BrendanCUDA::DimensionedBase<_DimensionCount>::CoordsToIdx(vector_t Coords) const {
-    return BrendanCUDA::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Coords);
+__host__ __device__ __forceinline uint64_t brendancuda::DimensionedBase<_DimensionCount>::CoordsToIdx(vector_t Coords) const {
+    return brendancuda::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Coords);
 }
 template <size_t _DimensionCount>
-__host__ __device__ __forceinline auto BrendanCUDA::DimensionedBase<_DimensionCount>::IdxToCoords(uint64_t Idx) const -> vector_t {
-    return BrendanCUDA::IndexToCoordinates<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Idx);
+__host__ __device__ __forceinline auto brendancuda::DimensionedBase<_DimensionCount>::IdxToCoords(uint64_t Idx) const -> vector_t {
+    return brendancuda::IndexToCoordinates<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Idx);
 }

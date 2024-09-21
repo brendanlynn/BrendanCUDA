@@ -2,7 +2,7 @@
 
 #include "fields_field.h"
 
-namespace BrendanCUDA {
+namespace brendancuda {
     namespace details {
         template <template <typename, uintmax_t> typename _TFunction, uintmax_t _StartIndex, typename... _Ts>
         struct RunFunctionsOverTypeWrapper {

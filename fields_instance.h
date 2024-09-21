@@ -5,7 +5,7 @@
 #include "rand_anyrng.h"
 #include <tuple>
 
-namespace BrendanCUDA {
+namespace brendancuda {
     namespace details {
         template <typename _T, size_t _DimensionCount>
         struct FieldInstance_CurrentInstance final {
@@ -51,8 +51,8 @@ namespace BrendanCUDA {
     }
 }
 
-template <typename _T, size_t _DimensionCount, BrendanCUDA::Fields::fieldInstance_createField_t<_T, _DimensionCount> _CreateField>
-void* BrendanCUDA::Fields::FieldInstance_Construct(void* Object, void* Settings) {
+template <typename _T, size_t _DimensionCount, brendancuda::Fields::fieldInstance_createField_t<_T, _DimensionCount> _CreateField>
+void* brendancuda::Fields::FieldInstance_Construct(void* Object, void* Settings) {
     FieldInstance_Construct_Settings settings = *(FieldInstance_Construct_Settings*)Settings;
     Random::AnyRNG<uint32_t>& rng = settings.rng;
 
@@ -82,8 +82,8 @@ void* BrendanCUDA::Fields::FieldInstance_Construct(void* Object, void* Settings)
 
     return p_rv;
 };
-template <typename _T, size_t _DimensionCount, BrendanCUDA::Fields::fieldInstance_objectRunner_t<_T, _DimensionCount> _ObjectRunner>
-_T* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _T* Inputs) {
+template <typename _T, size_t _DimensionCount, brendancuda::Fields::fieldInstance_objectRunner_t<_T, _DimensionCount> _ObjectRunner>
+_T* brendancuda::Fields::FieldInstance_Iterate(void* CurrentInstance, _T* Inputs) {
     details::FieldInstance_CurrentInstance<_T, _DimensionCount>& c = *(details::FieldInstance_CurrentInstance<_T, _DimensionCount>*)CurrentInstance;
     DField<_T, _DimensionCount>& df = c.dfield;
     ArrayV<size_t>& il = c.inputs;
@@ -107,12 +107,12 @@ _T* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _T* Inputs
     return opts;
 };
 template <typename _T, size_t _DimensionCount>
-void BrendanCUDA::Fields::FieldInstance_Destruct(void* CurrentInstance) {
+void brendancuda::Fields::FieldInstance_Destruct(void* CurrentInstance) {
     delete (details::FieldInstance_CurrentInstance<_T, _DimensionCount>*)CurrentInstance;
 };
 
-template <typename _T, size_t _DimensionCount, BrendanCUDA::Fields::fieldInstance_createField_t<_T, _DimensionCount> _CreateField, BrendanCUDA::Fields::fieldInstance_objectRunner_t<_T, _DimensionCount> _ObjectRunner>
-BrendanCUDA::AI::Evolution::Evaluation::Output::InstanceFunctions<_T*, _T*> BrendanCUDA::Fields::FieldInstance() {
+template <typename _T, size_t _DimensionCount, brendancuda::Fields::fieldInstance_createField_t<_T, _DimensionCount> _CreateField, brendancuda::Fields::fieldInstance_objectRunner_t<_T, _DimensionCount> _ObjectRunner>
+brendancuda::AI::Evolution::Evaluation::Output::InstanceFunctions<_T*, _T*> brendancuda::Fields::FieldInstance() {
     AI::Evolution::Evaluation::Output::InstanceFunctions<_T*, _T*> ifs;
     ifs.constructInstance = FieldInstance_Construct<_T, _DimensionCount, _CreateField>;
     ifs.iterateInstance = FieldInstance_Iterate<_T, _DimensionCount, _ObjectRunner>;
@@ -120,8 +120,8 @@ BrendanCUDA::AI::Evolution::Evaluation::Output::InstanceFunctions<_T*, _T*> Bren
     return ifs;
 }
 
-template <typename _TFieldValue, size_t _DimensionCount, typename _TInput, typename _TOutput, BrendanCUDA::Fields::fieldInstance_assignInput_t<_TFieldValue, _TInput> _AssignInput, BrendanCUDA::Fields::fieldInstance_getOutput_t<_TFieldValue, _TOutput> _GetOutput, BrendanCUDA::Fields::fieldInstance_objectRunner_t<_TFieldValue, _DimensionCount> _ObjectRunner>
-_TOutput* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _TInput* Inputs) {
+template <typename _TFieldValue, size_t _DimensionCount, typename _TInput, typename _TOutput, brendancuda::Fields::fieldInstance_assignInput_t<_TFieldValue, _TInput> _AssignInput, brendancuda::Fields::fieldInstance_getOutput_t<_TFieldValue, _TOutput> _GetOutput, brendancuda::Fields::fieldInstance_objectRunner_t<_TFieldValue, _DimensionCount> _ObjectRunner>
+_TOutput* brendancuda::Fields::FieldInstance_Iterate(void* CurrentInstance, _TInput* Inputs) {
     details::FieldInstance_CurrentInstance<_TFieldValue, _DimensionCount> c = *(details::FieldInstance_CurrentInstance<_TFieldValue, _DimensionCount>*)CurrentInstance;
     DField<_TFieldValue, _DimensionCount>& df = c.dfield;
     ArrayV<size_t>& il = c.inputs;
@@ -149,8 +149,8 @@ _TOutput* BrendanCUDA::Fields::FieldInstance_Iterate(void* CurrentInstance, _TIn
     return opts;
 }
 
-template <typename _TFieldValue, size_t _DimensionCount, typename _TInput, typename _TOutput, BrendanCUDA::Fields::fieldInstance_createField_t<_TFieldValue, _DimensionCount> _CreateField, BrendanCUDA::Fields::fieldInstance_assignInput_t<_TFieldValue, _TInput> _AssignInput, BrendanCUDA::Fields::fieldInstance_getOutput_t<_TFieldValue, _TOutput> _GetOutput, BrendanCUDA::Fields::fieldInstance_objectRunner_t<_TFieldValue, _DimensionCount> _ObjectRunner>
-BrendanCUDA::AI::Evolution::Evaluation::Output::InstanceFunctions<_TInput*, _TOutput*> BrendanCUDA::Fields::FieldInstance() {
+template <typename _TFieldValue, size_t _DimensionCount, typename _TInput, typename _TOutput, brendancuda::Fields::fieldInstance_createField_t<_TFieldValue, _DimensionCount> _CreateField, brendancuda::Fields::fieldInstance_assignInput_t<_TFieldValue, _TInput> _AssignInput, brendancuda::Fields::fieldInstance_getOutput_t<_TFieldValue, _TOutput> _GetOutput, brendancuda::Fields::fieldInstance_objectRunner_t<_TFieldValue, _DimensionCount> _ObjectRunner>
+brendancuda::AI::Evolution::Evaluation::Output::InstanceFunctions<_TInput*, _TOutput*> brendancuda::Fields::FieldInstance() {
     AI::Evolution::Evaluation::Output::InstanceFunctions<_TInput*, _TOutput*> ifs;
     ifs.constructInstance = FieldInstance_Construct<_TFieldValue, _DimensionCount, _CreateField>;
     ifs.iterateInstance = FieldInstance_Iterate<_TFieldValue, _DimensionCount, _TInput, _TOutput, _AssignInput, _GetOutput, _ObjectRunner>;

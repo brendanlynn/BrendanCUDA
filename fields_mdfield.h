@@ -4,7 +4,7 @@
 #include "fields_mfield.h"
 #include <array>
 
-namespace BrendanCUDA {
+namespace brendancuda {
     namespace details {
         template <size_t _DimensionCount, bool _Public, typename _T>
         using publicPrivateSelector_t = std::conditional_t<_Public, Fields::FieldProxyConst<_T, _DimensionCount>, _T>;

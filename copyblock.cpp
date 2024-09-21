@@ -1,7 +1,7 @@
 #include "copyblock.h"
 #include <vector>
 
-__host__ __device__ BrendanCUDA::ArrayV<BrendanCUDA::details::Landmark> BrendanCUDA::details::GetLandmarksInDirection(uint32_t InputLength, uint32_t OutputLength, uint32_t RangeLength, uint32_t InputIndex, uint32_t OutputIndex) {
+__host__ __device__ brendancuda::ArrayV<brendancuda::details::Landmark> brendancuda::details::GetLandmarksInDirection(uint32_t InputLength, uint32_t OutputLength, uint32_t RangeLength, uint32_t InputIndex, uint32_t OutputIndex) {
     std::vector<Landmark> landmarks;
     while (RangeLength) {
         uint32_t dInput = InputLength - InputIndex;

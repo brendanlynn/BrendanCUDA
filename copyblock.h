@@ -6,7 +6,7 @@
 #include "points.h"
 #include <cuda_runtime.h>
 
-namespace BrendanCUDA {
+namespace brendancuda {
     namespace details {
         struct Landmark {
             uint32_t inputIndex;
@@ -36,7 +36,7 @@ namespace BrendanCUDA {
 }
 
 template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap>
-__host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
+__host__ void brendancuda::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
     
     if constexpr (_Wrap) {
@@ -112,7 +112,7 @@ __host__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVec
 }
 #ifdef __CUDACC__
 template <typename _T, size_t _VectorLength, bool _Wrap>
-__device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
+__device__ void brendancuda::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
     if constexpr (_Wrap) {
@@ -178,8 +178,8 @@ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedV
 }
 #endif
 
-template <typename _T, size_t _VectorLength, BrendanCUDA::copyValFunc_t<_T> _CopyValFunc, bool _Wrap>
-__host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
+template <typename _T, size_t _VectorLength, brendancuda::copyValFunc_t<_T> _CopyValFunc, bool _Wrap>
+__host__ __device__ void brendancuda::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
     if constexpr (_Wrap) {
@@ -245,8 +245,8 @@ __host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, con
     }
 }
 
-template <typename _T, size_t _VectorLength, BrendanCUDA::copyArrFunc_t<_T> _CopyArrFunc, bool _Wrap>
-__host__ __device__ void BrendanCUDA::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
+template <typename _T, size_t _VectorLength, brendancuda::copyArrFunc_t<_T> _CopyArrFunc, bool _Wrap>
+__host__ __device__ void brendancuda::CopyBlock(const _T* Input, _T* Output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates) {
     using vector_t = FixedVector<uint32_t, _VectorLength>;
 
     if constexpr (_Wrap) {

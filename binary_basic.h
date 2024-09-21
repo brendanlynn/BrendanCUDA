@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cuda_runtime.h>
 
-namespace BrendanCUDA {
+namespace brendancuda {
     namespace Binary {
         __host__ __device__ uint32_t CountBitsF(uint64_t Value);
         __host__ __device__ uint32_t CountBitsF(uint32_t Value);
