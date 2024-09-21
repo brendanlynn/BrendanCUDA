@@ -86,7 +86,7 @@ namespace brendancuda {
                 template <KernelCurandState _TRNG>
                 __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
 #endif
-                __host__ __device__ void Run(const _T* Input, _T* Output) const;
+                __host__ __device__ void Run(const _T* Input, _T* output) const;
 
                 size_t SerializedSize() const;
                 void Serialize(void*& Data) const;
@@ -129,8 +129,8 @@ namespace brendancuda {
                 template <KernelCurandState _TRNG>
                 __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
 #endif
-                __host__ __device__ void Run(const _T* Input, _T* Output) const;
-                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const;
+                __host__ __device__ void Run(const _T* Input, _T* output) const;
+                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* output) const;
                 template <size_t _Index>
                 __host__ __device__ layerType_t<_Index>& Layer();
 
@@ -179,8 +179,8 @@ namespace brendancuda {
                 template <KernelCurandState _TRNG>
                 __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
 #endif
-                __host__ __device__ void Run(const _T* Input, _T* Output) const;
-                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const;
+                __host__ __device__ void Run(const _T* Input, _T* output) const;
+                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* output) const;
                 template <size_t _Index>
                 __host__ __device__ layerType_t<_Index>& Layer();
 
@@ -380,8 +380,8 @@ __device__ void brendancuda::ai::MLP::FixedMLPL<_T, _ActivationFunction, _InputC
 #endif
 
 template <std::floating_point _T, brendancuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-__host__ __device__ void brendancuda::ai::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Run(const _T* Input, _T* Output) const {
-    if (Input == Output) {
+__host__ __device__ void brendancuda::ai::MLP::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Run(const _T* Input, _T* output) const {
+    if (Input == output) {
         _T* secondOutput = new _T[_OutputCount];
         for (size_t j = 0; j < _OutputCount; ++j) {
             float v = bias[j];
@@ -390,7 +390,7 @@ __host__ __device__ void brendancuda::ai::MLP::FixedMLPL<_T, _ActivationFunction
             }
             secondOutput[j] = _ActivationFunction(v);
         }
-        memcpy(Output, secondOutput, sizeof(_T) * _OutputCount);
+        memcpy(output, secondOutput, sizeof(_T) * _OutputCount);
     }
     else {
         for (size_t j = 0; j < _OutputCount; ++j) {
@@ -398,7 +398,7 @@ __host__ __device__ void brendancuda::ai::MLP::FixedMLPL<_T, _ActivationFunction
             for (size_t i = 0; i < _InputCount; ++i) {
                 v += weights[i][j] * Input[i];
             }
-            Output[j] = _ActivationFunction(v);
+            output[j] = _ActivationFunction(v);
         }
     }
 }
@@ -530,17 +530,17 @@ __device__ void brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _InputCo
 #endif
 
 template <std::floating_point _T, brendancuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-__host__ __device__ void brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Run(const _T* Input, _T* Output) const {
-    Run(Input, 0, 0, Output);
+__host__ __device__ void brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Run(const _T* Input, _T* output) const {
+    Run(Input, 0, 0, output);
 }
 
 template <std::floating_point _T, brendancuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-__host__ __device__ void brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
+__host__ __device__ void brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* output) const {
     _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
     _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
 
     layer.Run(Input, i1);
-    nextLayers.Run(i1, i2, i1, Output);
+    nextLayers.Run(i1, i2, i1, output);
 
     if (!Intermediate1) delete[] i1;
     if (!Intermediate2) delete[] i2;
@@ -558,13 +558,13 @@ __host__ __device__ brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _Inp
 }
 
 template <std::floating_point _T, brendancuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
-__host__ __device__ void brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Run(const _T* Input, _T* Output) const {
-    layer.Run(Input, Output);
+__host__ __device__ void brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Run(const _T* Input, _T* output) const {
+    layer.Run(Input, output);
 }
 
 template <std::floating_point _T, brendancuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
-__host__ __device__ void brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
-    layer.Run(Input, Output);
+__host__ __device__ void brendancuda::ai::MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* output) const {
+    layer.Run(Input, output);
 }
 
 template <std::floating_point _T, brendancuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>

@@ -151,9 +151,9 @@ namespace brendancuda {
             __device__ __forceinline void CopyBlockIn(const _T* Input, const this_t::vector_t& InputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const;
 #endif
             template <bool _OutputOnHost>
-            __host__ __forceinline void CopyBlockOut(_T* Output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const;
+            __host__ __forceinline void CopyBlockOut(_T* output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const;
 #ifdef __CUDACC__
-            __device__ __forceinline void CopyBlockOut(_T* Output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const;
+            __device__ __forceinline void CopyBlockOut(_T* output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const;
 #endif
             
             __host__ __device__ this_t Clone() const;
@@ -427,13 +427,13 @@ __device__ __forceinline void brendancuda::details::FieldBase<_T, _DimensionCoun
 #endif
 template <typename _T, size_t _DimensionCount>
 template <bool _OutputOnHost>
-__host__ __forceinline void brendancuda::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* Output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
-    CopyBlock<_T, _DimensionCount, false, _OutputOnHost, true>(darr, Output, this->Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+__host__ __forceinline void brendancuda::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
+    CopyBlock<_T, _DimensionCount, false, _OutputOnHost, true>(darr, output, this->Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #ifdef __CUDACC__
 template <typename _T, size_t _DimensionCount>
-__device__ __forceinline void brendancuda::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* Output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
-    CopyBlock<_T, _DimensionCount, true>(darr, Output, this->Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+__device__ __forceinline void brendancuda::details::FieldBase<_T, _DimensionCount>::CopyBlockOut(_T* output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
+    CopyBlock<_T, _DimensionCount, true>(darr, output, this->Dimensions(), OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
 }
 #endif
 template <typename _T, size_t _DimensionCount>
