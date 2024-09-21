@@ -14,7 +14,7 @@ namespace brendancuda {
             struct GeneFixedMLP final {
             private:
                 using this_t = GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>;
-                using mlp_t = MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>;
+                using mlp_t = mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>;
                 using inputArray_t = std::array<_T, mlp_t::InputCount()>;
                 using outputArray_t = std::array<_T, mlp_t::OutputCount()>;
             public:
