@@ -7,7 +7,7 @@
 #include <thrust/device_ptr.h>
 
 namespace brendancuda {
-    namespace Fields {
+    namespace fields {
         template <typename _T, size_t _DimensionCount>
         class Field;
         template <typename _T, size_t _DimensionCount>

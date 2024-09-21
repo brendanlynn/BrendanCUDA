@@ -9,9 +9,9 @@
 namespace brendancuda {
     namespace details {
         template <typename _T, size_t _DimensionCount>
-        using dfieldIK_t = void(*)(FixedVector<uint32_t, _DimensionCount> Pos, Fields::FieldProxyConst<_T, _DimensionCount> Previous, _T& NextVal);
+        using dfieldIK_t = void(*)(FixedVector<uint32_t, _DimensionCount> Pos, fields::FieldProxyConst<_T, _DimensionCount> Previous, _T& NextVal);
     }
-    namespace Fields {
+    namespace fields {
         template <typename _T, size_t _DimensionCount>
         class DField;
         template <typename _T, size_t _DimensionCount>
@@ -74,16 +74,16 @@ namespace brendancuda {
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
                 return basefb_t::SizeOnGPU();
             }
-            __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> F() {
+            __host__ __device__ fields::FieldProxy<_T, _DimensionCount> F() {
                 return basefb_t::F();
             }
-            __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> B() {
+            __host__ __device__ fields::FieldProxy<_T, _DimensionCount> B() {
                 return basefb_t::B();
             }
-            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
+            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
                 return basefb_t::FConst();
             }
-            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
+            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
                 return basefb_t::BConst();
             }
             __host__ __device__ _T* FData() {
@@ -302,16 +302,16 @@ namespace brendancuda {
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
                 return basefb_t::SizeOnGPU();
             }
-            __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> F() const {
+            __host__ __device__ fields::FieldProxy<_T, _DimensionCount> F() const {
                 return basefb_t::F();
             }
-            __host__ __device__ Fields::FieldProxy<_T, _DimensionCount> B() const {
+            __host__ __device__ fields::FieldProxy<_T, _DimensionCount> B() const {
                 return basefb_t::B();
             }
-            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
+            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
                 return basefb_t::FConst();
             }
-            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
+            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
                 return basefb_t::BConst();
             }
             __host__ __device__ _T* FData() const {
@@ -484,10 +484,10 @@ namespace brendancuda {
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
                 return basefb_t::SizeOnGPU();
             }
-            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
+            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
                 return basefb_t::FConst();
             }
-            __host__ __device__ Fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
+            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
                 return basefb_t::BConst();
             }
             __host__ __device__ const _T* FData() const {

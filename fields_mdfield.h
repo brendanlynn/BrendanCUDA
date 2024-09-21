@@ -7,7 +7,7 @@
 namespace brendancuda {
     namespace details {
         template <size_t _DimensionCount, bool _Public, typename _T>
-        using publicPrivateSelector_t = std::conditional_t<_Public, Fields::FieldProxyConst<_T, _DimensionCount>, _T>;
+        using publicPrivateSelector_t = std::conditional_t<_Public, fields::FieldProxyConst<_T, _DimensionCount>, _T>;
 
         template <size_t _DimensionCount, typename _TTypes, typename _TPublics>
         struct MDFPPIK;
@@ -39,10 +39,10 @@ namespace brendancuda {
         using mdfppik_t = typename MDFPPIK<_DimensionCount, _TTypes, _TPublics>::type_t;
 
         template <size_t _DimensionCount, typename... _Ts>
-        using mdfkf_t = void(*)(const FixedVector<uint32_t, _DimensionCount>& Pos, const Fields::FieldProxyConst<_Ts, _DimensionCount>&... Prevs, _Ts&... Next);
+        using mdfkf_t = void(*)(const FixedVector<uint32_t, _DimensionCount>& Pos, const fields::FieldProxyConst<_Ts, _DimensionCount>&... Prevs, _Ts&... Next);
     }
 
-    namespace Fields {
+    namespace fields {
         template <size_t _DimensionCount, typename... _Ts>
         class MDField;
         template <size_t _DimensionCount, typename... _Ts>

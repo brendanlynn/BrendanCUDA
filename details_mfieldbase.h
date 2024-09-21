@@ -45,7 +45,7 @@ namespace brendancuda {
             template <typename _T, uintmax_t _Idx>
             struct MFieldBase_SerializedSize {
                 static void Run(void** Arrs, size_t VCount, const FixedVector<uint32_t, _DimensionCount>& Dimensions, size_t& Total) {
-                    Total += Fields::FieldProxyConst<_T, _DimensionCount>(Dimensions, Arrs[_Idx]).SerializedSize();
+                    Total += fields::FieldProxyConst<_T, _DimensionCount>(Dimensions, Arrs[_Idx]).SerializedSize();
                 }
             };
         };
@@ -55,7 +55,7 @@ namespace brendancuda {
             template <typename _T, uintmax_t _Idx>
             struct MFieldBase_Serialize {
                 static void Run(void** Arrs, size_t VCount, const FixedVector<uint32_t, _DimensionCount>& Dimensions, void*& Data) {
-                    Fields::FieldProxyConst<_T, _DimensionCount>(Dimensions, Arrs[_Idx]).Serialize(Data);
+                    fields::FieldProxyConst<_T, _DimensionCount>(Dimensions, Arrs[_Idx]).Serialize(Data);
                 }
             };
         };
@@ -65,7 +65,7 @@ namespace brendancuda {
             template <typename _T, uintmax_t _Idx>
             struct MFieldBase_Deserialize {
                 static void Run(void** Arrs, size_t VCount, const FixedVector<uint32_t, _DimensionCount>& Dimensions, const void*& Data) {
-                    auto field = Fields::FieldProxy<_T, _DimensionCount>(Dimensions, Arrs[_Idx]);
+                    auto field = fields::FieldProxy<_T, _DimensionCount>(Dimensions, Arrs[_Idx]);
                     for (size_t i = 0; i < VCount; ++i)
                         field.CpyValIn(i, BSerializer::Deserialize<_T>(Data));
                 }
@@ -114,12 +114,12 @@ namespace brendancuda {
 
 #pragma region ProxyAccess
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
-                return Fields::FieldProxy<element_t<_Idx>, _DimensionCount>(this->Dimensions(), (element_t<_Idx>*)darrs[_Idx]);
+            __host__ __device__ fields::FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
+                return fields::FieldProxy<element_t<_Idx>, _DimensionCount>(this->Dimensions(), (element_t<_Idx>*)darrs[_Idx]);
             }
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
-                return Fields::FieldProxyConst<element_t<_Idx>, _DimensionCount>(this->Dimensions(), (element_t<_Idx>*)darrs[_Idx]);
+            __host__ __device__ fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+                return fields::FieldProxyConst<element_t<_Idx>, _DimensionCount>(this->Dimensions(), (element_t<_Idx>*)darrs[_Idx]);
             }
             template <size_t _Idx>
             __host__ __device__ element_t<_Idx>* FData() const {
