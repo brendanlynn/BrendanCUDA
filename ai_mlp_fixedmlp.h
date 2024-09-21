@@ -222,10 +222,12 @@ namespace BrendanCUDA {
     }
     namespace AI {
         namespace MLP {
-            template <AI::MLP::IsFixedMLPL _TFixedMLPL>
-            __host__ __device__ Span<typename _TFixedMLPL::element_t> FixedMLPL_GetElementSpan(_TFixedMLPL* MLPL);
-            template <AI::MLP::IsFixedMLP _TFixedMLP>
-            __host__ __device__ Span<typename _TFixedMLP::element_t> FixedMLP_GetElementSpan(_TFixedMLP* MLP);
+            template <typename _TFixedMLPL>
+                requires IsFixedMLPL<std::remove_const_t<_TFixedMLPL>>
+            __host__ __device__ Span<std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>> FixedMLPL_GetElementSpan(_TFixedMLPL* MLPL);
+            template <typename _TFixedMLP>
+                requires IsFixedMLP<std::remove_const_t<_TFixedMLP>>
+            __host__ __device__ Span<std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>> FixedMLP_GetElementSpan(_TFixedMLP* MLP);
 
             template <IsFixedMLPL _TFixedMLPL, bool _InputOnHost, bool _OutputOnHost>
             void FixedMLPL_Run(const _TFixedMLPL* MLPL, const typename _TFixedMLPL::element_t* Inputs, typename _TFixedMLPL::element_t* Outputs);
@@ -233,22 +235,22 @@ namespace BrendanCUDA {
             void FixedMLP_Run(const _TFixedMLP* MLP, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Outputs);
 
             template <IsFixedMLPL _TFixedMLPL>
-            void FixedMLPL_FillWith0(const _TFixedMLPL* MLPL);
+            void FixedMLPL_FillWith0(_TFixedMLPL* MLPL);
             template <IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-            void FixedMLPL_FillWithRandom(const _TFixedMLPL* MLPL, _TRNG& RNG);
+            void FixedMLPL_FillWithRandom(_TFixedMLPL* MLPL, _TRNG& RNG);
             template <IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-            void FixedMLPL_ChangeWithRandom(const _TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, _TRNG& RNG);
+            void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, _TRNG& RNG);
             template <IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-            void FixedMLPL_ChangeWithRandom(const _TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, typename _TFixedMLPL::element_t LowerBound, typename _TFixedMLPL::element_t UpperBound, _TRNG& RNG);
+            void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, typename _TFixedMLPL::element_t LowerBound, typename _TFixedMLPL::element_t UpperBound, _TRNG& RNG);
 
             template <IsFixedMLP _TFixedMLP>
-            void FixedMLP_FillWith0(const _TFixedMLP* MLP);
+            void FixedMLP_FillWith0(_TFixedMLP* MLP);
             template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-            void FixedMLP_FillWithRandom(const _TFixedMLP* MLP, _TRNG& RNG);
+            void FixedMLP_FillWithRandom(_TFixedMLP* MLP, _TRNG& RNG);
             template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-            void FixedMLP_ChangeWithRandom(const _TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, _TRNG& RNG);
+            void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, _TRNG& RNG);
             template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-            void FixedMLP_ChangeWithRandom(const _TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG);
+            void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG);
         }
     }
 }
@@ -715,7 +717,7 @@ void BrendanCUDA::AI::MLP::FixedMLPL_Run(const _TFixedMLPL* MLPL, const typename
             ThrowIfBad(cublasCreate(&cublasH));
 
             float oneF = 1.f;
-            ThrowIfBad(cublasSgemv(cublasH, CUBLAS_OP_N, _TFixedMLPL::outputCount, _TFixedMLPL::inputCount, &oneF, &MLPL->weights, _TFixedMLPL::outputCount, Inputs, 1, &oneF, Outputs, 1));
+            ThrowIfBad(cublasSgemv(cublasH, CUBLAS_OP_N, _TFixedMLPL::outputCount, _TFixedMLPL::inputCount, &oneF, (const float*)&MLPL->weights, _TFixedMLPL::outputCount, Inputs, 1, &oneF, Outputs, 1));
 
             ThrowIfBad(cublasDestroy(cublasH));
         }
@@ -779,62 +781,64 @@ void BrendanCUDA::details::FixedMLP_Run(const _TFixedMLP* MLP, const typename _T
     }
 }
 
-template <BrendanCUDA::AI::MLP::IsFixedMLPL _TFixedMLPL>
-__host__ __device__ BrendanCUDA::Span<typename _TFixedMLPL::element_t> BrendanCUDA::AI::MLP::FixedMLPL_GetElementSpan(_TFixedMLPL* MLPL) {
-    using element_t = typename _TFixedMLPL::element_t;
+template <typename _TFixedMLPL>
+    requires BrendanCUDA::AI::MLP::IsFixedMLPL<std::remove_const_t<_TFixedMLPL>>
+__host__ __device__ BrendanCUDA::Span<std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>> BrendanCUDA::AI::MLP::FixedMLPL_GetElementSpan(_TFixedMLPL* MLPL) {
+    using element_t = std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>;
     return Span<element_t>((element_t*)MLPL, sizeof(_TFixedMLPL) / sizeof(element_t));
 }
-template <BrendanCUDA::AI::MLP::IsFixedMLP _TFixedMLP>
-__host__ __device__ BrendanCUDA::Span<typename _TFixedMLP::element_t> BrendanCUDA::AI::MLP::FixedMLP_GetElementSpan(_TFixedMLP* MLP) {
-    using element_t = typename _TFixedMLP::element_t;
+template <typename _TFixedMLP>
+    requires BrendanCUDA::AI::MLP::IsFixedMLP<std::remove_const_t<_TFixedMLP>>
+__host__ __device__ BrendanCUDA::Span<std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>> BrendanCUDA::AI::MLP::FixedMLP_GetElementSpan(_TFixedMLP* MLP) {
+    using element_t = std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>;
     return Span<element_t>((element_t*)MLP, sizeof(_TFixedMLP) / sizeof(element_t));
 }
 
 template <BrendanCUDA::AI::MLP::IsFixedMLPL _TFixedMLPL>
-void BrendanCUDA::AI::MLP::FixedMLPL_FillWith0(const _TFixedMLPL* MLPL) {
+void BrendanCUDA::AI::MLP::FixedMLPL_FillWith0(_TFixedMLPL* MLPL) {
     using element_t = typename _TFixedMLPL::element_t;
 
     Random::ClearArray<false, element_t>(FixedMLPL_GetElementSpan(MLPL));
 }
 template <BrendanCUDA::AI::MLP::IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::MLP::FixedMLPL_FillWithRandom(const _TFixedMLPL* MLPL, _TRNG& RNG) {
+void BrendanCUDA::AI::MLP::FixedMLPL_FillWithRandom(_TFixedMLPL* MLPL, _TRNG& RNG) {
     using element_t = typename _TFixedMLPL::element_t;
 
     Random::InitRandomArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), RNG);
 }
 template <BrendanCUDA::AI::MLP::IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::MLP::FixedMLPL_ChangeWithRandom(const _TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, _TRNG& RNG) {
+void BrendanCUDA::AI::MLP::FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, _TRNG& RNG) {
     using element_t = typename _TFixedMLPL::element_t;
 
     Random::RandomizeArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), Scalar, RNG);
 }
 template <BrendanCUDA::AI::MLP::IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::MLP::FixedMLPL_ChangeWithRandom(const _TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, typename _TFixedMLPL::element_t LowerBound, typename _TFixedMLPL::element_t UpperBound, _TRNG& RNG) {
+void BrendanCUDA::AI::MLP::FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, typename _TFixedMLPL::element_t LowerBound, typename _TFixedMLPL::element_t UpperBound, _TRNG& RNG) {
     using element_t = typename _TFixedMLPL::element_t;
 
     Random::RandomizeArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), Scalar, LowerBound, UpperBound, RNG);
 }
 
 template <BrendanCUDA::AI::MLP::IsFixedMLP _TFixedMLP>
-void BrendanCUDA::AI::MLP::FixedMLP_FillWith0(const _TFixedMLP* MLP) {
+void BrendanCUDA::AI::MLP::FixedMLP_FillWith0(_TFixedMLP* MLP) {
     using element_t = typename _TFixedMLP::element_t;
 
     Random::ClearArray<false, element_t>(FixedMLP_GetElementSpan(MLP));
 }
 template <BrendanCUDA::AI::MLP::IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::MLP::FixedMLP_FillWithRandom(const _TFixedMLP* MLP, _TRNG& RNG) {
+void BrendanCUDA::AI::MLP::FixedMLP_FillWithRandom(_TFixedMLP* MLP, _TRNG& RNG) {
     using element_t = typename _TFixedMLP::element_t;
 
     Random::InitRandomArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), RNG);
 }
 template <BrendanCUDA::AI::MLP::IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::MLP::FixedMLP_ChangeWithRandom(const _TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, _TRNG& RNG) {
+void BrendanCUDA::AI::MLP::FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, _TRNG& RNG) {
     using element_t = typename _TFixedMLP::element_t;
 
     Random::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, RNG);
 }
 template <BrendanCUDA::AI::MLP::IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::MLP::FixedMLP_ChangeWithRandom(const _TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG) {
+void BrendanCUDA::AI::MLP::FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG) {
     using element_t = typename _TFixedMLP::element_t;
 
     Random::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, LowerBound, UpperBound, RNG);
