@@ -19,7 +19,7 @@ jobs:
     - name: Set up CUDA
       uses: Jimver/cuda-toolkit@v0.2.17
       with:
-        version: '12.6'
+        cuda: '12.1.0'
 
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v1.0.3
