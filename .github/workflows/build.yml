@@ -26,4 +26,4 @@ jobs:
 
     - name: Build the project
       run: |
-        msbuild YourProject.sln /p:Configuration=Release
+        msbuild BrendanCUDA.sln /p:Configuration=Release
