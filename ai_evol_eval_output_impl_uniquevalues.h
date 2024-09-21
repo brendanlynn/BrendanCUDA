@@ -5,7 +5,7 @@
 namespace brendancuda {
     namespace ai {
         namespace evolution {
-            namespace Evaluation {
+            namespace evaluation {
                 namespace Output {
                     template <typename _T>
                     struct Evaluate_UniqueValues_SD final {

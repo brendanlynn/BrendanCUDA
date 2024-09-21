@@ -7,7 +7,7 @@
 #include <type_traits>
 
 template <>
-float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<float>(void* Object, Evaluate_Proliferation_SD<float>& Settings) {
+float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<float>(void* Object, Evaluate_Proliferation_SD<float>& Settings) {
     constexpr float rndSclr = 2.f / (float)std::numeric_limits<uint64_t>::max();
     if (!Settings.inputCount) {
         throw std::runtime_error("'Settings.inputCount' cannot be zero.");
@@ -36,7 +36,7 @@ float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<flo
 }
 
 template<>
-float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<double>(void* Object, Evaluate_Proliferation_SD<double>& Settings) {
+float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<double>(void* Object, Evaluate_Proliferation_SD<double>& Settings) {
     constexpr double rndSclr = 2. / (double)std::numeric_limits<uint64_t>::max();
 
     if (!Settings.inputCount) {
@@ -66,7 +66,7 @@ float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<dou
 }
 
 template <typename _T>
-float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation(void* Object, Evaluate_Proliferation_SD<_T>& Settings) {
+float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation(void* Object, Evaluate_Proliferation_SD<_T>& Settings) {
     if (!Settings.inputCount) {
         throw std::runtime_error("'Settings.inputCount' cannot be zero.");
     }
@@ -122,28 +122,28 @@ float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation(voi
 }
 
 template <typename _T>
-float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation(void* Object, void* Settings) {
+float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation(void* Object, void* Settings) {
     return Evaluate_Proliferation<_T>(Object, *(Evaluate_Proliferation_SD<_T>*)Settings);
 }
 
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<uint8_t>(void*, Evaluate_Proliferation_SD<uint8_t>&);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<int8_t>(void*, Evaluate_Proliferation_SD<int8_t>&);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<uint16_t>(void*, Evaluate_Proliferation_SD<uint16_t>&);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<int16_t>(void*, Evaluate_Proliferation_SD<int16_t>&);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<uint32_t>(void*, Evaluate_Proliferation_SD<uint32_t>&);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<int32_t>(void*, Evaluate_Proliferation_SD<int32_t>&);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<uint64_t>(void*, Evaluate_Proliferation_SD<uint64_t>&);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<int64_t>(void*, Evaluate_Proliferation_SD<int64_t>&);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<float>(void*, Evaluate_Proliferation_SD<float>&);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<double>(void*, Evaluate_Proliferation_SD<double>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<uint8_t>(void*, Evaluate_Proliferation_SD<uint8_t>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<int8_t>(void*, Evaluate_Proliferation_SD<int8_t>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<uint16_t>(void*, Evaluate_Proliferation_SD<uint16_t>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<int16_t>(void*, Evaluate_Proliferation_SD<int16_t>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<uint32_t>(void*, Evaluate_Proliferation_SD<uint32_t>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<int32_t>(void*, Evaluate_Proliferation_SD<int32_t>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<uint64_t>(void*, Evaluate_Proliferation_SD<uint64_t>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<int64_t>(void*, Evaluate_Proliferation_SD<int64_t>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<float>(void*, Evaluate_Proliferation_SD<float>&);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<double>(void*, Evaluate_Proliferation_SD<double>&);
 
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<uint8_t>(void*, void*);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<int8_t>(void*, void*);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<uint16_t>(void*, void*);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<int16_t>(void*, void*);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<uint32_t>(void*, void*);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<int32_t>(void*, void*);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<uint64_t>(void*, void*);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<int64_t>(void*, void*);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<float>(void*, void*);
-template float brendancuda::ai::evolution::Evaluation::Output::Evaluate_Proliferation<double>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<uint8_t>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<int8_t>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<uint16_t>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<int16_t>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<uint32_t>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<int32_t>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<uint64_t>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<int64_t>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<float>(void*, void*);
+template float brendancuda::ai::evolution::evaluation::Output::Evaluate_Proliferation<double>(void*, void*);
