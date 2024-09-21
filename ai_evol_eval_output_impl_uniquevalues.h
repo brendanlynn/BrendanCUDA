@@ -4,7 +4,7 @@
 
 namespace brendancuda {
     namespace ai {
-        namespace Evolution {
+        namespace evolution {
             namespace Evaluation {
                 namespace Output {
                     template <typename _T>

@@ -2,7 +2,7 @@
 
 namespace brendancuda {
     namespace ai {
-        namespace Evolution {
+        namespace evolution {
             //A function that creates an object.
             using creationFunction_t = void*(*)(void* CreationSharedData);
             //A function that evaluates an object.

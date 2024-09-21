@@ -5,7 +5,7 @@
 
 namespace brendancuda {
     namespace ai {
-        namespace Evolution {
+        namespace evolution {
             namespace Evaluation {
                 namespace Output {
                     using constructInstance_t = void*(*)(void* Object, void* ConstructInstanceSharedData);

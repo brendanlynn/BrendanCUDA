@@ -6,7 +6,7 @@
 
 namespace brendancuda {
     namespace ai {
-        namespace Evolution {
+        namespace evolution {
             namespace Evaluation {
                 struct Evaluate_MultipleTimes_V_SD final {
                     size_t iterationCount;
@@ -33,8 +33,8 @@ namespace brendancuda {
     }
 }
 
-template <brendancuda::ai::Evolution::evaluationFunction_t _SingleEvaluationFunc, size_t _IterationCount>
-float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_AM_C(void* Object, void* EvaluationSharedData) {
+template <brendancuda::ai::evolution::evaluationFunction_t _SingleEvaluationFunc, size_t _IterationCount>
+float brendancuda::ai::evolution::Evaluation::Evaluate_MultipleTimes_AM_C(void* Object, void* EvaluationSharedData) {
     constexpr float s = 1.f / _IterationCount;
 
     float t = 0.f;
@@ -45,8 +45,8 @@ float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_AM_C(void* 
     return t * s;
 }
 
-template <brendancuda::ai::Evolution::evaluationFunction_t _SingleEvaluationFunc>
-float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_AM_V(void* Object, Evaluate_MultipleTimes_V_SD& Settings) {
+template <brendancuda::ai::evolution::evaluationFunction_t _SingleEvaluationFunc>
+float brendancuda::ai::evolution::Evaluation::Evaluate_MultipleTimes_AM_V(void* Object, Evaluate_MultipleTimes_V_SD& Settings) {
     float t = 0.f;
     for (size_t i = 0; i < Settings.iterationCount; ++i) {
         t += _SingleEvaluationFunc(Object, Settings.internalEvaluationSharedData);
@@ -55,8 +55,8 @@ float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_AM_V(void* 
     return t / Settings.iterationCount;
 }
 
-template <brendancuda::ai::Evolution::evaluationFunction_t _SingleEvaluationFunc, size_t _IterationCount>
-float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Min_C(void* Object, void* EvaluationSharedData) {
+template <brendancuda::ai::evolution::evaluationFunction_t _SingleEvaluationFunc, size_t _IterationCount>
+float brendancuda::ai::evolution::Evaluation::Evaluate_MultipleTimes_Min_C(void* Object, void* EvaluationSharedData) {
     float min = std::numeric_limits<float>::infinity();
     for (size_t i = 0; i < _IterationCount; ++i) {
         float v = _SingleEvaluationFunc(Object, EvaluationSharedData);
@@ -68,8 +68,8 @@ float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Min_C(void*
     return min;
 }
 
-template <brendancuda::ai::Evolution::evaluationFunction_t _SingleEvaluationFunc>
-float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Min_V(void* Object, Evaluate_MultipleTimes_V_SD& Settings) {
+template <brendancuda::ai::evolution::evaluationFunction_t _SingleEvaluationFunc>
+float brendancuda::ai::evolution::Evaluation::Evaluate_MultipleTimes_Min_V(void* Object, Evaluate_MultipleTimes_V_SD& Settings) {
     float min = std::numeric_limits<float>::infinity();
     for (size_t i = 0; i < Settings.iterationCount; ++i) {
         float v = _SingleEvaluationFunc(Object, Settings.internalEvaluationSharedData);
@@ -81,8 +81,8 @@ float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Min_V(void*
     return min;
 }
 
-template <brendancuda::ai::Evolution::evaluationFunction_t _SingleEvaluationFunc, size_t _IterationCount>
-float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Max_C(void* Object, void* EvaluationSharedData) {
+template <brendancuda::ai::evolution::evaluationFunction_t _SingleEvaluationFunc, size_t _IterationCount>
+float brendancuda::ai::evolution::Evaluation::Evaluate_MultipleTimes_Max_C(void* Object, void* EvaluationSharedData) {
     float max = -std::numeric_limits<float>::infinity();
     for (size_t i = 0; i < _IterationCount; ++i) {
         float v = _SingleEvaluationFunc(Object, EvaluationSharedData);
@@ -94,8 +94,8 @@ float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Max_C(void*
     return max;
 }
 
-template <brendancuda::ai::Evolution::evaluationFunction_t _SingleEvaluationFunc>
-float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Max_V(void* Object, Evaluate_MultipleTimes_V_SD& Settings) {
+template <brendancuda::ai::evolution::evaluationFunction_t _SingleEvaluationFunc>
+float brendancuda::ai::evolution::Evaluation::Evaluate_MultipleTimes_Max_V(void* Object, Evaluate_MultipleTimes_V_SD& Settings) {
     float max = -std::numeric_limits<float>::infinity();
     for (size_t i = 0; i < Settings.iterationCount; ++i) {
         float v = _SingleEvaluationFunc(Object, Settings.internalEvaluationSharedData);
@@ -107,8 +107,8 @@ float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Max_V(void*
     return max;
 }
 
-template <brendancuda::ai::Evolution::evaluationFunction_t _SingleEvaluationFunc, size_t _IterationCount>
-float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Med_C(void* Object, void* EvaluationSharedData) {
+template <brendancuda::ai::evolution::evaluationFunction_t _SingleEvaluationFunc, size_t _IterationCount>
+float brendancuda::ai::evolution::Evaluation::Evaluate_MultipleTimes_Med_C(void* Object, void* EvaluationSharedData) {
     float* arr = new float[_IterationCount];
     for (size_t i = 0; i < _IterationCount; ++i) {
         arr[i] = _SingleEvaluationFunc(Object, EvaluationSharedData);
@@ -130,8 +130,8 @@ float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Med_C(void*
     return r;
 }
 
-template <brendancuda::ai::Evolution::evaluationFunction_t _SingleEvaluationFunc>
-float brendancuda::ai::Evolution::Evaluation::Evaluate_MultipleTimes_Med_V(void* Object, Evaluate_MultipleTimes_V_SD& Settings) {
+template <brendancuda::ai::evolution::evaluationFunction_t _SingleEvaluationFunc>
+float brendancuda::ai::evolution::Evaluation::Evaluate_MultipleTimes_Med_V(void* Object, Evaluate_MultipleTimes_V_SD& Settings) {
     float* arr = new float[Settings.iterationCount];
     for (size_t i = 0; i < Settings.iterationCount; ++i) {
         arr[i] = _SingleEvaluationFunc(Object, Settings.internalEvaluationSharedData);
