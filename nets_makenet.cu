@@ -189,10 +189,10 @@ __global__ void disposeOfBuckets(BucketTS* buckets) {
     delete[] buckets[blockIdx.x].data;
 }
 
-bcuda::nets::Net bcuda::nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, random::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
+bcuda::nets::Net bcuda::nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, rand::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
     thrust::device_vector<float_3>* dv = new thrust::device_vector<float_3>(NodeCount);
 
-    random::InitRandomArray<false, float, random::AnyRNG<uint64_t>>(Span<float>((float*)(dv->data().get()), NodeCount * 3), RNG);
+    rand::InitRandomArray<false, float, rand::AnyRNG<uint64_t>>(Span<float>((float*)(dv->data().get()), NodeCount * 3), RNG);
 
     constexpr size_t bucketCountPerD = 10;
 

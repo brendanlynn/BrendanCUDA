@@ -223,8 +223,8 @@ template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline void bcuda::ai::mlpb::FixedMLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
-        weights[i] = bcuda::random::RandomizeWFlips(weights[i], WeightsFlipProb, RNG);
-    bias = bcuda::random::RandomizeWFlips(bias, BiasFlipProb, RNG);
+        weights[i] = bcuda::rand::RandomizeWFlips(weights[i], WeightsFlipProb, RNG);
+    bias = bcuda::rand::RandomizeWFlips(bias, BiasFlipProb, RNG);
 }
 
 #ifdef __CUDACC__
@@ -232,8 +232,8 @@ template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <bcuda::KernelCurandState _TRNG>
 __device__ __forceinline void bcuda::ai::mlpb::FixedMLPBL<_TInput, _TOutput>::RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
-        weights[i] = bcuda::random::RandomizeWFlips(weights[i], WeightsFlipProb, RNG);
-    bias = bcuda::random::RandomizeWFlips(bias, BiasFlipProb, RNG);
+        weights[i] = bcuda::rand::RandomizeWFlips(weights[i], WeightsFlipProb, RNG);
+    bias = bcuda::rand::RandomizeWFlips(bias, BiasFlipProb, RNG);
 }
 #endif
 
@@ -241,8 +241,8 @@ template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline void bcuda::ai::mlpb::FixedMLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
-        weights[i] = bcuda::random::RandomizeWTargets(weights[i], WeightsFlipProb, RNG);
-    bias = bcuda::random::RandomizeWTargets(bias, BiasFlipProb, RNG);
+        weights[i] = bcuda::rand::RandomizeWTargets(weights[i], WeightsFlipProb, RNG);
+    bias = bcuda::rand::RandomizeWTargets(bias, BiasFlipProb, RNG);
 }
 
 #ifdef __CUDACC__
@@ -250,8 +250,8 @@ template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <bcuda::KernelCurandState _TRNG>
 __device__ __forceinline void bcuda::ai::mlpb::FixedMLPBL<_TInput, _TOutput>::RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
-        weights[i] = bcuda::random::RandomizeWTargets(weights[i], WeightsFlipProb, RNG);
-    bias = bcuda::random::RandomizeWTargets(bias, BiasFlipProb, RNG);
+        weights[i] = bcuda::rand::RandomizeWTargets(weights[i], WeightsFlipProb, RNG);
+    bias = bcuda::rand::RandomizeWTargets(bias, BiasFlipProb, RNG);
 }
 #endif
 
@@ -259,8 +259,8 @@ template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <std::uniform_random_bit_generator _TRNG>
 __host__ __forceinline void bcuda::ai::mlpb::FixedMLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
-        weights[i] = bcuda::random::RandomizeWMutations(weights[i], WeightsProbOf1, RNG);
-    bias = bcuda::random::RandomizeWMutations(bias, BiasProbOf1, RNG);
+        weights[i] = bcuda::rand::RandomizeWMutations(weights[i], WeightsProbOf1, RNG);
+    bias = bcuda::rand::RandomizeWMutations(bias, BiasProbOf1, RNG);
 }
 
 #ifdef __CUDACC__
@@ -268,8 +268,8 @@ template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput>
 template <bcuda::KernelCurandState _TRNG>
 __device__ __forceinline void bcuda::ai::mlpb::FixedMLPBL<_TInput, _TOutput>::RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
     for (size_t i = 0; i < details::BitCount<_TOutput>; ++i)
-        weights[i] = bcuda::random::RandomizeWMutations(weights[i], WeightsProbOf1, RNG);
-    bias = bcuda::random::RandomizeWMutations(bias, BiasProbOf1, RNG);
+        weights[i] = bcuda::rand::RandomizeWMutations(weights[i], WeightsProbOf1, RNG);
+    bias = bcuda::rand::RandomizeWMutations(bias, BiasProbOf1, RNG);
 }
 #endif
 
