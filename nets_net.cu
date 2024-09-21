@@ -6,20 +6,20 @@
 #include <device_launch_parameters.h>
 #include <string>
 
-__global__ void net_addConnection_checkForPreexistence(brendancuda::Nets::NetNode** arr, brendancuda::Nets::NetNode* v, bool* opt) {
+__global__ void net_addConnection_checkForPreexistence(brendancuda::nets::NetNode** arr, brendancuda::nets::NetNode* v, bool* opt) {
     if (arr[blockIdx.x] == v) {
         *opt = true;
     }
 }
 
-__global__ void replaceBase(brendancuda::Nets::NetNode* oldBase, brendancuda::Nets::NetNode** oldNodes, brendancuda::Nets::NetNode* newBase, brendancuda::Nets::NetNode** newNodes) {
-    brendancuda::Nets::NetNode* oldNode = oldNodes[blockIdx.x];
-    brendancuda::Nets::NetNode*& newNode = newNodes[blockIdx.x];
+__global__ void replaceBase(brendancuda::nets::NetNode* oldBase, brendancuda::nets::NetNode** oldNodes, brendancuda::nets::NetNode* newBase, brendancuda::nets::NetNode** newNodes) {
+    brendancuda::nets::NetNode* oldNode = oldNodes[blockIdx.x];
+    brendancuda::nets::NetNode*& newNode = newNodes[blockIdx.x];
 
     newNode = oldNode - oldBase + newBase;
 }
 
-brendancuda::Nets::Net brendancuda::Nets::Net::Clone(dataCloner_t DataCloner) const {
+brendancuda::nets::Net brendancuda::nets::Net::Clone(dataCloner_t DataCloner) const {
     thrust::device_vector<NetNode>* p_newNodes = new thrust::device_vector<NetNode>(nodes.size());
     thrust::device_vector<NetNode>& newNodes = *p_newNodes;
     NetNode* oldBaseNN = nodes.data().get();
@@ -39,7 +39,7 @@ brendancuda::Nets::Net brendancuda::Nets::Net::Clone(dataCloner_t DataCloner) co
     return Net(newNodes);
 }
 
-bool brendancuda::Nets::Net::AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
+bool brendancuda::nets::Net::AddConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
     NetNode in = GetVR(InputNode);
 
     if (in.outputs) {
@@ -95,7 +95,7 @@ bool brendancuda::Nets::Net::AddConnection_OnlyInput(NetNode* InputNode, NetNode
     SetVR(InputNode, in);
     return true;
 }
-bool brendancuda::Nets::Net::AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
+bool brendancuda::nets::Net::AddConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
     NetNode on = GetVR(InputNode);
 
     if (on.inputs) {
@@ -151,7 +151,7 @@ bool brendancuda::Nets::Net::AddConnection_OnlyOutput(NetNode* InputNode, NetNod
     SetVR(OutputNode, on);
     return true;
 }
-bool brendancuda::Nets::Net::AddConnection(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
+bool brendancuda::nets::Net::AddConnection(NetNode* InputNode, NetNode* OutputNode, bool CheckForPreexistence, bool CheckForAvailableExcess) {
     if (InputNode != OutputNode) {
         NetNode in = GetVR(InputNode);
         NetNode on = GetVR(OutputNode);
@@ -330,7 +330,7 @@ bool brendancuda::Nets::Net::AddConnection(NetNode* InputNode, NetNode* OutputNo
     }
 }
 
-bool brendancuda::Nets::Net::RemoveConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
+bool brendancuda::nets::Net::RemoveConnection_OnlyInput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
     NetNode in = GetVR(InputNode);
 
     if (in.outputs) {
@@ -387,7 +387,7 @@ ExitB:
         return false;
     }
 }
-bool brendancuda::Nets::Net::RemoveConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
+bool brendancuda::nets::Net::RemoveConnection_OnlyOutput(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
     NetNode on = GetVR(OutputNode);
 
     if (on.inputs) {
@@ -444,7 +444,7 @@ ExitB:
         return false;
     }
 }
-bool brendancuda::Nets::Net::RemoveConnection(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
+bool brendancuda::nets::Net::RemoveConnection(NetNode* InputNode, NetNode* OutputNode, bool RemoveExcess) {
     if (InputNode != OutputNode) {
         NetNode in = GetVR(InputNode);
         NetNode on = GetVR(OutputNode);
@@ -631,7 +631,7 @@ Exit1D:
     }
 }
 
-void brendancuda::Nets::Net::RemoveAllConnections(NetNode* Node, bool RemoveExcess) {
+void brendancuda::nets::Net::RemoveAllConnections(NetNode* Node, bool RemoveExcess) {
     NetNode nn = GetVR(Node);
     NetNode** inputs = new NetNode*[nn.inputCount];
     NetNode** outputs = new NetNode*[nn.outputCount];
@@ -661,7 +661,7 @@ void brendancuda::Nets::Net::RemoveAllConnections(NetNode* Node, bool RemoveExce
     nn.outputCount = 0;
     SetVR(Node, nn);
 }
-void brendancuda::Nets::Net::PrintTo(std::ostream& Output, size_t IndentPre, size_t IndentSize) const {
+void brendancuda::nets::Net::PrintTo(std::ostream& Output, size_t IndentPre, size_t IndentSize) const {
     std::string pi(IndentPre, ' ');
     std::string si(IndentSize, ' ');
     const thrust::device_vector<NetNode>& vec = DataVec();

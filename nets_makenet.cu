@@ -10,8 +10,8 @@ using brendancuda::float_3;
 using brendancuda::CoordinatesToIndex;
 using brendancuda::uint32_3;
 using brendancuda::ThrowIfBad;
-using brendancuda::Nets::NetNode;
-using brendancuda::Nets::Net;
+using brendancuda::nets::NetNode;
+using brendancuda::nets::Net;
 using std::make_tuple;
 using thrust::device_vector;
 
@@ -189,7 +189,7 @@ __global__ void disposeOfBuckets(BucketTS* buckets) {
     delete[] buckets[blockIdx.x].data;
 }
 
-brendancuda::Nets::Net brendancuda::Nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, random::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
+brendancuda::nets::Net brendancuda::nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, random::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
     thrust::device_vector<float_3>* dv = new thrust::device_vector<float_3>(NodeCount);
 
     random::InitRandomArray<false, float, random::AnyRNG<uint64_t>>(Span<float>((float*)(dv->data().get()), NodeCount * 3), RNG);
