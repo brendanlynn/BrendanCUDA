@@ -5,8 +5,6 @@
 
 __global__ void randomizeArrayKernel(bcuda::Span<float> Array, float Scalar, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     float* l = Array.ptr + idx * Count;
@@ -16,8 +14,6 @@ __global__ void randomizeArrayKernel(bcuda::Span<float> Array, float Scalar, uin
 }
 __global__ void randomizeArrayKernel(bcuda::Span<double> Array, double Scalar, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     double* l = Array.ptr + idx * Count;
@@ -27,8 +23,6 @@ __global__ void randomizeArrayKernel(bcuda::Span<double> Array, double Scalar, u
 }
 __global__ void randomizeArrayKernel(bcuda::Span<float> Array, float Scalar, float Lower, float Upper, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     float* l = Array.ptr + idx * Count;
@@ -38,8 +32,6 @@ __global__ void randomizeArrayKernel(bcuda::Span<float> Array, float Scalar, flo
 }
 __global__ void randomizeArrayKernel(bcuda::Span<double> Array, double Scalar, double Lower, double Upper, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     double* l = Array.ptr + idx * Count;
@@ -49,8 +41,6 @@ __global__ void randomizeArrayKernel(bcuda::Span<double> Array, double Scalar, d
 }
 __global__ void randomizeArrayWFlipsKernel(bcuda::Span<uint32_t> Array, uint32_t FlipProb, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
@@ -60,8 +50,6 @@ __global__ void randomizeArrayWFlipsKernel(bcuda::Span<uint32_t> Array, uint32_t
 }
 __global__ void randomizeArrayWTargetsKernel(bcuda::Span<uint32_t> Array, uint32_t EachFlipProb, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
@@ -71,8 +59,6 @@ __global__ void randomizeArrayWTargetsKernel(bcuda::Span<uint32_t> Array, uint32
 }
 __global__ void randomizeArrayWMutationsKernel(bcuda::Span<uint32_t> Array, uint32_t MutationProb, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
@@ -82,8 +68,6 @@ __global__ void randomizeArrayWMutationsKernel(bcuda::Span<uint32_t> Array, uint
 }
 __global__ void randomizeArrayWMutationsKernel(bcuda::Span<uint32_t> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
@@ -94,8 +78,6 @@ __global__ void randomizeArrayWMutationsKernel(bcuda::Span<uint32_t> Array, uint
 
 __global__ void initArrayKernel(bcuda::Span<float> Array, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     float* l = Array.ptr + idx * Count;
@@ -105,8 +87,6 @@ __global__ void initArrayKernel(bcuda::Span<float> Array, uint64_t Seed, uint64_
 }
 __global__ void initArrayKernel(bcuda::Span<double> Array, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     double* l = Array.ptr + idx * Count;
@@ -116,8 +96,6 @@ __global__ void initArrayKernel(bcuda::Span<double> Array, uint64_t Seed, uint64
 }
 __global__ void initArrayKernel(bcuda::Span<float> Array, float Lower, float Range, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     float* l = Array.ptr + idx * Count;
@@ -127,8 +105,6 @@ __global__ void initArrayKernel(bcuda::Span<float> Array, float Lower, float Ran
 }
 __global__ void initArrayKernel(bcuda::Span<double> Array, double Lower, double Range, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     double* l = Array.ptr + idx * Count;
@@ -138,8 +114,6 @@ __global__ void initArrayKernel(bcuda::Span<double> Array, double Lower, double 
 }
 __global__ void initArrayKernel(bcuda::Span<uint32_t> Array, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
@@ -149,8 +123,6 @@ __global__ void initArrayKernel(bcuda::Span<uint32_t> Array, uint64_t Seed, uint
 }
 __global__ void initArrayKernel(bcuda::Span<uint32_t> Array, uint32_t ProbOf1, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     curandState state;
     curand_init(Seed, idx, 0, &state);
     uint32_t* l = Array.ptr + idx * Count;
@@ -160,8 +132,6 @@ __global__ void initArrayKernel(bcuda::Span<uint32_t> Array, uint32_t ProbOf1, u
 }
 __global__ void clearArrayKernel(bcuda::Span<float> Array, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     float* l = Array.ptr + idx * Count;
     float* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
@@ -169,8 +139,6 @@ __global__ void clearArrayKernel(bcuda::Span<float> Array, uint64_t Count) {
 }
 __global__ void clearArrayKernel(bcuda::Span<double> Array, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     double* l = Array.ptr + idx * Count;
     double* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
@@ -178,8 +146,6 @@ __global__ void clearArrayKernel(bcuda::Span<double> Array, uint64_t Count) {
 }
 __global__ void clearArrayKernel(bcuda::Span<uint64_t> Array, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
-    if (idx >= Array.size)
-        return;
     uint64_t* l = Array.ptr + idx * Count;
     uint64_t* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
