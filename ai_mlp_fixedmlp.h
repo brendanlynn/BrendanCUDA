@@ -345,10 +345,10 @@ __host__ void brendancuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCou
     for (size_t i = 0; i < _OutputCount; ++i) {
         for (size_t j = 0; j < _InputCount; ++j) {
             _T& v = weights[i][j];
-            v = Math::clamp(v + dis(RNG), LowerBound, UpperBound);
+            v = math::clamp(v + dis(RNG), LowerBound, UpperBound);
         }
         _T& v = bias[i];
-        v = Math::clamp(v + dis(RNG), LowerBound, UpperBound);
+        v = math::clamp(v + dis(RNG), LowerBound, UpperBound);
     }
 }
 
@@ -360,20 +360,20 @@ __device__ void brendancuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputC
         for (size_t i = 0; i < _OutputCount; ++i) {
             for (size_t j = 0; j < _InputCount; ++j) {
                 _T& v = weights[i][j];
-                v = Math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
+                v = math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
             }
             _T& v = bias[i];
-            v = Math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
+            v = math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
         }
     }
     else {
         for (size_t i = 0; i < _OutputCount; ++i) {
             for (size_t j = 0; j < _InputCount; ++j) {
                 _T& v = weights[i][j];
-                v = Math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
+                v = math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
             }
             _T& v = bias[i];
-            v = Math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
+            v = math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
         }
     }
 }

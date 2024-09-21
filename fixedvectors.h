@@ -245,7 +245,7 @@ __host__ __device__ __forceinline constexpr _T brendancuda::FixedVector<_T, _Siz
 template <typename _T, size_t _Size>
     requires std::is_arithmetic_v<_T>
 __host__ __device__ __forceinline _T brendancuda::FixedVector<_T, _Size>::MagnatudeI() const requires std::integral<_T> {
-    return Math::sqrt(MagnatudeSquared());
+    return math::sqrt(MagnatudeSquared());
 }
 template <typename _T, size_t _Size>
     requires std::is_arithmetic_v<_T>
