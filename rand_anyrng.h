@@ -15,7 +15,7 @@ namespace brendancuda {
         template <typename _TOutputType>
         using runRNGFunc_t = _TOutputType(*)(void*);
     }
-    namespace Random {
+    namespace random {
         template <std::unsigned_integral _TOutputType>
         class AnyRNG {
         public:

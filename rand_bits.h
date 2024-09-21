@@ -8,7 +8,7 @@
 #include <curand_kernel.h>
 
 namespace brendancuda {
-    namespace Random {
+    namespace random {
         template <std::uniform_random_bit_generator _TRNG>
         __host__ __forceinline uint32_t Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG);
         template <std::uniform_random_bit_generator _TRNG>
@@ -23,7 +23,7 @@ namespace brendancuda {
 }
 
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline uint32_t brendancuda::Random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+__host__ __forceinline uint32_t brendancuda::random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
     uint32_t ct = brendancuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
@@ -42,7 +42,7 @@ __host__ __forceinline uint32_t brendancuda::Random::Get32Bits(uint32_t Probabil
     return cr;
 }
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline uint64_t brendancuda::Random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+__host__ __forceinline uint64_t brendancuda::random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
     uint32_t ct = brendancuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
@@ -62,7 +62,7 @@ __host__ __forceinline uint64_t brendancuda::Random::Get64Bits(uint32_t Probabil
 }
 #ifdef __CUDACC__
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline uint32_t brendancuda::Random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+__device__ __forceinline uint32_t brendancuda::random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
     uint32_t ct = brendancuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
@@ -80,7 +80,7 @@ __device__ __forceinline uint32_t brendancuda::Random::Get32Bits(uint32_t Probab
     return cr;
 }
 template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline uint64_t brendancuda::Random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+__device__ __forceinline uint64_t brendancuda::random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
     uint32_t ct = brendancuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;

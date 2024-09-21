@@ -56,7 +56,7 @@ __global__ void randomizeArrayWFlipsKernel(brendancuda::Span<uint32_t> Array, ui
     uint32_t* l = Array.ptr + idx * Count;
     uint32_t* u = l + Count;
     for (; l < u; ++l)
-        *l = brendancuda::Random::RandomizeWFlips(*l, FlipProb, state);
+        *l = brendancuda::random::RandomizeWFlips(*l, FlipProb, state);
 }
 __global__ void randomizeArrayWTargetsKernel(brendancuda::Span<uint32_t> Array, uint32_t EachFlipProb, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
@@ -67,7 +67,7 @@ __global__ void randomizeArrayWTargetsKernel(brendancuda::Span<uint32_t> Array, 
     uint32_t* l = Array.ptr + idx * Count;
     uint32_t* u = l + Count;
     for (; l < u; ++l)
-        *l = brendancuda::Random::RandomizeWTargets(*l, EachFlipProb, state);
+        *l = brendancuda::random::RandomizeWTargets(*l, EachFlipProb, state);
 }
 __global__ void randomizeArrayWMutationsKernel(brendancuda::Span<uint32_t> Array, uint32_t MutationProb, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
@@ -78,7 +78,7 @@ __global__ void randomizeArrayWMutationsKernel(brendancuda::Span<uint32_t> Array
     uint32_t* l = Array.ptr + idx * Count;
     uint32_t* u = l + Count;
     for (; l < u; ++l)
-        *l = brendancuda::Random::RandomizeWMutations(*l, MutationProb, state);
+        *l = brendancuda::random::RandomizeWMutations(*l, MutationProb, state);
 }
 __global__ void randomizeArrayWMutationsKernel(brendancuda::Span<uint32_t> Array, uint32_t MutationProb, uint32_t ProbabilityOf1, uint64_t Seed, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
@@ -89,7 +89,7 @@ __global__ void randomizeArrayWMutationsKernel(brendancuda::Span<uint32_t> Array
     uint32_t* l = Array.ptr + idx * Count;
     uint32_t* u = l + Count;
     for (; l < u; ++l)
-        *l = brendancuda::Random::RandomizeWMutations(*l, MutationProb, ProbabilityOf1, state);
+        *l = brendancuda::random::RandomizeWMutations(*l, MutationProb, ProbabilityOf1, state);
 }
 
 __global__ void initArrayKernel(brendancuda::Span<float> Array, uint64_t Seed, uint64_t Count) {
@@ -156,7 +156,7 @@ __global__ void initArrayKernel(brendancuda::Span<uint32_t> Array, uint32_t Prob
     uint32_t* l = Array.ptr + idx * Count;
     uint32_t* u = std::min(l + Count, Array.ptr + Array.size);
     for (; l < u; ++l)
-        *l = brendancuda::Random::Get32Bits(ProbOf1, state);
+        *l = brendancuda::random::Get32Bits(ProbOf1, state);
 }
 __global__ void clearArrayKernel(brendancuda::Span<float> Array, uint64_t Count) {
     uint64_t idx = blockIdx.x * (uint64_t)blockDim.x + threadIdx.x;
