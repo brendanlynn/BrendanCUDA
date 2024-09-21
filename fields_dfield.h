@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace brendancuda {
+namespace bcuda {
     namespace details {
         template <typename _T, size_t _DimensionCount>
         using dfieldIK_t = void(*)(FixedVector<uint32_t, _DimensionCount> Pos, fields::FieldProxyConst<_T, _DimensionCount> Previous, _T& NextVal);

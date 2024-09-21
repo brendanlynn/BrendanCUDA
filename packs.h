@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-namespace brendancuda {
+namespace bcuda {
     namespace packs {
         namespace details {
             template <uintmax_t _Idx, typename... _Ts>

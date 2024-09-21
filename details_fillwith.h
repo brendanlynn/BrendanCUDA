@@ -3,7 +3,7 @@
 #include "errorhelp.h"
 #include <cuda_runtime.h>
 
-namespace brendancuda {
+namespace bcuda {
     namespace details {
         void FillWith(void* Array, size_t ArrayElementCount, void* Value, size_t ValueSize);
     }

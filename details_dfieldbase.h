@@ -2,7 +2,7 @@
 
 #include "fields_field.h"
 
-namespace brendancuda {
+namespace bcuda {
     namespace details {
         template <typename _T, size_t _DimensionCount>
         class DFieldBase : public DimensionedBase<_DimensionCount> {

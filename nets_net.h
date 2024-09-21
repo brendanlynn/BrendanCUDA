@@ -5,14 +5,14 @@
 #include <ostream>
 #include <thrust/device_vector.h>
 
-namespace brendancuda {
+namespace bcuda {
     namespace nets {
         struct NetNode;
         //Destroys the NetNode::data field, provided context.
         using dataDestructor_t = void(*)(NetNode);
         //Clones the NetNode::data field, provided context.
         using dataCloner_t = void*(*)(NetNode);
-        //A node of a brendancuda::nets::Net.
+        //A node of a bcuda::nets::Net.
         struct NetNode {
             //A pointer to the data attached to the node.
             void* data;
@@ -25,20 +25,20 @@ namespace brendancuda {
             //The count of the output connections.
             size_t outputCount;
 
-            //Constructs a brendancuda::nets::NetNode object.
+            //Constructs a bcuda::nets::NetNode object.
             __host__ __device__ __forceinline NetNode();
 
-            //Disposes of a brendancuda::nets::NetNode object.
+            //Disposes of a bcuda::nets::NetNode object.
             __forceinline void Dispose(dataDestructor_t DataDestructor) const;
         };
         //A directed graph.
         class Net {
         public:
-            //Creates a brendancuda::nets::Net object.
+            //Creates a bcuda::nets::Net object.
             __forceinline Net();
-            //Creates a brendancuda::nets::Net object, using Data as its vector of nodes without copying it.
+            //Creates a bcuda::nets::Net object, using Data as its vector of nodes without copying it.
             __forceinline Net(thrust::device_vector<NetNode>& Data);
-            //Disposes of a brendancuda::nets::Net object.
+            //Disposes of a bcuda::nets::Net object.
             __forceinline void Dispose(dataDestructor_t DataDestructor);
             //Returns the vector of nodes, for external manipulation at the user's risk.
             __forceinline thrust::device_vector<NetNode>& DataVec();
@@ -52,7 +52,7 @@ namespace brendancuda {
             __forceinline thrust::device_reference<const NetNode> operator[](size_t i) const;
             //Prints a list of nodes, their identifiers, and their inputs and outputs to the Output stream. IndentPre is the amount of spaces (not indents) before the left of the printout, and IndentSize is the amount of spaces in each indent afterward.
             void PrintTo(std::ostream& Output, size_t IndentPre = 0, size_t IndentSize = 4) const;
-            //Makes a deep-copy of the brendancuda::nets::Net object.
+            //Makes a deep-copy of the bcuda::nets::Net object.
             Net Clone(dataCloner_t DataCloner) const;
 
             //Adds a connection between InputNode and OutputNode that goes from InputNode to OutputNode, but only changes InputNode. Use at your own risk.
@@ -75,7 +75,7 @@ namespace brendancuda {
     }
 }
 
-__host__ __device__ __forceinline brendancuda::nets::NetNode::NetNode() {
+__host__ __device__ __forceinline bcuda::nets::NetNode::NetNode() {
     data = 0;
     inputs = 0;
     inputCount = 0;
@@ -83,7 +83,7 @@ __host__ __device__ __forceinline brendancuda::nets::NetNode::NetNode() {
     outputCount = 0;
 }
 
-__forceinline void brendancuda::nets::NetNode::Dispose(dataDestructor_t DataDestructor) const {
+__forceinline void bcuda::nets::NetNode::Dispose(dataDestructor_t DataDestructor) const {
     if (DataDestructor) {
         DataDestructor(*this);
     }
@@ -96,39 +96,39 @@ __forceinline void brendancuda::nets::NetNode::Dispose(dataDestructor_t DataDest
 #endif
 }
 
-__forceinline brendancuda::nets::Net::Net()
+__forceinline bcuda::nets::Net::Net()
     : nodes(*(new thrust::device_vector<NetNode>())) {}
 
-__forceinline brendancuda::nets::Net::Net(thrust::device_vector<NetNode>& Data)
+__forceinline bcuda::nets::Net::Net(thrust::device_vector<NetNode>& Data)
     : nodes(Data) {}
 
-__forceinline void brendancuda::nets::Net::Dispose(dataDestructor_t DataDestructor) {
+__forceinline void bcuda::nets::Net::Dispose(dataDestructor_t DataDestructor) {
     for (size_t i = 0; i < nodes.size(); ++i) {
         ((NetNode)nodes[i]).Dispose(DataDestructor);
     }
     delete (&nodes);
 }
 
-__forceinline thrust::device_vector<brendancuda::nets::NetNode>& brendancuda::nets::Net::DataVec() {
+__forceinline thrust::device_vector<bcuda::nets::NetNode>& bcuda::nets::Net::DataVec() {
     return nodes;
 }
 
-__forceinline const thrust::device_vector<brendancuda::nets::NetNode>& brendancuda::nets::Net::DataVec() const {
+__forceinline const thrust::device_vector<bcuda::nets::NetNode>& bcuda::nets::Net::DataVec() const {
     return nodes;
 }
 
-__forceinline thrust::device_ptr<brendancuda::nets::NetNode> brendancuda::nets::Net::DataPtr() {
+__forceinline thrust::device_ptr<bcuda::nets::NetNode> bcuda::nets::Net::DataPtr() {
     return nodes.data();
 }
 
-__forceinline thrust::device_ptr<const brendancuda::nets::NetNode> brendancuda::nets::Net::DataPtr() const {
+__forceinline thrust::device_ptr<const bcuda::nets::NetNode> bcuda::nets::Net::DataPtr() const {
     return nodes.data();
 }
 
-__forceinline thrust::device_reference<brendancuda::nets::NetNode> brendancuda::nets::Net::operator[](size_t i) {
+__forceinline thrust::device_reference<bcuda::nets::NetNode> bcuda::nets::Net::operator[](size_t i) {
     return nodes[i];
 }
 
-__forceinline thrust::device_reference<const brendancuda::nets::NetNode> brendancuda::nets::Net::operator[](size_t i) const {
+__forceinline thrust::device_reference<const bcuda::nets::NetNode> bcuda::nets::Net::operator[](size_t i) const {
     return nodes[i];
 }

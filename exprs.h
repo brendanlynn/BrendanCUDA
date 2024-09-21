@@ -6,7 +6,7 @@
 #include <memory>
 #include <unordered_map>
 
-namespace brendancuda {
+namespace bcuda {
     namespace exprs {
         using varmap_t = std::unordered_map<uint64_t, std::any>;
 

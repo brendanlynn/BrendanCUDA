@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <utility>
 
-namespace brendancuda {
+namespace bcuda {
     namespace ai {
         namespace evol {
             namespace eval {

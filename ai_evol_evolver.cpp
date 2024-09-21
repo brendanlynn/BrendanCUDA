@@ -1,7 +1,7 @@
 #include "ai_evol_evolver.h"
 #include <algorithm>
 
-brendancuda::ai::evol::Evolver::Evolver(
+bcuda::ai::evol::Evolver::Evolver(
     size_t ContestantCount,
     evaluationFunction_t EvaluationFunction,
     reproductionFunction_t ReproductionFunction,
@@ -11,7 +11,7 @@ brendancuda::ai::evol::Evolver::Evolver(
     reproductionFunction = ReproductionFunction;
     disposeFunction = DisposeFunction;
 }
-brendancuda::ai::evol::Evolver::Evolver(
+bcuda::ai::evol::Evolver::Evolver(
     size_t ContestantCount,
     evaluationFunction_t EvaluationFunction,
     reproductionFunction_t ReproductionFunction,
@@ -21,17 +21,17 @@ brendancuda::ai::evol::Evolver::Evolver(
 ) : Evolver(ContestantCount, EvaluationFunction, ReproductionFunction, DisposeFunction) {
     InitAllNoDisposal(CreationFunction, CreationSharedData);
 }
-brendancuda::ArrayV<void*> brendancuda::ai::evol::Evolver::Objects() {
+bcuda::ArrayV<void*> bcuda::ai::evol::Evolver::Objects() {
     return objs;
 }
-void brendancuda::ai::evol::Evolver::InitAllNoDisposal(creationFunction_t CreationFunction, void* CreationSharedData) {
+void bcuda::ai::evol::Evolver::InitAllNoDisposal(creationFunction_t CreationFunction, void* CreationSharedData) {
     std::uniform_int_distribution<uint64_t> dis(std::numeric_limits<uint64_t>::min(), std::numeric_limits<uint64_t>::max());
 
     for (size_t i = 0; i < objs.Size(); ++i) {
         objs[i] = CreationFunction(CreationSharedData);
     }
 }
-void brendancuda::ai::evol::Evolver::InitAll(void* DisposeSharedData, creationFunction_t CreationFunction, void* CreationSharedData) {
+void bcuda::ai::evol::Evolver::InitAll(void* DisposeSharedData, creationFunction_t CreationFunction, void* CreationSharedData) {
     std::uniform_int_distribution<uint64_t> dis(std::numeric_limits<uint64_t>::min(), std::numeric_limits<uint64_t>::max());
 
     for (size_t i = 0; i < objs.Size(); ++i) {
@@ -40,7 +40,7 @@ void brendancuda::ai::evol::Evolver::InitAll(void* DisposeSharedData, creationFu
         v = CreationFunction(CreationSharedData);
     }
 }
-brendancuda::ArrayV<std::pair<float, size_t>> brendancuda::ai::evol::Evolver::EvaluateAll(void* EvaluationSharedData) {
+bcuda::ArrayV<std::pair<float, size_t>> bcuda::ai::evol::Evolver::EvaluateAll(void* EvaluationSharedData) {
     std::uniform_int_distribution<uint64_t> dis(std::numeric_limits<uint64_t>::min(), std::numeric_limits<uint64_t>::max());
 
     ArrayV<std::pair<float, size_t>> scores(objs.Size());
@@ -49,12 +49,12 @@ brendancuda::ArrayV<std::pair<float, size_t>> brendancuda::ai::evol::Evolver::Ev
     }
     return scores;
 }
-void brendancuda::ai::evol::SortEvaluations(ArrayV<std::pair<float, size_t>> Evaluations) {
+void bcuda::ai::evol::SortEvaluations(ArrayV<std::pair<float, size_t>> Evaluations) {
     std::sort(Evaluations.Data(), Evaluations.Data() + Evaluations.Size(), [](const auto& a, const auto& b) {
         return a.first < b.first;
     });
 }
-void brendancuda::ai::evol::Evolver::ActOnSortedEvaluations(ArrayV<std::pair<float, size_t>> Evaluations, void* DisposeSharedData, void* ReproductionSharedData) {
+void bcuda::ai::evol::Evolver::ActOnSortedEvaluations(ArrayV<std::pair<float, size_t>> Evaluations, void* DisposeSharedData, void* ReproductionSharedData) {
     std::uniform_int_distribution<uint64_t> dis(std::numeric_limits<uint64_t>::min(), std::numeric_limits<uint64_t>::max());
     
     if (Evaluations.Size() != objs.Size())
@@ -74,13 +74,13 @@ void brendancuda::ai::evol::Evolver::ActOnSortedEvaluations(ArrayV<std::pair<flo
         ++j;
     }
 }
-brendancuda::ArrayV<std::pair<float, size_t>> brendancuda::ai::evol::Evolver::RunStep(void* EvaluationSharedData, void* ReproductionSharedData, void* DisposeSharedData) {
+bcuda::ArrayV<std::pair<float, size_t>> bcuda::ai::evol::Evolver::RunStep(void* EvaluationSharedData, void* ReproductionSharedData, void* DisposeSharedData) {
     auto eval = EvaluateAll(EvaluationSharedData);
     SortEvaluations(eval);
     ActOnSortedEvaluations(eval, DisposeSharedData, ReproductionSharedData);
     return eval;
 }
-void brendancuda::ai::evol::Evolver::Dispose(void* DisposeSharedData) {
+void bcuda::ai::evol::Evolver::Dispose(void* DisposeSharedData) {
     for (size_t i = 0; i < objs.Size(); ++i) {
         void* v = objs[i];
         if (v) disposeFunction(v, DisposeSharedData);

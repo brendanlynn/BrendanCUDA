@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace brendancuda {
+namespace bcuda {
     enum CopyType : uint32_t {
         copyTypeMemcpy,
         copyTypeCopyAssignment,

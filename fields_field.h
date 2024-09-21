@@ -6,7 +6,7 @@
 #include <memory>
 #include <thrust/device_ptr.h>
 
-namespace brendancuda {
+namespace bcuda {
     namespace fields {
         template <typename _T, size_t _DimensionCount>
         class Field;

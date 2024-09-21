@@ -2,7 +2,7 @@
 
 #include "ai_evol_eval_output.h"
 
-namespace brendancuda {
+namespace bcuda {
     namespace ai {
         namespace evol {
             namespace eval {

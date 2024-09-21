@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace brendancuda {
+namespace bcuda {
     namespace fields {
         template <size_t _DimensionCount, typename... _Ts>
         class MField;

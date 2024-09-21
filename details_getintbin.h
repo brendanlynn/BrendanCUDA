@@ -4,7 +4,7 @@
 #include <curand_kernel.h>
 #include <random>
 
-namespace brendancuda {
+namespace bcuda {
     namespace details {
         template <std::integral _T, std::uniform_random_bit_generator _TRNG>
         __host__ static __forceinline _T GetIntBin(_TRNG& RNG) {

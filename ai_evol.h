@@ -1,6 +1,6 @@
 #pragma once
 
-namespace brendancuda {
+namespace bcuda {
     namespace ai {
         namespace evol {
             //A function that creates an object.

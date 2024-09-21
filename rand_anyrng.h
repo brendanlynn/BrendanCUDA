@@ -5,7 +5,7 @@
 #include <limits>
 #include <random>
 
-namespace brendancuda {
+namespace bcuda {
     namespace details {
         template <typename _TOutputType, typename _TRNG>
         _TOutputType RunRNGFunc(void* RNG) {

@@ -7,7 +7,7 @@
 #include <cuda_runtime.h>
 #include <curand_kernel.h>
 
-namespace brendancuda {
+namespace bcuda {
     namespace random {
         template <std::uniform_random_bit_generator _TRNG>
         __host__ __forceinline uint32_t Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG);
@@ -23,8 +23,8 @@ namespace brendancuda {
 }
 
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline uint32_t brendancuda::random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
-    uint32_t ct = brendancuda::binary::CountBitsB(ProbabilityOf1);
+__host__ __forceinline uint32_t bcuda::random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+    uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
     }
@@ -42,8 +42,8 @@ __host__ __forceinline uint32_t brendancuda::random::Get32Bits(uint32_t Probabil
     return cr;
 }
 template <std::uniform_random_bit_generator _TRNG>
-__host__ __forceinline uint64_t brendancuda::random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
-    uint32_t ct = brendancuda::binary::CountBitsB(ProbabilityOf1);
+__host__ __forceinline uint64_t bcuda::random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+    uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
     }
@@ -61,9 +61,9 @@ __host__ __forceinline uint64_t brendancuda::random::Get64Bits(uint32_t Probabil
     return cr;
 }
 #ifdef __CUDACC__
-template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline uint32_t brendancuda::random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
-    uint32_t ct = brendancuda::binary::CountBitsB(ProbabilityOf1);
+template <bcuda::KernelCurandState _TRNG>
+__device__ __forceinline uint32_t bcuda::random::Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+    uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
     }
@@ -79,9 +79,9 @@ __device__ __forceinline uint32_t brendancuda::random::Get32Bits(uint32_t Probab
     }
     return cr;
 }
-template <brendancuda::KernelCurandState _TRNG>
-__device__ __forceinline uint64_t brendancuda::random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
-    uint32_t ct = brendancuda::binary::CountBitsB(ProbabilityOf1);
+template <bcuda::KernelCurandState _TRNG>
+__device__ __forceinline uint64_t bcuda::random::Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+    uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
     if (!ct) {
         return 0;
     }
