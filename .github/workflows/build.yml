@@ -22,7 +22,9 @@ jobs:
         cuda: '12.1.0'
 
     - name: Set up MSBuild
-      uses: microsoft/setup-msbuild@v1.0.3
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: '[17.9,17.10)'
 
     - name: Build the project
       run: |
