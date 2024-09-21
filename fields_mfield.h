@@ -7,8 +7,8 @@
 #include <stdexcept>
 #include <string>
 
-namespace BrendanCUDA {
-    namespace Fields {
+namespace bcuda {
+    namespace fields {
         template <size_t _DimensionCount, typename... _Ts>
         class MField;
         template <size_t _DimensionCount, typename... _Ts>
@@ -82,11 +82,11 @@ namespace BrendanCUDA {
                 return basefb_t::TotalSizeOnGPU();
             }
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxy<this_t::template element_t<_Idx>, _DimensionCount> F() {
+            __host__ __device__ fields::FieldProxy<this_t::template element_t<_Idx>, _DimensionCount> F() {
                 return basefb_t::template F<_Idx>();
             }
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxyConst<this_t::template element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ fields::FieldProxyConst<this_t::template element_t<_Idx>, _DimensionCount> FConst() const {
                 return basefb_t::template FConst<_Idx>();
             }
             template <size_t _Idx>
@@ -200,11 +200,11 @@ namespace BrendanCUDA {
                 return basefb_t::TotalSizeOnGPU();
             }
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
+            __host__ __device__ fields::FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
                 return basefb_t::template F<_Idx>();
             }
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 return basefb_t::template FConst<_Idx>();
             }
             template <size_t _Idx>
@@ -286,7 +286,7 @@ namespace BrendanCUDA {
                 return basefb_t::TotalSizeOnGPU();
             }
             template <size_t _Idx>
-            __host__ __device__ Fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 return basefb_t::template FConst<_Idx>();
             }
             template <size_t _Idx>

@@ -5,20 +5,20 @@
 #include <cstdint>
 #include <random>
 
-namespace BrendanCUDA {
-    namespace AI {
-        namespace Evolution {
+namespace bcuda {
+    namespace ai {
+        namespace evol {
             //A class to reduce the boilerplate code of implementing an evolutionary algorithm.
             class Evolver {
             public:
-                //Creates an instance of the BrendanCUDA::AI::Evolution::Evolver class.
+                //Creates an instance of the bcuda::ai::evol::Evolver class.
                 Evolver(
                     size_t ContestantCount,
                     evaluationFunction_t EvaluationFunction,
                     reproductionFunction_t ReproductionFunction,
                     disposeFunction_t DisposeFunction
                 );
-                //Creates an instance of the BrendanCUDA::AI::Evolution::Evolver class.
+                //Creates an instance of the bcuda::ai::evol::Evolver class.
                 Evolver(
                     size_t ContestantCount,
                     evaluationFunction_t EvaluationFunction,

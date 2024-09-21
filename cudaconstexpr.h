@@ -1,6 +1,6 @@
 #pragma once
 
-namespace BrendanCUDA {
+namespace bcuda {
 #ifdef __CUDA_ARCH__
     constexpr bool isCuda = true;
 #else

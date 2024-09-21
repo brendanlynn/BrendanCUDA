@@ -6,8 +6,8 @@
 #include <memory>
 #include <unordered_map>
 
-namespace BrendanCUDA {
-    namespace Exprs {
+namespace bcuda {
+    namespace exprs {
         using varmap_t = std::unordered_map<uint64_t, std::any>;
 
         struct ExprBase {
@@ -821,11 +821,11 @@ namespace BrendanCUDA {
     }
     template <typename _T>
     struct Expression {
-        std::unique_ptr<Exprs::Expr<_T>> ptr;
+        std::unique_ptr<exprs::Expr<_T>> ptr;
 
         Expression(std::nullptr_t = nullptr)
             : ptr(nullptr) { }
-        Expression(std::unique_ptr<Exprs::Expr<_T>>&& Ptr)
+        Expression(std::unique_ptr<exprs::Expr<_T>>&& Ptr)
             : ptr(Ptr) { }
         Expression(const Expression<_T>& OtherExpr)
             : ptr(OtherExpr.ptr->Clone()) { }
@@ -836,7 +836,7 @@ namespace BrendanCUDA {
             return *this;
         }
 
-        _T Calculate(const Exprs::varmap_t& Map) {
+        _T Calculate(const exprs::varmap_t& Map) {
             return ptr->Calc(Map);
         }
     };

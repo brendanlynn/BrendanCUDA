@@ -4,7 +4,7 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
-namespace BrendanCUDA {
+namespace bcuda {
 #ifdef __CUDACC__
     __device__ uint32_t GetCoordinates1() {
         return blockIdx.x * blockDim.x + threadIdx.x;

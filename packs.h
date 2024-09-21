@@ -2,8 +2,8 @@
 
 #include <type_traits>
 
-namespace BrendanCUDA {
-    namespace Packs {
+namespace bcuda {
+    namespace packs {
         namespace details {
             template <uintmax_t _Idx, typename... _Ts>
             struct typeAt;

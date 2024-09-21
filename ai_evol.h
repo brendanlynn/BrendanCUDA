@@ -1,8 +1,8 @@
 #pragma once
 
-namespace BrendanCUDA {
-    namespace AI {
-        namespace Evolution {
+namespace bcuda {
+    namespace ai {
+        namespace evol {
             //A function that creates an object.
             using creationFunction_t = void*(*)(void* CreationSharedData);
             //A function that evaluates an object.

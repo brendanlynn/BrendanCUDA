@@ -3,7 +3,7 @@
 #include <concepts>
 #include <curand_kernel.h>
 
-namespace BrendanCUDA {
+namespace bcuda {
     template <typename _T>
     concept KernelCurandState =
         std::same_as<_T, curandStateMRG32k3a_t> ||

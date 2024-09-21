@@ -1,6 +1,6 @@
 #include "binary_basic.h"
 
-__host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsF(uint64_t n) {
+__host__ __device__ uint32_t bcuda::binary::CountBitsF(uint64_t n) {
     if (n >> 32) {
         if (n >> 48) {
             if (n >> 56) {
@@ -323,7 +323,7 @@ __host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsF(uint64_t n) {
         }
     }
 }
-__host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsF(uint32_t n) {
+__host__ __device__ uint32_t bcuda::binary::CountBitsF(uint32_t n) {
     if (n >> 16) {
         if (n >> 24) {
             if (n >> 28) {
@@ -486,7 +486,7 @@ __host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsF(uint32_t n) {
         }
     }
 }
-__host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsF(uint16_t n) {
+__host__ __device__ uint32_t bcuda::binary::CountBitsF(uint16_t n) {
     uint32_t ni = (uint32_t)n;
     if (ni >> 8) {
         if (ni >> 12) {
@@ -570,7 +570,7 @@ __host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsF(uint16_t n) {
         }
     }
 }
-__host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsF(uint8_t n) {
+__host__ __device__ uint32_t bcuda::binary::CountBitsF(uint8_t n) {
     uint32_t ni = (uint32_t)n;
     if (ni >> 4) {
         if (ni >> 6) {
@@ -614,7 +614,7 @@ __host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsF(uint8_t n) {
         }
     }
 }
-__host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsB(uint64_t n) {
+__host__ __device__ uint32_t bcuda::binary::CountBitsB(uint64_t n) {
     if (n << 32) {
         if (n << 48) {
             if (n << 56) {
@@ -937,7 +937,7 @@ __host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsB(uint64_t n) {
         }
     }
 }
-__host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsB(uint32_t n) {
+__host__ __device__ uint32_t bcuda::binary::CountBitsB(uint32_t n) {
     if (n << 16) {
         if (n << 24) {
             if (n << 28) {
@@ -1100,7 +1100,7 @@ __host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsB(uint32_t n) {
         }
     }
 }
-__host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsB(uint16_t n) {
+__host__ __device__ uint32_t bcuda::binary::CountBitsB(uint16_t n) {
     uint32_t ni = (uint32_t)n;
     if (ni << 8) {
         if (ni << 12) {
@@ -1184,7 +1184,7 @@ __host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsB(uint16_t n) {
         }
     }
 }
-__host__ __device__ uint32_t BrendanCUDA::Binary::CountBitsB(uint8_t n) {
+__host__ __device__ uint32_t bcuda::binary::CountBitsB(uint8_t n) {
     uint32_t ni = (uint32_t)n;
     if (ni << 4) {
         if (ni << 6) {

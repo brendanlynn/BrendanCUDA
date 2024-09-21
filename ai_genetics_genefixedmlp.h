@@ -7,14 +7,14 @@
 #include <array>
 #include <cuda_runtime.h>
 
-namespace BrendanCUDA {
-    namespace AI {
-        namespace Genetics {
+namespace bcuda {
+    namespace ai {
+        namespace genes {
             template <typename _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
             struct GeneFixedMLP final {
             private:
                 using this_t = GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>;
-                using mlp_t = MLP::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>;
+                using mlp_t = mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>;
                 using inputArray_t = std::array<_T, mlp_t::InputCount()>;
                 using outputArray_t = std::array<_T, mlp_t::OutputCount()>;
             public:
@@ -71,146 +71,146 @@ namespace BrendanCUDA {
     }
 }
 
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-auto BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Run() -> outputArray_t* {
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+auto bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Run() -> outputArray_t* {
     auto* outputArr = new outputArray_t;
     Run(outputArr);
     return outputArr;
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Run(outputArray_t* OutputArray) {
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Run(outputArray_t* OutputArray) {
     mlp.Run(base.data(), OutputArray->data());
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _TRNG& RNG) {
-    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, RNG);
+void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _TRNG& RNG) {
+    random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, RNG);
     mlp.Randomize(Scalar, RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, LowerBound, UpperBound, RNG);
+void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, LowerBound, UpperBound, RNG);
     mlp.Randomize(Scalar, LowerBound, UpperBound, RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
-    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, RNG);
+void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
+    random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, RNG);
     mlp.Randomize(Scalar_MLP, RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
+void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
     mlp.Randomize(Scalar_MLP, LowerBound, UpperBound, RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _TRNG& RNG) {
+bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _TRNG& RNG) {
     GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
     n.Randomize(Scalar, RNG);
     return n;
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
     n.Randomize(Scalar, LowerBound, UpperBound, RNG);
     return n;
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
+bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
     GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
     n.Randomize(Scalar_Base, Scalar_MLP, RNG);
     return n;
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
     n.Randomize(Scalar_Base, Scalar_MLP, LowerBound, UpperBound, RNG);
     return n;
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _TRNG& RNG) {
-    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, RNG);
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _TRNG& RNG) {
+    random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, RNG);
     mlp.Randomize(Scalar, RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, LowerBound, UpperBound, RNG);
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, LowerBound, UpperBound, RNG);
     mlp.Randomize(Scalar, LowerBound, UpperBound, RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
-    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, RNG);
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
+    random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, RNG);
     mlp.Randomize(Scalar_MLP, RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    Random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+    random::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
     mlp.Randomize(Scalar_MLP, LowerBound, UpperBound, RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _TRNG& RNG) {
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _TRNG& RNG) {
     GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
     n.Randomize(Scalar, RNG);
     return n;
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
     n.Randomize(Scalar, LowerBound, UpperBound, RNG);
     return n;
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
     GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
     n.Randomize(Scalar_Base, Scalar_MLP, RNG);
     return n;
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
     GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
     n.Randomize(Scalar_Base, Scalar_MLP, LowerBound, UpperBound, RNG);
     return n;
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::ZeroOverwrite() {
-    Random::ClearArray<false, _T>(Span<_T>(base, mlp.InputLength()));
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::ZeroOverwrite() {
+    random::ClearArray<false, _T>(Span<_T>(base, mlp.InputLength()));
     mlp.ZeroOverwrite();
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_TRNG& RNG) {
-    Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), RNG);
+void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_TRNG& RNG) {
+    random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), RNG);
     mlp.RandomOverwrite(RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
 template <std::uniform_random_bit_generator _TRNG>
-void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
-    Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), LowerBound, UpperBound, RNG);
+void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
+    random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), LowerBound, UpperBound, RNG);
     mlp.RandomOverwrite(LowerBound, UpperBound, RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_TRNG& RNG) {
-    Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), RNG);
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_TRNG& RNG) {
+    random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), RNG);
     mlp.RandomOverwrite(RNG);
 }
-template <typename _T, BrendanCUDA::AI::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <BrendanCUDA::KernelCurandState _TRNG>
-__device__ void BrendanCUDA::AI::Genetics::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
-    Random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), LowerBound, UpperBound, RNG);
+template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+template <bcuda::KernelCurandState _TRNG>
+__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
+    random::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), LowerBound, UpperBound, RNG);
     mlp.RandomOverwrite(LowerBound, UpperBound, RNG);
 }

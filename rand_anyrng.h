@@ -5,7 +5,7 @@
 #include <limits>
 #include <random>
 
-namespace BrendanCUDA {
+namespace bcuda {
     namespace details {
         template <typename _TOutputType, typename _TRNG>
         _TOutputType RunRNGFunc(void* RNG) {
@@ -15,7 +15,7 @@ namespace BrendanCUDA {
         template <typename _TOutputType>
         using runRNGFunc_t = _TOutputType(*)(void*);
     }
-    namespace Random {
+    namespace random {
         template <std::unsigned_integral _TOutputType>
         class AnyRNG {
         public:

@@ -4,7 +4,7 @@
 #include <cuda_runtime.h>
 #include <vector>
 
-namespace BrendanCUDA {
+namespace bcuda {
     template <typename _T>
     struct Span;
 

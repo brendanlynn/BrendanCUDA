@@ -3,11 +3,11 @@
 #include <cstdint>
 #include <utility>
 
-namespace BrendanCUDA {
-    namespace AI {
-        namespace Evolution {
-            namespace Evaluation {
-                namespace Output {
+namespace bcuda {
+    namespace ai {
+        namespace evol {
+            namespace eval {
+                namespace output {
                     using constructInstance_t = void*(*)(void* Object, void* ConstructInstanceSharedData);
                     
                     template <typename _TInput, typename _TOutput>

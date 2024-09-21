@@ -2,11 +2,11 @@
 
 #include "ai_evol_eval_output.h"
 
-namespace BrendanCUDA {
-    namespace AI {
-        namespace Evolution {
-            namespace Evaluation {
-                namespace Output {
+namespace bcuda {
+    namespace ai {
+        namespace evol {
+            namespace eval {
+                namespace output {
                     template <typename _T>
                     struct Evaluate_UniqueValues_SD final {
                         InstanceFunctions<_T*, _T*> instanceFunctions;
