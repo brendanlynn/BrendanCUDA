@@ -129,7 +129,6 @@
     <ClInclude Include="nets_net.h" />
     <ClInclude Include="rand_anyrng.h" />
     <ClInclude Include="binary_basic.h" />
-    <ClInclude Include="dcopy.cuh" />
     <ClInclude Include="fields_dfield.h" />
     <ClInclude Include="ai_evol_evolver.h" />
     <ClInclude Include="fields_field.h" />
@@ -142,7 +141,6 @@
     <CudaCompile Include="ai.cu" />
     <CudaCompile Include="binary_basic.cu" />
     <CudaCompile Include="details_fillwith.cu" />
-    <CudaCompile Include="dcopy.cu" />
     <CudaCompile Include="nets_makenet.cu" />
     <CudaCompile Include="nets_net.cu" />
     <CudaCompile Include="rand_randomizer.cu" />
