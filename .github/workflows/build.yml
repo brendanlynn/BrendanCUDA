@@ -16,17 +16,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: '17.9.0'
+
     - name: Set up CUDA
       uses: Jimver/cuda-toolkit@v0.2.17
       with:
         cuda: '12.1.0'
         method: 'local'
         sub-packages: '["nvcc", "cudart", "cublas", "cublas_dev", "thrust", "visual_studio_integration"]'
-
-    - name: Set up MSBuild
-      uses: microsoft/setup-msbuild@v2
-      with:
-        vs-version: '[17.9,17.10)'
 
     - name: Build the project
       run: |
