@@ -159,7 +159,7 @@ namespace bcuda {
             static __forceinline void Deserialize(const void*& Data, void* Value) requires (BSerializer::Serializable<_Ts> && ...) {
                 new (Value) this_t(Deserialize(Data));
             }
-            __forceinline void* const* FieldDataArray() const {
+            __host__ __device__ __forceinline void* const* FieldDataArray() const {
                 return darrs;
             }
         private:
