@@ -72,10 +72,10 @@ namespace bcuda {
 #ifdef __CUDACC__
             __device__ __forceinline uint64_t RefToIdx(const _T& Ref) const;
 #endif
-            __host__ __forceinline this_t::vector_t DRefToCoords(thrust::device_reference<_T> Ref) const;
-            __host__ __forceinline this_t::vector_t DRefToCoords(thrust::device_reference<const _T> Ref) const;
+            __host__ __forceinline typename this_t::vector_t DRefToCoords(thrust::device_reference<_T> Ref) const;
+            __host__ __forceinline typename this_t::vector_t DRefToCoords(thrust::device_reference<const _T> Ref) const;
 #ifdef __CUDACC__
-            __device__ __forceinline this_t::vector_t RefToCoords(const _T& Ref) const;
+            __device__ __forceinline typename this_t::vector_t RefToCoords(const _T& Ref) const;
 #endif
             __host__ __forceinline _T* DRefToPtr(thrust::device_reference<_T> Ref) const;
             __host__ __forceinline _T* DRefToPtr(thrust::device_reference<const _T> Ref) const;
@@ -210,7 +210,7 @@ __host__ __device__ __forceinline uint64_t bcuda::details::FieldBase<_T, _Dimens
     return Ptr - darr;
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __device__ __forceinline auto bcuda::details::FieldBase<_T, _DimensionCount>::PtrToCoords(const _T* Ptr) const -> this_t::vector_t {
+__host__ __device__ __forceinline auto bcuda::details::FieldBase<_T, _DimensionCount>::PtrToCoords(const _T* Ptr) const -> typename this_t::vector_t {
     return this->IdxToCoords(PtrToIdx(Ptr));
 }
 template <typename _T, size_t _DimensionCount>
@@ -236,16 +236,16 @@ __device__ __forceinline uint64_t bcuda::details::FieldBase<_T, _DimensionCount>
 }
 #endif
 template <typename _T, size_t _DimensionCount>
-__host__ __forceinline auto bcuda::details::FieldBase<_T, _DimensionCount>::DRefToCoords(thrust::device_reference<_T> Ref) const -> this_t::vector_t {
+__host__ __forceinline auto bcuda::details::FieldBase<_T, _DimensionCount>::DRefToCoords(thrust::device_reference<_T> Ref) const -> typename this_t::vector_t {
     return PtrToCoords(RefToPtr(Ref));
 }
 template <typename _T, size_t _DimensionCount>
-__host__ __forceinline auto bcuda::details::FieldBase<_T, _DimensionCount>::DRefToCoords(thrust::device_reference<const _T> Ref) const -> this_t::vector_t {
+__host__ __forceinline auto bcuda::details::FieldBase<_T, _DimensionCount>::DRefToCoords(thrust::device_reference<const _T> Ref) const -> typename this_t::vector_t {
     return PtrToCoords(RefToPtr(Ref));
 }
 #ifdef __CUDACC__
 template <typename _T, size_t _DimensionCount>
-__device__ __forceinline auto bcuda::details::FieldBase<_T, _DimensionCount>::RefToCoords(const _T& Ref) const -> this_t::vector_t {
+__device__ __forceinline auto bcuda::details::FieldBase<_T, _DimensionCount>::RefToCoords(const _T& Ref) const -> typename this_t::vector_t {
     return PtrToCoords(RefToPtr(Ref));
 }
 #endif
