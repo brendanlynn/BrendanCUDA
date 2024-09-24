@@ -21,7 +21,7 @@ namespace bcuda {
             using basefb_t = details::FieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            using vector_t = basedb_t::vector_t;
+            using vector_t = typename basedb_t::vector_t;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline Field(const vector_t& Dimensions)
@@ -382,7 +382,7 @@ namespace bcuda {
             using basefb_t = details::FieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            using vector_t = basedb_t::vector_t;
+            using vector_t = typename basedb_t::vector_t;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline FieldProxy(const vector_t& Dimensions, _T* All)
@@ -647,7 +647,7 @@ namespace bcuda {
             using basefb_t = details::FieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            using vector_t = basedb_t::vector_t;
+            using vector_t = typename basedb_t::vector_t;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline FieldProxyConst(const vector_t& Dimensions, const _T* All)

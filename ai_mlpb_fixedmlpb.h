@@ -95,7 +95,7 @@ namespace bcuda {
                 using layerType_t = details::mlpbLayerType_t<_Index, _TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...>;
 
                 using input_t = _TInput;
-                using output_t = FixedMLPB<_TOutput1, _TOutput2, _TsContinuedOutputs...>::output_t;
+                using output_t = typename FixedMLPB<_TOutput1, _TOutput2, _TsContinuedOutputs...>::output_t;
                 
                 FixedMLPBL<_TInput, _TOutput1> layer;
                 FixedMLPB<_TOutput1, _TOutput2, _TsContinuedOutputs...> nextLayers;
