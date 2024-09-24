@@ -169,10 +169,10 @@ namespace bcuda {
                 details::MFieldBase<_DimensionCount, _Ts..., _Ts...>(Data, Value);
             }
 
-            __host__ __device__ __forceinline MDField(const this_t&) = default;
-            __host__ __device__ __forceinline MDField(this_t&&) = default;
-            __host__ __device__ __forceinline this_t& operator=(const this_t&) = default;
-            __host__ __device__ __forceinline this_t& operator=(this_t&&) = default;
+            __forceinline MDField(const this_t&) = default;
+            __forceinline MDField(this_t&&) = default;
+            __forceinline this_t& operator=(const this_t&) = default;
+            __forceinline this_t& operator=(this_t&&) = default;
 
             __host__ __device__ __forceinline MDFieldProxy<_DimensionCount, _Ts...> MakeProxy() {
                 return MDFieldProxy<_DimensionCount, _Ts...>(*this);
