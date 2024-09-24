@@ -26,13 +26,13 @@ namespace bcuda {
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline FieldBase(_Ts... Dimensions)
-                : FieldBase(basedb_t::vector_t(Dimensions...)) { }
+                : FieldBase(typename this_t::vector_t(Dimensions...)) { }
             __host__ __device__ __forceinline FieldBase(const typename this_t::vector_t& Dimensions, _T* Arr)
                 : basedb_t(Dimensions), darr(Arr) { }
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline FieldBase(_Ts... Dimensions, _T* Arr)
-                : FieldBase(vector_t(Dimensions...), Arr) { }
+                : FieldBase(typename this_t::vector_t(Dimensions...), Arr) { }
 #pragma endregion
 
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
@@ -47,19 +47,19 @@ namespace bcuda {
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline _T* CoordsToPtr(_Ts... Coords) const {
-                return CoordsToPtr(vector_t(Coords...));
+                return CoordsToPtr(typename this_t::vector_t(Coords...));
             }
             __host__ __device__ __forceinline _T& CoordsToRef(const typename this_t::vector_t& Coords) const;
             __host__ __device__ __forceinline thrust::device_reference<_T> CoordsToDRef(const typename this_t::vector_t& Coords) const;
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __device__ __forceinline _T& CoordsToRef(_Ts... Coords) const {
-                return CoordsToRef(vector_t(Coords...));
+                return CoordsToRef(typename this_t::vector_t(Coords...));
             }
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __forceinline thrust::device_reference<_T> CoordsToDRef(_Ts... Coords) const {
-                return CoordsToRef(vector_t(Coords...));
+                return CoordsToRef(typename this_t::vector_t(Coords...));
             }
             __host__ __device__ __forceinline uint64_t PtrToIdx(const _T* Ptr) const;
             __host__ __device__ __forceinline this_t::vector_t PtrToCoords(const _T* Ptr) const;
@@ -90,7 +90,7 @@ namespace bcuda {
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __device__ __forceinline _T& operator()(_Ts... Coords) const {
-                return CoordsToRef(vector_t(Coords...));
+                return CoordsToRef(typename this_t::vector_t(Coords...));
             }
 #pragma endregion
 
@@ -450,14 +450,14 @@ __forceinline size_t bcuda::details::FieldBase<_T, _DimensionCount>::SerializedS
 }
 template <typename _T, size_t _DimensionCount>
 __forceinline void bcuda::details::FieldBase<_T, _DimensionCount>::Serialize(void*& Data) const requires BSerializer::Serializable<_T> {
-    BSerializer::Serialize<this_t::vector_t>(Data, this->Dimensions());
+    BSerializer::Serialize<typename this_t::vector_t>(Data, this->Dimensions());
     size_t l = this->ValueCount();
     for (size_t i = 0; i < l; ++i)
         BSerializer::Serialize(Data, CpyValOut(i));
 }
 template <typename _T, size_t _DimensionCount>
 __forceinline auto bcuda::details::FieldBase<_T, _DimensionCount>::Deserialize(const void*& Data) -> this_t requires BSerializer::Serializable<_T> {
-    typename basedb_t::vector_t dimensions = BSerializer::Deserialize<typename basedb_t::vector_t>(Data);
+    typename this_t::vector_t dimensions = BSerializer::Deserialize<typename this_t::vector_t>(Data);
     FieldBase<_T, _DimensionCount> field(dimensions);
     size_t l = field.ValueCount();
     for (size_t i = 0; i < l; ++i)
