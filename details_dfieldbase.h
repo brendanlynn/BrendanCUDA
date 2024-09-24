@@ -27,13 +27,13 @@ namespace bcuda {
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions)
-                : DFieldBase(this_t::vector_t(Dimensions...)) { }
+                : DFieldBase(typename this_t::vector_t(Dimensions...)) { }
             __host__ __device__ __forceinline DFieldBase(const typename this_t::vector_t& Dimensions, _T* ArrF, _T* ArrB)
                 : basedb_t(Dimensions), darrF(ArrF), darrB(ArrB) { }
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions, _T* ArrF, _T* ArrB)
-                : DFieldBase(this_t::vector_t(Dimensions...), ArrF, ArrB) { }
+                : DFieldBase(typename this_t::vector_t(Dimensions...), ArrF, ArrB) { }
 
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
                 return basedb_t::ValueCount() * sizeof(_T);
