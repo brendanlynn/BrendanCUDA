@@ -25,7 +25,7 @@ namespace bcuda {
             using basefb_t = details::DFieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            using vector_t = basefb_t::vector_t;
+            using vector_t = typename basefb_t::vector_t;
             using kernelFunc_t = details::dfieldIK_t<_T, _DimensionCount>;
 
 #pragma region Wrapper
@@ -256,7 +256,7 @@ namespace bcuda {
             using basefb_t = details::DFieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            using vector_t = basefb_t::vector_t;
+            using vector_t = typename basefb_t::vector_t;
             using kernelFunc_t = details::dfieldIK_t<_T, _DimensionCount>;
 
 #pragma region Wrapper
@@ -439,7 +439,7 @@ namespace bcuda {
             using basefb_t = details::DFieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            using vector_t = basefb_t::vector_t;
+            using vector_t = typename basefb_t::vector_t;
 
 #pragma region Wrapper
             __host__ __device__ DFieldProxyConst(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)

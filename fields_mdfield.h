@@ -32,7 +32,7 @@ namespace bcuda {
                 using type_t = void(*)(const FixedVector<uint32_t, _DimensionCount>& Pos, const idx_fieldType_t<_Idxs>&... Prevs, idx_type_t<_Idxs>&... Next);
             };
 
-            using type_t = Type2<std::make_index_sequence<size>>::type_t;
+            using type_t = typename Type2<std::make_index_sequence<size>>::type_t;
         };
 
         template <size_t _DimensionCount, typename _TTypes, typename _TPublics>
@@ -56,7 +56,7 @@ namespace bcuda {
             using basemf_t = MField<_DimensionCount, _Ts..., _Ts...>;
             basemf_t fields;
         public:
-            using vector_t = basemf_t::vector_t;
+            using vector_t = typename basemf_t::vector_t;
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
@@ -201,7 +201,7 @@ namespace bcuda {
             using basemf_t = MFieldProxy<_DimensionCount, _Ts..., _Ts...>;
             basemf_t fields;
         public:
-            using vector_t = basemf_t::vector_t;
+            using vector_t = typename basemf_t::vector_t;
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
@@ -309,7 +309,7 @@ namespace bcuda {
             using basemf_t = MFieldProxyConst<_DimensionCount, _Ts..., _Ts...>;
             basemf_t fields;
         public:
-            using vector_t = basemf_t::vector_t;
+            using vector_t = typename basemf_t::vector_t;
             using tuple_t = std::tuple<_Ts...>;
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;

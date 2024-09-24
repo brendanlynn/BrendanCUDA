@@ -22,10 +22,10 @@ namespace bcuda {
             using basefb_t = details::MFieldBase<_DimensionCount, _Ts...>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            using vector_t = basefb_t::vector_t;
-            using tuple_t = basefb_t::tuple_t;
+            using vector_t = typename basefb_t::vector_t;
+            using tuple_t = typename basefb_t::tuple_t;
             template <size_t _Idx>
-            using element_t = basefb_t::template element_t<_Idx>;
+            using element_t = typename basefb_t::template element_t<_Idx>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline MField(const vector_t& Dimensions)
@@ -147,10 +147,10 @@ namespace bcuda {
             using basefb_t = details::MFieldBase<_DimensionCount, _Ts...>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            using vector_t = basefb_t::vector_t;
-            using tuple_t = basefb_t::tuple_t;
+            using vector_t = typename basefb_t::vector_t;
+            using tuple_t = typename basefb_t::tuple_t;
             template <size_t _Idx>
-            using element_t = basefb_t::template element_t<_Idx>;
+            using element_t = typename basefb_t::template element_t<_Idx>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {
@@ -233,10 +233,10 @@ namespace bcuda {
             using basefb_t = details::MFieldBase<_DimensionCount, _Ts...>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            using vector_t = basefb_t::vector_t;
-            using tuple_t = basefb_t::tuple_t;
+            using vector_t = typename basefb_t::vector_t;
+            using tuple_t = typename basefb_t::tuple_t;
             template <size_t _Idx>
-            using element_t = basefb_t::template element_t<_Idx>;
+            using element_t = typename basefb_t::template element_t<_Idx>;
 
 #pragma region Wrapper
             __host__ __device__ __forceinline uint32_t LengthX() const requires (_DimensionCount <= 4) {
