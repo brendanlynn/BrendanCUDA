@@ -153,15 +153,15 @@
     <CudaCompile Include="rand_randomizer.cu">
       <Filter>Source Files</Filter>
     </CudaCompile>
+    <CudaCompile Include="copyblock.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ai_evol_eval_output_impl_proliferation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ai_evol_eval_output_impl_uniquevalues.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="copyblock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ai_evol_evolver.cpp">

@@ -20,7 +20,46 @@ namespace bcuda {
             }
         };
 
-        __host__ __device__ ArrayV<Landmark> GetLandmarksInDirection(uint32_t InputLength, uint32_t OutputLength, uint32_t RangeLength, uint32_t InputIndex, uint32_t OutputIndex);
+        __host__ __device__ static __forceinline ArrayV<Landmark> GetLandmarksInDirection(uint32_t InputLength, uint32_t OutputLength, uint32_t RangeLength, uint32_t InputIndex, uint32_t OutputIndex) {
+            Landmark* landmarks = 0;
+            size_t landmarkSize = 0;
+            size_t landmarkCapacity = 0;
+
+            while (RangeLength) {
+                uint32_t dInput = InputLength - InputIndex;
+                uint32_t dOutput = OutputLength - OutputIndex;
+                bool oG = dOutput > dInput;
+                uint32_t dMin = oG ? dInput : dOutput;
+                if (dMin >= RangeLength) break;
+
+                if (landmarkCapacity <= landmarkSize + 1) {
+                    if (landmarkCapacity == 0) landmarkCapacity = 1;
+                    else landmarkCapacity <<= 1;
+                    Landmark* newArr = new Landmark[landmarkCapacity];
+                    memcpy(newArr, landmarks, landmarkSize * sizeof(Landmark));
+                    delete[] landmarks;
+                    landmarks = newArr;
+                }
+                landmarks[landmarkSize++] = Landmark(InputIndex, OutputIndex, dMin);
+
+                if (oG) {
+                    InputIndex = 0;
+                    OutputIndex += dMin;
+                }
+                else if (dInput == dOutput) {
+                    InputIndex = 0;
+                    OutputIndex = 0;
+                }
+                else {
+                    InputIndex += dMin;
+                    OutputIndex = 0;
+                }
+                RangeLength -= dMin;
+            }
+            ArrayV<Landmark> landmarkArray(landmarkSize);
+            if (landmarks) memcpy(landmarkArray.Data(), landmarks, sizeof(Landmark) * landmarkSize);
+            return landmarkArray;
+        }
     }
     template <typename _T, size_t _VectorLength, bool _InputOnHost, bool _OutputOnHost, bool _Wrap = false>
     __host__ static void CopyBlock(const _T* Input, _T* output, const FixedVector<uint32_t, _VectorLength>& InputDimensions, const FixedVector<uint32_t, _VectorLength>& OutputDimensions, const FixedVector<uint32_t, _VectorLength>& RangeDimensions, const FixedVector<uint32_t, _VectorLength>& RangeInInputsCoordinates, const FixedVector<uint32_t, _VectorLength>& RangeInOutputsCoordinates);
@@ -61,7 +100,7 @@ __host__ void bcuda::CopyBlock(const _T* Input, _T* output, const FixedVector<ui
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
                 uint32_t& si = i[j];
-                if (++si >= landmarksArray[j].size) si = 0;
+                if (++si >= landmarksArray[j].Size()) si = 0;
                 else {
                     toBreak = false;
                     break;
@@ -87,7 +126,7 @@ __host__ void bcuda::CopyBlock(const _T* Input, _T* output, const FixedVector<ui
             size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
             size_t optIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(OutputDimensions, RangeInOutputsCoordinates + i);
 
-            _T* iptPtr = Input + iptIdx;
+            const _T* iptPtr = Input + iptIdx;
             _T* optPtr = output + optIdx;
 
             if constexpr (_InputOnHost)
@@ -137,7 +176,7 @@ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const FixedVector<
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
                 uint32_t& si = i[j];
-                if (++si >= landmarksArray[j].size) si = 0;
+                if (++si >= landmarksArray[j].Size()) si = 0;
                 else {
                     toBreak = false;
                     break;
@@ -158,7 +197,7 @@ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const FixedVector<
             size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
             size_t optIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(OutputDimensions, RangeInOutputsCoordinates + i);
 
-            _T* iptPtr = Input + iptIdx;
+            const _T* iptPtr = Input + iptIdx;
             _T* optPtr = output + optIdx;
 
             memcpy(optPtr, iptPtr, memcpySize);
@@ -204,7 +243,7 @@ __host__ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const Fix
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
                 uint32_t& si = i[j];
-                if (++si >= landmarksArray[j].size) si = 0;
+                if (++si >= landmarksArray[j].Size()) si = 0;
                 else {
                     toBreak = false;
                     break;
@@ -225,7 +264,7 @@ __host__ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const Fix
             size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
             size_t optIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(OutputDimensions, RangeInOutputsCoordinates + i);
 
-            _T* iptPtr = Input + iptIdx;
+            const _T* iptPtr = Input + iptIdx;
             _T* optPtr = output + optIdx;
 
             for (_T* ipu = iptPtr + elementNum; iptPtr < ipu; ++iptPtr, ++optPtr)
@@ -271,7 +310,7 @@ __host__ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const Fix
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
                 uint32_t& si = i[j];
-                if (++si >= landmarksArray[j].size) si = 0;
+                if (++si >= landmarksArray[j].Size()) si = 0;
                 else {
                     toBreak = false;
                     break;
