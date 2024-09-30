@@ -61,7 +61,7 @@ __host__ void bcuda::CopyBlock(const _T* Input, _T* output, const FixedVector<ui
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
                 uint32_t& si = i[j];
-                if (++si >= landmarksArray[j].size) si = 0;
+                if (++si >= landmarksArray[j].Size()) si = 0;
                 else {
                     toBreak = false;
                     break;
@@ -87,7 +87,7 @@ __host__ void bcuda::CopyBlock(const _T* Input, _T* output, const FixedVector<ui
             size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
             size_t optIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(OutputDimensions, RangeInOutputsCoordinates + i);
 
-            _T* iptPtr = Input + iptIdx;
+            const _T* iptPtr = Input + iptIdx;
             _T* optPtr = output + optIdx;
 
             if constexpr (_InputOnHost)
@@ -137,7 +137,7 @@ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const FixedVector<
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
                 uint32_t& si = i[j];
-                if (++si >= landmarksArray[j].size) si = 0;
+                if (++si >= landmarksArray[j].Size()) si = 0;
                 else {
                     toBreak = false;
                     break;
@@ -158,7 +158,7 @@ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const FixedVector<
             size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
             size_t optIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(OutputDimensions, RangeInOutputsCoordinates + i);
 
-            _T* iptPtr = Input + iptIdx;
+            const _T* iptPtr = Input + iptIdx;
             _T* optPtr = output + optIdx;
 
             memcpy(optPtr, iptPtr, memcpySize);
@@ -204,7 +204,7 @@ __host__ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const Fix
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
                 uint32_t& si = i[j];
-                if (++si >= landmarksArray[j].size) si = 0;
+                if (++si >= landmarksArray[j].Size()) si = 0;
                 else {
                     toBreak = false;
                     break;
@@ -225,7 +225,7 @@ __host__ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const Fix
             size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
             size_t optIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(OutputDimensions, RangeInOutputsCoordinates + i);
 
-            _T* iptPtr = Input + iptIdx;
+            const _T* iptPtr = Input + iptIdx;
             _T* optPtr = output + optIdx;
 
             for (_T* ipu = iptPtr + elementNum; iptPtr < ipu; ++iptPtr, ++optPtr)
@@ -271,7 +271,7 @@ __host__ __device__ void bcuda::CopyBlock(const _T* Input, _T* output, const Fix
             bool toBreak = true;
             for (size_t j = 0; j < _VectorLength; ++j) {
                 uint32_t& si = i[j];
-                if (++si >= landmarksArray[j].size) si = 0;
+                if (++si >= landmarksArray[j].Size()) si = 0;
                 else {
                     toBreak = false;
                     break;
