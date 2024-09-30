@@ -38,5 +38,6 @@ __host__ __device__ bcuda::ArrayV<bcuda::details::Landmark> bcuda::details::GetL
     }
     ArrayV<Landmark> landmarkArray(landmarkSize);
     if (landmarks) memcpy(landmarkArray.Data(), landmarks, sizeof(Landmark) * landmarkSize);
+    delete[] landmarks;
     return landmarkArray;
 }
