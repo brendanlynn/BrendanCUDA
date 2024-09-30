@@ -170,12 +170,12 @@ namespace bcuda {
             }
 #endif
             template <bool _OutputOnHost>
-            __host__ __forceinline void CopyBlockOut(_T* output, const typename this_t::vector_t& OutputDimensions, const typename this_t::vector_t& RangeDimensions, const typename this_t::vector_t& RangeInInputsCoordinates, const typename this_t::vector_t& RangeInOutputsCoordinates) const {
-                F().CopyBlockOut<_OutputOnHost>(output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+            __host__ __forceinline void CopyBlockOut(_T* Output, const typename this_t::vector_t& OutputDimensions, const typename this_t::vector_t& RangeDimensions, const typename this_t::vector_t& RangeInInputsCoordinates, const typename this_t::vector_t& RangeInOutputsCoordinates) const {
+                F().CopyBlockOut<_OutputOnHost>(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #ifdef __CUDACC__
-            __device__ __forceinline void CopyBlockOut(_T* output, const typename this_t::vector_t& OutputDimensions, const typename this_t::vector_t& RangeDimensions, const typename this_t::vector_t& RangeInInputsCoordinates, const typename this_t::vector_t& RangeInOutputsCoordinates) const {
-                F().CopyBlockOut(output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+            __device__ __forceinline void CopyBlockOut(_T* Output, const typename this_t::vector_t& OutputDimensions, const typename this_t::vector_t& RangeDimensions, const typename this_t::vector_t& RangeInInputsCoordinates, const typename this_t::vector_t& RangeInOutputsCoordinates) const {
+                F().CopyBlockOut(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #endif
 
