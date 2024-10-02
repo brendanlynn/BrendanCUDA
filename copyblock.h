@@ -80,7 +80,7 @@ __host__ void bcuda::CopyBlock(const _T* Input, _T* Output, const FixedVector<ui
                 else cudaMemcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x, cudaMemcpyDeviceToDevice);
             return;
         }
-        size_t elementNum = RangeDimensions[_VectorLength - 1];
+        size_t elementNum = RangeDimensions[0];
         size_t memcpySize = sizeof(_T) * elementNum;
         vector_t i;
         while (true) {
