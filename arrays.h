@@ -60,6 +60,12 @@ namespace bcuda {
         __host__ __device__ __forceinline const _T& operator[](size_t Idx) const {
             return ptr[Idx];
         }
+        __host__ __device__ __forceinline _T* operator+(size_t Idx) {
+            return ptr + Idx;
+        }
+        __host__ __device__ __forceinline const _T* operator+(size_t Idx) const {
+            return ptr + Idx;
+        }
 
         __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) {
             return Span<_T>(*this).Split(Start, NewSize);
@@ -101,6 +107,9 @@ namespace bcuda {
 
         __host__ __device__ __forceinline _T& operator[](size_t Idx) const {
             return ptr[Idx];
+        }
+        __host__ __device__ __forceinline _T* operator+(size_t Idx) {
+            return ptr + Idx;
         }
 
         __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) const {
