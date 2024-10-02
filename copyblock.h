@@ -42,7 +42,7 @@ __host__ void bcuda::CopyBlock(const _T* Input, _T* Output, const FixedVector<ui
     if constexpr (_Wrap) {
         ArrayV<details::Landmark> landmarksArray[_VectorLength];
         for (size_t i = 0; i < _VectorLength; ++i)
-            landmarksArray[i] = details::GetLandmarksInDirection(InputDimensions[i], OutputDimensions[i], RangeDimensions[i], RangeInInputsCoordinates[i], RangeInOutputsCoordinates[i]);
+            new (landmarksArray + i) ArrayV<details::Landmark>(details::GetLandmarksInDirection(InputDimensions[i], OutputDimensions[i], RangeDimensions[i], RangeInInputsCoordinates[i], RangeInOutputsCoordinates[i]));
         
         vector_t i;
         while (true) {
