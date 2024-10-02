@@ -10,7 +10,7 @@ __host__ __device__ bcuda::ArrayV<bcuda::details::Landmark> bcuda::details::GetL
         uint32_t dOutput = OutputLength - OutputIndex;
         bool oG = dOutput > dInput;
         uint32_t dMin = oG ? dInput : dOutput;
-        if (dMin >= RangeLength) break;
+        if (dMin > RangeLength) dMin = RangeLength;
 
         if (landmarkCapacity <= landmarkSize + 1) {
             if (landmarkCapacity == 0) landmarkCapacity = 1;
