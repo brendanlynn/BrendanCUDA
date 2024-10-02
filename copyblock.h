@@ -151,7 +151,7 @@ __device__ void bcuda::CopyBlock(const _T* Input, _T* Output, const FixedVector<
             memcpy(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, sizeof(_T) * RangeDimensions.x);
             return;
         }
-        size_t elementNum = RangeDimensions[_VectorLength - 1];
+        size_t elementNum = RangeDimensions[0];
         size_t memcpySize = sizeof(_T) * elementNum;
         vector_t i;
         while (true) {
@@ -219,7 +219,7 @@ __host__ __device__ void bcuda::CopyBlock(const _T* Input, _T* Output, const Fix
                 _CopyValFunc(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x);
             return;
         }
-        size_t elementNum = RangeDimensions[_VectorLength - 1];
+        size_t elementNum = RangeDimensions[0];
         vector_t i;
         while (true) {
             size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
@@ -285,7 +285,7 @@ __host__ __device__ void bcuda::CopyBlock(const _T* Input, _T* Output, const Fix
             _CopyArrFunc(Output + RangeInOutputsCoordinates.x, Input + RangeInInputsCoordinates.x, RangeDimensions.x);
             return;
         }
-        size_t elementNum = RangeDimensions[_VectorLength - 1];
+        size_t elementNum = RangeDimensions[0];
         vector_t i;
         while (true) {
             size_t iptIdx = CoordinatesToIndex<size_t, uint32_t, _VectorLength, true>(InputDimensions, RangeInInputsCoordinates + i);
