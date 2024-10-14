@@ -19,7 +19,7 @@ jobs:
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
       with:
-        vs-version: '17.9.5'
+        vs-version: '[17.9.5,17.9.6)'
         msbuild-architecture: x64
 
     - name: Set up CUDA
