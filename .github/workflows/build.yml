@@ -22,6 +22,10 @@ jobs:
         vs-version: '[,17.9.6)'
         msbuild-architecture: x64
 
+    - name: Confirm MSBuild Version
+      run: |
+        msbuild --version
+
     - name: Set up CUDA
       uses: Jimver/cuda-toolkit@v0.2.17
       with:
