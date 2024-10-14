@@ -548,7 +548,7 @@ __host__ __device__ void bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _Inpu
 
 template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
 template <size_t _Index>
-__host__ __device__ bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::layerType_t<_Index>& bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Layer() {
+__host__ __device__ typename bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::template layerType_t<_Index>& bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Layer() {
     if constexpr (_Index) {
         return nextLayers.Layer<_Index - 1>();
     }
@@ -569,7 +569,7 @@ __host__ __device__ void bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _Inpu
 
 template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
 template <size_t _Index>
-__host__ __device__ bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::layerType_t<_Index>& bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Layer() {
+__host__ __device__ typename bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::template layerType_t<_Index>& bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Layer() {
     static_assert(!_Index, "_Index is out of bounds.");
     return layer;
 }

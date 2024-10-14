@@ -140,13 +140,13 @@
   <ItemGroup>
     <CudaCompile Include="ai.cu" />
     <CudaCompile Include="binary_basic.cu" />
+    <CudaCompile Include="copyblock.cu" />
     <CudaCompile Include="details_fillwith.cu" />
     <CudaCompile Include="nets_makenet.cu" />
     <CudaCompile Include="nets_net.cu" />
     <CudaCompile Include="rand_randomizer.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="copyblock.cpp" />
     <ClCompile Include="ai_evol_evolver.cpp" />
     <ClCompile Include="ai_evol_eval_output_impl_proliferation.cpp" />
     <ClCompile Include="ai_evol_eval_output_impl_uniquevalues.cpp" />

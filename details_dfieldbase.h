@@ -9,7 +9,7 @@ namespace bcuda {
             using this_t = DFieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
         public:
-            __host__ __device__ __forceinline DFieldBase(const this_t::vector_t& Dimensions)
+            __host__ __device__ __forceinline DFieldBase(const typename this_t::vector_t& Dimensions)
                 : basedb_t(Dimensions) {
                 if (!this->Length(0)) {
                     darrF = 0;
@@ -27,13 +27,13 @@ namespace bcuda {
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions)
-                : DFieldBase(this_t::vector_t(Dimensions...)) { }
-            __host__ __device__ __forceinline DFieldBase(const this_t::vector_t& Dimensions, _T* ArrF, _T* ArrB)
+                : DFieldBase(typename this_t::vector_t(Dimensions...)) { }
+            __host__ __device__ __forceinline DFieldBase(const typename this_t::vector_t& Dimensions, _T* ArrF, _T* ArrB)
                 : basedb_t(Dimensions), darrF(ArrF), darrB(ArrB) { }
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ __device__ __forceinline DFieldBase(_Ts... Dimensions, _T* ArrF, _T* ArrB)
-                : DFieldBase(this_t::vector_t(Dimensions...), ArrF, ArrB) { }
+                : DFieldBase(typename this_t::vector_t(Dimensions...), ArrF, ArrB) { }
 
             __host__ __device__ __forceinline size_t SizeOnGPU() const {
                 return basedb_t::ValueCount() * sizeof(_T);
@@ -107,7 +107,7 @@ namespace bcuda {
             __host__ __device__ __forceinline void CpyValIn(uint64_t Idx, const _T& Val) const {
                 B().CpyValIn(Idx, Val);
             }
-            __host__ __device__ __forceinline void CpyValIn(const this_t::vector_t& Coords, const _T& Val) const {
+            __host__ __device__ __forceinline void CpyValIn(const typename this_t::vector_t& Coords, const _T& Val) const {
                 B().CpyValIn(Coords, Val);
             }
             template <bool _CopyFromHost>
@@ -120,18 +120,18 @@ namespace bcuda {
             }
 #endif
             template <bool _CopyFromHost>
-            __host__ __forceinline void CpyValIn(const this_t::vector_t& Coords, const _T* Val) const {
+            __host__ __forceinline void CpyValIn(const typename this_t::vector_t& Coords, const _T* Val) const {
                 B().CpyValIn<_CopyFromHost>(Coords, Val);
             }
 #ifdef __CUDACC__
-            __device__ __forceinline void CpyValIn(const this_t::vector_t& Coords, const _T* Val) const {
+            __device__ __forceinline void CpyValIn(const typename this_t::vector_t& Coords, const _T* Val) const {
                 B().CpyValIn(Coords, Val);
             }
 #endif
             __host__ __device__ __forceinline void CpyValOut(uint64_t Idx, _T& Val) const {
                 F().CpyValOut(Idx, Val);
             }
-            __host__ __device__ __forceinline void CpyValOut(const this_t::vector_t& Coords, _T& Val) const {
+            __host__ __device__ __forceinline void CpyValOut(const typename this_t::vector_t& Coords, _T& Val) const {
                 F().CpyValOut(Coords, Val);
             }
             template <bool _CopyToHost>
@@ -144,38 +144,38 @@ namespace bcuda {
             }
 #endif
             template <bool _CopyToHost>
-            __host__ __forceinline void CpyValOut(const this_t::vector_t& Coords, _T* Val) const {
+            __host__ __forceinline void CpyValOut(const typename this_t::vector_t& Coords, _T* Val) const {
                 F().CpyValOut<_CopyToHost>(Coords, Val);
             }
 #ifdef __CUDACC__
-            __device__ __forceinline void CpyValOut(const this_t::vector_t& Coords, _T* Val) const {
+            __device__ __forceinline void CpyValOut(const typename this_t::vector_t& Coords, _T* Val) const {
                 F().CpyValOut(Coords, Val);
             }
 #endif
             __host__ __device__ __forceinline _T CpyValOut(uint64_t Idx) const {
                 F().CpyValOut(Idx);
             }
-            __host__ __device__ __forceinline _T CpyValOut(const this_t::vector_t& Coords) const {
+            __host__ __device__ __forceinline _T CpyValOut(const typename this_t::vector_t& Coords) const {
                 F().CpyValOut(Coords);
             }
 #pragma endregion
 
             template <bool _InputOnHost>
-            __host__ __forceinline void CopyBlockIn(const _T* Input, const this_t::vector_t& InputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
+            __host__ __forceinline void CopyBlockIn(const _T* Input, const typename this_t::vector_t& InputDimensions, const typename this_t::vector_t& RangeDimensions, const typename this_t::vector_t& RangeInInputsCoordinates, const typename this_t::vector_t& RangeInOutputsCoordinates) const {
                 B().CopyBlockIn<_InputOnHost>(Input, InputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #ifdef __CUDACC__
-            __device__ __forceinline void CopyBlockIn(const _T* Input, const this_t::vector_t& InputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
+            __device__ __forceinline void CopyBlockIn(const _T* Input, const typename this_t::vector_t& InputDimensions, const typename this_t::vector_t& RangeDimensions, const typename this_t::vector_t& RangeInInputsCoordinates, const typename this_t::vector_t& RangeInOutputsCoordinates) const {
                 B().CopyBlockIn(Input, InputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #endif
             template <bool _OutputOnHost>
-            __host__ __forceinline void CopyBlockOut(_T* output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
-                F().CopyBlockOut<_OutputOnHost>(output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+            __host__ __forceinline void CopyBlockOut(_T* Output, const typename this_t::vector_t& OutputDimensions, const typename this_t::vector_t& RangeDimensions, const typename this_t::vector_t& RangeInInputsCoordinates, const typename this_t::vector_t& RangeInOutputsCoordinates) const {
+                F().CopyBlockOut<_OutputOnHost>(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #ifdef __CUDACC__
-            __device__ __forceinline void CopyBlockOut(_T* output, const this_t::vector_t& OutputDimensions, const this_t::vector_t& RangeDimensions, const this_t::vector_t& RangeInInputsCoordinates, const this_t::vector_t& RangeInOutputsCoordinates) const {
-                F().CopyBlockOut(output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
+            __device__ __forceinline void CopyBlockOut(_T* Output, const typename this_t::vector_t& OutputDimensions, const typename this_t::vector_t& RangeDimensions, const typename this_t::vector_t& RangeInInputsCoordinates, const typename this_t::vector_t& RangeInOutputsCoordinates) const {
+                F().CopyBlockOut(Output, OutputDimensions, RangeDimensions, RangeInInputsCoordinates, RangeInOutputsCoordinates);
             }
 #endif
 

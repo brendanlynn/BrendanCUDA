@@ -42,7 +42,7 @@ namespace bcuda {
         namespace details {
             template <typename _T, uintmax_t _LayerCount>
             struct RecursivePassingParam {
-                using type_t = PassingParam<RecursivePassingParam<_T, _LayerCount - 1>::type_t>;
+                using type_t = PassingParam<typename RecursivePassingParam<_T, _LayerCount - 1>::type_t>;
             };
             template <typename _T>
             struct RecursivePassingParam<_T, 0> {
@@ -51,7 +51,7 @@ namespace bcuda {
         }
 
         template <IsPack _T, uintmax_t _LayerCount>
-        using recursivePassingParams_t = details::RecursivePassingParam<_T, _LayerCount>::type_t;
+        using recursivePassingParams_t = typename details::RecursivePassingParam<_T, _LayerCount>::type_t;
 
         namespace details {
             template <typename _T>
@@ -72,9 +72,9 @@ namespace bcuda {
         }
 
         template <typename _T>
-        using bringOutInside_t = details::bringOut<_T>::type_t;
+        using bringOutInside_t = typename details::bringOut<_T>::type_t;
         template <typename _T>
-        using bringOutInsideBatch_t = details::bringOutBatch<_T>::type_t;
+        using bringOutInsideBatch_t = typename details::bringOutBatch<_T>::type_t;
 
         namespace details {
             template <typename _T>
@@ -127,12 +127,12 @@ namespace bcuda {
 
             template <typename _T1, typename _T2, typename... _Ts>
             struct addPacks<_T1, _T2, _Ts...> {
-                using type_t = addPacks<addPacks<_T1, _T2>::type_t, _Ts...>::type_t;
+                using type_t = typename addPacks<addPacks<_T1, _T2>::type_t, _Ts...>::type_t;
             };
         }
 
         template <typename... _Ts>
-        using combine_t = details::addPacks<_Ts...>::type_t;
+        using combine_t = typename details::addPacks<_Ts...>::type_t;
 
         namespace details {
             template <template <typename...> typename _T, typename _TPack>
@@ -144,6 +144,6 @@ namespace bcuda {
         }
 
         template <template <typename...> typename _T, IsPack _TPack>
-        using appliedPack_t = details::applyPack<_T, _Pack>::type_t;
+        using appliedPack_t = typename details::applyPack<_T, _Pack>::type_t;
     }
 }
