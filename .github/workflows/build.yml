@@ -16,6 +16,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: VSWhere
+      run: |
+        & "C:\ProgramData\Chocolatey\bin\vswhere.exe" -all -products * -property installationPath
+
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
       with:
