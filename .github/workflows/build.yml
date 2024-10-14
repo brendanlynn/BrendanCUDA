@@ -20,6 +20,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
       with:
         vs-version: '17.9.5'
+        msbuild-architecture: x64
 
     - name: Set up CUDA
       uses: Jimver/cuda-toolkit@v0.2.17
