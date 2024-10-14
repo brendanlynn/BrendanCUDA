@@ -19,7 +19,7 @@ jobs:
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
       with:
-        vs-version: '[17.9,17.10)'
+        vs-version: '[16.4,16.5)'
         msbuild-architecture: x64
 
     - name: Confirm MSBuild Version
