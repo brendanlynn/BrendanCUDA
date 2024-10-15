@@ -136,6 +136,7 @@
     <ClInclude Include="rand_randomizer.h" />
     <ClInclude Include="threadid.h" />
     <ClInclude Include="rand_bits.h" />
+    <ClInclude Include="uniqueid.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="ai.cu" />
@@ -150,6 +151,7 @@
     <ClCompile Include="ai_evol_evolver.cpp" />
     <ClCompile Include="ai_evol_eval_output_impl_proliferation.cpp" />
     <ClCompile Include="ai_evol_eval_output_impl_uniquevalues.cpp" />
+    <ClCompile Include="uniqueid.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
