@@ -67,31 +67,143 @@ namespace bcuda {
                 _T weights[_InputCount][_OutputCount];
                 _T bias[_OutputCount];
 
-                __host__ __device__ void FillWith0();
+                __host__ __device__ void FillWith0() {
+                    for (size_t i = 0; i < _OutputCount; ++i) {
+                        for (size_t j = 0; j < _InputCount; ++j)
+                            weights[i][j] = 0.;
+                        bias[i] = 0.;
+                    }
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void FillWithRandom(_TRNG& RNG);
-#ifdef __CUDACC__
-                template <KernelCurandState _TRNG>
-                __device__ void FillWithRandom(_TRNG& RNG);
-#endif
-                template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
-#ifdef __CUDACC__
-                template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
-#endif
-                template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
-#ifdef __CUDACC__
-                template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
-#endif
-                __host__ __device__ void Run(const _T* Input, _T* output) const;
+                __host__ void FillWithRandom(_TRNG& RNG) {
+                    std::uniform_real_distribution<_T> dis(-1., 1.);
 
-                size_t SerializedSize() const;
-                void Serialize(void*& Data) const;
-                static this_t Deserialize(const void*& Data);
-                static void Deserialize(const void*& Data, void* ObjMem);
+                    for (size_t i = 0; i < _OutputCount; ++i) {
+                        for (size_t j = 0; j < _InputCount; ++j)
+                            weights[i][j] = dis(RNG);
+                        bias[i] = dis(RNG);
+                    }
+                }
+#ifdef __CUDACC__
+                template <KernelCurandState _TRNG>
+                __device__ void FillWithRandom(_TRNG& RNG) {
+                    if constexpr (std::same_as<_T, float>)
+                        for (size_t i = 0; i < _OutputCount; ++i) {
+                            for (size_t j = 0; j < _InputCount; ++j)
+                                weights[i][j] = curand_uniform(&RNG) * 2.f - 1.f;
+                            bias[i] = curand_uniform(&RNG) * 2.f - 1.f;
+                        }
+                    else
+                        for (size_t i = 0; i < _OutputCount; ++i) {
+                            for (size_t j = 0; j < _InputCount; ++j)
+                                weights[i][j] = curand_uniform_double(&RNG) * 2. - 1.;
+                            bias[i] = curand_uniform_double(&RNG) * 2. - 1.;
+                        }
+                 }
+#endif
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                    std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
+
+                    for (size_t i = 0; i < _OutputCount; ++i) {
+                        for (size_t j = 0; j < _InputCount; ++j)
+                            weights[i][j] += dis(RNG);
+                        bias[i] += dis(RNG);
+                    }
+                }
+#ifdef __CUDACC__
+                template <KernelCurandState _TRNG>
+                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                    if constexpr (std::same_as<_T, float>)
+                        for (size_t i = 0; i < _OutputCount; ++i) {
+                            for (size_t j = 0; j < _InputCount; ++j)
+                                weights[i][j] = curand_uniform(&RNG) * 2.f - 1.f;
+                            bias[i] = curand_uniform(&RNG) * 2.f - 1.f;
+                        }
+                    else
+                        for (size_t i = 0; i < _OutputCount; ++i) {
+                            for (size_t j = 0; j < _InputCount; ++j)
+                                weights[i][j] = curand_uniform_double(&RNG) * 2. - 1.;
+                            bias[i] = curand_uniform_double(&RNG) * 2. - 1.;
+                        }
+                }
+#endif
+                template <std::uniform_random_bit_generator _TRNG>
+                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
+
+                    for (size_t i = 0; i < _OutputCount; ++i) {
+                        for (size_t j = 0; j < _InputCount; ++j) {
+                            _T& v = weights[i][j];
+                            v = math::clamp(v + dis(RNG), LowerBound, UpperBound);
+                        }
+                        _T& v = bias[i];
+                        v = math::clamp(v + dis(RNG), LowerBound, UpperBound);
+                    }
+                }
+#ifdef __CUDACC__
+                template <KernelCurandState _TRNG>
+                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    if constexpr (std::same_as<_T, float>)
+                        for (size_t i = 0; i < _OutputCount; ++i) {
+                            for (size_t j = 0; j < _InputCount; ++j) {
+                                _T& v = weights[i][j];
+                                v = math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
+                            }
+                            _T& v = bias[i];
+                            v = math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
+                        }
+                    else
+                        for (size_t i = 0; i < _OutputCount; ++i) {
+                            for (size_t j = 0; j < _InputCount; ++j) {
+                                _T& v = weights[i][j];
+                                v = math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
+                            }
+                            _T& v = bias[i];
+                            v = math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
+                        }
+                }
+#endif
+                __host__ __device__ void Run(const _T* Input, _T* output) const {
+                    if (Input == output) {
+                        _T* secondOutput = new _T[_OutputCount];
+                        for (size_t j = 0; j < _OutputCount; ++j) {
+                            float v = bias[j];
+                            for (size_t i = 0; i < _InputCount; ++i) {
+                                v += weights[i][j] * Input[i];
+                            }
+                            secondOutput[j] = _ActivationFunction(v);
+                        }
+                        memcpy(output, secondOutput, sizeof(_T) * _OutputCount);
+                    }
+                    else {
+                        for (size_t j = 0; j < _OutputCount; ++j) {
+                            float v = bias[j];
+                            for (size_t i = 0; i < _InputCount; ++i) {
+                                v += weights[i][j] * Input[i];
+                            }
+                            output[j] = _ActivationFunction(v);
+                        }
+                    }
+                }
+
+                size_t SerializedSize() const {
+                    return sizeof(this_t);
+                }
+                void Serialize(void*& Data) const {
+                    BSerializer::SerializeArray(Data, weights, _InputCount * _OutputCount);
+                    BSerializer::SerializeArray(Data, bias, _OutputCount);
+                }
+                static this_t Deserialize(const void*& Data) {
+                    uint8_t bytes[sizeof(this_t)];
+                    Deserialize(Data, &bytes);
+                    return *(this_t*)&bytes;
+                }
+                static void Deserialize(const void*& Data, void* ObjMem) {
+                    this_t& obj = &(this_t*)ObjMem;
+                    BSerializer::DeserializeArray(Data, obj.weights, _InputCount * _OutputCount);
+                    BSerializer::DeserializeArray(Data, obj.bias, _OutputCount);
+                }
             };
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
             struct FixedMLP;
@@ -253,179 +365,6 @@ namespace bcuda {
             void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG);
         }
     }
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-__host__ __device__ void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::FillWith0() {
-    for (size_t i = 0; i < _OutputCount; ++i) {
-        for (size_t j = 0; j < _InputCount; ++j) {
-            weights[i][j] = 0.;
-        }
-        bias[i] = 0.;
-    }
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-template <std::uniform_random_bit_generator _TRNG>
-__host__ void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::FillWithRandom(_TRNG& RNG) {
-    std::uniform_real_distribution<_T> dis(-1., 1.);
-
-    for (size_t i = 0; i < _OutputCount; ++i) {
-        for (size_t j = 0; j < _InputCount; ++j) {
-            weights[i][j] = dis(RNG);
-        }
-        bias[i] = dis(RNG);
-    }
-}
-
-#ifdef __CUDACC__
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-template <bcuda::KernelCurandState _TRNG>
-__device__ void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::FillWithRandom(_TRNG& RNG) {
-    if constexpr (std::same_as<_T, float>) {
-        for (size_t i = 0; i < _OutputCount; ++i) {
-            for (size_t j = 0; j < _InputCount; ++j) {
-                weights[i][j] = curand_uniform(&RNG) * 2.f - 1.f;
-            }
-            bias[i] = curand_uniform(&RNG) * 2.f - 1.f;
-        }
-    }
-    else {
-        for (size_t i = 0; i < _OutputCount; ++i) {
-            for (size_t j = 0; j < _InputCount; ++j) {
-                weights[i][j] = curand_uniform_double(&RNG) * 2. - 1.;
-            }
-            bias[i] = curand_uniform_double(&RNG) * 2. - 1.;
-        }
-    }
-}
-#endif
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-template <std::uniform_random_bit_generator _TRNG>
-__host__ void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _TRNG& RNG) {
-    std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
-
-    for (size_t i = 0; i < _OutputCount; ++i) {
-        for (size_t j = 0; j < _InputCount; ++j) {
-            weights[i][j] += dis(RNG);
-        }
-        bias[i] += dis(RNG);
-    }
-}
-
-#ifdef __CUDACC__
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-template <bcuda::KernelCurandState _TRNG>
-__device__ void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _TRNG& RNG) {
-    if constexpr (std::same_as<_T, float>) {
-        for (size_t i = 0; i < _OutputCount; ++i) {
-            for (size_t j = 0; j < _InputCount; ++j) {
-                weights[i][j] += curand_uniform(&RNG);
-            }
-            bias[i] += curand_uniform(&RNG);
-        }
-    }
-    else {
-        for (size_t i = 0; i < _OutputCount; ++i) {
-            for (size_t j = 0; j < _InputCount; ++j) {
-                weights[i][j] += curand_uniform_double(&RNG);
-            }
-            bias[i] += curand_uniform_double(&RNG);
-        }
-    }
-}
-#endif
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-template <std::uniform_random_bit_generator _TRNG>
-__host__ void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
-
-    for (size_t i = 0; i < _OutputCount; ++i) {
-        for (size_t j = 0; j < _InputCount; ++j) {
-            _T& v = weights[i][j];
-            v = math::clamp(v + dis(RNG), LowerBound, UpperBound);
-        }
-        _T& v = bias[i];
-        v = math::clamp(v + dis(RNG), LowerBound, UpperBound);
-    }
-}
-
-#ifdef __CUDACC__
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-template <bcuda::KernelCurandState _TRNG>
-__device__ void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    if constexpr (std::same_as<_T, float>) {
-        for (size_t i = 0; i < _OutputCount; ++i) {
-            for (size_t j = 0; j < _InputCount; ++j) {
-                _T& v = weights[i][j];
-                v = math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
-            }
-            _T& v = bias[i];
-            v = math::clamp(v + curand_uniform(&RNG), LowerBound, UpperBound);
-        }
-    }
-    else {
-        for (size_t i = 0; i < _OutputCount; ++i) {
-            for (size_t j = 0; j < _InputCount; ++j) {
-                _T& v = weights[i][j];
-                v = math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
-            }
-            _T& v = bias[i];
-            v = math::clamp(v + curand_uniform_double(&RNG), LowerBound, UpperBound);
-        }
-    }
-}
-#endif
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-__host__ __device__ void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Run(const _T* Input, _T* output) const {
-    if (Input == output) {
-        _T* secondOutput = new _T[_OutputCount];
-        for (size_t j = 0; j < _OutputCount; ++j) {
-            float v = bias[j];
-            for (size_t i = 0; i < _InputCount; ++i) {
-                v += weights[i][j] * Input[i];
-            }
-            secondOutput[j] = _ActivationFunction(v);
-        }
-        memcpy(output, secondOutput, sizeof(_T) * _OutputCount);
-    }
-    else {
-        for (size_t j = 0; j < _OutputCount; ++j) {
-            float v = bias[j];
-            for (size_t i = 0; i < _InputCount; ++i) {
-                v += weights[i][j] * Input[i];
-            }
-            output[j] = _ActivationFunction(v);
-        }
-    }
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-size_t bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::SerializedSize() const {
-    return sizeof(this_t);
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Serialize(void*& Data) const {
-    BSerializer::SerializeArray(Data, weights, _InputCount * _OutputCount);
-    BSerializer::SerializeArray(Data, bias, _OutputCount);
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-auto bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Deserialize(const void*& Data) -> this_t {
-    uint8_t bytes[sizeof(this_t)];
-    Deserialize(Data, &bytes);
-    return *(this_t*)&bytes;
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
-void bcuda::ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>::Deserialize(const void*& Data, void* ObjMem) {
-    this_t& obj = &(this_t*)ObjMem;
-    BSerializer::DeserializeArray(Data, obj.weights, _InputCount * _OutputCount);
-    BSerializer::DeserializeArray(Data, obj.bias, _OutputCount);
 }
 
 template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
