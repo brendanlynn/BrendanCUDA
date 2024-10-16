@@ -222,41 +222,98 @@ namespace bcuda {
                 FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
                 FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...> nextLayers;
 
-                __host__ __device__ void FillWith0();
+                __host__ __device__ void FillWith0() {
+                    layer.FillWith0();
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void FillWithRandom(_TRNG& RNG);
+                __host__ void FillWithRandom(_TRNG& RNG) {
+                    layer.FillWithRandom(RNG);
+                }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void FillWithRandom(_TRNG& RNG);
+                __device__ void FillWithRandom(_TRNG& RNG) {
+                    layer.FillWithRandom(RNG);
+                }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
+                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                    layer.ChangeWithRandom(Scalar, RNG);
+                }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG);
+                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                    layer.ChangeWithRandom(Scalar, RNG);
+                }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+                }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+                }
 #endif
-                __host__ __device__ void Run(const _T* Input, _T* output) const;
-                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* output) const;
+                __host__ __device__ void Run(const _T* Input, _T* output) const {
+                    Run(Input, 0, 0, output);
+                }
+                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* output) const {
+                    _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
+                    _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
+
+                    layer.Run(Input, i1);
+                    nextLayers.Run(i1, i2, i1, output);
+
+                    if (!Intermediate1) delete[] i1;
+                    if (!Intermediate2) delete[] i2;
+                }
                 template <size_t _Index>
-                __host__ __device__ layerType_t<_Index>& Layer();
+                __host__ __device__ layerType_t<_Index>& Layer() {
+                    if constexpr (_Index) {
+                        return nextLayers.Layer<_Index - 1>();
+                    }
+                    else {
+                        return layer;
+                    }
+                }
 
-                static constexpr size_t InputCount();
-                static constexpr size_t OutputCount();
-                static constexpr size_t Intermediate0Count();
-                static constexpr size_t Intermediate1Count();
-                static constexpr size_t MaxLayerOutputCount();
-                static constexpr size_t LayerCount();
+                static constexpr size_t InputCount() {
+                    return _InputCount;
+                }
+                static constexpr size_t OutputCount() {
+                    return bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::OutputCount();
+                }
+                static constexpr size_t Intermediate0Count() {
+                    return std::max(_Output1Count, bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate1Count());
+                }
+                static constexpr size_t Intermediate1Count() {
+                    return bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate0Count();
+                }
+                static constexpr size_t MaxLayerOutputCount() {
+                    constexpr size_t maxNextLayers = FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::MaxLayerOutputCount();
+                    return _Output1Count > maxNextLayers ? _Output1Count : maxNextLayers;
+                }
+                static constexpr size_t LayerCount() {
+                    return FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::LayerCount() + 1;
+                }
 
-                size_t SerializedSize() const;
-                void Serialize(void*& Data) const;
-                static this_t Deserialize(const void*& Data);
-                static void Deserialize(const void*& Data, void* ObjMem);
+                size_t SerializedSize() const {
+                    return sizeof(this_t);
+                }
+                void Serialize(void*& Data) const {
+                    layer.Serialize(Data);
+                }
+                static this_t Deserialize(const void*& Data) {
+                    uint8_t bytes[sizeof(this_t)];
+                    Deserialize(Data, &bytes);
+                    return *(this_t*)&bytes;
+                }
+                static void Deserialize(const void*& Data, void* ObjMem) {
+                    this_t& obj = &(this_t*)ObjMem;
+                    BSerializer::Deserialize(Data, &obj.layer);
+                    BSerializer::Deserialize(Data, &obj.nextLayers);
+                }
             };
             template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
             struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> {
@@ -468,34 +525,6 @@ __device__ void bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _
 }
 #endif
 
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-__host__ __device__ void bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Run(const _T* Input, _T* output) const {
-    Run(Input, 0, 0, output);
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-__host__ __device__ void bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* output) const {
-    _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
-    _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
-
-    layer.Run(Input, i1);
-    nextLayers.Run(i1, i2, i1, output);
-
-    if (!Intermediate1) delete[] i1;
-    if (!Intermediate2) delete[] i2;
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-template <size_t _Index>
-__host__ __device__ typename bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::template layerType_t<_Index>& bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Layer() {
-    if constexpr (_Index) {
-        return nextLayers.Layer<_Index - 1>();
-    }
-    else {
-        return layer;
-    }
-}
-
 template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
 __host__ __device__ void bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Run(const _T* Input, _T* output) const {
     layer.Run(Input, output);
@@ -513,19 +542,9 @@ __host__ __device__ typename bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _
     return layer;
 }
 
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::InputCount() {
-    return _InputCount;
-}
-
 template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
 constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::InputCount() {
     return _InputCount;
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::OutputCount() {
-    return bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::OutputCount();
 }
 
 template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
@@ -533,59 +552,14 @@ constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, 
     return _Output1Count;
 }
 
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate0Count() {
-    return std::max(_Output1Count, bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate1Count());
-}
-
 template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
 constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Intermediate0Count() {
     return 0;
 }
 
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate1Count() {
-    return bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Intermediate0Count();
-}
-
 template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
 constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>::Intermediate1Count() {
     return 0;
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::MaxLayerOutputCount() {
-    constexpr size_t maxNextLayers = FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::MaxLayerOutputCount();
-    return _Output1Count > maxNextLayers ? _Output1Count : maxNextLayers;
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-constexpr size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::LayerCount() {
-    return FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::LayerCount() + 1;
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-size_t bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::SerializedSize() const {
-    return sizeof(this_t);
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-void bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Serialize(void*& Data) const {
-    layer.Serialize(Data);
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-auto bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Deserialize(const void*& Data) -> this_t {
-    uint8_t bytes[sizeof(this_t)];
-    Deserialize(Data, &bytes);
-    return *(this_t*)&bytes;
-}
-
-template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
-void bcuda::ai::mlp::FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::Deserialize(const void*& Data, void* ObjMem) {
-    this_t& obj = &(this_t*)ObjMem;
-    BSerializer::Deserialize(Data, &obj.layer);
-    BSerializer::Deserialize(Data, &obj.nextLayers);
 }
 
 template <std::floating_point _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
