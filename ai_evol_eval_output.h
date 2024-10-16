@@ -20,7 +20,8 @@ namespace bcuda {
                         constructInstance_t constructInstance;
                         iterateInstance_t<_TInput, _TOutput> iterateInstance;
                         destructInstance_t destructInstance;
-                        constexpr InstanceFunctions() = default;
+                        inline constexpr InstanceFunctions()
+                            : constructInstance(0), iterateInstance(0), destructInstance(0) { }
                     };
 
                     template <typename _TInput, typename _TOutput, constructInstance_t _CI, iterateInstance_t<_TInput, _TOutput> _II, destructInstance_t _DI>
