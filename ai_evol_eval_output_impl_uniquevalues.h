@@ -14,7 +14,8 @@ namespace bcuda {
                         size_t outputCount;
                         bool individual;
                         void* sd_ci;
-                        __forceinline Evaluate_UniqueValues_SD() = default;
+                        inline constexpr Evaluate_UniqueValues_SD()
+                            : InstanceFunctions(), iterationCount(0), outputCount(0), individual(0), sd_ci(0) { }
                     };
 
                     template <typename _T>

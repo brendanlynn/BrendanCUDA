@@ -21,196 +21,133 @@ namespace bcuda {
                 inputArray_t base;
                 mlp_t mlp;
 
-                void ZeroOverwrite();
+                inline void ZeroOverwrite() {
+                    rand::ClearArray<false, _T>(Span<_T>(base, mlp.InputLength()));
+                    mlp.ZeroOverwrite();
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                void RandomOverwrite(_TRNG& RNG);
+                inline void RandomOverwrite(_TRNG& RNG) {
+                    rand::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), RNG);
+                    mlp.RandomOverwrite(RNG);
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                void RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG);
+                inline void RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    rand::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), LowerBound, UpperBound, RNG);
+                    mlp.RandomOverwrite(LowerBound, UpperBound, RNG);
+                }
+#ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void RandomOverwrite(_TRNG& RNG);
+                __device__ inline void RandomOverwrite(_TRNG& RNG) {
+                    rand::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), RNG);
+                    mlp.RandomOverwrite(RNG);
+                }
                 template <KernelCurandState _TRNG>
-                __device__ void RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG);
+                __device__ inline void RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    rand::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), LowerBound, UpperBound, RNG);
+                    mlp.RandomOverwrite(LowerBound, UpperBound, RNG);
+                }
+#endif
 
-                outputArray_t* Run();
-                void Run(outputArray_t* OutputArray);
+                inline outputArray_t* Run() {
+                    auto* outputArr = new outputArray_t;
+                    Run(outputArr);
+                    return outputArr;
+                }
+                inline void Run(outputArray_t* OutputArray) {
+                    mlp.Run(base.data(), OutputArray->data());
+                }
 
                 template <std::uniform_random_bit_generator _TRNG>
-                void Randomize(_T Scalar, _TRNG& RNG);
+                inline void Randomize(_T Scalar, _TRNG& RNG) {
+                    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, RNG);
+                    mlp.Randomize(Scalar, RNG);
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                void Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                inline void Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, LowerBound, UpperBound, RNG);
+                    mlp.Randomize(Scalar, LowerBound, UpperBound, RNG);
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                void Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG);
+                inline void Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
+                    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, RNG);
+                    mlp.Randomize(Scalar_MLP, RNG);
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                void Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                inline void Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
+                    mlp.Randomize(Scalar_MLP, LowerBound, UpperBound, RNG);
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                this_t Reproduce(_T Scalar, _TRNG& RNG);
+                inline this_t Reproduce(_T Scalar, _TRNG& RNG) {
+                    this_t n = Clone();
+                    n.Randomize(Scalar, RNG);
+                    return n;
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                this_t Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                inline this_t Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    this_t n = Clone();
+                    n.Randomize(Scalar, LowerBound, UpperBound, RNG);
+                    return n;
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG);
+                inline this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
+                    this_t n = Clone();
+                    n.Randomize(Scalar_Base, Scalar_MLP, RNG);
+                    return n;
+                }
                 template <std::uniform_random_bit_generator _TRNG>
-                this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                inline this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    this_t n = Clone();
+                    n.Randomize(Scalar_Base, Scalar_MLP, LowerBound, UpperBound, RNG);
+                    return n;
+                }
+#ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void Randomize(_T Scalar, _TRNG& RNG);
+                __device__ inline void Randomize(_T Scalar, _TRNG& RNG) {
+                    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, RNG);
+                    mlp.Randomize(Scalar, RNG);
+                }
                 template <KernelCurandState _TRNG>
-                __device__ void Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                __device__ inline void Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, LowerBound, UpperBound, RNG);
+                    mlp.Randomize(Scalar, LowerBound, UpperBound, RNG);
+                }
                 template <KernelCurandState _TRNG>
-                __device__ void Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG);
+                __device__ inline void Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
+                    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, RNG);
+                    mlp.Randomize(Scalar_MLP, RNG);
+                }
                 template <KernelCurandState _TRNG>
-                __device__ void Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                __device__ inline void Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
+                    mlp.Randomize(Scalar_MLP, LowerBound, UpperBound, RNG);
+                }
                 template <KernelCurandState _TRNG>
-                __device__ this_t Reproduce(_T Scalar, _TRNG& RNG);
+                __device__ inline this_t Reproduce(_T Scalar, _TRNG& RNG) {
+                    this_t n = Clone();
+                    n.Randomize(Scalar, RNG);
+                    return n;
+                }
                 template <KernelCurandState _TRNG>
-                __device__ this_t Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                __device__ inline this_t Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    this_t n = Clone();
+                    n.Randomize(Scalar, LowerBound, UpperBound, RNG);
+                    return n;
+                }
                 template <KernelCurandState _TRNG>
-                __device__ this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG);
+                __device__ inline this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
+                    this_t n = Clone();
+                    n.Randomize(Scalar_Base, Scalar_MLP, RNG);
+                    return n;
+                }
                 template <KernelCurandState _TRNG>
-                __device__ this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG);
+                __device__ inline this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                    this_t n = Clone();
+                    n.Randomize(Scalar_Base, Scalar_MLP, LowerBound, UpperBound, RNG);
+                    return n;
+                }
+#endif
             };
         }
     }
-}
-
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-auto bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Run() -> outputArray_t* {
-    auto* outputArr = new outputArray_t;
-    Run(outputArr);
-    return outputArr;
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Run(outputArray_t* OutputArray) {
-    mlp.Run(base.data(), OutputArray->data());
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _TRNG& RNG) {
-    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, RNG);
-    mlp.Randomize(Scalar, RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, LowerBound, UpperBound, RNG);
-    mlp.Randomize(Scalar, LowerBound, UpperBound, RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
-    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, RNG);
-    mlp.Randomize(Scalar_MLP, RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
-    mlp.Randomize(Scalar_MLP, LowerBound, UpperBound, RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _TRNG& RNG) {
-    GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
-    n.Randomize(Scalar, RNG);
-    return n;
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
-    n.Randomize(Scalar, LowerBound, UpperBound, RNG);
-    return n;
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
-    GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
-    n.Randomize(Scalar_Base, Scalar_MLP, RNG);
-    return n;
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
-    n.Randomize(Scalar_Base, Scalar_MLP, LowerBound, UpperBound, RNG);
-    return n;
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _TRNG& RNG) {
-    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, RNG);
-    mlp.Randomize(Scalar, RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar, LowerBound, UpperBound, RNG);
-    mlp.Randomize(Scalar, LowerBound, UpperBound, RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
-    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, RNG);
-    mlp.Randomize(Scalar_MLP, RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Randomize(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    rand::RandomizeArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), Scalar_Base, LowerBound, UpperBound, RNG);
-    mlp.Randomize(Scalar_MLP, LowerBound, UpperBound, RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _TRNG& RNG) {
-    GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
-    n.Randomize(Scalar, RNG);
-    return n;
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
-    n.Randomize(Scalar, LowerBound, UpperBound, RNG);
-    return n;
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
-    GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
-    n.Randomize(Scalar_Base, Scalar_MLP, RNG);
-    return n;
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-    GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...> n = Clone();
-    n.Randomize(Scalar_Base, Scalar_MLP, LowerBound, UpperBound, RNG);
-    return n;
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::ZeroOverwrite() {
-    rand::ClearArray<false, _T>(Span<_T>(base, mlp.InputLength()));
-    mlp.ZeroOverwrite();
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_TRNG& RNG) {
-    rand::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), RNG);
-    mlp.RandomOverwrite(RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
-    rand::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), LowerBound, UpperBound, RNG);
-    mlp.RandomOverwrite(LowerBound, UpperBound, RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_TRNG& RNG) {
-    rand::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), RNG);
-    mlp.RandomOverwrite(RNG);
-}
-template <typename _T, bcuda::ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
-template <bcuda::KernelCurandState _TRNG>
-__device__ void bcuda::ai::genes::GeneFixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _LayerCounts...>::RandomOverwrite(_T LowerBound, _T UpperBound, _TRNG& RNG) {
-    rand::InitRandomArray<false, _T, _TRNG>(Span<_T>(base, mlp.InputLength()), LowerBound, UpperBound, RNG);
-    mlp.RandomOverwrite(LowerBound, UpperBound, RNG);
 }

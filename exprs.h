@@ -25,7 +25,7 @@ namespace bcuda {
 
             virtual _TOutput Calc(const varmap_t&) = 0;
 
-            std::any CalcToAny(const varmap_t& VarMap) override {
+            std::any CalcToAny(const varmap_t& VarMap) override final {
                 return Calc(VarMap);
             }
 
@@ -756,7 +756,7 @@ namespace bcuda {
             };
 
             template <typename _TTupleI, typename _TTupleO, size_t _Idx = 0>
-            __forceinline void CalcTuple(const _TTupleI& InTuple, _TTupleO& OutTuple, const varmap_t& Map) {
+            inline void CalcTuple(const _TTupleI& InTuple, _TTupleO& OutTuple, const varmap_t& Map) {
                 if constexpr (_Idx >= std::tuple_size_v<_TTupleI>) return;
                 using type_t = std::tuple_element_t<_Idx, _TTupleO>;
                 new (&std::get<_Idx>(OutTuple)) type_t(std::get<_Idx>(InTuple)->Calc(Map));
@@ -764,14 +764,14 @@ namespace bcuda {
             }
 
             template <typename _TTuple, size_t _Idx = 0>
-            __forceinline void ConvertTupleToArray(const _TTuple& Tuple, ArrayV<ExprBase*>& Array) {
+            inline void ConvertTupleToArray(const _TTuple& Tuple, ArrayV<ExprBase*>& Array) {
                 if constexpr (_Idx >= std::tuple_size_v<_TTuple>) return;
                 Array[_Idx] = std::get<_Idx>(Tuple);
                 ConvertTupleToArray<_TTuple, _Idx + 1>(Tuple, Array);
             }
 
             template <typename _TTuple, size_t _Idx = 0>
-            __forceinline void CloneTuple(const _TTuple& TupleOld, _TTuple& TupleNew) {
+            inline void CloneTuple(const _TTuple& TupleOld, _TTuple& TupleNew) {
                 using type_t = std::tuple_element_t<_Idx, _TTuple>;
                 std::get<_Idx>(TupleNew) = type_t(std::get<_Idx>(TupleOld)->Clone());
             }

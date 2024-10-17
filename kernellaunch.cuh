@@ -6,16 +6,16 @@
 
 namespace bcuda {
 #ifdef __CUDACC__
-    __device__ uint32_t GetCoordinates1() {
+    __device__ static inline uint32_t GetCoordinates1() {
         return blockIdx.x * blockDim.x + threadIdx.x;
     }
-    __device__ uint32_2 GetCoordinates2() {
+    __device__ static inline uint32_2 GetCoordinates2() {
         return uint32_2(
             blockIdx.x * blockDim.x + threadIdx.x,
             blockIdx.y * blockDim.y + threadIdx.y
         );
     }
-    __device__ uint32_3 GetCoordinates3() {
+    __device__ static inline uint32_3 GetCoordinates3() {
         return uint32_3(
             blockIdx.x * blockDim.x + threadIdx.x,
             blockIdx.y * blockDim.y + threadIdx.y,

@@ -8,7 +8,7 @@
 namespace bcuda {
     namespace details {
         template <typename _TOutputType, typename _TRNG>
-        _TOutputType RunRNGFunc(void* RNG) {
+        static inline _TOutputType RunRNGFunc(void* RNG) {
             std::uniform_int_distribution<_TOutputType> dis(0);
             return dis(*(_TRNG*)RNG);
         }
@@ -20,16 +20,16 @@ namespace bcuda {
         class AnyRNG {
         public:
             template <typename _TRNG>
-            AnyRNG(_TRNG* RNG) {
+            inline AnyRNG(_TRNG* RNG) {
                 i_rng = RNG;
                 r_rng = details::RunRNGFunc<_TOutputType, _TRNG>;
             }
             template <typename _TRNG>
-            AnyRNG(_TRNG& RNG) {
+            inline AnyRNG(_TRNG& RNG) {
                 i_rng = &RNG;
                 r_rng = details::RunRNGFunc<_TOutputType, _TRNG>;
             }
-            _TOutputType operator()() {
+            inline _TOutputType operator()() {
                 return r_rng(i_rng);
             }
             static constexpr _TOutputType min() {

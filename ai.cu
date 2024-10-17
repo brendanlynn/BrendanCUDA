@@ -179,153 +179,157 @@ __global__ void convertInt32sToFloatsKernel(uint32_t* Int32s, double* Doubles, s
 }
 
 template <std::floating_point _TFloat>
-__host__ __forceinline void convertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
+__host__ inline void convertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
     convertFloatsToBoolsKernel<<<Length, 1>>>(Floats, Bools, Split);
 }
 template <std::floating_point _TFloat>
-__host__ __forceinline void convertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
+__host__ inline void convertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
     convertBoolsToFloatsKernel<<<Length, 1>>>(Bools, Floats, ValTrue, ValFalse);
 }
 template <std::floating_point _TFloat>
-__host__ __forceinline void convertFloatsToInt32s(_TFloat* Floats, uint32_t* Int32s, size_t Length, _TFloat Split) {
+__host__ inline void convertFloatsToInt32s(_TFloat* Floats, uint32_t* Int32s, size_t Length, _TFloat Split) {
     convertFloatsToInt32sKernel<<<((Length + 31) >> 5), 1>>>(Floats, Int32s, Length, Split);
 }
 template <std::floating_point _TFloat>
-__host__ __forceinline void convertInt32sToFloats(uint32_t* Int32s, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
+__host__ inline void convertInt32sToFloats(uint32_t* Int32s, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
     convertInt32sToFloatsKernel<<<((Length + 31) >> 5), 1>>>(Floats, Int32s, Length, ValTrue, ValFalse);
 }
 
-template <bool _FloatsOnHost, std::floating_point _TFloat, bool _BoolsOnHost>
-__host__ void bcuda::ai::ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
-    if constexpr (_FloatsOnHost) {
-        if constexpr (_BoolsOnHost) {
+namespace bcuda {
+    namespace ai {
+        template <bool _FloatsOnHost, std::floating_point _TFloat, bool _BoolsOnHost>
+        __host__ void ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
+            if constexpr (_FloatsOnHost) {
+                if constexpr (_BoolsOnHost) {
+                    for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
+                        *Bools = *Floats > Split;
+                }
+                else {
+                    _TFloat* dFloats;
+                    cudaMalloc(&dFloats, sizeof(_TFloat) * Length);
+                    cudaMemcpy(dFloats, Floats, sizeof(_TFloat) * Length, cudaMemcpyHostToDevice);
+                    convertFloatsToBools(dFloats, Bools, Length, Split);
+                    cudaFree(dFloats);
+                }
+            }
+            else {
+                if constexpr (_BoolsOnHost) {
+                    bool* dBools;
+                    cudaMalloc(&dBools, sizeof(bool) * Length);
+                    convertFloatsToBools(Floats, Bools, Length, Split);
+                    cudaMemcpy(Bools, dBools, sizeof(bool) * Length, cudaMemcpyDeviceToHost);
+                }
+                else {
+                    convertFloatsToBools(Floats, Bools, Length, Split);
+                }
+            }
+        }
+        template <std::floating_point _TFloat>
+        __device__ void ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
             for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
                 *Bools = *Floats > Split;
         }
-        else {
-            _TFloat* dFloats;
-            cudaMalloc(&dFloats, sizeof(_TFloat) * Length);
-            cudaMemcpy(dFloats, Floats, sizeof(_TFloat) * Length, cudaMemcpyHostToDevice);
-            convertFloatsToBools(dFloats, Bools, Length, Split);
-            cudaFree(dFloats);
+        template <bool _FloatsOnHost, std::floating_point _TFloat, bool _IntsOnHost, std::integral _TInt>
+        __host__ void ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
+            if constexpr (_FloatsOnHost) {
+                if constexpr (_IntsOnHost) {
+                    size_t intLength = (FloatsLength + 31) >> 5;
+                    for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
+                        *Ints = convertFloatsToInt32(Floats, FloatsLength, Split);
+                }
+                else {
+                    _TFloat* dFloats;
+                    cudaMalloc(&dFloats, sizeof(_TFloat) * FloatsLength);
+                    cudaMemcpy(dFloats, Floats, sizeof(_TFloat) * FloatsLength, cudaMemcpyHostToDevice);
+                    convertFloatsToInt32s(dFloats, Ints, FloatsLength, Split);
+                    cudaFree(dFloats);
+                }
+            }
+            else {
+                if constexpr (_IntsOnHost) {
+                    size_t intLength = (FloatsLength + 31) >> 5;
+                    _TInt* dInts;
+                    cudaMalloc(&dInts, sizeof(_TInt) * intLength);
+                    convertFloatsToInt32s(Floats, dInts, FloatsLength, Split);
+                    cudaMemcpy(Ints, dInts, sizeof(_TInt) * intLength, cudaMemcpyDeviceToHost);
+                }
+                else {
+                    convertFloatsToInt32s(Floats, Ints, FloatsLength, Split);
+                }
+            }
         }
-    }
-    else {
-        if constexpr (_BoolsOnHost) {
-            bool* dBools;
-            cudaMalloc(&dBools, sizeof(bool) * Length);
-            convertFloatsToBools(Floats, Bools, Length, Split);
-            cudaMemcpy(Bools, dBools, sizeof(bool) * Length, cudaMemcpyDeviceToHost);
-        }
-        else {
-            convertFloatsToBools(Floats, Bools, Length, Split);
-        }
-    }
-}
-template <std::floating_point _TFloat>
-__device__ void bcuda::ai::ConvertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
-    for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
-        *Bools = *Floats > Split;
-}
-template <bool _FloatsOnHost, std::floating_point _TFloat, bool _IntsOnHost, std::integral _TInt>
-__host__ void bcuda::ai::ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
-    if constexpr (_FloatsOnHost) {
-        if constexpr (_IntsOnHost) {
+        template <std::floating_point _TFloat, std::integral _TInt>
+        __device__ void ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
             size_t intLength = (FloatsLength + 31) >> 5;
             for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
                 *Ints = convertFloatsToInt32(Floats, FloatsLength, Split);
         }
-        else {
-            _TFloat* dFloats;
-            cudaMalloc(&dFloats, sizeof(_TFloat) * FloatsLength);
-            cudaMemcpy(dFloats, Floats, sizeof(_TFloat) * FloatsLength, cudaMemcpyHostToDevice);
-            convertFloatsToInt32s(dFloats, Ints, FloatsLength, Split);
-            cudaFree(dFloats);
+        template <bool _FloatsOnHost, bool _BoolsOnHost, std::floating_point _TFloat>
+        __host__ void ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
+            if constexpr (_BoolsOnHost) {
+                if constexpr (_FloatsOnHost) {
+                    for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
+                        *Floats = *Bools ? ValTrue : ValFalse;
+                }
+                else {
+                    bool* dBools;
+                    cudaMalloc(&dBools, sizeof(_TFloat) * Length);
+                    cudaMemcpy(dBools, Bools, sizeof(_TFloat) * Length, cudaMemcpyHostToDevice);
+                    convertBoolsToFloats(dBools, Floats, Length, ValTrue, ValFalse);
+                    cudaFree(dBools);
+                }
+            }
+            else {
+                if constexpr (_FloatsOnHost) {
+                    _TFloat* dFloats;
+                    cudaMalloc(&dFloats, sizeof(_TFloat) * Length);
+                    convertBoolsToFloats(Bools, dFloats, Length, ValTrue, ValFalse);
+                    cudaMemcpy(Floats, dFloats, sizeof(_TFloat) * Length, cudaMemcpyDeviceToHost);
+                }
+                else {
+                    convertBoolsToFloats(Bools, Floats, Length, ValTrue, ValFalse);
+                }
+            }
         }
-    }
-    else {
-        if constexpr (_IntsOnHost) {
-            size_t intLength = (FloatsLength + 31) >> 5;
-            _TInt* dInts;
-            cudaMalloc(&dInts, sizeof(_TInt) * intLength);
-            convertFloatsToInt32s(Floats, dInts, FloatsLength, Split);
-            cudaMemcpy(Ints, dInts, sizeof(_TInt) * intLength, cudaMemcpyDeviceToHost);
-        }
-        else {
-            convertFloatsToInt32s(Floats, Ints, FloatsLength, Split);
-        }
-    }
-}
-template <std::floating_point _TFloat, std::integral _TInt>
-__device__ void bcuda::ai::ConvertFloatsToInts(_TFloat* Floats, _TInt* Ints, size_t FloatsLength, _TFloat Split) {
-    size_t intLength = (FloatsLength + 31) >> 5;
-    for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
-        *Ints = convertFloatsToInt32(Floats, FloatsLength, Split);
-}
-template <bool _FloatsOnHost, bool _BoolsOnHost, std::floating_point _TFloat>
-__host__ void bcuda::ai::ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
-    if constexpr (_BoolsOnHost) {
-        if constexpr (_FloatsOnHost) {
+        template <std::floating_point _TFloat>
+        __device__ void ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
             for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
                 *Floats = *Bools ? ValTrue : ValFalse;
         }
-        else {
-            bool* dBools;
-            cudaMalloc(&dBools, sizeof(_TFloat) * Length);
-            cudaMemcpy(dBools, Bools, sizeof(_TFloat) * Length, cudaMemcpyHostToDevice);
-            convertBoolsToFloats(dBools, Floats, Length, ValTrue, ValFalse);
-            cudaFree(dBools);
+        template <bool _IntsOnHost, std::integral _TInt, bool _FloatsOnHost, std::floating_point _TFloat>
+        __host__ void ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
+            if constexpr (_IntsOnHost) {
+                if constexpr (_FloatsOnHost) {
+                    size_t intLength = (FloatsLength + 31) >> 5;
+                    for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
+                        convertInt32ToFloats(Ints, Floats, FloatsLength, ValTrue, ValFalse);
+                }
+                else {
+                    size_t intLength = (FloatsLength + 31) >> 5;
+                    _TInt* dInts;
+                    cudaMalloc(&dInts, sizeof(_TInt) * intLength);
+                    cudaMemcpy(dInts, Ints, sizeof(_TInt) * intLength, cudaMemcpyHostToDevice);
+                    convertInt32sToFloats(dInts, Floats, FloatsLength, ValTrue, ValFalse);
+                    cudaFree(dInts);
+                }
+            }
+            else {
+                if constexpr (_FloatsOnHost) {
+                    _TFloat* dFloats;
+                    cudaMalloc(&dFloats, sizeof(_TFloat) * FloatsLength);
+                    convertInt32sToFloats(Ints, dFloats, FloatsLength, ValTrue, ValFalse);
+                    cudaMemcpy(Floats, dFloats, sizeof(_TFloat) * FloatsLength, cudaMemcpyDeviceToHost);
+                }
+                else {
+                    convertInt32sToFloats(Ints, Floats, FloatsLength, ValTrue, ValFalse);
+                }
+            }
         }
-    }
-    else {
-        if constexpr (_FloatsOnHost) {
-            _TFloat* dFloats;
-            cudaMalloc(&dFloats, sizeof(_TFloat) * Length);
-            convertBoolsToFloats(Bools, dFloats, Length, ValTrue, ValFalse);
-            cudaMemcpy(Floats, dFloats, sizeof(_TFloat) * Length, cudaMemcpyDeviceToHost);
-        }
-        else {
-            convertBoolsToFloats(Bools, Floats, Length, ValTrue, ValFalse);
-        }
-    }
-}
-template <std::floating_point _TFloat>
-__device__ void bcuda::ai::ConvertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValFalse, _TFloat ValTrue) {
-    for (bool* boolsU = Bools + Length; Bools < boolsU; ++Floats, ++Bools)
-        *Floats = *Bools ? ValTrue : ValFalse;
-}
-template <bool _IntsOnHost, std::integral _TInt, bool _FloatsOnHost, std::floating_point _TFloat>
-__host__ void bcuda::ai::ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
-    if constexpr (_IntsOnHost) {
-        if constexpr (_FloatsOnHost) {
+        template <std::integral _TInt, std::floating_point _TFloat>
+        __device__ void ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
             size_t intLength = (FloatsLength + 31) >> 5;
             for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
                 convertInt32ToFloats(Ints, Floats, FloatsLength, ValTrue, ValFalse);
         }
-        else {
-            size_t intLength = (FloatsLength + 31) >> 5;
-            _TInt* dInts;
-            cudaMalloc(&dInts, sizeof(_TInt) * intLength);
-            cudaMemcpy(dInts, Ints, sizeof(_TInt) * intLength, cudaMemcpyHostToDevice);
-            convertInt32sToFloats(dInts, Floats, FloatsLength, ValTrue, ValFalse);
-            cudaFree(dInts);
-        }
     }
-    else {
-        if constexpr (_FloatsOnHost) {
-            _TFloat* dFloats;
-            cudaMalloc(&dFloats, sizeof(_TFloat) * FloatsLength);
-            convertInt32sToFloats(Ints, dFloats, FloatsLength, ValTrue, ValFalse);
-            cudaMemcpy(Floats, dFloats, sizeof(_TFloat) * FloatsLength, cudaMemcpyDeviceToHost);
-        }
-        else {
-            convertInt32sToFloats(Ints, Floats, FloatsLength, ValTrue, ValFalse);
-        }
-    }
-}
-template <std::integral _TInt, std::floating_point _TFloat>
-__device__ void bcuda::ai::ConvertIntsToFloats(_TInt* Ints, _TFloat* Floats, size_t FloatsLength, _TFloat ValFalse, _TFloat ValTrue) {
-    size_t intLength = (FloatsLength + 31) >> 5;
-    for (_TInt* intsU = Ints + intLength; Ints < intsU; Floats += 32, ++Ints, FloatsLength -= 32)
-        convertInt32ToFloats(Ints, Floats, FloatsLength, ValTrue, ValFalse);
 }
