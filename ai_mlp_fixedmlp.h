@@ -170,20 +170,18 @@ namespace bcuda {
                     if (Input == Output) {
                         _T* secondOutput = new _T[_OutputCount];
                         for (size_t j = 0; j < _OutputCount; ++j) {
-                            float v = bias[j];
-                            for (size_t i = 0; i < _InputCount; ++i) {
+                            _T v = bias[j];
+                            for (size_t i = 0; i < _InputCount; ++i)
                                 v += weights[i][j] * Input[i];
-                            }
                             secondOutput[j] = _ActivationFunction(v);
                         }
                         memcpy(Output, secondOutput, sizeof(_T) * _OutputCount);
                     }
                     else {
                         for (size_t j = 0; j < _OutputCount; ++j) {
-                            float v = bias[j];
-                            for (size_t i = 0; i < _InputCount; ++i) {
+                            _T v = bias[j];
+                            for (size_t i = 0; i < _InputCount; ++i)
                                 v += weights[i][j] * Input[i];
-                            }
                             Output[j] = _ActivationFunction(v);
                         }
                     }
@@ -266,19 +264,7 @@ namespace bcuda {
                     nextLayers.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #endif
-                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
-                    Run(Input, 0, 0, Output);
-                }
-                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
-                    _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
-                    _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
 
-                    layer.Run(Input, i1);
-                    nextLayers.Run(i1, i2, i1, Output);
-
-                    if (!Intermediate1) delete[] i1;
-                    if (!Intermediate2) delete[] i2;
-                }
                 template <size_t _Index>
                 __host__ __device__ inline layerType_t<_Index>& Layer() {
                     if constexpr (_Index) {
@@ -307,6 +293,20 @@ namespace bcuda {
                 }
                 static constexpr size_t LayerCount() {
                     return sizeof...(_ContinuedOutputCounts) + 2;
+                }
+
+                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
+                    Run(Input, 0, 0, Output);
+                }
+                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
+                    _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
+                    _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
+
+                    layer.Run(Input, i1);
+                    nextLayers.Run(i1, i2, i1, Output);
+
+                    if (!Intermediate1) delete[] i1;
+                    if (!Intermediate2) delete[] i2;
                 }
 
                 inline size_t SerializedSize() const {
@@ -375,12 +375,6 @@ namespace bcuda {
                     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #endif
-                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
-                    layer.Run(Input, Output);
-                }
-                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
-                    layer.Run(Input, Output);
-                }
                 template <size_t _Index>
                 __host__ __device__ inline layerType_t<_Index>& Layer() {
                     static_assert(!_Index, "_Index is out of bounds (too large).");
@@ -405,6 +399,13 @@ namespace bcuda {
                 }
                 static constexpr size_t LayerCount() {
                     return 1;
+                }
+
+                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
+                    layer.Run(Input, Output);
+                }
+                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
+                    layer.Run(Input, Output);
                 }
 
                 inline size_t SerializedSize() const {
