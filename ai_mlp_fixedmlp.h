@@ -440,201 +440,167 @@ namespace bcuda {
     }
     namespace details {
         template <ai::mlp::IsFixedMLP _TFixedMLP>
-        void FixedMLP_Run(const _TFixedMLP* mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs);
+        void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
+            using element_t = typename _TFixedMLP::element_t;
+
+            if constexpr (_TFixedMLP::LayerCount() == 1) {
+                FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Outputs);
+            }
+            else {
+                ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Intermediate0);
+                FixedMLP_Run(&Mlp->nextLayers, Intermediate0, Intermediate1, Intermediate0, Outputs);
+            }
+        }
     }
     namespace ai {
         namespace mlp {
             template <typename _TFixedMLPL>
                 requires IsFixedMLPL<std::remove_const_t<_TFixedMLPL>>
-            __host__ __device__ Span<std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>> FixedMLPL_GetElementSpan(_TFixedMLPL* MLPL);
+            __host__ __device__ Span<std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>> FixedMLPL_GetElementSpan(_TFixedMLPL* MLPL) {
+                using element_t = std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>;
+                return Span<element_t>((element_t*)MLPL, sizeof(_TFixedMLPL) / sizeof(element_t));
+            }
             template <typename _TFixedMLP>
                 requires IsFixedMLP<std::remove_const_t<_TFixedMLP>>
-            __host__ __device__ Span<std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>> FixedMLP_GetElementSpan(_TFixedMLP* MLP);
+            __host__ __device__ Span<std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>> FixedMLP_GetElementSpan(_TFixedMLP* MLP) {
+                using element_t = std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>;
+                return Span<element_t>((element_t*)MLP, sizeof(_TFixedMLP) / sizeof(element_t));
+            }
 
             template <IsFixedMLPL _TFixedMLPL, bool _InputOnHost, bool _OutputOnHost>
-            void FixedMLPL_Run(const _TFixedMLPL* MLPL, const typename _TFixedMLPL::element_t* Inputs, typename _TFixedMLPL::element_t* Outputs);
+            void FixedMLPL_Run(const _TFixedMLPL* MLPL, const typename _TFixedMLPL::element_t* Inputs, typename _TFixedMLPL::element_t* Outputs) {
+                using element_t = typename _TFixedMLPL::element_t;
+                if constexpr (_InputOnHost) {
+                    if constexpr (_OutputOnHost) {
+                        element_t* dInputs;
+                        ThrowIfBad(cudaMalloc(&dInputs, sizeof(element_t) * _TFixedMLPL::inputCount));
+                        ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(element_t) * _TFixedMLPL::inputCount, cudaMemcpyHostToDevice));
+                        element_t* dOutputs;
+                        ThrowIfBad(cudaMalloc(&dOutputs, sizeof(element_t) * _TFixedMLPL::outputCount));
+
+                        FixedMLPL_Run<_TFixedMLPL, false, false>(MLPL, dInputs, dOutputs);
+                    }
+                    else {
+                        element_t* dInputs;
+                        ThrowIfBad(cudaMalloc(&dInputs, sizeof(element_t) * _TFixedMLPL::inputCount));
+                        ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(element_t) * _TFixedMLPL::inputCount, cudaMemcpyHostToDevice));
+
+                        FixedMLPL_Run<_TFixedMLPL, false, false>(MLPL, dInputs, Outputs);
+                    }
+                }
+                else {
+                    if constexpr (_OutputOnHost) {
+                        element_t* dOutputs;
+                        ThrowIfBad(cudaMalloc(&dOutputs, sizeof(element_t) * _TFixedMLPL::outputCount));
+
+                        FixedMLPL_Run<_TFixedMLPL, false, false>(MLPL, Inputs, dOutputs);
+                    }
+                    else {
+                        ThrowIfBad(cudaMemcpy(Outputs, &MLPL->bias, sizeof(element_t) * _TFixedMLPL::outputCount, cudaMemcpyDeviceToDevice));
+
+                        cublasHandle_t cublasH;
+                        ThrowIfBad(cublasCreate(&cublasH));
+
+                        float oneF = 1.f;
+                        ThrowIfBad(cublasSgemv(cublasH, CUBLAS_OP_N, _TFixedMLPL::outputCount, _TFixedMLPL::inputCount, &oneF, (const float*)&MLPL->weights, _TFixedMLPL::outputCount, Inputs, 1, &oneF, Outputs, 1));
+
+                        ThrowIfBad(cublasDestroy(cublasH));
+                    }
+                }
+            }
             template <IsFixedMLP _TFixedMLP, bool _InputOnHost, bool _OutputOnHost>
-            void FixedMLP_Run(const _TFixedMLP* MLP, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Outputs);
+            void FixedMLP_Run(const _TFixedMLP* MLP, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Outputs) {
+                using element_t = typename _TFixedMLP::element_t;
+                if constexpr (_InputOnHost) {
+                    if constexpr (_OutputOnHost) {
+                        element_t* dInputs;
+                        ThrowIfBad(cudaMalloc(&dInputs, sizeof(element_t) * _TFixedMLP::InputCount()));
+                        ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(element_t) * _TFixedMLP::InputCount(), cudaMemcpyHostToDevice));
+                        element_t* dOutputs;
+                        ThrowIfBad(cudaMalloc(&dOutputs, sizeof(element_t) * _TFixedMLP::OutputCount()));
+
+                        FixedMLP_Run<_TFixedMLP, false, false>(MLP, dInputs, dOutputs);
+                    }
+                    else {
+                        element_t* dInputs;
+                        ThrowIfBad(cudaMalloc(&dInputs, sizeof(element_t) * _TFixedMLP::InputCount()));
+                        ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(element_t) * _TFixedMLP::InputCount(), cudaMemcpyHostToDevice));
+
+                        FixedMLP_Run<_TFixedMLP, false, false>(MLP, dInputs, Outputs);
+                    }
+                }
+                else {
+                    if constexpr (_OutputOnHost) {
+                        element_t* dOutputs;
+                        ThrowIfBad(cudaMalloc(&dOutputs, sizeof(element_t) * _TFixedMLP::OutputCount()));
+
+                        FixedMLP_Run<_TFixedMLP, false, false>(MLP, Inputs, dOutputs);
+                    }
+                    else {
+                        if constexpr (_TFixedMLP::LayerCount() == 1) {
+                            FixedMLPL_Run<decltype(MLP->layer), false, false>(&MLP->layer, Inputs, Outputs);
+                        }
+                        else {
+                            element_t* dIntermediate0;
+                            ThrowIfBad(cudaMalloc(&dIntermediate0, sizeof(element_t) * _TFixedMLP::OutputCount()));
+                            element_t* dIntermediate1;
+                            ThrowIfBad(cudaMalloc(&dIntermediate1, sizeof(element_t) * _TFixedMLP::OutputCount()));
+
+                            details::FixedMLP_Run<_TFixedMLP>(MLP, Inputs, dIntermediate0, dIntermediate1, Outputs);
+                        }
+                    }
+                }
+            }
 
             template <IsFixedMLPL _TFixedMLPL>
-            void FixedMLPL_FillWith0(_TFixedMLPL* MLPL);
+            void FixedMLPL_FillWith0(_TFixedMLPL* MLPL) {
+                using element_t = typename _TFixedMLPL::element_t;
+
+                rand::ClearArray<false, element_t>(FixedMLPL_GetElementSpan(MLPL));
+            }
             template <IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-            void FixedMLPL_FillWithRandom(_TFixedMLPL* MLPL, _TRNG& RNG);
+            void FixedMLPL_FillWithRandom(_TFixedMLPL* MLPL, _TRNG& RNG) {
+                using element_t = typename _TFixedMLPL::element_t;
+
+                rand::InitRandomArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), RNG);
+            }
             template <IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-            void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, _TRNG& RNG);
+            void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, _TRNG& RNG) {
+                using element_t = typename _TFixedMLPL::element_t;
+
+                rand::RandomizeArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), Scalar, RNG);
+            }
             template <IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-            void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, typename _TFixedMLPL::element_t LowerBound, typename _TFixedMLPL::element_t UpperBound, _TRNG& RNG);
+            void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, typename _TFixedMLPL::element_t LowerBound, typename _TFixedMLPL::element_t UpperBound, _TRNG& RNG) {
+                using element_t = typename _TFixedMLPL::element_t;
+
+                rand::RandomizeArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), Scalar, LowerBound, UpperBound, RNG);
+            }
 
             template <IsFixedMLP _TFixedMLP>
-            void FixedMLP_FillWith0(_TFixedMLP* MLP);
-            template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-            void FixedMLP_FillWithRandom(_TFixedMLP* MLP, _TRNG& RNG);
-            template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-            void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, _TRNG& RNG);
-            template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-            void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG);
-        }
-    }
-}
+            void FixedMLP_FillWith0(_TFixedMLP* MLP) {
+                using element_t = typename _TFixedMLP::element_t;
 
-template <bcuda::ai::mlp::IsFixedMLPL _TFixedMLPL, bool _InputOnHost, bool _OutputOnHost>
-void bcuda::ai::mlp::FixedMLPL_Run(const _TFixedMLPL* MLPL, const typename _TFixedMLPL::element_t* Inputs, typename _TFixedMLPL::element_t* Outputs) {
-    using element_t = typename _TFixedMLPL::element_t;
-    if constexpr (_InputOnHost) {
-        if constexpr (_OutputOnHost) {
-            element_t* dInputs;
-            ThrowIfBad(cudaMalloc(&dInputs, sizeof(element_t) * _TFixedMLPL::inputCount));
-            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(element_t) * _TFixedMLPL::inputCount, cudaMemcpyHostToDevice));
-            element_t* dOutputs;
-            ThrowIfBad(cudaMalloc(&dOutputs, sizeof(element_t) * _TFixedMLPL::outputCount));
-
-            FixedMLPL_Run<_TFixedMLPL, false, false>(MLPL, dInputs, dOutputs);
-        }
-        else {
-            element_t* dInputs;
-            ThrowIfBad(cudaMalloc(&dInputs, sizeof(element_t) * _TFixedMLPL::inputCount));
-            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(element_t) * _TFixedMLPL::inputCount, cudaMemcpyHostToDevice));
-
-            FixedMLPL_Run<_TFixedMLPL, false, false>(MLPL, dInputs, Outputs);
-        }
-    }
-    else {
-        if constexpr (_OutputOnHost) {
-            element_t* dOutputs;
-            ThrowIfBad(cudaMalloc(&dOutputs, sizeof(element_t) * _TFixedMLPL::outputCount));
-
-            FixedMLPL_Run<_TFixedMLPL, false, false>(MLPL, Inputs, dOutputs);
-        }
-        else {
-            cudaMemcpy(Outputs, &MLPL->bias, sizeof(element_t) * _TFixedMLPL::outputCount, cudaMemcpyDeviceToDevice);
-
-            cublasHandle_t cublasH;
-            ThrowIfBad(cublasCreate(&cublasH));
-
-            float oneF = 1.f;
-            ThrowIfBad(cublasSgemv(cublasH, CUBLAS_OP_N, _TFixedMLPL::outputCount, _TFixedMLPL::inputCount, &oneF, (const float*)&MLPL->weights, _TFixedMLPL::outputCount, Inputs, 1, &oneF, Outputs, 1));
-
-            ThrowIfBad(cublasDestroy(cublasH));
-        }
-    }
-}
-
-template <bcuda::ai::mlp::IsFixedMLP _TFixedMLP, bool _InputOnHost, bool _OutputOnHost>
-void bcuda::ai::mlp::FixedMLP_Run(const _TFixedMLP* MLP, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Outputs) {
-    using element_t = typename _TFixedMLP::element_t;
-    if constexpr (_InputOnHost) {
-        if constexpr (_OutputOnHost) {
-            element_t* dInputs;
-            ThrowIfBad(cudaMalloc(&dInputs, sizeof(element_t) * _TFixedMLP::InputCount()));
-            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(element_t) * _TFixedMLP::InputCount(), cudaMemcpyHostToDevice));
-            element_t* dOutputs;
-            ThrowIfBad(cudaMalloc(&dOutputs, sizeof(element_t) * _TFixedMLP::OutputCount()));
-
-            FixedMLP_Run<_TFixedMLP, false, false>(MLP, dInputs, dOutputs);
-        }
-        else {
-            element_t* dInputs;
-            ThrowIfBad(cudaMalloc(&dInputs, sizeof(element_t) * _TFixedMLP::InputCount()));
-            ThrowIfBad(cudaMemcpy(dInputs, Inputs, sizeof(element_t) * _TFixedMLP::InputCount(), cudaMemcpyHostToDevice));
-
-            FixedMLP_Run<_TFixedMLP, false, false>(MLP, dInputs, Outputs);
-        }
-    }
-    else {
-        if constexpr (_OutputOnHost) {
-            element_t* dOutputs;
-            ThrowIfBad(cudaMalloc(&dOutputs, sizeof(element_t) * _TFixedMLP::OutputCount()));
-
-            FixedMLP_Run<_TFixedMLP, false, false>(MLP, Inputs, dOutputs);
-        }
-        else {
-            if constexpr (_TFixedMLP::LayerCount() == 1) {
-                FixedMLPL_Run<decltype(MLP->layer), false, false>(&MLP->layer, Inputs, Outputs);
+                rand::ClearArray<false, element_t>(FixedMLP_GetElementSpan(MLP));
             }
-            else {
-                element_t* dIntermediate0;
-                ThrowIfBad(cudaMalloc(&dIntermediate0, sizeof(element_t) * _TFixedMLP::OutputCount()));
-                element_t* dIntermediate1;
-                ThrowIfBad(cudaMalloc(&dIntermediate1, sizeof(element_t) * _TFixedMLP::OutputCount()));
+            template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
+            void FixedMLP_FillWithRandom(_TFixedMLP* MLP, _TRNG& RNG) {
+                using element_t = typename _TFixedMLP::element_t;
 
-                details::FixedMLP_Run<_TFixedMLP>(MLP, Inputs, dIntermediate0, dIntermediate1, Outputs);
+                rand::InitRandomArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), RNG);
+            }
+            template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
+            void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, _TRNG& RNG) {
+                using element_t = typename _TFixedMLP::element_t;
+
+                rand::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, RNG);
+            }
+            template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
+            void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG) {
+                using element_t = typename _TFixedMLP::element_t;
+
+                rand::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, LowerBound, UpperBound, RNG);
             }
         }
     }
-}
-
-template <bcuda::ai::mlp::IsFixedMLP _TFixedMLP>
-void bcuda::details::FixedMLP_Run(const _TFixedMLP* MLP, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
-    using element_t = typename _TFixedMLP::element_t;
-
-    if constexpr (_TFixedMLP::LayerCount() == 1) {
-        FixedMLPL_Run<decltype(MLP->layer), false, false>(&MLP->layer, Inputs, Outputs);
-    }
-    else {
-        ai::mlp::FixedMLPL_Run<decltype(MLP->layer), false, false>(&MLP->layer, Inputs, Intermediate0);
-        FixedMLP_Run(&MLP->nextLayers, Intermediate0, Intermediate1, Intermediate0, Outputs);
-    }
-}
-
-template <typename _TFixedMLPL>
-    requires bcuda::ai::mlp::IsFixedMLPL<std::remove_const_t<_TFixedMLPL>>
-__host__ __device__ bcuda::Span<std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>> bcuda::ai::mlp::FixedMLPL_GetElementSpan(_TFixedMLPL* MLPL) {
-    using element_t = std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>;
-    return Span<element_t>((element_t*)MLPL, sizeof(_TFixedMLPL) / sizeof(element_t));
-}
-template <typename _TFixedMLP>
-    requires bcuda::ai::mlp::IsFixedMLP<std::remove_const_t<_TFixedMLP>>
-__host__ __device__ bcuda::Span<std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>> bcuda::ai::mlp::FixedMLP_GetElementSpan(_TFixedMLP* MLP) {
-    using element_t = std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>;
-    return Span<element_t>((element_t*)MLP, sizeof(_TFixedMLP) / sizeof(element_t));
-}
-
-template <bcuda::ai::mlp::IsFixedMLPL _TFixedMLPL>
-void bcuda::ai::mlp::FixedMLPL_FillWith0(_TFixedMLPL* MLPL) {
-    using element_t = typename _TFixedMLPL::element_t;
-
-    rand::ClearArray<false, element_t>(FixedMLPL_GetElementSpan(MLPL));
-}
-template <bcuda::ai::mlp::IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::mlp::FixedMLPL_FillWithRandom(_TFixedMLPL* MLPL, _TRNG& RNG) {
-    using element_t = typename _TFixedMLPL::element_t;
-
-    rand::InitRandomArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), RNG);
-}
-template <bcuda::ai::mlp::IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::mlp::FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, _TRNG& RNG) {
-    using element_t = typename _TFixedMLPL::element_t;
-
-    rand::RandomizeArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), Scalar, RNG);
-}
-template <bcuda::ai::mlp::IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::mlp::FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, typename _TFixedMLPL::element_t LowerBound, typename _TFixedMLPL::element_t UpperBound, _TRNG& RNG) {
-    using element_t = typename _TFixedMLPL::element_t;
-
-    rand::RandomizeArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), Scalar, LowerBound, UpperBound, RNG);
-}
-
-template <bcuda::ai::mlp::IsFixedMLP _TFixedMLP>
-void bcuda::ai::mlp::FixedMLP_FillWith0(_TFixedMLP* MLP) {
-    using element_t = typename _TFixedMLP::element_t;
-
-    rand::ClearArray<false, element_t>(FixedMLP_GetElementSpan(MLP));
-}
-template <bcuda::ai::mlp::IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::mlp::FixedMLP_FillWithRandom(_TFixedMLP* MLP, _TRNG& RNG) {
-    using element_t = typename _TFixedMLP::element_t;
-
-    rand::InitRandomArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), RNG);
-}
-template <bcuda::ai::mlp::IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::mlp::FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, _TRNG& RNG) {
-    using element_t = typename _TFixedMLP::element_t;
-
-    rand::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, RNG);
-}
-template <bcuda::ai::mlp::IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-void bcuda::ai::mlp::FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG) {
-    using element_t = typename _TFixedMLP::element_t;
-
-    rand::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, LowerBound, UpperBound, RNG);
 }
