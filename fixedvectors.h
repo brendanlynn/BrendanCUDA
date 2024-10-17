@@ -50,47 +50,148 @@ namespace bcuda {
         requires std::is_arithmetic_v<_T>
     struct FixedVector
         : public details::FixedVectorBase<_T, _Size> {
-        __host__ __device__ __forceinline constexpr FixedVector();
+        __host__ __device__ inline constexpr FixedVector() {
+            for (size_t i = 0; i < _Size; ++i) {
+                this->v[i] = 0;
+            }
+        }
         template <std::convertible_to<uint32_t>... _Ts>
             requires (sizeof...(_Ts) == _Size)
-        __host__ __device__ __forceinline constexpr FixedVector(_Ts... V) {
+        __host__ __device__ inline constexpr FixedVector(_Ts... V) {
             _T tempVs[_Size] = { V... };
             for (size_t i = 0; i < _Size; ++i)
                 this->v[i] = tempVs[i];
         }
-        __host__ __device__ __forceinline constexpr FixedVector(const _T V[_Size]);
+        __host__ __device__ inline constexpr FixedVector(const _T V[_Size]) {
+            for (size_t i = 0; i < _Size; ++i) {
+                this->v[i] = V[i];
+            }
+        }
 
-        __host__ __device__ __forceinline constexpr _T& operator[](size_t Index);
-        __host__ __device__ __forceinline constexpr const _T& operator[](size_t Index) const;
+        __host__ __device__ inline constexpr _T& operator[](size_t Index) {
+            return this->v[Index];
+        }
+        __host__ __device__ inline constexpr const _T& operator[](size_t Index) const {
+            return this->v[Index];
+        }
 
-        __host__ __device__ __forceinline constexpr FixedVector<_T, _Size> operator+(FixedVector<_T, _Size> Other) const;
-        __host__ __device__ __forceinline void operator+=(FixedVector<_T, _Size> Other);
-        __host__ __device__ __forceinline constexpr FixedVector<_T, _Size> operator-(FixedVector<_T, _Size> Other) const;
-        __host__ __device__ __forceinline void operator-=(FixedVector<_T, _Size> Other);
-        __host__ __device__ __forceinline constexpr FixedVector<_T, _Size> operator*(_T Other) const;
-        __host__ __device__ __forceinline void operator*=(_T Other);
-        __host__ __device__ __forceinline constexpr FixedVector<_T, _Size> operator/(_T Other) const;
-        __host__ __device__ __forceinline void operator/=(_T Other);
+        __host__ __device__ inline constexpr FixedVector<_T, _Size> operator+(FixedVector<_T, _Size> Other) const {
+            FixedVector<_T, _Size> r;
+            for (size_t i = 0; i < _Size; ++i) {
+                r[i] = this->v[i] + Other[i];
+            }
+            return r;
+        }
+        __host__ __device__ inline void operator+=(FixedVector<_T, _Size> Other) {
+            for (size_t i = 0; i < _Size; ++i) {
+                this->v[i] += Other[i];
+            }
+        }
+        __host__ __device__ inline constexpr FixedVector<_T, _Size> operator-(FixedVector<_T, _Size> Other) const {
+            FixedVector<_T, _Size> r;
+            for (size_t i = 0; i < _Size; ++i) {
+                r[i] = this->v[i] - Other[i];
+            }
+            return r;
+        }
+        __host__ __device__ inline void operator-=(FixedVector<_T, _Size> Other) {
+            for (size_t i = 0; i < _Size; ++i) {
+                this->v[i] -= Other[i];
+            }
+        }
+        __host__ __device__ inline constexpr FixedVector<_T, _Size> operator*(_T Other) const {
+            FixedVector<_T, _Size> r;
+            for (size_t i = 0; i < _Size; ++i) {
+                r[i] = this->v[i] * Other;
+            }
+            return r;
+        }
+        __host__ __device__ inline void operator*=(_T Other) {
+            for (size_t i = 0; i < _Size; ++i) {
+                this->v[i] *= Other;
+            }
+        }
+        __host__ __device__ inline constexpr FixedVector<_T, _Size> operator/(_T Other) const {
+            FixedVector<_T, _Size> r;
+            for (size_t i = 0; i < _Size; ++i) {
+                r[i] = this->v[i] / Other;
+            }
+            return r;
+        }
+        __host__ __device__ inline void operator/=(_T Other) {
+            for (size_t i = 0; i < _Size; ++i) {
+                this->v[i] /= Other;
+            }
+        }
 
-        __host__ __device__ static __forceinline constexpr _T Dot(FixedVector<_T, _Size> Left, FixedVector<_T, _Size> Right);
+        __host__ __device__ static inline constexpr _T Dot(FixedVector<_T, _Size> Left, FixedVector<_T, _Size> Right) {
+            _T t = 0;
+            for (size_t i = 0; i < _Size; ++i) {
+                t += Left[i] * Right[i];
+            }
+            return t;
+        }
 
-        __host__ __device__ __forceinline constexpr FixedVector<_T, 2> Cross() const requires (_Size == 2) {
+        __host__ __device__ inline constexpr FixedVector<_T, 2> Cross() const requires (_Size == 2) {
             return FixedVector<_T, 2>(-this->y, this->x);
         }
-        __host__ __device__ static __forceinline constexpr FixedVector<_T, 2> Cross(FixedVector<_T, 2> Value) requires (_Size == 2);
-        __host__ __device__ static __forceinline constexpr _T Cross(FixedVector<_T, 2> Left, FixedVector<_T, 2> Right) requires (_Size == 2);
+        __host__ __device__ static inline constexpr FixedVector<_T, 2> Cross(FixedVector<_T, 2> Value) requires (_Size == 2) {
+            return Value.Cross();
+        }
+        __host__ __device__ static inline constexpr _T Cross(FixedVector<_T, 2> Left, FixedVector<_T, 2> Right) requires (_Size == 2) {
+            return Left.x * Right.y - Left.y * Right.x;
+        }
 
-        __host__ __device__ static __forceinline constexpr FixedVector<_T, 3> Cross(FixedVector<_T, 3> Left, FixedVector<_T, 3> Right) requires (_Size == 3);
+        __host__ __device__ static inline constexpr FixedVector<_T, 3> Cross(FixedVector<_T, 3> Left, FixedVector<_T, 3> Right) requires (_Size == 3) {
+            return FixedVector<_T, 3>(
+                Left.y * Right.z - Left.z * Right.y,
+                Left.z * Right.x - Left.x * Right.z,
+                Left.x * Right.y - Left.y * Right.x
+            );
+        }
         
-        __host__ __device__ __forceinline constexpr _T MagnatudeSquared() const;
-        __host__ __device__ __forceinline _T MagnatudeI() const requires std::integral<_T>;
-        __host__ __device__ __forceinline float MagnatudeF() const requires std::integral<_T>;
-        __host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const;
+        __host__ __device__ inline constexpr _T MagnatudeSquared() const {
+            _T t = 0;
+            for (size_t i = 0; i < _Size; ++i) {
+                _T thisV = this->v[i];
+                t += thisV * thisV;
+            }
+            return t;
+        }
+        __host__ __device__ inline _T MagnatudeI() const requires std::integral<_T> {
+            return math::sqrt(MagnatudeSquared());
+        }
+        __host__ __device__ inline float MagnatudeF() const requires std::integral<_T> {
+            return sqrt((float)MagnatudeSquared());
+        }
+        __host__ __device__ inline std::conditional_t<std::floating_point<_T>, _T, double> Magnatude() const {
+            if constexpr (std::floating_point<_T>) {
+                return sqrt(MagnatudeSquared());
+            }
+            else {
+                return sqrt((double)MagnatudeSquared());
+            }
+        }
 
-        __forceinline size_t SerializedSize() const;
-        __forceinline void Serialize(void*& Data) const;
-        static __forceinline FixedVector<_T, _Size> Deserialize(const void*& Data);
-        static __forceinline void Deserialize(const void*& Data, void* Value);
+        inline size_t SerializedSize() const {
+            return sizeof(_T) * _Size;
+        }
+        inline void Serialize(void*& Data) const {
+            for (size_t i = 0; i < _Size; ++i)
+                BSerializer::Serialize(Data, this->v[i]);
+        }
+        static inline FixedVector<_T, _Size> Deserialize(const void*& Data) {
+            bcuda::FixedVector<_T, _Size> vec;
+            for (size_t i = 0; i < _Size; ++i)
+                vec[i] = BSerializer::Deserialize<_T>(Data);
+            return vec;
+        }
+        static inline void Deserialize(const void*& Data, void* Value) {
+            FixedVector<_T, _Size>* p_vec = new (Value) FixedVector<_T, _Size>;
+            FixedVector<_T, _Size>& vec = *p_vec;
+            for (size_t i = 0; i < _Size; ++i)
+                vec[i] = BSerializer::Deserialize<_T>(Data);
+        }
     };
 
     using float_1 = FixedVector<float, 1>;
@@ -133,180 +234,4 @@ namespace bcuda {
     using uint64_2 = FixedVector<uint64_t, 2>;
     using uint64_3 = FixedVector<uint64_t, 3>;
     using uint64_4 = FixedVector<uint64_t, 4>;
-}
-
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr bcuda::FixedVector<_T, _Size>::FixedVector() {
-    for (size_t i = 0; i < _Size; ++i) {
-        this->v[i] = 0;
-    }
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr bcuda::FixedVector<_T, _Size>::FixedVector(const _T V[_Size]) {
-    for (size_t i = 0; i < _Size; ++i) {
-        this->v[i] = V[i];
-    }
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr _T& bcuda::FixedVector<_T, _Size>::operator[](size_t Index) {
-    return this->v[Index];
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr const _T& bcuda::FixedVector<_T, _Size>::operator[](size_t Index) const {
-    return this->v[Index];
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto bcuda::FixedVector<_T, _Size>::operator+(FixedVector<_T, _Size> Other) const -> FixedVector<_T, _Size> {
-    FixedVector<_T, _Size> r;
-    for (size_t i = 0; i < _Size; ++i) {
-        r[i] = this->v[i] + Other[i];
-    }
-    return r;
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline void bcuda::FixedVector<_T, _Size>::operator+=(FixedVector<_T, _Size> Other) {
-    for (size_t i = 0; i < _Size; ++i) {
-        this->v[i] += Other[i];
-    }
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto bcuda::FixedVector<_T, _Size>::operator-(FixedVector<_T, _Size> Other) const -> FixedVector<_T, _Size> {
-    FixedVector<_T, _Size> r;
-    for (size_t i = 0; i < _Size; ++i) {
-        r[i] = this->v[i] - Other[i];
-    }
-    return r;
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline void bcuda::FixedVector<_T, _Size>::operator-=(FixedVector<_T, _Size> Other) {
-    for (size_t i = 0; i < _Size; ++i) {
-        this->v[i] -= Other[i];
-    }
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto bcuda::FixedVector<_T, _Size>::operator*(_T Other) const -> FixedVector<_T, _Size> {
-    FixedVector<_T, _Size> r;
-    for (size_t i = 0; i < _Size; ++i) {
-        r[i] = this->v[i] * Other;
-    }
-    return r;
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline void bcuda::FixedVector<_T, _Size>::operator*=(_T Other) {
-    for (size_t i = 0; i < _Size; ++i) {
-        this->v[i] *= Other;
-    }
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr auto bcuda::FixedVector<_T, _Size>::operator/(_T Other) const -> FixedVector<_T, _Size> {
-    FixedVector<_T, _Size> r;
-    for (size_t i = 0; i < _Size; ++i) {
-        r[i] = this->v[i] / Other;
-    }
-    return r;
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline void bcuda::FixedVector<_T, _Size>::operator/=(_T Other) {
-    for (size_t i = 0; i < _Size; ++i) {
-        this->v[i] /= Other;
-    }
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr _T bcuda::FixedVector<_T, _Size>::Dot(FixedVector<_T, _Size> Left, FixedVector<_T, _Size> Right) {
-    _T t = 0;
-    for (size_t i = 0; i < _Size; ++i) {
-        t += Left[i] * Right[i];
-    }
-    return t;
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr _T bcuda::FixedVector<_T, _Size>::MagnatudeSquared() const {
-    _T t = 0;
-    for (size_t i = 0; i < _Size; ++i) {
-        _T thisV = this->v[i];
-        t += thisV * thisV;
-    }
-    return t;
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline _T bcuda::FixedVector<_T, _Size>::MagnatudeI() const requires std::integral<_T> {
-    return math::sqrt(MagnatudeSquared());
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline float bcuda::FixedVector<_T, _Size>::MagnatudeF() const requires std::integral<_T> {
-    return sqrt((float)MagnatudeSquared());
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline std::conditional_t<std::floating_point<_T>, _T, double> bcuda::FixedVector<_T, _Size>::Magnatude() const {
-    if constexpr (std::floating_point<_T>) {
-        return sqrt(MagnatudeSquared());
-    }
-    else {
-        return sqrt((double)MagnatudeSquared());
-    }
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__forceinline size_t bcuda::FixedVector<_T, _Size>::SerializedSize() const {
-    return sizeof(_T) * _Size;
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__forceinline void bcuda::FixedVector<_T, _Size>::Serialize(void*& Data) const {
-    for (size_t i = 0; i < _Size; ++i)
-        BSerializer::Serialize(Data, this->v[i]);
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__forceinline bcuda::FixedVector<_T, _Size> bcuda::FixedVector<_T, _Size>::Deserialize(const void*& Data) {
-    bcuda::FixedVector<_T, _Size> vec;
-    for (size_t i = 0; i < _Size; ++i)
-        vec[i] = BSerializer::Deserialize<_T>(Data);
-    return vec;
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__forceinline void bcuda::FixedVector<_T, _Size>::Deserialize(const void*& Data, void* Value) {
-    FixedVector<_T, _Size>* p_vec = new (Value) FixedVector<_T, _Size>;
-    FixedVector<_T, _Size>& vec = *p_vec;
-    for (size_t i = 0; i < _Size; ++i)
-        vec[i] = BSerializer::Deserialize<_T>(Data);
-}
-
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr bcuda::FixedVector<_T, 2> bcuda::FixedVector<_T, _Size>::Cross(FixedVector<_T, 2> Value) requires (_Size == 2) {
-    return Value.Cross();
-}
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr _T bcuda::FixedVector<_T, _Size>::Cross(FixedVector<_T, 2> Left, FixedVector<_T, 2> Right) requires (_Size == 2) {
-    return Left.x * Right.y - Left.y * Right.x;
-}
-
-template <typename _T, size_t _Size>
-    requires std::is_arithmetic_v<_T>
-__host__ __device__ __forceinline constexpr bcuda::FixedVector<_T, 3> bcuda::FixedVector<_T, _Size>::Cross(FixedVector<_T, 3> Left, FixedVector<_T, 3> Right) requires (_Size == 3) {
-    return FixedVector<_T, 3>(
-        Left.y * Right.z - Left.z * Right.y,
-        Left.z * Right.x - Left.x * Right.z,
-        Left.x * Right.y - Left.y * Right.x
-    );
 }
