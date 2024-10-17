@@ -48,11 +48,11 @@ namespace bcuda {
     };
 
     template <typename _T>
-    CopyPtr<_T> MakeCopyPtr() requires std::is_default_constructible_v<_T> {
+    static inline CopyPtr<_T> MakeCopyPtr() requires std::is_default_constructible_v<_T> {
         return CopyPtr<_T>(new _T());
     }
     template <typename _T>
-    CopyPtr<_T> MakeCopyPtr(_T Val) {
+    static inline CopyPtr<_T> MakeCopyPtr(_T Val) {
         return CopyPtr<_T>(new _T(Val));
     }
 }

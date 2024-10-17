@@ -857,9 +857,9 @@ namespace bcuda {
                 return *(Field<_T, _DimensionCount>*)basefb_t::Clone();
             }
 
-            __host__ __device__ FieldProxyConst(const Field<_T, _DimensionCount>& Parent)
+            __host__ __device__ inline FieldProxyConst(const Field<_T, _DimensionCount>& Parent)
                 : basefb_t(Parent.Dimensions(), Parent.Data()) { }
-            __host__ __device__ FieldProxyConst(const FieldProxy<_T, _DimensionCount>& Partner)
+            __host__ __device__ inline FieldProxyConst(const FieldProxy<_T, _DimensionCount>& Partner)
                 : basefb_t(Partner.Dimensions(), Partner.Data()) { }
         };
     }

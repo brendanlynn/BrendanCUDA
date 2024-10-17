@@ -67,7 +67,7 @@ namespace bcuda {
                 _T weights[_InputCount][_OutputCount];
                 _T bias[_OutputCount];
 
-                __host__ __device__ void FillWith0() {
+                __host__ __device__ inline void FillWith0() {
                     for (size_t i = 0; i < _OutputCount; ++i) {
                         for (size_t j = 0; j < _InputCount; ++j)
                             weights[i][j] = 0.;
@@ -75,7 +75,7 @@ namespace bcuda {
                     }
                 }
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void FillWithRandom(_TRNG& RNG) {
+                __host__ inline void FillWithRandom(_TRNG& RNG) {
                     std::uniform_real_distribution<_T> dis(-1., 1.);
 
                     for (size_t i = 0; i < _OutputCount; ++i) {
@@ -86,7 +86,7 @@ namespace bcuda {
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void FillWithRandom(_TRNG& RNG) {
+                __device__ inline void FillWithRandom(_TRNG& RNG) {
                     if constexpr (std::same_as<_T, float>)
                         for (size_t i = 0; i < _OutputCount; ++i) {
                             for (size_t j = 0; j < _InputCount; ++j)
@@ -102,7 +102,7 @@ namespace bcuda {
                  }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                __host__ inline void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
                     std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
 
                     for (size_t i = 0; i < _OutputCount; ++i) {
@@ -113,7 +113,7 @@ namespace bcuda {
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                __device__ inline void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
                     if constexpr (std::same_as<_T, float>)
                         for (size_t i = 0; i < _OutputCount; ++i) {
                             for (size_t j = 0; j < _InputCount; ++j)
@@ -129,7 +129,7 @@ namespace bcuda {
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                __host__ inline void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
                     std::uniform_real_distribution<_T> dis(-Scalar, Scalar);
 
                     for (size_t i = 0; i < _OutputCount; ++i) {
@@ -143,7 +143,7 @@ namespace bcuda {
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                __device__ inline void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
                     if constexpr (std::same_as<_T, float>)
                         for (size_t i = 0; i < _OutputCount; ++i) {
                             for (size_t j = 0; j < _InputCount; ++j) {
@@ -187,19 +187,19 @@ namespace bcuda {
                     }
                 }
 
-                size_t SerializedSize() const {
+                inline size_t SerializedSize() const {
                     return sizeof(this_t);
                 }
-                void Serialize(void*& Data) const {
+                inline void Serialize(void*& Data) const {
                     BSerializer::SerializeArray(Data, weights, _InputCount * _OutputCount);
                     BSerializer::SerializeArray(Data, bias, _OutputCount);
                 }
-                static this_t Deserialize(const void*& Data) {
+                inline static this_t Deserialize(const void*& Data) {
                     uint8_t bytes[sizeof(this_t)];
                     Deserialize(Data, &bytes);
                     return *(this_t*)&bytes;
                 }
-                static void Deserialize(const void*& Data, void* ObjMem) {
+                inline static void Deserialize(const void*& Data, void* ObjMem) {
                     this_t& obj = &(this_t*)ObjMem;
                     BSerializer::DeserializeArray(Data, obj.weights, _InputCount * _OutputCount);
                     BSerializer::DeserializeArray(Data, obj.bias, _OutputCount);
@@ -222,50 +222,50 @@ namespace bcuda {
                 FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
                 FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...> nextLayers;
 
-                __host__ __device__ void FillWith0() {
+                __host__ __device__ inline void FillWith0() {
                     layer.FillWith0();
                     nextLayers.FillWith0();
                 }
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void FillWithRandom(_TRNG& RNG) {
+                __host__ inline void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
                     nextLayers.FillWithRandom(RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void FillWithRandom(_TRNG& RNG) {
+                __device__ inline void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
                     nextLayers.FillWithRandom(RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                __host__ inline void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, RNG);
                     nextLayers.ChangeWithRandom(Scalar, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                __device__ inline void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, RNG);
                     nextLayers.ChangeWithRandom(Scalar, RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                __host__ inline void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                     nextLayers.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                __device__ inline void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                     nextLayers.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #endif
-                __host__ __device__ void Run(const _T* Input, _T* Output) const {
+                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
                     Run(Input, 0, 0, Output);
                 }
-                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
+                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
                     _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
                     _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
 
@@ -276,7 +276,7 @@ namespace bcuda {
                     if (!Intermediate2) delete[] i2;
                 }
                 template <size_t _Index>
-                __host__ __device__ layerType_t<_Index>& Layer() {
+                __host__ __device__ inline layerType_t<_Index>& Layer() {
                     if constexpr (_Index) {
                         return nextLayers.Layer<_Index - 1>();
                     }
@@ -305,19 +305,19 @@ namespace bcuda {
                     return sizeof...(_ContinuedOutputCounts) + 2;
                 }
 
-                size_t SerializedSize() const {
+                inline size_t SerializedSize() const {
                     return sizeof(this_t);
                 }
-                void Serialize(void*& Data) const {
+                inline void Serialize(void*& Data) const {
                     layer.Serialize(Data);
                     nextLayers.Serialize(Data);
                 }
-                static this_t Deserialize(const void*& Data) {
+                inline static this_t Deserialize(const void*& Data) {
                     uint8_t bytes[sizeof(this_t)];
                     Deserialize(Data, &bytes);
                     return *(this_t*)&bytes;
                 }
-                static void Deserialize(const void*& Data, void* ObjMem) {
+                inline static void Deserialize(const void*& Data, void* ObjMem) {
                     this_t& obj = &(this_t*)ObjMem;
                     BSerializer::Deserialize<layerType_t<0>>(Data, &obj.layer);
                     BSerializer::Deserialize<FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>>(Data, &obj.nextLayers);
@@ -337,47 +337,47 @@ namespace bcuda {
 
                 FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
 
-                __host__ __device__ void FillWith0() {
+                __host__ __device__ inline void FillWith0() {
                     layer.FillWith0();
                 }
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void FillWithRandom(_TRNG& RNG) {
+                __host__ inline void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void FillWithRandom(_TRNG& RNG) {
+                __device__ inline void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                __host__ inline void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
+                __device__ inline void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                __host__ inline void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
+                __device__ inline void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #endif
-                __host__ __device__ void Run(const _T* Input, _T* Output) const {
+                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
                     layer.Run(Input, Output);
                 }
-                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
+                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
                     layer.Run(Input, Output);
                 }
                 template <size_t _Index>
-                __host__ __device__ layerType_t<_Index>& Layer() {
+                __host__ __device__ inline layerType_t<_Index>& Layer() {
                     static_assert(!_Index, "_Index is out of bounds (too large).");
 
                     return layer;
@@ -402,18 +402,18 @@ namespace bcuda {
                     return 1;
                 }
 
-                size_t SerializedSize() const {
+                inline size_t SerializedSize() const {
                     return sizeof(this_t);
                 }
-                void Serialize(void*& Data) const {
+                inline void Serialize(void*& Data) const {
                     layer.Serialize(Data);
                 }
-                static this_t Deserialize(const void*& Data) {
+                inline static this_t Deserialize(const void*& Data) {
                     uint8_t bytes[sizeof(this_t)];
                     Deserialize(Data, &bytes);
                     return *(this_t*)&bytes;
                 }
-                static void Deserialize(const void*& Data, void* ObjMem) {
+                inline static void Deserialize(const void*& Data, void* ObjMem) {
                     this_t& obj = &(this_t*)ObjMem;
                     BSerializer::Deserialize<layerType_t<0>>(Data, &obj.layer);
                 }
@@ -440,7 +440,7 @@ namespace bcuda {
     }
     namespace details {
         template <ai::mlp::IsFixedMLP _TFixedMLP>
-        void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
+        inline static void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
             using element_t = typename _TFixedMLP::element_t;
 
             if constexpr (_TFixedMLP::LayerCount() == 1) {
@@ -456,19 +456,19 @@ namespace bcuda {
         namespace mlp {
             template <typename _TFixedMLPL>
                 requires IsFixedMLPL<std::remove_const_t<_TFixedMLPL>>
-            __host__ __device__ Span<std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>> FixedMLPL_GetElementSpan(_TFixedMLPL* MLPL) {
+            __host__ __device__ inline static Span<std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>> FixedMLPL_GetElementSpan(_TFixedMLPL* MLPL) {
                 using element_t = std::conditional_t<std::is_const_v<_TFixedMLPL>, const typename _TFixedMLPL::element_t, typename _TFixedMLPL::element_t>;
                 return Span<element_t>((element_t*)MLPL, sizeof(_TFixedMLPL) / sizeof(element_t));
             }
             template <typename _TFixedMLP>
                 requires IsFixedMLP<std::remove_const_t<_TFixedMLP>>
-            __host__ __device__ Span<std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>> FixedMLP_GetElementSpan(_TFixedMLP* MLP) {
+            __host__ __device__ inline static Span<std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>> FixedMLP_GetElementSpan(_TFixedMLP* MLP) {
                 using element_t = std::conditional_t<std::is_const_v<_TFixedMLP>, const typename _TFixedMLP::element_t, typename _TFixedMLP::element_t>;
                 return Span<element_t>((element_t*)MLP, sizeof(_TFixedMLP) / sizeof(element_t));
             }
 
             template <IsFixedMLPL _TFixedMLPL, bool _InputOnHost, bool _OutputOnHost>
-            void FixedMLPL_Run(const _TFixedMLPL* MLPL, const typename _TFixedMLPL::element_t* Inputs, typename _TFixedMLPL::element_t* Outputs) {
+            inline static void FixedMLPL_Run(const _TFixedMLPL* MLPL, const typename _TFixedMLPL::element_t* Inputs, typename _TFixedMLPL::element_t* Outputs) {
                 using element_t = typename _TFixedMLPL::element_t;
                 if constexpr (_InputOnHost) {
                     if constexpr (_OutputOnHost) {
@@ -509,7 +509,7 @@ namespace bcuda {
                 }
             }
             template <IsFixedMLP _TFixedMLP, bool _InputOnHost, bool _OutputOnHost>
-            void FixedMLP_Run(const _TFixedMLP* MLP, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Outputs) {
+            inline static void FixedMLP_Run(const _TFixedMLP* MLP, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Outputs) {
                 using element_t = typename _TFixedMLP::element_t;
                 if constexpr (_InputOnHost) {
                     if constexpr (_OutputOnHost) {
@@ -553,50 +553,50 @@ namespace bcuda {
             }
 
             template <IsFixedMLPL _TFixedMLPL>
-            void FixedMLPL_FillWith0(_TFixedMLPL* MLPL) {
+            inline static void FixedMLPL_FillWith0(_TFixedMLPL* MLPL) {
                 using element_t = typename _TFixedMLPL::element_t;
 
                 rand::ClearArray<false, element_t>(FixedMLPL_GetElementSpan(MLPL));
             }
             template <IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-            void FixedMLPL_FillWithRandom(_TFixedMLPL* MLPL, _TRNG& RNG) {
+            inline static void FixedMLPL_FillWithRandom(_TFixedMLPL* MLPL, _TRNG& RNG) {
                 using element_t = typename _TFixedMLPL::element_t;
 
                 rand::InitRandomArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), RNG);
             }
             template <IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-            void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, _TRNG& RNG) {
+            inline static void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, _TRNG& RNG) {
                 using element_t = typename _TFixedMLPL::element_t;
 
                 rand::RandomizeArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), Scalar, RNG);
             }
             template <IsFixedMLPL _TFixedMLPL, std::uniform_random_bit_generator _TRNG>
-            void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, typename _TFixedMLPL::element_t LowerBound, typename _TFixedMLPL::element_t UpperBound, _TRNG& RNG) {
+            inline static void FixedMLPL_ChangeWithRandom(_TFixedMLPL* MLPL, typename _TFixedMLPL::element_t Scalar, typename _TFixedMLPL::element_t LowerBound, typename _TFixedMLPL::element_t UpperBound, _TRNG& RNG) {
                 using element_t = typename _TFixedMLPL::element_t;
 
                 rand::RandomizeArray<false, element_t, _TRNG>(FixedMLPL_GetElementSpan(MLPL), Scalar, LowerBound, UpperBound, RNG);
             }
 
             template <IsFixedMLP _TFixedMLP>
-            void FixedMLP_FillWith0(_TFixedMLP* MLP) {
+            inline static void FixedMLP_FillWith0(_TFixedMLP* MLP) {
                 using element_t = typename _TFixedMLP::element_t;
 
                 rand::ClearArray<false, element_t>(FixedMLP_GetElementSpan(MLP));
             }
             template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-            void FixedMLP_FillWithRandom(_TFixedMLP* MLP, _TRNG& RNG) {
+            inline static void FixedMLP_FillWithRandom(_TFixedMLP* MLP, _TRNG& RNG) {
                 using element_t = typename _TFixedMLP::element_t;
 
                 rand::InitRandomArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), RNG);
             }
             template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-            void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, _TRNG& RNG) {
+            inline static void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, _TRNG& RNG) {
                 using element_t = typename _TFixedMLP::element_t;
 
                 rand::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, RNG);
             }
             template <IsFixedMLP _TFixedMLP, std::uniform_random_bit_generator _TRNG>
-            void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG) {
+            inline static void FixedMLP_ChangeWithRandom(_TFixedMLP* MLP, typename _TFixedMLP::element_t Scalar, typename _TFixedMLP::element_t LowerBound, typename _TFixedMLP::element_t UpperBound, _TRNG& RNG) {
                 using element_t = typename _TFixedMLP::element_t;
 
                 rand::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, LowerBound, UpperBound, RNG);

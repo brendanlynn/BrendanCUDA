@@ -51,20 +51,20 @@ namespace bcuda {
                 _TInput weights[details::bitCount<_TOutput>];
                 _TOutput bias;
 
-                __host__ __device__ void FillWith0() {
+                __host__ __device__ inline void FillWith0() {
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         weights[i] = (_TInput)0;
                     bias = (_TOutput)0;
                 }
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void FillWithRandom(_TRNG& RNG) {
+                __host__ inline void FillWithRandom(_TRNG& RNG) {
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         weights[i] = details::GetIntBin<_TInput>(RNG);
                     bias = details::GetIntBin<_TOutput>(RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void FillWithRandom(_TRNG& RNG) {
+                __device__ inline void FillWithRandom(_TRNG& RNG) {
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         weights[i] = details::GetIntBin<_TInput>(RNG);
                     bias = details::GetIntBin<_TOutput>(RNG);
@@ -112,29 +112,29 @@ namespace bcuda {
                     bias = bcuda::rand::RandomizeWMutations(bias, BiasProbOf1, RNG);
                 }
 #endif
-                __host__ __device__ _TOutput Run(_TInput Input) const {
+                __host__ __device__ inline _TOutput Run(_TInput Input) const {
                     _TOutput o = bias;
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         if (Input & weights[i]) o |= ((_TOutput)1) << i;
                     return o;
                 }
-                __host__ __device__ uint64_t RunG(uint64_t Input) const {
+                __host__ __device__ inline uint64_t RunG(uint64_t Input) const {
                     return (uint64_t)Run((_TInput)Input);
                 }
 
-                size_t SerializedSize() const {
+                inline size_t SerializedSize() const {
                     return sizeof(this_t);
                 }
-                void Serialize(void*& Data) const {
+                inline void Serialize(void*& Data) const {
                     BSerializer::SerializeArray(Data, weights, details::bitCount<_TOutput>);
                     BSerializer::Serialize(Data, bias);
                 }
-                static this_t Deserialize(const void*& Data) {
+                inline static this_t Deserialize(const void*& Data) {
                     uint8_t bytes[sizeof(this_t)];
                     Deserialize(Data, &bytes);
                     return *(this_t*)&bytes;
                 }
-                static void Deserialize(const void*& Data, void* ObjMem) {
+                inline static void Deserialize(const void*& Data, void* ObjMem) {
                     this_t& obj = *(this_t*)ObjMem;
                     BSerializer::DeserializeArray(Data, obj.weights, details::bitCount<_TOutput>);
                     BSerializer::Deserialize(Data, &obj.bias);
@@ -156,18 +156,18 @@ namespace bcuda {
                 FixedMLPBL<_TInput, _TOutput1> layer;
                 FixedMLPB<_TOutput1, _TOutput2, _TsContinuedOutputs...> nextLayers;
 
-                __host__ __device__ void FillWith0() {
+                __host__ __device__ inline void FillWith0() {
                     layer.FillWith0();
                     nextLayers.FillWith0();
                 }
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void FillWithRandom(_TRNG& RNG) {
+                __host__ inline void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
                     nextLayers.FillWithRandom(RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void FillWithRandom(_TRNG& RNG) {
+                __device__ inline void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
                     nextLayers.FillWithRandom(RNG);
                 }
@@ -205,16 +205,16 @@ namespace bcuda {
                 template <KernelCurandState _TRNG>
                 __device__ inline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
 #endif
-                __host__ __device__ output_t Run(_TInput Input) const {
+                __host__ __device__ inline output_t Run(_TInput Input) const {
                     return (output_t)RunG((uint64_t)Input);
                 }
-                __host__ __device__ uint64_t RunG(uint64_t Input) const {
+                __host__ __device__ inline uint64_t RunG(uint64_t Input) const {
                     Input = layer.RunG(Input);
                     Input = nextLayers.RunG(Input);
                     return Input;
                 }
                 template <size_t _Index>
-                __host__ __device__ layerType_t<_Index>& Layer() {
+                __host__ __device__ inline layerType_t<_Index>& Layer() {
                     if constexpr (_Index) {
                         return nextLayers.Layer<_Index - 1>();
                     }
@@ -227,19 +227,19 @@ namespace bcuda {
                     return sizeof...(_TsContinuedOutputs) + 2;
                 }
 
-                size_t SerializedSize() const {
+                inline size_t SerializedSize() const {
                     return sizeof(this_t);
                 }
-                void Serialize(void*& Data) const {
+                inline void Serialize(void*& Data) const {
                     layer.Serialize(Data);
                     nextLayers.Serialize(Data);
                 }
-                static this_t Deserialize(const void*& Data) {
+                inline static this_t Deserialize(const void*& Data) {
                     uint8_t bytes[sizeof(this_t)];
                     Deserialize(Data, &bytes);
                     return *(this_t*)&bytes;
                 }
-                static void Deserialize(const void*& Data, void* ObjMem) {
+                inline static void Deserialize(const void*& Data, void* ObjMem) {
                     this_t& obj = &(this_t*)ObjMem;
                     BSerializer::Deserialize(Data, &obj.layer);
                     BSerializer::Deserialize(Data, &obj.nextLayers);
@@ -258,16 +258,16 @@ namespace bcuda {
 
                 FixedMLPBL<_TInput, _TOutput1> layer;
 
-                __host__ __device__ void FillWith0() {
+                __host__ __device__ inline void FillWith0() {
                     layer.FillWith0();
                 }
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ void FillWithRandom(_TRNG& RNG) {
+                __host__ inline void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ void FillWithRandom(_TRNG& RNG) {
+                __device__ inline void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
                 }
 #endif
@@ -301,15 +301,15 @@ namespace bcuda {
                     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
                 }
 #endif
-                __host__ __device__ output_t Run(_TInput Input) const {
+                __host__ __device__ inline output_t Run(_TInput Input) const {
                     return (output_t)RunG((uint64_t)Input);
                 }
-                __host__ __device__ uint64_t RunG(uint64_t Input) const {
+                __host__ __device__ inline uint64_t RunG(uint64_t Input) const {
                     Input = layer.RunG(Input);
                     return Input;
                 }
                 template <size_t _Index>
-                __host__ __device__ layerType_t<_Index>& Layer() {
+                __host__ __device__ inline layerType_t<_Index>& Layer() {
                     static_assert(!_Index, "_Index is out of bounds.");
                     return layer;
                 }
@@ -318,18 +318,18 @@ namespace bcuda {
                     return 1;
                 }
 
-                size_t SerializedSize() const {
+                inline size_t SerializedSize() const {
                     return sizeof(this_t);
                 }
-                void Serialize(void*& Data) const {
+                inline void Serialize(void*& Data) const {
                     layer.Serialize(Data);
                 }
-                static this_t Deserialize(const void*& Data) {
+                inline static this_t Deserialize(const void*& Data) {
                     uint8_t bytes[sizeof(this_t)];
                     Deserialize(Data, &bytes);
                     return *(this_t*)&bytes;
                 }
-                static void Deserialize(const void*& Data, void* ObjMem) {
+                inline static void Deserialize(const void*& Data, void* ObjMem) {
                     this_t& obj = &(this_t*)ObjMem;
                     BSerializer::Deserialize(Data, &obj.layer);
                 }

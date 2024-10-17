@@ -25,7 +25,7 @@ namespace bcuda {
 
             virtual _TOutput Calc(const varmap_t&) = 0;
 
-            std::any CalcToAny(const varmap_t& VarMap) override {
+            std::any CalcToAny(const varmap_t& VarMap) override final {
                 return Calc(VarMap);
             }
 

@@ -6,13 +6,13 @@
 
 namespace bcuda {
 #ifdef __CUDACC__
-    __device__ inline uint64_t GetThreadID1() {
+    __device__ static inline uint64_t GetThreadID1() {
         uint64_t t = 0;
         t = t * gridDim.x + blockIdx.x;
         t = t * blockDim.x + threadIdx.x;
         return t;
     }
-    __device__ inline uint64_t GetThreadID2() {
+    __device__ static inline uint64_t GetThreadID2() {
         uint64_t t = 0;
         t = t * gridDim.y + blockIdx.y;
         t = t * blockDim.y + threadIdx.y;
@@ -20,7 +20,7 @@ namespace bcuda {
         t = t * blockDim.x + threadIdx.x;
         return t;
     }
-    __device__ inline uint64_t GetThreadID3() {
+    __device__ static inline uint64_t GetThreadID3() {
         uint64_t t = 0;
         t = t * gridDim.z + blockIdx.z;
         t = t * blockDim.z + threadIdx.z;

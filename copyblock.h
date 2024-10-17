@@ -12,12 +12,10 @@ namespace bcuda {
             uint32_t inputIndex;
             uint32_t outputIndex;
             uint32_t size;
-            Landmark() = default;
-            __host__ __device__ Landmark(uint32_t InputIndex, uint32_t OutputIndex, uint32_t Size) {
-                inputIndex = InputIndex;
-                outputIndex = OutputIndex;
-                size = Size;
-            }
+            __host__ __device__ inline constexpr Landmark()
+                : inputIndex(0), outputIndex(0), size(0) { }
+            __host__ __device__ inline constexpr Landmark(uint32_t InputIndex, uint32_t OutputIndex, uint32_t Size)
+                : inputIndex(InputIndex), outputIndex(OutputIndex), size(Size) { }
         };
 
         __host__ __device__ ArrayV<Landmark> GetLandmarksInDirection(uint32_t InputLength, uint32_t OutputLength, uint32_t RangeLength, uint32_t InputIndex, uint32_t OutputIndex);

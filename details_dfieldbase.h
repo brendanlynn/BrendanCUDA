@@ -43,22 +43,22 @@ namespace bcuda {
             __host__ __device__ fields::FieldProxy<_T, _DimensionCount> F() const {
                 return fields::FieldProxy<_T, _DimensionCount>(this->Dimensions(), darrF);
             }
-            __host__ __device__ fields::FieldProxy<_T, _DimensionCount> B() const {
+            __host__ __device__ inline fields::FieldProxy<_T, _DimensionCount> B() const {
                 return fields::FieldProxy<_T, _DimensionCount>(this->Dimensions(), darrB);
             }
-            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
+            __host__ __device__ inline fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
                 return fields::FieldProxyConst<_T, _DimensionCount>(this->Dimensions(), darrF);
             }
-            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
+            __host__ __device__ inline fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
                 return fields::FieldProxyConst<_T, _DimensionCount>(this->Dimensions(), darrB);
             }
-            __host__ __device__ _T* FData() const {
+            __host__ __device__ inline _T* FData() const {
                 return darrF;
             }
-            __host__ __device__ _T* BData() const {
+            __host__ __device__ inline _T* BData() const {
                 return darrB;
             }
-            __host__ __device__ void Reverse() {
+            __host__ __device__ inline void Reverse() {
                 std::swap(darrF, darrB);
             }
 #pragma endregion
@@ -179,7 +179,7 @@ namespace bcuda {
             }
 #endif
 
-            __host__ __device__ this_t Clone() const {
+            __host__ __device__ inline this_t Clone() const {
                 this_t clone(this->Dimensions());
                 clone.F().CpyAllIn<false>(FData());
                 return clone;

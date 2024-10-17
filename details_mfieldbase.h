@@ -114,15 +114,15 @@ namespace bcuda {
 
 #pragma region ProxyAccess
             template <size_t _Idx>
-            __host__ __device__ fields::FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
+            __host__ __device__ inline fields::FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
                 return fields::FieldProxy<element_t<_Idx>, _DimensionCount>(this->Dimensions(), (element_t<_Idx>*)darrs[_Idx]);
             }
             template <size_t _Idx>
-            __host__ __device__ fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ inline fields::FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 return fields::FieldProxyConst<element_t<_Idx>, _DimensionCount>(this->Dimensions(), (element_t<_Idx>*)darrs[_Idx]);
             }
             template <size_t _Idx>
-            __host__ __device__ element_t<_Idx>* FData() const {
+            __host__ __device__ inline element_t<_Idx>* FData() const {
                 return (element_t<_Idx>*)darrs[_Idx];
             }
 #pragma endregion
@@ -136,7 +136,7 @@ namespace bcuda {
 #endif
             }
 
-            __host__ __device__ this_t Clone() const {
+            __host__ __device__ inline this_t Clone() const {
                 this_t clone(this->Dimensions());
                 RunFunctionsOverTypeWrapper<MFieldBase_Clone, 0, _Ts...>::template RunFunctionsOverType(&clone.darrs, (void**)&darrs, basedb_t::ValueCount());
                 return clone;

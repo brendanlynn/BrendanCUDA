@@ -16,7 +16,8 @@ namespace bcuda {
     public:
         using element_t = _T;
 
-        inline ArrayV() = default;
+        __host__ __device__ inline constexpr ArrayV()
+            : ptr(0), size(0) { }
         __host__ __device__ inline ArrayV(_T* Ptr, size_t Size)
             : ptr(Ptr), size(Size) { }
         __host__ __device__ inline ArrayV(size_t Size)
@@ -44,13 +45,13 @@ namespace bcuda {
             return *this;
         }
 
-        __host__ __device__ _T* Data() {
+        __host__ __device__ inline _T* Data() {
             return ptr;
         }
-        __host__ __device__ const _T* Data() const {
+        __host__ __device__ inline const _T* Data() const {
             return ptr;
         }
-        __host__ __device__ size_t Size() const {
+        __host__ __device__ inline size_t Size() const {
             return size;
         }
 

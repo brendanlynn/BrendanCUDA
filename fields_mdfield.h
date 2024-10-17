@@ -122,35 +122,35 @@ namespace bcuda {
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ FieldProxy<element_t<_Idx>, _DimensionCount> F() {
+            __host__ __device__ inline FieldProxy<element_t<_Idx>, _DimensionCount> F() {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.F<tIdx>();
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ inline FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FConst<tIdx>();
             }
             template <size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ DFieldProxy<element_t<_Idx>, _DimensionCount> F() {
+            __host__ __device__ inline DFieldProxy<element_t<_Idx>, _DimensionCount> F() {
                 return DFieldProxy<element_t<_Idx>, _DimensionCount>(Dimensions(), fields.FData<_Idx>(), fields.FData<_Idx + sizeof...(_Ts)>());
             }
             template <size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ DFieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ inline DFieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 return DFieldProxyConst<element_t<_Idx>, _DimensionCount>(Dimensions(), fields.FData<_Idx>(), fields.FData<_Idx + sizeof...(_Ts)>());
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ element_t<_Idx>* FData() {
+            __host__ __device__ inline element_t<_Idx>* FData() {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FData<tIdx>();
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ const element_t<_Idx>* FData() const {
+            __host__ __device__ inline const element_t<_Idx>* FData() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FData<tIdx>();
             }
@@ -169,10 +169,10 @@ namespace bcuda {
                 details::MFieldBase<_DimensionCount, _Ts..., _Ts...>(Data, Value);
             }
 
-            inline MDField(const this_t&) = default;
-            inline MDField(this_t&&) = default;
-            inline this_t& operator=(const this_t&) = default;
-            inline this_t& operator=(this_t&&) = default;
+            inline inline MDField(const this_t&) = default;
+            inline inline MDField(this_t&&) = default;
+            inline inline this_t& operator=(const this_t&) = default;
+            inline inline this_t& operator=(this_t&&) = default;
 
             __host__ __device__ inline MDFieldProxy<_DimensionCount, _Ts...> MakeProxy() {
                 return MDFieldProxy<_DimensionCount, _Ts...>(*this);
@@ -260,29 +260,29 @@ namespace bcuda {
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
+            __host__ __device__ inline FieldProxy<element_t<_Idx>, _DimensionCount> F() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.F<tIdx>();
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ inline FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FConst<tIdx>();
             }
             template <size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ DFieldProxy<element_t<_Idx>, _DimensionCount> F() const {
+            __host__ __device__ inline DFieldProxy<element_t<_Idx>, _DimensionCount> F() const {
                 return DFieldProxy<element_t<_Idx>, _DimensionCount>(Dimensions(), const_cast<element_t<_Idx>*>(fields.FData<_Idx>()), const_cast<element_t<_Idx>*>(fields.FData<_Idx + sizeof...(_Ts)>()));
             }
             template <size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ DFieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ inline DFieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 return DFieldProxyConst<element_t<_Idx>, _DimensionCount>(Dimensions(), fields.FData<_Idx>(), fields.FData<_Idx + sizeof...(_Ts)>());
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ element_t<_Idx>* FData() const {
+            __host__ __device__ inline element_t<_Idx>* FData() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FData<tIdx>();
             }
@@ -298,9 +298,9 @@ namespace bcuda {
                 return *(MDField<_DimensionCount, _Ts...>*)&((details::MFieldBase<_DimensionCount, _Ts..., _Ts...>)&fields)->Clone();
             }
 
-            __host__ __device__ MDFieldProxy(const vector_t& Dimensions, void* const* Arrays)
+            __host__ __device__ inline MDFieldProxy(const vector_t& Dimensions, void* const* Arrays)
                 : fields(Dimensions, Arrays) { }
-            __host__ __device__ MDFieldProxy(MDField<_DimensionCount, _Ts...>& Parent)
+            __host__ __device__ inline MDFieldProxy(MDField<_DimensionCount, _Ts...>& Parent)
                 : fields(Parent.Dimensions(), ((details::MFieldBase<_DimensionCount, _Ts..., _Ts...>*)&(((this_t*)&Parent)->fields))->FieldDataArray()) { }
         };
         template <size_t _DimensionCount, typename... _Ts>
@@ -364,18 +364,18 @@ namespace bcuda {
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ inline FieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FConst<tIdx>();
             }
             template <size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ DFieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
+            __host__ __device__ inline DFieldProxyConst<element_t<_Idx>, _DimensionCount> FConst() const {
                 return DFieldProxyConst<element_t<_Idx>, _DimensionCount>(Dimensions(), fields.FData<_Idx>(), fields.FData<_Idx + sizeof...(_Ts)>());
             }
             template <bool _Front, size_t _Idx>
                 requires (_Idx < sizeof...(_Ts))
-            __host__ __device__ const element_t<_Idx>* FData() const {
+            __host__ __device__ inline const element_t<_Idx>* FData() const {
                 constexpr size_t tIdx = _Front ? _Idx : sizeof...(_Ts) + _Idx;
                 return fields.FData<tIdx>();
             }
@@ -391,11 +391,11 @@ namespace bcuda {
                 return *(MDField<_DimensionCount, _Ts...>*)&(((details::MFieldBase<_DimensionCount, _Ts..., _Ts...>*)&fields)->Clone());
             }
 
-            __host__ __device__ MDFieldProxyConst(const vector_t& Dimensions, void* const* Arrays)
+            __host__ __device__ inline MDFieldProxyConst(const vector_t& Dimensions, void* const* Arrays)
                 : fields(Dimensions, Arrays) { }
-            __host__ __device__ MDFieldProxyConst(MDField<_DimensionCount, _Ts...>& Parent)
+            __host__ __device__ inline MDFieldProxyConst(MDField<_DimensionCount, _Ts...>& Parent)
                 : fields(Parent.Dimensions(), &((this_t*)&Parent)->fields) { }
-            __host__ __device__ MDFieldProxyConst(MDFieldProxy<_DimensionCount, _Ts...>& Partner)
+            __host__ __device__ inline MDFieldProxyConst(MDFieldProxy<_DimensionCount, _Ts...>& Partner)
                 : fields(Partner.Dimensions(), &((this_t*)&Partner)->fields) { }
         };
     }

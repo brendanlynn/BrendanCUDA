@@ -8,14 +8,7 @@
 namespace bcuda {
     namespace math {
         template <typename _T>
-        __host__ __device__ static inline _T sqrt(_T value) {
-            if constexpr (std::signed_integral<_T>)
-                return (_T)sqrt((int32_t)value);
-            else if constexpr (std::unsigned_integral<_T>)
-                return (_T)sqrt((uint32_t)value);
-            else
-                return std::sqrt(value);
-        }
+        __host__ __device__ static inline _T sqrt(_T value);
         template <>
         __host__ __device__ static inline int32_t sqrt<int32_t>(int32_t value) {
             if (value < 0)
@@ -91,6 +84,15 @@ namespace bcuda {
             } while (upper > (lower + 1));
 
             return lower;
+        }
+        template <typename _T>
+        __host__ __device__ static inline _T sqrt(_T value) {
+            if constexpr (std::signed_integral<_T>)
+                return (_T)sqrt((int32_t)value);
+            else if constexpr (std::unsigned_integral<_T>)
+                return (_T)sqrt((uint32_t)value);
+            else
+                return std::sqrt(value);
         }
 
         template <typename _T>

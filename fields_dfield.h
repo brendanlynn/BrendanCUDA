@@ -74,31 +74,31 @@ namespace bcuda {
             __host__ __device__ inline size_t SizeOnGPU() const {
                 return basefb_t::SizeOnGPU();
             }
-            __host__ __device__ fields::FieldProxy<_T, _DimensionCount> F() {
+            __host__ __device__ inline fields::FieldProxy<_T, _DimensionCount> F() {
                 return basefb_t::F();
             }
-            __host__ __device__ fields::FieldProxy<_T, _DimensionCount> B() {
+            __host__ __device__ inline fields::FieldProxy<_T, _DimensionCount> B() {
                 return basefb_t::B();
             }
-            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
+            __host__ __device__ inline fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
                 return basefb_t::FConst();
             }
-            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
+            __host__ __device__ inline fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
                 return basefb_t::BConst();
             }
-            __host__ __device__ _T* FData() {
+            __host__ __device__ inline _T* FData() {
                 return basefb_t::FData();
             }
-            __host__ __device__ _T* BData() {
+            __host__ __device__ inline _T* BData() {
                 return basefb_t::BData();
             }
-            __host__ __device__ const _T* FData() const {
+            __host__ __device__ inline const _T* FData() const {
                 return basefb_t::FData();
             }
-            __host__ __device__ const _T* BData() const {
+            __host__ __device__ inline const _T* BData() const {
                 return basefb_t::BData();
             }
-            __host__ __device__ void Reverse() {
+            __host__ __device__ inline void Reverse() {
                 basefb_t::Reverse();
             }
             template <bool _CopyFromHost>
@@ -260,7 +260,7 @@ namespace bcuda {
             using kernelFunc_t = details::dfieldIK_t<_T, _DimensionCount>;
 
 #pragma region Wrapper
-            __host__ __device__ DFieldProxy(const vector_t& Dimensions, _T* ArrF, _T* ArrB)
+            __host__ __device__ inline DFieldProxy(const vector_t& Dimensions, _T* ArrF, _T* ArrB)
                 : basefb_t(Dimensions, ArrF, ArrB) { }
 
             __host__ __device__ inline uint32_t LengthX() const requires (_DimensionCount <= 4) {
@@ -302,22 +302,22 @@ namespace bcuda {
             __host__ __device__ inline size_t SizeOnGPU() const {
                 return basefb_t::SizeOnGPU();
             }
-            __host__ __device__ fields::FieldProxy<_T, _DimensionCount> F() const {
+            __host__ __device__ inline fields::FieldProxy<_T, _DimensionCount> F() const {
                 return basefb_t::F();
             }
-            __host__ __device__ fields::FieldProxy<_T, _DimensionCount> B() const {
+            __host__ __device__ inline fields::FieldProxy<_T, _DimensionCount> B() const {
                 return basefb_t::B();
             }
-            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
+            __host__ __device__ inline fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
                 return basefb_t::FConst();
             }
-            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
+            __host__ __device__ inline fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
                 return basefb_t::BConst();
             }
-            __host__ __device__ _T* FData() const {
+            __host__ __device__ inline _T* FData() const {
                 return basefb_t::FData();
             }
-            __host__ __device__ _T* BData() const {
+            __host__ __device__ inline _T* BData() const {
                 return basefb_t::BData();
             }
             template <bool _CopyFromHost>
@@ -442,7 +442,7 @@ namespace bcuda {
             using vector_t = typename basefb_t::vector_t;
 
 #pragma region Wrapper
-            __host__ __device__ DFieldProxyConst(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)
+            __host__ __device__ inline DFieldProxyConst(const vector_t& Dimensions, const _T* ArrF, const _T* ArrB)
                 : basefb_t(Dimensions, const_cast<_T*>(ArrF), const_cast<_T*>(ArrB)) { }
 
             __host__ __device__ inline uint32_t LengthX() const requires (_DimensionCount <= 4) {
@@ -484,10 +484,10 @@ namespace bcuda {
             __host__ __device__ inline size_t SizeOnGPU() const {
                 return basefb_t::SizeOnGPU();
             }
-            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
+            __host__ __device__ inline fields::FieldProxyConst<_T, _DimensionCount> FConst() const {
                 return basefb_t::FConst();
             }
-            __host__ __device__ fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
+            __host__ __device__ inline fields::FieldProxyConst<_T, _DimensionCount> BConst() const {
                 return basefb_t::BConst();
             }
             __host__ __device__ const _T* FData() const {
@@ -565,9 +565,9 @@ namespace bcuda {
                 return *(DField<_T, _DimensionCount>*)&basefb_t::Clone();
             }
 
-            __host__ __device__ DFieldProxyConst(const DField<_T, _DimensionCount>& Parent)
+            __host__ __device__ inline DFieldProxyConst(const DField<_T, _DimensionCount>& Parent)
                 : basefb_t(Parent.Dimensions(), Parent.FData(), Parent.BData()) { }
-            __host__ __device__ DFieldProxyConst(const DFieldProxy<_T, _DimensionCount>& Partner)
+            __host__ __device__ inline DFieldProxyConst(const DFieldProxy<_T, _DimensionCount>& Partner)
                 : basefb_t(Partner.Dimensions(), Partner.FData(), Partner.BData()) { }
         };
     }
