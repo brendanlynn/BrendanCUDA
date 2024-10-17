@@ -15,28 +15,29 @@
 namespace bcuda {
     namespace ai {
         namespace mlp {
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLPL;
         }
     }
     namespace details {
-        template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
+        template <size_t _Index, std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
         struct MLPLayerType;
-        template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+        template <size_t _Index, std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
         struct MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
             using type = typename MLPLayerType<_Index - 1, _T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::type;
         };
-        template <std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+        template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
         struct MLPLayerType<0, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
             using type = ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
         };
-        template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+        template <size_t _Index, std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count>
         struct MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count> {
             static_assert(!_Index, "_Index is out of bounds.");
             using type = ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
         };
 
-        template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
+        template <size_t _Index, std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
         using mlpLayerType_t = MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _ContinuedOutputCounts...>;
 
         template <uintmax_t _Idx, size_t... _Ints>
@@ -52,7 +53,8 @@ namespace bcuda {
     }
     namespace ai {
         namespace mlp {
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLPL {
                 static_assert(_InputCount, "_InputCount must be greater than 0.");
                 static_assert(_OutputCount, "_OutputCount must be greater than 0.");
@@ -60,7 +62,7 @@ namespace bcuda {
                 using this_t = FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>;
             public:
                 using element_t = _T;
-                static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
+                static constexpr auto activationFunction = _ActivationFunction;
                 static constexpr size_t inputCount = _InputCount;
                 static constexpr size_t outputCount = _OutputCount;
 
@@ -205,15 +207,17 @@ namespace bcuda {
                     BSerializer::DeserializeArray(Data, obj.bias, _OutputCount);
                 }
             };
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLP;
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
             private:
                 using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
             public:
                 using element_t = _T;
-                static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
+                static constexpr auto activationFunction = _ActivationFunction;
                 template <size_t _Index>
                 static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::value;
                 template <size_t _Index>
@@ -323,13 +327,14 @@ namespace bcuda {
                     BSerializer::Deserialize<FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>>(Data, &obj.nextLayers);
                 }
             };
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> {
             private:
                 using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>;
             public:
                 using element_t = _T;
-                static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
+                static constexpr auto activationFunction = _ActivationFunction;
                 template <size_t _Index>
                 static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count>::value;
                 template <size_t _Index>
