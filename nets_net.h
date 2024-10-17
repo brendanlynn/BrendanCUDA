@@ -26,30 +26,59 @@ namespace bcuda {
             size_t outputCount;
 
             //Constructs a bcuda::nets::NetNode object.
-            __host__ __device__ __forceinline NetNode();
+            __host__ __device__ inline constexpr NetNode()
+                : data(0), inputs(0), inputCount(0), outputs(0), outputCount(0) { }
 
             //Disposes of a bcuda::nets::NetNode object.
-            __forceinline void Dispose(dataDestructor_t DataDestructor) const;
+            inline void Dispose(dataDestructor_t DataDestructor) const {
+                if (DataDestructor)
+                    DataDestructor(*this);
+#ifdef __CUDA_ARCH__
+                delete[] inputs;
+                delete[] outputs;
+#else
+                ThrowIfBad(cudaFree(inputs));
+                ThrowIfBad(cudaFree(outputs));
+#endif
+            }
         };
         //A directed graph.
         class Net {
         public:
             //Creates a bcuda::nets::Net object.
-            __forceinline Net();
+            inline Net()
+                : nodes(*(new thrust::device_vector<NetNode>())) { }
             //Creates a bcuda::nets::Net object, using Data as its vector of nodes without copying it.
-            __forceinline Net(thrust::device_vector<NetNode>& Data);
+            inline Net(thrust::device_vector<NetNode>& Data)
+                : nodes(Data) { }
             //Disposes of a bcuda::nets::Net object.
-            __forceinline void Dispose(dataDestructor_t DataDestructor);
+            inline void Dispose(dataDestructor_t DataDestructor) {
+                for (size_t i = 0; i < nodes.size(); ++i)
+                    ((NetNode)nodes[i]).Dispose(DataDestructor);
+                delete (&nodes);
+            }
             //Returns the vector of nodes, for external manipulation at the user's risk.
-            __forceinline thrust::device_vector<NetNode>& DataVec();
+            inline thrust::device_vector<NetNode>& DataVec() {
+                return nodes;
+            }
             //Returns the vector of nodes, for external manipulation at the user's risk.
-            __forceinline const thrust::device_vector<NetNode>& DataVec() const;
+            inline const thrust::device_vector<NetNode>& DataVec() const {
+                return nodes;
+            }
             //Returns a pointer to the first node in the vector of nodes, for external manipulation at the user's risk.
-            __forceinline thrust::device_ptr<NetNode> DataPtr();
+            inline thrust::device_ptr<NetNode> DataPtr() {
+                return nodes.data();
+            }
             //Returns a pointer to the first node in the vector of nodes, for external manipulation at the user's risk.
-            __forceinline thrust::device_ptr<const NetNode> DataPtr() const;
-            __forceinline thrust::device_reference<NetNode> operator[](size_t i);
-            __forceinline thrust::device_reference<const NetNode> operator[](size_t i) const;
+            inline thrust::device_ptr<const NetNode> DataPtr() const {
+                return nodes.data();
+            }
+            inline thrust::device_reference<NetNode> operator[](size_t i) {
+                return nodes[i];
+            }
+            inline thrust::device_reference<const NetNode> operator[](size_t i) const {
+                return nodes[i];
+            }
             //Prints a list of nodes, their identifiers, and their inputs and outputs to the Output stream. IndentPre is the amount of spaces (not indents) before the left of the printout, and IndentSize is the amount of spaces in each indent afterward.
             void PrintTo(std::ostream& Output, size_t IndentPre = 0, size_t IndentSize = 4) const;
             //Makes a deep-copy of the bcuda::nets::Net object.
@@ -73,62 +102,4 @@ namespace bcuda {
             thrust::device_vector<NetNode>& nodes;
         };
     }
-}
-
-__host__ __device__ __forceinline bcuda::nets::NetNode::NetNode() {
-    data = 0;
-    inputs = 0;
-    inputCount = 0;
-    outputs = 0;
-    outputCount = 0;
-}
-
-__forceinline void bcuda::nets::NetNode::Dispose(dataDestructor_t DataDestructor) const {
-    if (DataDestructor) {
-        DataDestructor(*this);
-    }
-#ifdef __CUDA_ARCH__
-    delete[] inputs;
-    delete[] outputs;
-#else
-    ThrowIfBad(cudaFree(inputs));
-    ThrowIfBad(cudaFree(outputs));
-#endif
-}
-
-__forceinline bcuda::nets::Net::Net()
-    : nodes(*(new thrust::device_vector<NetNode>())) {}
-
-__forceinline bcuda::nets::Net::Net(thrust::device_vector<NetNode>& Data)
-    : nodes(Data) {}
-
-__forceinline void bcuda::nets::Net::Dispose(dataDestructor_t DataDestructor) {
-    for (size_t i = 0; i < nodes.size(); ++i) {
-        ((NetNode)nodes[i]).Dispose(DataDestructor);
-    }
-    delete (&nodes);
-}
-
-__forceinline thrust::device_vector<bcuda::nets::NetNode>& bcuda::nets::Net::DataVec() {
-    return nodes;
-}
-
-__forceinline const thrust::device_vector<bcuda::nets::NetNode>& bcuda::nets::Net::DataVec() const {
-    return nodes;
-}
-
-__forceinline thrust::device_ptr<bcuda::nets::NetNode> bcuda::nets::Net::DataPtr() {
-    return nodes.data();
-}
-
-__forceinline thrust::device_ptr<const bcuda::nets::NetNode> bcuda::nets::Net::DataPtr() const {
-    return nodes.data();
-}
-
-__forceinline thrust::device_reference<bcuda::nets::NetNode> bcuda::nets::Net::operator[](size_t i) {
-    return nodes[i];
-}
-
-__forceinline thrust::device_reference<const bcuda::nets::NetNode> bcuda::nets::Net::operator[](size_t i) const {
-    return nodes[i];
 }
