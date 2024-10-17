@@ -189,56 +189,60 @@ __global__ void disposeOfBuckets(BucketTS* buckets) {
     delete[] buckets[blockIdx.x].data;
 }
 
-bcuda::nets::Net bcuda::nets::MakeNet_3D(size_t NodeCount, float ConnectionRange, rand::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
-    thrust::device_vector<float_3>* dv = new thrust::device_vector<float_3>(NodeCount);
+namespace bcuda {
+    namespace nets {
+        Net MakeNet_3D(size_t NodeCount, float ConnectionRange, rand::AnyRNG<uint64_t> RNG, thrust::device_vector<float_3>** NodePoints) {
+            thrust::device_vector<float_3>* dv = new thrust::device_vector<float_3>(NodeCount);
 
-    rand::InitRandomArray<false, float, rand::AnyRNG<uint64_t>>(Span<float>((float*)(dv->data().get()), NodeCount * 3), RNG);
+            rand::InitRandomArray<false, float, rand::AnyRNG<uint64_t>>(Span<float>((float*)(dv->data().get()), NodeCount * 3), RNG);
 
-    constexpr size_t bucketCountPerD = 10;
+            constexpr size_t bucketCountPerD = 10;
 
-    BucketTS* bucketData;
-    ThrowIfBad(cudaMalloc(&bucketData, bucketCountPerD * bucketCountPerD * bucketCountPerD * sizeof(BucketTS)));
+            BucketTS* bucketData;
+            ThrowIfBad(cudaMalloc(&bucketData, bucketCountPerD * bucketCountPerD * bucketCountPerD * sizeof(BucketTS)));
 
-    initBuckets<<<bucketCountPerD * bucketCountPerD * bucketCountPerD, 1>>>(bucketData);
+            initBuckets<<<bucketCountPerD * bucketCountPerD * bucketCountPerD, 1>>>(bucketData);
 
-    fillBuckets1<<<NodeCount, 1>>>(bucketData, bucketCountPerD, dv->data().get(), dv->size());
+            fillBuckets1<<<NodeCount, 1>>>(bucketData, bucketCountPerD, dv->data().get(), dv->size());
 
-    device_vector<Bucket> nodesData(NodeCount);
+            device_vector<Bucket> nodesData(NodeCount);
     
-    initBuckets<<<NodeCount, 1>>>(nodesData.data().get());
+            initBuckets<<<NodeCount, 1>>>(nodesData.data().get());
 
-    fillBuckets2<<<NodeCount, 1>>>(nodesData.data().get(), bucketData, bucketCountPerD, dv->data().get(), ConnectionRange);
+            fillBuckets2<<<NodeCount, 1>>>(nodesData.data().get(), bucketData, bucketCountPerD, dv->data().get(), ConnectionRange);
 
-    device_vector<NetNode>& ndv = *new device_vector<NetNode>(NodeCount);
+            device_vector<NetNode>& ndv = *new device_vector<NetNode>(NodeCount);
 
-    for (size_t i = 0; i < NodeCount; ++i) {
-        size_t c = ((Bucket)nodesData[i]).size;
-        NetNode** ipts;
-        NetNode** opts;
-        ThrowIfBad(cudaMalloc(&ipts, c * sizeof(NetNode*)));
-        ThrowIfBad(cudaMalloc(&opts, c * sizeof(NetNode*)));
-        NetNode nn;
-        nn.data = 0;
-        nn.inputCount = c;
-        nn.outputCount = c;
-        nn.inputs = ipts;
-        nn.outputs = opts;
-        ndv[i] = nn;
+            for (size_t i = 0; i < NodeCount; ++i) {
+                size_t c = ((Bucket)nodesData[i]).size;
+                NetNode** ipts;
+                NetNode** opts;
+                ThrowIfBad(cudaMalloc(&ipts, c * sizeof(NetNode*)));
+                ThrowIfBad(cudaMalloc(&opts, c * sizeof(NetNode*)));
+                NetNode nn;
+                nn.data = 0;
+                nn.inputCount = c;
+                nn.outputCount = c;
+                nn.inputs = ipts;
+                nn.outputs = opts;
+                ndv[i] = nn;
+            }
+
+            fillNetNodes<<<NodeCount, 1>>>(ndv.data().get(), nodesData.data().get());
+
+            disposeOfBuckets<<<bucketCountPerD * bucketCountPerD * bucketCountPerD, 1>>>(bucketData);
+            disposeOfBuckets<<<NodeCount, 1>>>(nodesData.data().get());
+
+            cudaFree(bucketData);
+
+            if (NodePoints) {
+                *NodePoints = dv;
+            }
+            else {
+                delete dv;
+            }
+
+            return Net(ndv);
+        }
     }
-
-    fillNetNodes<<<NodeCount, 1>>>(ndv.data().get(), nodesData.data().get());
-
-    disposeOfBuckets<<<bucketCountPerD * bucketCountPerD * bucketCountPerD, 1>>>(bucketData);
-    disposeOfBuckets<<<NodeCount, 1>>>(nodesData.data().get());
-
-    cudaFree(bucketData);
-
-    if (NodePoints) {
-        *NodePoints = dv;
-    }
-    else {
-        delete dv;
-    }
-
-    return Net(ndv);
 }
