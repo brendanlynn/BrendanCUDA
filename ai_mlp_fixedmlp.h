@@ -224,46 +224,53 @@ namespace bcuda {
 
                 __host__ __device__ void FillWith0() {
                     layer.FillWith0();
+                    nextLayers.FillWith0();
                 }
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
+                    nextLayers.FillWithRandom(RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
                 __device__ void FillWithRandom(_TRNG& RNG) {
                     layer.FillWithRandom(RNG);
+                    nextLayers.FillWithRandom(RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, RNG);
+                    nextLayers.ChangeWithRandom(Scalar, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
                 __device__ void ChangeWithRandom(_T Scalar, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, RNG);
+                    nextLayers.ChangeWithRandom(Scalar, RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
                 __host__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+                    nextLayers.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
                 __device__ void ChangeWithRandom(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
                     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
+                    nextLayers.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #endif
-                __host__ __device__ void Run(const _T* Input, _T* output) const {
-                    Run(Input, 0, 0, output);
+                __host__ __device__ void Run(const _T* Input, _T* Output) const {
+                    Run(Input, 0, 0, Output);
                 }
-                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* output) const {
+                __host__ __device__ void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
                     _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
                     _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
 
                     layer.Run(Input, i1);
-                    nextLayers.Run(i1, i2, i1, output);
+                    nextLayers.Run(i1, i2, i1, Output);
 
                     if (!Intermediate1) delete[] i1;
                     if (!Intermediate2) delete[] i2;
@@ -295,7 +302,7 @@ namespace bcuda {
                     return _Output1Count > maxNextLayers ? _Output1Count : maxNextLayers;
                 }
                 static constexpr size_t LayerCount() {
-                    return FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::LayerCount() + 1;
+                    return sizeof...(_ContinuedOutputCounts) + 2;
                 }
 
                 size_t SerializedSize() const {
@@ -303,6 +310,7 @@ namespace bcuda {
                 }
                 void Serialize(void*& Data) const {
                     layer.Serialize(Data);
+                    nextLayers.Serialize(Data);
                 }
                 static this_t Deserialize(const void*& Data) {
                     uint8_t bytes[sizeof(this_t)];
