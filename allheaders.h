@@ -40,3 +40,4 @@
 #include "rand_bits.h"
 #include "rand_randomizer.h"
 #include "threadid.h"
+#include "uniqueid.h"
