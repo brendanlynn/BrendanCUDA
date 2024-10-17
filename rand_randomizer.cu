@@ -193,122 +193,126 @@ void getKernelLaunchParams(uint64_t ElementCount, uint32_t& ElementsPerThread, u
     }
 }
 
-void bcuda::details::RandomizeArray_CallKernel(Span<float> Array, float Scalar, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2.f, Seed, elementsPerThread);
-}
-void bcuda::details::RandomizeArray_CallKernel(Span<double> Array, double Scalar, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2., Seed, elementsPerThread);
-}
-void bcuda::details::RandomizeArray_CallKernel(Span<float> Array, float Scalar, float LowerBound, float UpperBound, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2.f, LowerBound, UpperBound, Seed, elementsPerThread);
-}
-void bcuda::details::RandomizeArray_CallKernel(Span<double> Array, double Scalar, double LowerBound, double UpperBound, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2., LowerBound, UpperBound, Seed, elementsPerThread);
-}
-void bcuda::details::RandomizeArrayWFlips_CallKernel(Span<uint32_t> Array, uint32_t FlipProbability, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayWFlipsKernel<<<blockCount, threadsPerBlock>>>(Array, FlipProbability, Seed, elementsPerThread);
-}
-void bcuda::details::RandomizeArrayWTargets_CallKernel(Span<uint32_t> Array, uint32_t EachFlipProbability, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayWTargetsKernel<<<blockCount, threadsPerBlock>>>(Array, EachFlipProbability, Seed, elementsPerThread);
-}
-void bcuda::details::RandomizeArrayWMutations_CallKernel(Span<uint32_t> Array, uint32_t MutationProbability, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayWMutationsKernel<<<blockCount, threadsPerBlock>>>(Array, MutationProbability, Seed, elementsPerThread);
-}
-void bcuda::details::RandomizeArrayWMutations_CallKernel(Span<uint32_t> Array, uint32_t MutationProbability, uint32_t ProbabilityOf1, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    randomizeArrayWMutationsKernel<<<blockCount, threadsPerBlock>>>(Array, MutationProbability, ProbabilityOf1, Seed, elementsPerThread);
-}
-void bcuda::details::InitArray_CallKernel(Span<float> Array, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Seed, elementsPerThread);
-}
-void bcuda::details::InitArray_CallKernel(Span<double> Array, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Seed, elementsPerThread);
-}
-void bcuda::details::InitArray_CallKernel(Span<float> Array, float LowerBound, float UpperBound, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, LowerBound, UpperBound - LowerBound, Seed, elementsPerThread);
-}
-void bcuda::details::InitArray_CallKernel(Span<double> Array, double LowerBound, double UpperBound, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, LowerBound, UpperBound - LowerBound, Seed, elementsPerThread);
-}
-void bcuda::details::InitArray_CallKernel(Span<uint32_t> Array, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Seed, elementsPerThread);
-}
-void bcuda::details::InitArray_CallKernel(Span<uint32_t> Array, uint32_t ProbabilityOf1, uint64_t Seed) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, ProbabilityOf1, Seed, elementsPerThread);
-}
-void bcuda::details::ClearArray_CallKernel(Span<float> Array) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    clearArrayKernel<<<blockCount, threadsPerBlock>>>(Array, elementsPerThread);
-}
-void bcuda::details::ClearArray_CallKernel(Span<double> Array) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    clearArrayKernel<<<blockCount, threadsPerBlock>>>(Array, elementsPerThread);
-}
-void bcuda::details::ClearArray_CallKernel(Span<uint64_t> Array) {
-    uint32_t elementsPerThread;
-    uint32_t threadsPerBlock;
-    uint32_t blockCount;
-    getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
-    clearArrayKernel<<<blockCount, threadsPerBlock>>>(Array, elementsPerThread);
+namespace bcuda {
+    namespace details {
+        void RandomizeArray_CallKernel(Span<float> Array, float Scalar, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2.f, Seed, elementsPerThread);
+        }
+        void RandomizeArray_CallKernel(Span<double> Array, double Scalar, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2., Seed, elementsPerThread);
+        }
+        void RandomizeArray_CallKernel(Span<float> Array, float Scalar, float LowerBound, float UpperBound, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2.f, LowerBound, UpperBound, Seed, elementsPerThread);
+        }
+        void RandomizeArray_CallKernel(Span<double> Array, double Scalar, double LowerBound, double UpperBound, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            randomizeArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Scalar * 2., LowerBound, UpperBound, Seed, elementsPerThread);
+        }
+        void RandomizeArrayWFlips_CallKernel(Span<uint32_t> Array, uint32_t FlipProbability, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            randomizeArrayWFlipsKernel<<<blockCount, threadsPerBlock>>>(Array, FlipProbability, Seed, elementsPerThread);
+        }
+        void RandomizeArrayWTargets_CallKernel(Span<uint32_t> Array, uint32_t EachFlipProbability, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            randomizeArrayWTargetsKernel<<<blockCount, threadsPerBlock>>>(Array, EachFlipProbability, Seed, elementsPerThread);
+        }
+        void RandomizeArrayWMutations_CallKernel(Span<uint32_t> Array, uint32_t MutationProbability, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            randomizeArrayWMutationsKernel<<<blockCount, threadsPerBlock>>>(Array, MutationProbability, Seed, elementsPerThread);
+        }
+        void RandomizeArrayWMutations_CallKernel(Span<uint32_t> Array, uint32_t MutationProbability, uint32_t ProbabilityOf1, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            randomizeArrayWMutationsKernel<<<blockCount, threadsPerBlock>>>(Array, MutationProbability, ProbabilityOf1, Seed, elementsPerThread);
+        }
+        void InitArray_CallKernel(Span<float> Array, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Seed, elementsPerThread);
+        }
+        void InitArray_CallKernel(Span<double> Array, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Seed, elementsPerThread);
+        }
+        void InitArray_CallKernel(Span<float> Array, float LowerBound, float UpperBound, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, LowerBound, UpperBound - LowerBound, Seed, elementsPerThread);
+        }
+        void InitArray_CallKernel(Span<double> Array, double LowerBound, double UpperBound, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, LowerBound, UpperBound - LowerBound, Seed, elementsPerThread);
+        }
+        void InitArray_CallKernel(Span<uint32_t> Array, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, Seed, elementsPerThread);
+        }
+        void InitArray_CallKernel(Span<uint32_t> Array, uint32_t ProbabilityOf1, uint64_t Seed) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            initArrayKernel<<<blockCount, threadsPerBlock>>>(Array, ProbabilityOf1, Seed, elementsPerThread);
+        }
+        void ClearArray_CallKernel(Span<float> Array) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            clearArrayKernel<<<blockCount, threadsPerBlock>>>(Array, elementsPerThread);
+        }
+        void ClearArray_CallKernel(Span<double> Array) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            clearArrayKernel<<<blockCount, threadsPerBlock>>>(Array, elementsPerThread);
+        }
+        void ClearArray_CallKernel(Span<uint64_t> Array) {
+            uint32_t elementsPerThread;
+            uint32_t threadsPerBlock;
+            uint32_t blockCount;
+            getKernelLaunchParams(Array.size, elementsPerThread, threadsPerBlock, blockCount);
+            clearArrayKernel<<<blockCount, threadsPerBlock>>>(Array, elementsPerThread);
+        }
+    }
 }
