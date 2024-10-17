@@ -32,7 +32,7 @@ namespace bcuda {
     }
 #endif
     template <bool _DestOnHost, bool _SourceOnHost, typename _T>
-    __host__ static __forceinline void CopyArrFunc_Memcpy(_T* DestPtr, _T* SourcePtr, size_t Count) {
+    __host__ static inline void CopyArrFunc_Memcpy(_T* DestPtr, _T* SourcePtr, size_t Count) {
         if constexpr (_DestOnHost)
             if constexpr (_SourceOnHost) memcpy(DestPtr, SourcePtr, Count * sizeof(_T));
             else cudaMemcpy(DestPtr, SourcePtr, Count * sizeof(_T), cudaMemcpyDeviceToHost);

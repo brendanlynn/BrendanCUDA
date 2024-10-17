@@ -10,7 +10,7 @@
 namespace bcuda {
     namespace rand {
         template <std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline uint32_t Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+        __host__ inline uint32_t Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
             uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
             if (!ct) return 0;
             std::uniform_int_distribution<uint32_t> dis32(0);
@@ -25,7 +25,7 @@ namespace bcuda {
             return cr;
         }
         template <std::uniform_random_bit_generator _TRNG>
-        __host__ __forceinline uint64_t Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+        __host__ inline uint64_t Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
             uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
             if (!ct) return 0;
             std::uniform_int_distribution<uint64_t> dis64(0);
@@ -41,7 +41,7 @@ namespace bcuda {
         }
 #ifdef __CUDACC__
         template <KernelCurandState _TRNG>
-        __device__ __forceinline uint32_t Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+        __device__ inline uint32_t Get32Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
             uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
             if (!ct) return 0;
             uint32_t lb = 1u << 31 >> (ct - 1);
@@ -55,7 +55,7 @@ namespace bcuda {
             return cr;
         }
         template <KernelCurandState _TRNG>
-        __device__ __forceinline uint64_t Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
+        __device__ inline uint64_t Get64Bits(uint32_t ProbabilityOf1, _TRNG& RNG) {
             uint32_t ct = bcuda::binary::CountBitsB(ProbabilityOf1);
             if (!ct) return 0;
             uint32_t lb = 1u << 31 >> (ct - 1);

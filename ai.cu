@@ -179,19 +179,19 @@ __global__ void convertInt32sToFloatsKernel(uint32_t* Int32s, double* Doubles, s
 }
 
 template <std::floating_point _TFloat>
-__host__ __forceinline void convertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
+__host__ inline void convertFloatsToBools(_TFloat* Floats, bool* Bools, size_t Length, _TFloat Split) {
     convertFloatsToBoolsKernel<<<Length, 1>>>(Floats, Bools, Split);
 }
 template <std::floating_point _TFloat>
-__host__ __forceinline void convertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
+__host__ inline void convertBoolsToFloats(bool* Bools, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
     convertBoolsToFloatsKernel<<<Length, 1>>>(Bools, Floats, ValTrue, ValFalse);
 }
 template <std::floating_point _TFloat>
-__host__ __forceinline void convertFloatsToInt32s(_TFloat* Floats, uint32_t* Int32s, size_t Length, _TFloat Split) {
+__host__ inline void convertFloatsToInt32s(_TFloat* Floats, uint32_t* Int32s, size_t Length, _TFloat Split) {
     convertFloatsToInt32sKernel<<<((Length + 31) >> 5), 1>>>(Floats, Int32s, Length, Split);
 }
 template <std::floating_point _TFloat>
-__host__ __forceinline void convertInt32sToFloats(uint32_t* Int32s, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
+__host__ inline void convertInt32sToFloats(uint32_t* Int32s, _TFloat* Floats, size_t Length, _TFloat ValTrue, _TFloat ValFalse) {
     convertInt32sToFloatsKernel<<<((Length + 31) >> 5), 1>>>(Floats, Int32s, Length, ValTrue, ValFalse);
 }
 

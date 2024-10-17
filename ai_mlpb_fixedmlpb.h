@@ -71,42 +71,42 @@ namespace bcuda {
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __host__ inline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         weights[i] = bcuda::rand::RandomizeWFlips(weights[i], WeightsFlipProb, RNG);
                     bias = bcuda::rand::RandomizeWFlips(bias, BiasFlipProb, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __device__ inline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         weights[i] = bcuda::rand::RandomizeWFlips(weights[i], WeightsFlipProb, RNG);
                     bias = bcuda::rand::RandomizeWFlips(bias, BiasFlipProb, RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __host__ inline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         weights[i] = bcuda::rand::RandomizeWTargets(weights[i], WeightsFlipProb, RNG);
                     bias = bcuda::rand::RandomizeWTargets(bias, BiasFlipProb, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __device__ inline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         weights[i] = bcuda::rand::RandomizeWTargets(weights[i], WeightsFlipProb, RNG);
                     bias = bcuda::rand::RandomizeWTargets(bias, BiasFlipProb, RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+                __host__ inline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         weights[i] = bcuda::rand::RandomizeWMutations(weights[i], WeightsProbOf1, RNG);
                     bias = bcuda::rand::RandomizeWMutations(bias, BiasProbOf1, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+                __device__ inline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         weights[i] = bcuda::rand::RandomizeWMutations(weights[i], WeightsProbOf1, RNG);
                     bias = bcuda::rand::RandomizeWMutations(bias, BiasProbOf1, RNG);
@@ -173,37 +173,37 @@ namespace bcuda {
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __host__ inline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
                     nextLayers.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __device__ inline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
                     nextLayers.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __host__ inline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
                     nextLayers.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __device__ inline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
                     nextLayers.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+                __host__ inline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
                     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
                     nextLayers.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
+                __device__ inline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
 #endif
                 __host__ __device__ output_t Run(_TInput Input) const {
                     return (output_t)RunG((uint64_t)Input);
@@ -272,32 +272,32 @@ namespace bcuda {
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __host__ inline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ __forceinline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __device__ inline void RandomizeWFlips(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     layer.RandomizeWFlips(WeightsFlipProb, BiasFlipProb, RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __host__ inline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ __forceinline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
+                __device__ inline void RandomizeWTargets(uint32_t WeightsFlipProb, uint32_t BiasFlipProb, _TRNG& RNG) {
                     layer.RandomizeWTargets(WeightsFlipProb, BiasFlipProb, RNG);
                 }
 #endif
                 template <std::uniform_random_bit_generator _TRNG>
-                __host__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+                __host__ inline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
                     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
                 }
 #ifdef __CUDACC__
                 template <KernelCurandState _TRNG>
-                __device__ __forceinline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
+                __device__ inline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG) {
                     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
                 }
 #endif

@@ -83,7 +83,7 @@ namespace bcuda {
             template <size_t _Idx>
             using element_t = std::tuple_element_t<_Idx, tuple_t>;
 
-            __host__ __device__ __forceinline MFieldBase(const typename this_t::vector_t& Dimensions)
+            __host__ __device__ inline MFieldBase(const typename this_t::vector_t& Dimensions)
                 : basedb_t(Dimensions) {
                 if (!this->Length(0)) {
                     for (size_t i = 0; i < sizeof...(_Ts); ++i)
@@ -92,23 +92,23 @@ namespace bcuda {
                 }
                 RunFunctionsOverTypeWrapper<MFieldBase_MallocMem, 0, _Ts...>::template RunFunctionsOverType((void**)&darrs, basedb_t::ValueCount());
             }
-            __host__ __device__ __forceinline MFieldBase(const typename this_t::vector_t& Dimensions, void* const* Arrays)
+            __host__ __device__ inline MFieldBase(const typename this_t::vector_t& Dimensions, void* const* Arrays)
                 : basedb_t(Dimensions) {
                 for (size_t i = 0; i < sizeof...(_Ts); ++i)
                     darrs[i] = Arrays[i];
             }
 
-            __host__ __device__ __forceinline size_t EachValueCount() const {
+            __host__ __device__ inline size_t EachValueCount() const {
                 return basedb_t::ValueCount();
             }
             template <size_t _Idx>
-            __host__ __device__ __forceinline size_t EachSizeOnGPU() const {
+            __host__ __device__ inline size_t EachSizeOnGPU() const {
                 return EachValueCount() * sizeof(element_t<_Idx>);
             }
-            __host__ __device__ __forceinline size_t TotalValueCount() const {
+            __host__ __device__ inline size_t TotalValueCount() const {
                 return EachValueCount() * sizeof...(_Ts);
             }
-            __host__ __device__ __forceinline size_t TotalSizeOnGPU() const {
+            __host__ __device__ inline size_t TotalSizeOnGPU() const {
                 return EachValueCount() * (sizeof(_Ts) + ...);
             }
 
@@ -127,7 +127,7 @@ namespace bcuda {
             }
 #pragma endregion
 
-            __host__ __device__ __forceinline void Dispose() {
+            __host__ __device__ inline void Dispose() {
                 for (size_t i = 0; i < sizeof...(_Ts); ++i)
 #ifdef __CUDA_ARCH__
                     free(darrs[i]);
@@ -142,24 +142,24 @@ namespace bcuda {
                 return clone;
             }
 
-            __forceinline size_t SerializedSize() const requires (BSerializer::Serializable<_Ts> && ...) {
+            inline size_t SerializedSize() const requires (BSerializer::Serializable<_Ts> && ...) {
                 size_t t = sizeof(typename this_t::vector_t);
                 RunFunctionsOverTypeWrapper<MFieldBase_SerializedSize_Wrapper<_DimensionCount>::template MFieldBase_SerializedSize, 0, _Ts...>::template RunFunctionsOverType((void**)&darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), t);
             }
-            __forceinline void Serialize(void*& Data) const requires (BSerializer::Serializable<_Ts> && ...) {
+            inline void Serialize(void*& Data) const requires (BSerializer::Serializable<_Ts> && ...) {
                 BSerializer::Serialize(Data, basedb_t::Dimensions());
                 RunFunctionsOverTypeWrapper<MFieldBase_Serialize_Wrapper<_DimensionCount>::template MFieldBase_Serialize, 0, _Ts...>::template RunFunctionOverType((void**)&darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), Data);
             }
-            static __forceinline this_t Deserialize(const void*& Data) requires (BSerializer::Serializable<_Ts> && ...) {
+            static inline this_t Deserialize(const void*& Data) requires (BSerializer::Serializable<_Ts> && ...) {
                 typename this_t::vector_t dims = BSerializer::Deserialize<typename this_t::vector_t>(Data);
                 this_t value(dims);
                 RunFunctionsOverTypeWrapper<MFieldBase_Deserialize_Wrapper<_DimensionCount>::template MFieldBase_Deserialize, 0, _Ts...>::template RunFunctionOverType((void**)&value.darrs, basedb_t::ValueCount(), basedb_t::Dimensions(), Data);
                 return value;
             }
-            static __forceinline void Deserialize(const void*& Data, void* Value) requires (BSerializer::Serializable<_Ts> && ...) {
+            static inline void Deserialize(const void*& Data, void* Value) requires (BSerializer::Serializable<_Ts> && ...) {
                 new (Value) this_t(Deserialize(Data));
             }
-            __host__ __device__ __forceinline void* const* FieldDataArray() const {
+            __host__ __device__ inline void* const* FieldDataArray() const {
                 return darrs;
             }
         private:

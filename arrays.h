@@ -16,29 +16,29 @@ namespace bcuda {
     public:
         using element_t = _T;
 
-        __forceinline ArrayV() = default;
-        __host__ __device__ __forceinline ArrayV(_T* Ptr, size_t Size)
+        inline ArrayV() = default;
+        __host__ __device__ inline ArrayV(_T* Ptr, size_t Size)
             : ptr(Ptr), size(Size) { }
-        __host__ __device__ __forceinline ArrayV(size_t Size)
+        __host__ __device__ inline ArrayV(size_t Size)
             : ptr(new _T[Size]), size(Size) { }
-        __host__ __device__ __forceinline ArrayV(const ArrayV<_T>& Array)
+        __host__ __device__ inline ArrayV(const ArrayV<_T>& Array)
             : ArrayV(Array.size) {
             std::copy_n(Array.ptr, Array.size, ptr);
         }
-        __host__ __device__ __forceinline ArrayV(ArrayV<_T>&& Array)
+        __host__ __device__ inline ArrayV(ArrayV<_T>&& Array)
             : ArrayV(Array.ptr, Array.size) {
             Array.ptr = 0;
         }
-        __host__ __device__ __forceinline ArrayV(std::initializer_list<_T> InitList)
+        __host__ __device__ inline ArrayV(std::initializer_list<_T> InitList)
             : size(InitList.size()), ptr(new _T[InitList.size()]) {
             std::copy(InitList.begin(), InitList.end(), ptr);
         }
 
-        __host__ __device__ __forceinline ~ArrayV() {
+        __host__ __device__ inline ~ArrayV() {
             delete[] ptr;
         }
 
-        __host__ __device__ __forceinline ArrayV<_T>& operator=(ArrayV<_T> Array) {
+        __host__ __device__ inline ArrayV<_T>& operator=(ArrayV<_T> Array) {
             std::swap(ptr, Array.ptr);
             std::swap(size, Array.size);
             return *this;
@@ -54,24 +54,24 @@ namespace bcuda {
             return size;
         }
 
-        __host__ __device__ __forceinline _T& operator[](size_t Idx) {
+        __host__ __device__ inline _T& operator[](size_t Idx) {
             return ptr[Idx];
         }
-        __host__ __device__ __forceinline const _T& operator[](size_t Idx) const {
+        __host__ __device__ inline const _T& operator[](size_t Idx) const {
             return ptr[Idx];
         }
-        __host__ __device__ __forceinline _T* operator+(size_t Idx) {
+        __host__ __device__ inline _T* operator+(size_t Idx) {
             return ptr + Idx;
         }
-        __host__ __device__ __forceinline const _T* operator+(size_t Idx) const {
+        __host__ __device__ inline const _T* operator+(size_t Idx) const {
             return ptr + Idx;
         }
 
-        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) {
+        __host__ __device__ inline Span<_T> Split(size_t Start, size_t NewSize) {
             return Span<_T>(*this).Split(Start, NewSize);
         }
 
-        __host__ __device__ __forceinline Span<const _T> Split(size_t Start, size_t NewSize) const {
+        __host__ __device__ inline Span<const _T> Split(size_t Start, size_t NewSize) const {
             return Span<const _T>(*this).Split(Start, NewSize);
         }
     };
@@ -83,36 +83,36 @@ namespace bcuda {
         _T* ptr;
         size_t size;
 
-        __host__ __device__ __forceinline Span(_T* Ptr, size_t Size)
+        __host__ __device__ inline Span(_T* Ptr, size_t Size)
             : ptr(Ptr), size(Size) { }
 
         template <size_t _Size>
-        __host__ __device__ __forceinline Span(std::array<std::remove_const_t<_T>, _Size>& Array)
+        __host__ __device__ inline Span(std::array<std::remove_const_t<_T>, _Size>& Array)
             : ptr(Array.data()), size(Array.size()) { }
         template <size_t _Size>
-        __host__ __device__ __forceinline Span(const std::array<std::remove_const_t<_T>, _Size>& Array) requires (std::is_const_v<_T>)
+        __host__ __device__ inline Span(const std::array<std::remove_const_t<_T>, _Size>& Array) requires (std::is_const_v<_T>)
             : ptr(Array.data()), size(Array.size()) { }
-        __host__ __device__ __forceinline Span(std::vector<std::remove_const_t<_T>>& Vector)
+        __host__ __device__ inline Span(std::vector<std::remove_const_t<_T>>& Vector)
             : ptr(Vector.data()), size(Vector.size()) { }
-        __host__ __device__ __forceinline Span(const std::vector<std::remove_const_t<_T>>& Vector) requires (std::is_const_v<_T>)
+        __host__ __device__ inline Span(const std::vector<std::remove_const_t<_T>>& Vector) requires (std::is_const_v<_T>)
             : ptr(Vector.data()), size(Vector.size()) { }
-        __host__ __device__ __forceinline Span(ArrayV<std::remove_const_t<_T>>& Array)
+        __host__ __device__ inline Span(ArrayV<std::remove_const_t<_T>>& Array)
             : ptr(Array.Data()), size(Array.Size()) { }
-        __host__ __device__ __forceinline Span(const ArrayV<std::remove_const_t<_T>>& Array)
+        __host__ __device__ inline Span(const ArrayV<std::remove_const_t<_T>>& Array)
             : ptr(Array.Data()), size(Array.Size()) { }
-        __host__ __device__ __forceinline Span(const Span<_T>& Span)
+        __host__ __device__ inline Span(const Span<_T>& Span)
             : ptr(Span.ptr), size(Span.size) { }
-        __host__ __device__ __forceinline Span(const Span<std::remove_const_t<_T>>& Span) requires std::is_const_v<_T>
+        __host__ __device__ inline Span(const Span<std::remove_const_t<_T>>& Span) requires std::is_const_v<_T>
             : ptr(Span.ptr), size(Span.size) { }
 
-        __host__ __device__ __forceinline _T& operator[](size_t Idx) const {
+        __host__ __device__ inline _T& operator[](size_t Idx) const {
             return ptr[Idx];
         }
-        __host__ __device__ __forceinline _T* operator+(size_t Idx) {
+        __host__ __device__ inline _T* operator+(size_t Idx) {
             return ptr + Idx;
         }
 
-        __host__ __device__ __forceinline Span<_T> Split(size_t Start, size_t NewSize) const {
+        __host__ __device__ inline Span<_T> Split(size_t Start, size_t NewSize) const {
             return Span<_T>(ptr + Start, NewSize);
         }
     };

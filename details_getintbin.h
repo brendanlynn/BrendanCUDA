@@ -7,7 +7,7 @@
 namespace bcuda {
     namespace details {
         template <std::integral _T, std::uniform_random_bit_generator _TRNG>
-        __host__ static __forceinline _T GetIntBin(_TRNG& RNG) {
+        __host__ static inline _T GetIntBin(_TRNG& RNG) {
             if constexpr (sizeof(_T) >= 4) {
                 std::uniform_int_distribution<std::make_unsigned_t<_T>> dis(0);
                 return (_T)dis(RNG);
@@ -19,7 +19,7 @@ namespace bcuda {
         }
 #ifdef __CUDACC__
         template <std::integral _T, KernelCurandState _TRNG>
-        __device__ static __forceinline _T GetIntBin(_TRNG& RNG) {
+        __device__ static inline _T GetIntBin(_TRNG& RNG) {
             if constexpr (sizeof(_T) == 8) {
                 return ((_T)curand(RNG) << 32) | (_T)curand(RNG);
             }
