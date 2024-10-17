@@ -186,6 +186,16 @@ namespace bcuda {
                         }
                     }
                 }
+                __host__ __device__ consteval std::array<_T, _OutputCount> Run(const _T(&Input)[_InputCount]) {
+                    std::array<_T, _OutputCount> output;
+                    for (size_t j = 0; j < _OutputCount; ++j) {
+                        _T v = bias[j];
+                        for (size_t i = 0; i < _InputCount; ++i)
+                            v += weights[i][j] * Input[i];
+                        output[j] = _ActivationFunction(v);
+                    }
+                    return output;
+                }
 
                 inline size_t SerializedSize() const {
                     return sizeof(this_t);
@@ -308,6 +318,10 @@ namespace bcuda {
                     if (!Intermediate1) delete[] i1;
                     if (!Intermediate2) delete[] i2;
                 }
+                __host__ __device__ consteval std::array<_T, OutputCount()> Run(const _T(&Input)[_InputCount]) {
+                    auto firstOutput = layer.Run(Input);
+                    return nextLayers.Run(firstOutput);
+                }
 
                 inline size_t SerializedSize() const {
                     return sizeof(this_t);
@@ -406,6 +420,9 @@ namespace bcuda {
                 }
                 __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
                     layer.Run(Input, Output);
+                }
+                __host__ __device__ consteval std::array<_T, _OutputCount> Run(const _T(&Input)[_InputCount]) {
+                    return layer.Run(Input);
                 }
 
                 inline size_t SerializedSize() const {
