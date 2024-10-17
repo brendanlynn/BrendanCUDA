@@ -31,7 +31,7 @@ namespace bcuda {
                         void* sd_ci;
                         bcuda::rand::AnyRNG<uint64_t> rng;
                         inline Evaluate_Proliferation_SD(bcuda::rand::AnyRNG<uint64_t> RNG)
-                            : rng(RNG), instanceFunctions(), iterationsPerRound(0), roundCount(0), inputCount(0), outputCount(0), mask(0), sd_ci(0) { }
+                            : rng(RNG), instanceFunctions(), iterationsPerRound(0), roundCount(0), inputCount(0), outputCount(0), sd_ci(0) { }
                     };
                     template <>
                     struct Evaluate_Proliferation_SD<double> final {
@@ -43,7 +43,7 @@ namespace bcuda {
                         void* sd_ci;
                         bcuda::rand::AnyRNG<uint64_t> rng;
                         inline Evaluate_Proliferation_SD(bcuda::rand::AnyRNG<uint64_t> RNG)
-                            : rng(RNG), instanceFunctions(), iterationsPerRound(0), roundCount(0), inputCount(0), outputCount(0), mask(0), sd_ci(0) { }
+                            : rng(RNG), instanceFunctions(), iterationsPerRound(0), roundCount(0), inputCount(0), outputCount(0), sd_ci(0) { }
                     };
 
                     template <typename _T>
