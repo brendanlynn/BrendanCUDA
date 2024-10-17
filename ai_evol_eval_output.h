@@ -27,13 +27,12 @@ namespace bcuda {
                     template <typename _TInput, typename _TOutput, constructInstance_t _CI, iterateInstance_t<_TInput, _TOutput> _II, destructInstance_t _DI>
                     class Instance_C final {
                     public:
-                        Instance_C(void* Object, void* ConstructInstanceSharedData) {
-                            is = _CI(Object, ConstructInstanceSharedData);
-                        }
-                        _TOutput IterateInstance(_TInput Input) {
+                        inline Instance_C(void* Object, void* ConstructInstanceSharedData)
+                            : is(_CI(Object, ConstructInstanceSharedData)) { }
+                        inline _TOutput IterateInstance(_TInput Input) {
                             return _II(is, Input);
                         }
-                        void DestroyInstance() {
+                        inline void DestroyInstance() {
                             _DI(is);
                         }
                     private:
@@ -43,24 +42,14 @@ namespace bcuda {
                     template <typename _TInput, typename _TOutput>
                     class Instance_V final {
                     public:
-                        Instance_V(constructInstance_t CI, iterateInstance_t<_TInput, _TOutput> II, destructInstance_t DI, void* Object, void* ConstructInstanceSharedData) {
-                            this->ci = CI;
-                            this->ii = II;
-                            this->di = DI;
-                            
-                            is = CI(Object, ConstructInstanceSharedData);
-                        }
-                        Instance_V(InstanceFunctions<_TInput, _TOutput> InstanceFunctions, void* Object, void* ConstructInstanceSharedData) {
-                            this->ci = InstanceFunctions.constructInstance;
-                            this->ii = InstanceFunctions.iterateInstance;
-                            this->di = InstanceFunctions.destructInstance;
-
-                            is = ci(Object, ConstructInstanceSharedData);
-                        }
-                        _TOutput IterateInstance(_TInput Input) {
+                        inline Instance_V(constructInstance_t CI, iterateInstance_t<_TInput, _TOutput> II, destructInstance_t DI, void* Object, void* ConstructInstanceSharedData)
+                            : ci(CI), ii(II), di(DI), is(CI(Object, ConstructInstanceSharedData)) { }
+                        inline Instance_V(InstanceFunctions<_TInput, _TOutput> InstanceFunctions, void* Object, void* ConstructInstanceSharedData)
+                            : ci(InstanceFunctions.constructInstance), ii(InstanceFunctions.iterateInstance), di(InstanceFunctions.destructInstance), is(InstanceFunctions.constructInstance(Object, ConstructInstanceSharedData)) { }
+                        inline _TOutput IterateInstance(_TInput Input) {
                             return ii(is, Input);
                         }
-                        void DestroyInstance() {
+                        inline void DestroyInstance() {
                             di(is);
                         }
                     private:
