@@ -10,6 +10,10 @@ namespace bcuda {
     namespace ai {
         template <typename _T>
         using activationFunction_t = _T(*)(_T Value);
+        template <auto _Func, typename _TVal>
+        concept IsActivationFunction = requires (_TVal Val) {
+            { _Func(Val) } -> std::same_as<_TVal>;
+        };
 
         template <typename _T>
         __host__ __device__ inline static constexpr _T ReLU(_T Value) {

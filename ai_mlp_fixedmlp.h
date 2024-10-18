@@ -15,28 +15,29 @@
 namespace bcuda {
     namespace ai {
         namespace mlp {
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLPL;
         }
     }
     namespace details {
-        template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
+        template <size_t _Index, std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
         struct MLPLayerType;
-        template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+        template <size_t _Index, std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
         struct MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
             using type = typename MLPLayerType<_Index - 1, _T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::type;
         };
-        template <std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+        template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
         struct MLPLayerType<0, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
             using type = ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
         };
-        template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+        template <size_t _Index, std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count>
         struct MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count> {
             static_assert(!_Index, "_Index is out of bounds.");
             using type = ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
         };
 
-        template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
+        template <size_t _Index, std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
         using mlpLayerType_t = MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _ContinuedOutputCounts...>;
 
         template <uintmax_t _Idx, size_t... _Ints>
@@ -52,7 +53,8 @@ namespace bcuda {
     }
     namespace ai {
         namespace mlp {
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _OutputCount>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLPL {
                 static_assert(_InputCount, "_InputCount must be greater than 0.");
                 static_assert(_OutputCount, "_OutputCount must be greater than 0.");
@@ -60,7 +62,7 @@ namespace bcuda {
                 using this_t = FixedMLPL<_T, _ActivationFunction, _InputCount, _OutputCount>;
             public:
                 using element_t = _T;
-                static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
+                static constexpr auto activationFunction = _ActivationFunction;
                 static constexpr size_t inputCount = _InputCount;
                 static constexpr size_t outputCount = _OutputCount;
 
@@ -168,23 +170,31 @@ namespace bcuda {
                     if (Input == Output) {
                         _T* secondOutput = new _T[_OutputCount];
                         for (size_t j = 0; j < _OutputCount; ++j) {
-                            float v = bias[j];
-                            for (size_t i = 0; i < _InputCount; ++i) {
+                            _T v = bias[j];
+                            for (size_t i = 0; i < _InputCount; ++i)
                                 v += weights[i][j] * Input[i];
-                            }
                             secondOutput[j] = _ActivationFunction(v);
                         }
                         memcpy(Output, secondOutput, sizeof(_T) * _OutputCount);
                     }
                     else {
                         for (size_t j = 0; j < _OutputCount; ++j) {
-                            float v = bias[j];
-                            for (size_t i = 0; i < _InputCount; ++i) {
+                            _T v = bias[j];
+                            for (size_t i = 0; i < _InputCount; ++i)
                                 v += weights[i][j] * Input[i];
-                            }
                             Output[j] = _ActivationFunction(v);
                         }
                     }
+                }
+                __host__ __device__ consteval std::array<_T, _OutputCount> Run(const _T(&Input)[_InputCount]) {
+                    std::array<_T, _OutputCount> output;
+                    for (size_t j = 0; j < _OutputCount; ++j) {
+                        _T v = bias[j];
+                        for (size_t i = 0; i < _InputCount; ++i)
+                            v += weights[i][j] * Input[i];
+                        output[j] = _ActivationFunction(v);
+                    }
+                    return output;
                 }
 
                 inline size_t SerializedSize() const {
@@ -205,15 +215,17 @@ namespace bcuda {
                     BSerializer::DeserializeArray(Data, obj.bias, _OutputCount);
                 }
             };
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _LayerCounts>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLP;
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
             private:
                 using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
             public:
                 using element_t = _T;
-                static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
+                static constexpr auto activationFunction = _ActivationFunction;
                 template <size_t _Index>
                 static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::value;
                 template <size_t _Index>
@@ -262,19 +274,7 @@ namespace bcuda {
                     nextLayers.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #endif
-                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
-                    Run(Input, 0, 0, Output);
-                }
-                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
-                    _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
-                    _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
 
-                    layer.Run(Input, i1);
-                    nextLayers.Run(i1, i2, i1, Output);
-
-                    if (!Intermediate1) delete[] i1;
-                    if (!Intermediate2) delete[] i2;
-                }
                 template <size_t _Index>
                 __host__ __device__ inline layerType_t<_Index>& Layer() {
                     if constexpr (_Index) {
@@ -305,6 +305,24 @@ namespace bcuda {
                     return sizeof...(_ContinuedOutputCounts) + 2;
                 }
 
+                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
+                    Run(Input, 0, 0, Output);
+                }
+                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
+                    _T* i1 = Intermediate1 ? Intermediate1 : new _T[Intermediate0Count()];
+                    _T* i2 = Intermediate2 ? Intermediate2 : new _T[Intermediate1Count()];
+
+                    layer.Run(Input, i1);
+                    nextLayers.Run(i1, i2, i1, Output);
+
+                    if (!Intermediate1) delete[] i1;
+                    if (!Intermediate2) delete[] i2;
+                }
+                __host__ __device__ consteval std::array<_T, OutputCount()> Run(const _T(&Input)[_InputCount]) {
+                    auto firstOutput = layer.Run(Input);
+                    return nextLayers.Run(firstOutput);
+                }
+
                 inline size_t SerializedSize() const {
                     return sizeof(this_t);
                 }
@@ -323,13 +341,14 @@ namespace bcuda {
                     BSerializer::Deserialize<FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>>(Data, &obj.nextLayers);
                 }
             };
-            template <std::floating_point _T, activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+            template <std::floating_point _T, auto _ActivationFunction, size_t _InputCount, size_t _Output1Count>
+                requires ai::IsActivationFunction<_ActivationFunction, _T>
             struct FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count> {
             private:
                 using this_t = FixedMLP<_T, _ActivationFunction, _InputCount, _Output1Count>;
             public:
                 using element_t = _T;
-                static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
+                static constexpr auto activationFunction = _ActivationFunction;
                 template <size_t _Index>
                 static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count>::value;
                 template <size_t _Index>
@@ -370,12 +389,6 @@ namespace bcuda {
                     layer.ChangeWithRandom(Scalar, LowerBound, UpperBound, RNG);
                 }
 #endif
-                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
-                    layer.Run(Input, Output);
-                }
-                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
-                    layer.Run(Input, Output);
-                }
                 template <size_t _Index>
                 __host__ __device__ inline layerType_t<_Index>& Layer() {
                     static_assert(!_Index, "_Index is out of bounds (too large).");
@@ -400,6 +413,16 @@ namespace bcuda {
                 }
                 static constexpr size_t LayerCount() {
                     return 1;
+                }
+
+                __host__ __device__ inline void Run(const _T* Input, _T* Output) const {
+                    layer.Run(Input, Output);
+                }
+                __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
+                    layer.Run(Input, Output);
+                }
+                __host__ __device__ consteval std::array<_T, _Output1Count> Run(const _T(&Input)[_InputCount]) {
+                    return layer.Run(Input);
                 }
 
                 inline size_t SerializedSize() const {
@@ -440,17 +463,7 @@ namespace bcuda {
     }
     namespace details {
         template <ai::mlp::IsFixedMLP _TFixedMLP>
-        inline static void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
-            using element_t = typename _TFixedMLP::element_t;
-
-            if constexpr (_TFixedMLP::LayerCount() == 1) {
-                FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Outputs);
-            }
-            else {
-                ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Intermediate0);
-                FixedMLP_Run(&Mlp->nextLayers, Intermediate0, Intermediate1, Intermediate0, Outputs);
-            }
-        }
+        inline static void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs);
     }
     namespace ai {
         namespace mlp {
@@ -602,5 +615,18 @@ namespace bcuda {
                 rand::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, LowerBound, UpperBound, RNG);
             }
         }
+    }
+}
+
+template <bcuda::ai::mlp::IsFixedMLP _TFixedMLP>
+inline void bcuda::details::FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
+    using element_t = typename _TFixedMLP::element_t;
+
+    if constexpr (_TFixedMLP::LayerCount() == 1) {
+        FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Outputs);
+    }
+    else {
+        ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Intermediate0);
+        FixedMLP_Run(&Mlp->nextLayers, Intermediate0, Intermediate1, Intermediate0, Outputs);
     }
 }

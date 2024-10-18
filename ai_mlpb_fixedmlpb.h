@@ -112,13 +112,13 @@ namespace bcuda {
                     bias = bcuda::rand::RandomizeWMutations(bias, BiasProbOf1, RNG);
                 }
 #endif
-                __host__ __device__ inline _TOutput Run(_TInput Input) const {
+                __host__ __device__ inline constexpr _TOutput Run(_TInput Input) const {
                     _TOutput o = bias;
                     for (size_t i = 0; i < details::bitCount<_TOutput>; ++i)
                         if (Input & weights[i]) o |= ((_TOutput)1) << i;
                     return o;
                 }
-                __host__ __device__ inline uint64_t RunG(uint64_t Input) const {
+                __host__ __device__ inline constexpr uint64_t RunG(uint64_t Input) const {
                     return (uint64_t)Run((_TInput)Input);
                 }
 
@@ -205,10 +205,10 @@ namespace bcuda {
                 template <KernelCurandState _TRNG>
                 __device__ inline void RandomizeWMutations(uint32_t WeightsMutationProb, uint32_t WeightsProbOf1, uint32_t BiasMutationProb, uint32_t BiasProbOf1, _TRNG& RNG);
 #endif
-                __host__ __device__ inline output_t Run(_TInput Input) const {
+                __host__ __device__ inline constexpr output_t Run(_TInput Input) const {
                     return (output_t)RunG((uint64_t)Input);
                 }
-                __host__ __device__ inline uint64_t RunG(uint64_t Input) const {
+                __host__ __device__ inline constexpr uint64_t RunG(uint64_t Input) const {
                     Input = layer.RunG(Input);
                     Input = nextLayers.RunG(Input);
                     return Input;
@@ -301,10 +301,10 @@ namespace bcuda {
                     layer.RandomizeWMutations(WeightsMutationProb, WeightsProbOf1, BiasMutationProb, BiasProbOf1, RNG);
                 }
 #endif
-                __host__ __device__ inline output_t Run(_TInput Input) const {
+                __host__ __device__ inline constexpr output_t Run(_TInput Input) const {
                     return (output_t)RunG((uint64_t)Input);
                 }
-                __host__ __device__ inline uint64_t RunG(uint64_t Input) const {
+                __host__ __device__ inline constexpr uint64_t RunG(uint64_t Input) const {
                     Input = layer.RunG(Input);
                     return Input;
                 }
