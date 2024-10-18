@@ -421,7 +421,7 @@ namespace bcuda {
                 __host__ __device__ inline void Run(const _T* Input, _T* Intermediate1, _T* Intermediate2, _T* Output) const {
                     layer.Run(Input, Output);
                 }
-                __host__ __device__ consteval std::array<_T, _OutputCount> Run(const _T(&Input)[_InputCount]) {
+                __host__ __device__ consteval std::array<_T, _Output1Count> Run(const _T(&Input)[_InputCount]) {
                     return layer.Run(Input);
                 }
 
@@ -463,17 +463,7 @@ namespace bcuda {
     }
     namespace details {
         template <ai::mlp::IsFixedMLP _TFixedMLP>
-        inline static void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
-            using element_t = typename _TFixedMLP::element_t;
-
-            if constexpr (_TFixedMLP::LayerCount() == 1) {
-                FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Outputs);
-            }
-            else {
-                ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Intermediate0);
-                FixedMLP_Run(&Mlp->nextLayers, Intermediate0, Intermediate1, Intermediate0, Outputs);
-            }
-        }
+        inline static void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs);
     }
     namespace ai {
         namespace mlp {
@@ -625,5 +615,18 @@ namespace bcuda {
                 rand::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, LowerBound, UpperBound, RNG);
             }
         }
+    }
+}
+
+template <bcuda::ai::mlp::IsFixedMLP _TFixedMLP>
+inline void bcuda::details::FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
+    using element_t = typename _TFixedMLP::element_t;
+
+    if constexpr (_TFixedMLP::LayerCount() == 1) {
+        FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Outputs);
+    }
+    else {
+        ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Intermediate0);
+        FixedMLP_Run(&Mlp->nextLayers, Intermediate0, Intermediate1, Intermediate0, Outputs);
     }
 }
