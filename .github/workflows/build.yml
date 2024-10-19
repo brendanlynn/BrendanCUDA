@@ -18,7 +18,7 @@ jobs:
 
     - name: Set up MSBuild
       run: |
-        start /wait "" ".\testing\vs_BuildTools.exe" /quiet /norestart
+        & ".\testing\vs_BuildTools.exe" /quiet /norestart
 
     - name: Confirm MSBuild Version
       run: |
