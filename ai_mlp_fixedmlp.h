@@ -24,31 +24,20 @@ namespace bcuda {
         struct MLPLayerType;
         template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
         struct MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
-            using type = typename MLPLayerType<_Index - 1, _T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::type;
+            using type_t = typename MLPLayerType<_Index - 1, _T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::type_t;
         };
         template <std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t _Output2Count, size_t... _ContinuedOutputCounts>
         struct MLPLayerType<0, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...> {
-            using type = ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
+            using type_t = ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
         };
         template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count>
         struct MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count> {
             static_assert(!_Index, "_Index is out of bounds.");
-            using type = ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
+            using type_t = ai::mlp::FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count>;
         };
 
         template <size_t _Index, std::floating_point _T, ai::activationFunction_t<_T> _ActivationFunction, size_t _InputCount, size_t _Output1Count, size_t... _ContinuedOutputCounts>
-        using mlpLayerType_t = MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _ContinuedOutputCounts...>;
-
-        template <uintmax_t _Idx, size_t... _Ints>
-        struct getIntsByIndex;
-        template <size_t _Int1, size_t... _ContinuedInts>
-        struct getIntsByIndex<0, _Int1, _ContinuedInts...> {
-            static constexpr size_t value = _Int1;
-        };
-        template <uintmax_t _Idx, size_t _Int1, size_t... _ContinuedInts>
-        struct getIntsByIndex<_Idx, _Int1, _ContinuedInts...> {
-            static constexpr size_t value = getIntsByIndex<_Idx - 1, _ContinuedInts...>::value;
-        };
+        using mlpLayerType_t = typename MLPLayerType<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _ContinuedOutputCounts...>::type_t;
     }
     namespace ai {
         namespace mlp {
@@ -215,9 +204,9 @@ namespace bcuda {
                 using element_t = _T;
                 static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
                 template <size_t _Index>
-                static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>::value;
-                template <size_t _Index>
                 using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count, _Output2Count, _ContinuedOutputCounts...>;
+                template <size_t _Index>
+                static constexpr size_t widthAt = _Index ? layerType_t<_Index>::outputCount : _InputCount;
 
                 FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
                 FixedMLP<_T, _ActivationFunction, _Output1Count, _Output2Count, _ContinuedOutputCounts...> nextLayers;
@@ -331,9 +320,9 @@ namespace bcuda {
                 using element_t = _T;
                 static constexpr activationFunction_t<_T> activationFunction = _ActivationFunction;
                 template <size_t _Index>
-                static constexpr size_t widthAt = details::getIntsByIndex<_Index, _InputCount, _Output1Count>::value;
-                template <size_t _Index>
                 using layerType_t = details::mlpLayerType_t<_Index, _T, _ActivationFunction, _InputCount, _Output1Count>;
+                template <size_t _Index>
+                static constexpr size_t widthAt = _Index ? layerType_t<_Index>::outputCount : _InputCount;
 
                 FixedMLPL<_T, _ActivationFunction, _InputCount, _Output1Count> layer;
 

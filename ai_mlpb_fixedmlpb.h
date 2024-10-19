@@ -36,7 +36,7 @@ namespace bcuda {
         };
 
         template <size_t _Index, std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral... _TsContinuedOutputs>
-        using mlpbLayerType_t = MLPBLayerType<_Index, _TInput, _TOutput1, _TsContinuedOutputs...>::type_t;
+        using mlpbLayerType_t = typename MLPBLayerType<_Index, _TInput, _TOutput1, _TsContinuedOutputs...>::type_t;
 
         template <std::integral _T>
         constexpr size_t bitCount = sizeof(_T) << 3;
