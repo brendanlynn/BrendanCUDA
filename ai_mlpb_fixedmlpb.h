@@ -23,20 +23,20 @@ namespace bcuda {
         struct MLPBLayerType;
         template <size_t _Index, std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
         struct MLPBLayerType<_Index, _TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> {
-            using type = typename MLPBLayerType<_Index - 1, _TOutput1, _TOutput2, _TsContinuedOutputs...>::type;
+            using type_t = typename MLPBLayerType<_Index - 1, _TOutput1, _TOutput2, _TsContinuedOutputs...>::type_t;
         };
         template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral _TOutput2, std::unsigned_integral... _TsContinuedOutputs>
         struct MLPBLayerType<0, _TInput, _TOutput1, _TOutput2, _TsContinuedOutputs...> {
-            using type = ai::mlpb::FixedMLPBL<_TInput, _TOutput1>;
+            using type_t = ai::mlpb::FixedMLPBL<_TInput, _TOutput1>;
         };
         template <size_t _Index, std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
         struct MLPBLayerType<_Index, _TInput, _TOutput1> {
             static_assert(!_Index, "_Index is out of bounds.");
-            using type = ai::mlpb::FixedMLPBL<_TInput, _TOutput1>;
+            using type_t = ai::mlpb::FixedMLPBL<_TInput, _TOutput1>;
         };
 
         template <size_t _Index, std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral... _TsContinuedOutputs>
-        using mlpbLayerType_t = MLPBLayerType<_Index, _TInput, _TOutput1, _TsContinuedOutputs...>;
+        using mlpbLayerType_t = MLPBLayerType<_Index, _TInput, _TOutput1, _TsContinuedOutputs...>::type_t;
 
         template <std::integral _T>
         constexpr size_t bitCount = sizeof(_T) << 3;
@@ -129,15 +129,15 @@ namespace bcuda {
                     BSerializer::SerializeArray(Data, weights, details::bitCount<_TOutput>);
                     BSerializer::Serialize(Data, bias);
                 }
-                inline static this_t Deserialize(const void*& Data) {
-                    uint8_t bytes[sizeof(this_t)];
-                    Deserialize(Data, &bytes);
-                    return *(this_t*)&bytes;
-                }
                 inline static void Deserialize(const void*& Data, void* ObjMem) {
                     this_t& obj = *(this_t*)ObjMem;
                     BSerializer::DeserializeArray(Data, obj.weights, details::bitCount<_TOutput>);
                     BSerializer::Deserialize(Data, &obj.bias);
+                }
+                inline static this_t Deserialize(const void*& Data) {
+                    uint8_t bytes[sizeof(this_t)];
+                    Deserialize(Data, &bytes);
+                    return *(this_t*)&bytes;
                 }
             };
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1, std::unsigned_integral... _LayerCounts>
@@ -234,15 +234,15 @@ namespace bcuda {
                     layer.Serialize(Data);
                     nextLayers.Serialize(Data);
                 }
-                inline static this_t Deserialize(const void*& Data) {
-                    uint8_t bytes[sizeof(this_t)];
-                    Deserialize(Data, &bytes);
-                    return *(this_t*)&bytes;
-                }
                 inline static void Deserialize(const void*& Data, void* ObjMem) {
                     this_t& obj = &(this_t*)ObjMem;
                     BSerializer::Deserialize(Data, &obj.layer);
                     BSerializer::Deserialize(Data, &obj.nextLayers);
+                }
+                inline static this_t Deserialize(const void*& Data) {
+                    uint8_t bytes[sizeof(this_t)];
+                    Deserialize(Data, &bytes);
+                    return *(this_t*)&bytes;
                 }
             };
             template <std::unsigned_integral _TInput, std::unsigned_integral _TOutput1>
@@ -324,14 +324,14 @@ namespace bcuda {
                 inline void Serialize(void*& Data) const {
                     layer.Serialize(Data);
                 }
+                inline static void Deserialize(const void*& Data, void* ObjMem) {
+                    this_t& obj = &(this_t*)ObjMem;
+                    BSerializer::Deserialize(Data, &obj.layer);
+                }
                 inline static this_t Deserialize(const void*& Data) {
                     uint8_t bytes[sizeof(this_t)];
                     Deserialize(Data, &bytes);
                     return *(this_t*)&bytes;
-                }
-                inline static void Deserialize(const void*& Data, void* ObjMem) {
-                    this_t& obj = &(this_t*)ObjMem;
-                    BSerializer::Deserialize(Data, &obj.layer);
                 }
             };
         }
