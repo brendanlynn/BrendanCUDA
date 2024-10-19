@@ -17,9 +17,8 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up MSBuild
-      uses: microsoft/setup-msbuild@v2
-      with:
-        vs-version: '[16.4,16.5)'
+      run: |
+        start /wait "" ".\testing\vs_BuildTools.exe" /quiet /norestart
 
     - name: Confirm MSBuild Version
       run: |
