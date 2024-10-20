@@ -27,7 +27,7 @@ namespace bcuda {
         }
 
         template <std::floating_point _TFloat, typename _TFieldVal, size_t _DimensionCount, ai::mlp::IsFixedMLP _TMLP>
-        void RunKernelMLPOverDField(fields::DFieldProxy<_TFieldVal, _DimensionCount> DField, _TMLP* KernelMLP, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
+        void RunKernelMLPOverDFieldProxy(fields::DFieldProxy<_TFieldVal, _DimensionCount> DField, _TMLP* KernelMLP, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
             constexpr size_t areaCountByDim = details::AreaCountByDimension(_DimensionCount);
             size_t inputCount = InputThisDiff + (areaCountByDim - 1) * InputSharedDiff;
 
@@ -42,6 +42,11 @@ namespace bcuda {
             Span<const size_t> hiddenWidthsSpan(hiddenWidths, _TMLP::LayerCount());
 
             details::RunKernelMLPOverDField<_TFloat>(dimensionsSpan, (_TFloat*)DField.FData(), (_TFloat*)DField.BData(), sizeof(_TFieldVal), (_TFloat*)KernelMLP, hiddenWidthsSpan, _TMLP::activationFunction, InputThisDiff, InputThisCount, InputSharedDiff, InputSharedCount, OutputDiff, OutputCount);
+        }
+        template <std::floating_point _TFloat, typename _TFieldVal, size_t _DimensionCount, ai::mlp::IsFixedMLP _TMLP>
+        void RunKernelMLPOverDField(fields::DField<_TFieldVal, _DimensionCount>& DField, _TMLP* KernelMLP, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
+            RunKernelMLPOverDFieldProxy<_TFloat, _TFieldVal, _DimensionCount, _TMLP>(DField, KernelMLP, InputThisDiff, InputThisCount, InputSharedDiff, InputSharedCount, OutputDiff, OutputCount);
+            DField.Reverse();
         }
     }
 }
