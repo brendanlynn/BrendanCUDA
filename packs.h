@@ -78,7 +78,7 @@ namespace bcuda {
 
         namespace details {
             template <template <typename> typename _TPredicate, typename... _Ts>
-            struct isPackSatisfyingAll : std::bool_constant<_TPredicate<_Ts>::value && ...> { };
+            struct isPackSatisfyingAll : std::bool_constant<(_TPredicate<_Ts>::value && ...)> { };
         }
 
         template <typename _T, template <typename> typename _TPredicate>
@@ -142,6 +142,6 @@ namespace bcuda {
         }
 
         template <template <typename...> typename _T, IsPack _TPack>
-        using appliedPack_t = typename details::applyPack<_T, _Pack>::type_t;
+        using appliedPack_t = typename details::applyPack<_T, _TPack>::type_t;
     }
 }
