@@ -588,7 +588,7 @@ namespace bcuda {
             using element_t = typename _TFixedMLP::element_t;
 
             if constexpr (_TFixedMLP::LayerCount() == 1) {
-                FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Outputs);
+                ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Outputs);
             }
             else {
                 ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Intermediate0);
