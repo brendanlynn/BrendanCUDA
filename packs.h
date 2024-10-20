@@ -127,7 +127,7 @@ namespace bcuda {
 
             template <typename _T1, typename _T2, typename... _Ts>
             struct addPacks<_T1, _T2, _Ts...> {
-                using type_t = typename addPacks<addPacks<_T1, _T2>::type_t, _Ts...>::type_t;
+                using type_t = typename addPacks<typename addPacks<_T1, _T2>::type_t, _Ts...>::type_t;
             };
         }
 
