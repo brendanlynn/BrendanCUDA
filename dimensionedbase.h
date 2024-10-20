@@ -11,6 +11,8 @@ namespace bcuda {
         static_assert(_DimensionCount, "_DimensionCount may not be zero.");
     protected:
         using vector_t = FixedVector<uint32_t, _DimensionCount>;
+    private:
+        vector_t dims;
     public:
         __host__ __device__ inline DimensionedBase(vector_t Dimensions) {
             for (size_t i = 0; i < _DimensionCount; ++i)
@@ -57,7 +59,7 @@ namespace bcuda {
         }
 
         __host__ __device__ inline vector_t IdxToCoords(uint64_t Index) const {
-            return bcuda::IndexToCoordinates<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Idx);
+            return bcuda::IndexToCoordinates<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Index);
         }
         __host__ __device__ inline uint64_t CoordsToIdx(vector_t Coords) const {
             return bcuda::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Coords);
@@ -67,7 +69,5 @@ namespace bcuda {
         __host__ __device__ inline uint64_t CoordsToIdx(_Ts... Coords) const {
             return CoordsToIdx(vector_t(Coords...));
         }
-    private:
-        vector_t dims;
     };
 }

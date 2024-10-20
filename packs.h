@@ -67,7 +67,7 @@ namespace bcuda {
             struct bringOutBatch;
             template <typename... _Ts>
             struct bringOutBatch<Pack<_Ts...>> {
-                using type_t = Pack<bringOut<_Ts>, ...>;
+                using type_t = Pack<bringOut<_Ts>...>;
             };
         }
 
@@ -77,14 +77,12 @@ namespace bcuda {
         using bringOutInsideBatch_t = typename details::bringOutBatch<_T>::type_t;
 
         namespace details {
-            template <typename _T>
-            struct isPackSatisfyingAll : std::false_type { };
             template <template <typename> typename _TPredicate, typename... _Ts>
-            struct isPackSatisfyingAll : std::bool_constant<_TPredicate<_Ts>::value && ...> { };
+            struct isPackSatisfyingAll : std::bool_constant<(_TPredicate<_Ts>::value && ...)> { };
         }
 
         template <typename _T, template <typename> typename _TPredicate>
-        concept IsPackAndElementsSatisfy = details::isPackSatisfyingAll<_T>::value;
+        concept IsPackAndElementsSatisfy = details::isPackSatisfyingAll<_TPredicate, _T>::value;
 
         namespace details {
             template <typename... _Ts>
@@ -127,7 +125,7 @@ namespace bcuda {
 
             template <typename _T1, typename _T2, typename... _Ts>
             struct addPacks<_T1, _T2, _Ts...> {
-                using type_t = typename addPacks<addPacks<_T1, _T2>::type_t, _Ts...>::type_t;
+                using type_t = typename addPacks<typename addPacks<_T1, _T2>::type_t, _Ts...>::type_t;
             };
         }
 
@@ -144,6 +142,6 @@ namespace bcuda {
         }
 
         template <template <typename...> typename _T, IsPack _TPack>
-        using appliedPack_t = typename details::applyPack<_T, _Pack>::type_t;
+        using appliedPack_t = typename details::applyPack<_T, _TPack>::type_t;
     }
 }

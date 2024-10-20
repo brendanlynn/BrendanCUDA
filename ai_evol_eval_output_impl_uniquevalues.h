@@ -15,7 +15,7 @@ namespace bcuda {
                         bool individual;
                         void* sd_ci;
                         inline constexpr Evaluate_UniqueValues_SD()
-                            : InstanceFunctions(), iterationCount(0), outputCount(0), individual(0), sd_ci(0) { }
+                            : instanceFunctions(), iterationCount(0), outputCount(0), individual(0), sd_ci(0) { }
                     };
 
                     template <typename _T>
