@@ -11,7 +11,7 @@ namespace bcuda {
             __forceinline void WriteHiddenWidthsToArray(size_t* WidthsArray) {
                 if (_Index + 1 >= _TMLP::LayerCount()) return;
 
-                WidthsArray[_Index] = _TMLP::widthAt<_Index + 1>;
+                WidthsArray[_Index] = _TMLP::template widthAt<_Index + 1>;
                 WriteOutputWidthsToArray<_TMLP, _Index + 1>(WidthsArray);
             }
 
