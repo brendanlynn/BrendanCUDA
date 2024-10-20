@@ -77,14 +77,12 @@ namespace bcuda {
         using bringOutInsideBatch_t = typename details::bringOutBatch<_T>::type_t;
 
         namespace details {
-            template <typename _T>
-            struct isPackSatisfyingAll : std::false_type { };
             template <template <typename> typename _TPredicate, typename... _Ts>
             struct isPackSatisfyingAll : std::bool_constant<_TPredicate<_Ts>::value && ...> { };
         }
 
         template <typename _T, template <typename> typename _TPredicate>
-        concept IsPackAndElementsSatisfy = details::isPackSatisfyingAll<_T>::value;
+        concept IsPackAndElementsSatisfy = details::isPackSatisfyingAll<_TPredicate, _T>::value;
 
         namespace details {
             template <typename... _Ts>
