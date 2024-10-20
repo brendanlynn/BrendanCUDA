@@ -73,6 +73,7 @@ namespace bcuda {
 #pragma endregion
 
 #pragma region OperatorInvoke
+#ifdef __CUDACC__
             __device__ inline _T& operator()(uint64_t Idx) const {
                 return *IdxToPtr(Idx);
             }
@@ -84,6 +85,7 @@ namespace bcuda {
             __device__ inline _T& operator()(_Ts... Coords) const {
                 return *CoordsToPtr(typename this_t::vector_t(Coords...));
             }
+#endif
 #pragma endregion
 
 #pragma region CpyAll
