@@ -20,6 +20,8 @@ namespace bcuda {
         class FieldBase : public DimensionedBase<_DimensionCount> {
             using this_t = FieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
+
+            _T* darr;
         public:
 #pragma region Constructors
             __host__ __device__ inline FieldBase(const typename this_t::vector_t& Dimensions)
@@ -260,8 +262,6 @@ namespace bcuda {
             static inline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> requires BSerializer::Serializable<_T> {
                 new (Value) FieldBase<_T, _DimensionCount>(Deserialize(Data));
             }
-        private:
-            _T* darr;
         };
     }
 }
