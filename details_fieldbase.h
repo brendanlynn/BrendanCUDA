@@ -259,7 +259,7 @@ namespace bcuda {
                     field.CpyValIn(i, BSerializer::Deserialize<_T>(Data));
                 return field;
             }
-            static inline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> requires BSerializer::Serializable<_T> {
+            static inline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> {
                 new (Value) FieldBase<_T, _DimensionCount>(Deserialize(Data));
             }
         };
