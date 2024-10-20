@@ -120,6 +120,7 @@
     <ClInclude Include="ai_mlp_fixedmlp.h" />
     <ClInclude Include="fields_mdfield.h" />
     <ClInclude Include="fields_mfield.h" />
+    <ClInclude Include="fields_mlpkernel.h" />
     <ClInclude Include="kernellaunch.cuh" />
     <ClInclude Include="nets_makenet.h" />
     <ClInclude Include="packs.h" />
@@ -143,6 +144,7 @@
     <CudaCompile Include="binary_basic.cu" />
     <CudaCompile Include="copyblock.cu" />
     <CudaCompile Include="details_fillwith.cu" />
+    <CudaCompile Include="fields_mlpkernel.cu" />
     <CudaCompile Include="nets_makenet.cu" />
     <CudaCompile Include="nets_net.cu" />
     <CudaCompile Include="rand_randomizer.cu" />
