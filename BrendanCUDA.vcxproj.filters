@@ -136,6 +136,9 @@
     <ClInclude Include="uniqueid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fields_mlpkernel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="ai.cu">
@@ -157,6 +160,9 @@
       <Filter>Source Files</Filter>
     </CudaCompile>
     <CudaCompile Include="copyblock.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="fields_mlpkernel.cu">
       <Filter>Source Files</Filter>
     </CudaCompile>
   </ItemGroup>
