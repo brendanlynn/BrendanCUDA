@@ -20,6 +20,8 @@ namespace bcuda {
         class FieldBase : public DimensionedBase<_DimensionCount> {
             using this_t = FieldBase<_T, _DimensionCount>;
             using basedb_t = DimensionedBase<_DimensionCount>;
+
+            _T* darr;
         public:
 #pragma region Constructors
             __host__ __device__ inline FieldBase(const typename this_t::vector_t& Dimensions)
@@ -71,6 +73,7 @@ namespace bcuda {
 #pragma endregion
 
 #pragma region OperatorInvoke
+#ifdef __CUDACC__
             __device__ inline _T& operator()(uint64_t Idx) const {
                 return *IdxToPtr(Idx);
             }
@@ -82,6 +85,7 @@ namespace bcuda {
             __device__ inline _T& operator()(_Ts... Coords) const {
                 return *CoordsToPtr(typename this_t::vector_t(Coords...));
             }
+#endif
 #pragma endregion
 
 #pragma region CpyAll
@@ -257,11 +261,9 @@ namespace bcuda {
                     field.CpyValIn(i, BSerializer::Deserialize<_T>(Data));
                 return field;
             }
-            static inline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> requires BSerializer::Serializable<_T> {
+            static inline void Deserialize(const void*& Data, void* Value) requires BSerializer::Serializable<_T> {
                 new (Value) FieldBase<_T, _DimensionCount>(Deserialize(Data));
             }
-        private:
-            _T* darr;
         };
     }
 }

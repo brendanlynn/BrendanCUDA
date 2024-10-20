@@ -45,7 +45,7 @@ namespace bcuda {
             ArrayV<size_t>& il = rv.inputs;
             ArrayV<size_t>& ol = rv.outputs;
 
-            std::uniform_int_distribution<uint32_t> dis(0, f.ValueCount());
+            std::uniform_int_distribution<uint32_t> dis(0, rv.dfield.ValueCount());
 
             for (uint32_t i = 0; i < settings.inputCount; ++i) {
             ContinueInputs:

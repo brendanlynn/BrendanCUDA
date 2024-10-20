@@ -79,25 +79,25 @@ namespace bcuda {
                 }
                 template <std::uniform_random_bit_generator _TRNG>
                 inline this_t Reproduce(_T Scalar, _TRNG& RNG) {
-                    this_t n = Clone();
+                    this_t n = *this;
                     n.Randomize(Scalar, RNG);
                     return n;
                 }
                 template <std::uniform_random_bit_generator _TRNG>
                 inline this_t Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-                    this_t n = Clone();
+                    this_t n = *this;
                     n.Randomize(Scalar, LowerBound, UpperBound, RNG);
                     return n;
                 }
                 template <std::uniform_random_bit_generator _TRNG>
                 inline this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
-                    this_t n = Clone();
+                    this_t n = *this;
                     n.Randomize(Scalar_Base, Scalar_MLP, RNG);
                     return n;
                 }
                 template <std::uniform_random_bit_generator _TRNG>
                 inline this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-                    this_t n = Clone();
+                    this_t n = *this;
                     n.Randomize(Scalar_Base, Scalar_MLP, LowerBound, UpperBound, RNG);
                     return n;
                 }
@@ -124,25 +124,25 @@ namespace bcuda {
                 }
                 template <KernelCurandState _TRNG>
                 __device__ inline this_t Reproduce(_T Scalar, _TRNG& RNG) {
-                    this_t n = Clone();
+                    this_t n = *this;
                     n.Randomize(Scalar, RNG);
                     return n;
                 }
                 template <KernelCurandState _TRNG>
                 __device__ inline this_t Reproduce(_T Scalar, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-                    this_t n = Clone();
+                    this_t n = *this;
                     n.Randomize(Scalar, LowerBound, UpperBound, RNG);
                     return n;
                 }
                 template <KernelCurandState _TRNG>
                 __device__ inline this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _TRNG& RNG) {
-                    this_t n = Clone();
+                    this_t n = *this;
                     n.Randomize(Scalar_Base, Scalar_MLP, RNG);
                     return n;
                 }
                 template <KernelCurandState _TRNG>
                 __device__ inline this_t Reproduce(_T Scalar_Base, _T Scalar_MLP, _T LowerBound, _T UpperBound, _TRNG& RNG) {
-                    this_t n = Clone();
+                    this_t n = *this;
                     n.Randomize(Scalar_Base, Scalar_MLP, LowerBound, UpperBound, RNG);
                     return n;
                 }

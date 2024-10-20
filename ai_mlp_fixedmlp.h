@@ -429,17 +429,7 @@ namespace bcuda {
     }
     namespace details {
         template <ai::mlp::IsFixedMLP _TFixedMLP>
-        inline static void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
-            using element_t = typename _TFixedMLP::element_t;
-
-            if constexpr (_TFixedMLP::LayerCount() == 1) {
-                FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Outputs);
-            }
-            else {
-                ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Intermediate0);
-                FixedMLP_Run(&Mlp->nextLayers, Intermediate0, Intermediate1, Intermediate0, Outputs);
-            }
-        }
+        inline static void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs);
     }
     namespace ai {
         namespace mlp {
@@ -589,6 +579,20 @@ namespace bcuda {
                 using element_t = typename _TFixedMLP::element_t;
 
                 rand::RandomizeArray<false, element_t, _TRNG>(FixedMLP_GetElementSpan(MLP), Scalar, LowerBound, UpperBound, RNG);
+            }
+        }
+    }
+    namespace details {
+        template <ai::mlp::IsFixedMLP _TFixedMLP>
+        inline static void FixedMLP_Run(const _TFixedMLP* Mlp, const typename _TFixedMLP::element_t* Inputs, typename _TFixedMLP::element_t* Intermediate0, typename _TFixedMLP::element_t* Intermediate1, typename _TFixedMLP::element_t* Outputs) {
+            using element_t = typename _TFixedMLP::element_t;
+
+            if constexpr (_TFixedMLP::LayerCount() == 1) {
+                ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Outputs);
+            }
+            else {
+                ai::mlp::FixedMLPL_Run<decltype(Mlp->layer), false, false>(&Mlp->layer, Inputs, Intermediate0);
+                FixedMLP_Run(&Mlp->nextLayers, Intermediate0, Intermediate1, Intermediate0, Outputs);
             }
         }
     }

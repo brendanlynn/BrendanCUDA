@@ -73,9 +73,11 @@ namespace bcuda {
             __host__ __device__ inline _T* IdxToPtr(uint64_t Idx) {
                 return basefb_t::IdxToPtr(Idx);
             }
+#ifdef __CUDACC__
             __device__ inline _T& IdxToRef(uint64_t Idx) {
                 return basefb_t::IdxToRef(Idx);
             }
+#endif
             __host__ inline thrust::device_reference<_T> IdxToDRef(uint64_t Idx) {
                 return basefb_t::IdxToDRef(Idx);
             }
@@ -87,17 +89,21 @@ namespace bcuda {
             __host__ __device__ inline _T* CoordsToPtr(_Ts... Coords) {
                 return basefb_t::CoordsToPtr(vector_t(Coords...));
             }
+#ifdef __CUDACC__
             __device__ inline _T& CoordsToRef(const vector_t& Coords) {
                 return basefb_t::CoordsToRef(Coords);
             }
+#endif
             __host__ inline thrust::device_reference<_T> CoordsToDRef(const vector_t& Coords) {
                 return basefb_t::CoordsToDRef(Coords);
             }
+#ifdef __CUDACC__
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __device__ inline _T& CoordsToRef(_Ts... Coords) {
                 return basefb_t::CoordsToRef(vector_t(Coords...));
             }
+#endif
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ inline thrust::device_reference<_T> CoordsToDRef(_Ts... Coords) {
@@ -106,9 +112,11 @@ namespace bcuda {
             __host__ __device__ inline const _T* IdxToPtr(uint64_t Idx) const {
                 return basefb_t::IdxToPtr(Idx);
             }
+#ifdef __CUDACC__
             __device__ inline const _T& IdxToRef(uint64_t Idx) const {
                 return basefb_t::IdxToRef(Idx);
             }
+#endif
             __host__ inline thrust::device_reference<const _T> IdxToDRef(uint64_t Idx) const {
                 return basefb_t::IdxToDRef(Idx);
             }
@@ -120,17 +128,21 @@ namespace bcuda {
             __host__ __device__ inline const _T* CoordsToPtr(_Ts... Coords) const {
                 return basefb_t::CoordsToPtr(vector_t(Coords...));
             }
+#ifdef __CUDACC__
             __device__ inline const _T& CoordsToRef(const vector_t& Coords) const {
                 return basefb_t::CoordsToRef(Coords);
             }
+#endif
             __host__ inline thrust::device_reference<const _T> CoordsToDRef(const vector_t& Coords) const {
                 return basefb_t::CoordsToDRef(Coords);
             }
+#ifdef __CUDACC__
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __device__ inline const _T& CoordsToRef(_Ts... Coords) const {
                 return basefb_t::CoordsToRef(vector_t(Coords...));
             }
+#endif
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ inline thrust::device_reference<const _T> CoordsToDRef(_Ts... Coords) const {
@@ -142,15 +154,19 @@ namespace bcuda {
             __host__ __device__ inline vector_t PtrToCoords(const _T* Ptr) const {
                 return basefb_t::PtrToCoords(Ptr);
             }
+#ifdef __CUDACC__
             __device__ inline const _T& PtrToRef(const _T* Ptr) const {
                 return basefb_t::PtrToRef(Ptr);
             }
+#endif
             __host__ inline thrust::device_reference<const _T> PtrToDRef(const _T* Ptr) const {
                 return basefb_t::PtrToDRef(Ptr);
             }
+#ifdef __CUDACC__
             __device__ inline _T& PtrToRef(const _T* Ptr) {
                 return basefb_t::PtrToRef(Ptr);
             }
+#endif
             __host__ inline thrust::device_reference<_T> PtrToDRef(const _T* Ptr) {
                 return basefb_t::PtrToDRef(Ptr);
             }
@@ -197,7 +213,6 @@ namespace bcuda {
             __device__ inline _T* RefToPtr(const _T& Ref) {
                 return basefb_t::RefToPtr(Ref);
             }
-#endif
             __device__ inline const _T& operator()(uint64_t Idx) const {
                 return IdxToRef(Idx);
             }
@@ -220,6 +235,7 @@ namespace bcuda {
             __device__ inline _T& operator()(_Ts... Coords) {
                 return CoordsToRef(vector_t(Coords...));
             }
+#endif
             template <bool _CopyFromHost>
             __host__ inline void CpyAllIn(const _T* All) {
                 basefb_t::template CpyAllIn<_CopyFromHost>(All);
@@ -448,17 +464,21 @@ namespace bcuda {
             __host__ __device__ inline _T* CoordsToPtr(_Ts... Coords) const {
                 return basefb_t::CoordsToPtr(vector_t(Coords...));
             }
+#ifdef __CUDACC__
             __device__ inline _T& CoordsToRef(const vector_t& Coords) const {
                 return basefb_t::CoordsToRef(Coords);
             }
+#endif
             __host__ inline thrust::device_reference<_T> CoordsToDRef(const vector_t& Coords) const {
                 return basefb_t::CoordsToDRef(Coords);
             }
+#ifdef __CUDACC__
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __device__ inline _T& CoordsToRef(_Ts... Coords) const {
                 return basefb_t::CoordsToRef(vector_t(Coords...));
             }
+#endif
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ inline thrust::device_reference<_T> CoordsToDRef(_Ts... Coords) const {
@@ -470,9 +490,11 @@ namespace bcuda {
             __host__ __device__ inline vector_t PtrToCoords(const _T* Ptr) const {
                 return basefb_t::PtrToCoords(Ptr);
             }
+#ifdef __CUDACC__
             __device__ inline _T& PtrToRef(const _T* Ptr) const {
                 return basefb_t::PtrToRef(Ptr);
             }
+#endif
             __host__ inline thrust::device_reference<_T> PtrToDRef(const _T* Ptr) const {
                 return basefb_t::PtrToDRef(Ptr);
             }
@@ -508,7 +530,6 @@ namespace bcuda {
             __device__ inline _T* RefToPtr(const _T& Ref) const {
                 return basefb_t::RefToPtr(Ref);
             }
-#endif
             __device__ inline _T& operator()(uint64_t Idx) const {
                 return IdxToRef(Idx);
             }
@@ -520,6 +541,7 @@ namespace bcuda {
             __device__ inline _T& operator()(_Ts... Coords) const {
                 return CoordsToRef(vector_t(Coords...));
             }
+#endif
             template <bool _CopyFromHost>
             __host__ inline void CpyAllIn(const _T* All) const {
                 basefb_t::template CpyAllIn<_CopyFromHost>(All);
@@ -699,9 +721,11 @@ namespace bcuda {
             __host__ __device__ inline const _T* IdxToPtr(uint64_t Idx) const {
                 return basefb_t::IdxToPtr(Idx);
             }
+#ifdef __CUDACC__
             __device__ inline const _T& IdxToRef(uint64_t Idx) const {
                 return basefb_t::IdxToRef(Idx);
             }
+#endif
             __host__ inline thrust::device_reference<const _T> IdxToDRef(uint64_t Idx) const {
                 return basefb_t::IdxToDRef(Idx);
             }
@@ -713,17 +737,21 @@ namespace bcuda {
             __host__ __device__ inline const _T* CoordsToPtr(_Ts... Coords) const {
                 return basefb_t::CoordsToPtr(vector_t(Coords...));
             }
+#ifdef __CUDACC__
             __device__ inline const _T& CoordsToRef(const vector_t& Coords) const {
                 return basefb_t::CoordsToRef(Coords);
             }
+#endif
             __host__ inline thrust::device_reference<const _T> CoordsToDRef(const vector_t& Coords) const {
                 return basefb_t::CoordsToDRef(Coords);
             }
+#ifdef __CUDACC__
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __device__ inline const _T& CoordsToRef(_Ts... Coords) const {
                 return basefb_t::CoordsToRef(vector_t(Coords...));
             }
+#endif
             template <std::convertible_to<uint32_t>... _Ts>
                 requires (sizeof...(_Ts) == _DimensionCount)
             __host__ inline thrust::device_reference<const _T> CoordsToDRef(_Ts... Coords) const {
@@ -735,9 +763,11 @@ namespace bcuda {
             __host__ __device__ inline vector_t PtrToCoords(const _T* Ptr) const {
                 return basefb_t::PtrToCoords(Ptr);
             }
+#ifdef __CUDACC__
             __device__ inline const _T& PtrToRef(const _T* Ptr) const {
                 return basefb_t::PtrToRef(Ptr);
             }
+#endif
             __host__ inline thrust::device_reference<const _T> PtrToDRef(const _T* Ptr) const {
                 return basefb_t::PtrToDRef(Ptr);
             }
@@ -773,7 +803,6 @@ namespace bcuda {
             __device__ inline const  _T* RefToPtr(const _T& Ref) const {
                 return basefb_t::RefToPtr(Ref);
             }
-#endif
             __device__ inline const _T& operator()(uint64_t Idx) const {
                 return IdxToRef(Idx);
             }
@@ -785,6 +814,7 @@ namespace bcuda {
             __device__ inline const _T& operator()(_Ts... Coords) const {
                 return CoordsToRef(vector_t(Coords...));
             }
+#endif
             template <bool _CopyToHost>
             __host__ inline _T* CpyAllOut() const {
                 return basefb_t::template CpyAllOut<_CopyToHost>();
