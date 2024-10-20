@@ -29,7 +29,7 @@ namespace bcuda {
         template <std::floating_point _TFloat, typename _TFieldVal, size_t _DimensionCount, ai::mlp::IsFixedMLP _TMLP>
         void RunKernelMLPOverDField(fields::DFieldProxy<_TFieldVal, _DimensionCount> DField, _TMLP* KernelMLP, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
             constexpr size_t areaCountByDim = details::AreaCountByDimension(_DimensionCount);
-            size_t inputCount = InputThisDiff + (areaCountByDim - 1) * InputSharedDiff;
+            size_t inputCount = InputThisCount + (areaCountByDim - 1) * InputSharedCount;
 
             if (_TMLP::InputCount() == inputCount) throw std::exception("_TMLP must have an input count of InputThisDiff + (3 ** _DimensionCount - 1) * InputSharedDiff!");
             if (_TMLP::OutputCount() == OutputCount) throw std::exception("_TMLP must have an output count of OutputCount!");
