@@ -229,7 +229,7 @@ namespace bcuda {
     namespace fields {
         namespace details {
             template <std::floating_point _TFloat>
-            void RunKernelMLPOverDField(Span<const size_t> Dimensions, void* FieldFData, void* FieldBData, size_t FieldElementSize, void* KernelMLP, Span<const size_t> HiddenWidths, ai::activationFunction_t<float> ActivationFunc, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
+            void RunKernelMLPOverDField(Span<const size_t> Dimensions, void* FieldFData, void* FieldBData, size_t FieldElementSize, void* KernelMLP, Span<const size_t> HiddenWidths, ai::activationFunction_t<_TFloat> ActivationFunc, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
                 size_t* dDimsPtr;
                 bcuda::ThrowIfBad(cudaMalloc(&dDimsPtr, sizeof(size_t) * Dimensions.size));
                 bcuda::ThrowIfBad(cudaMemcpy(dDimsPtr, Dimensions.ptr, sizeof(size_t) * Dimensions.size, cudaMemcpyHostToDevice));
@@ -254,6 +254,9 @@ namespace bcuda {
                 bcuda::ThrowIfBad(cudaFree(dDimsPtr));
                 bcuda::ThrowIfBad(cudaFree(dHiddenPtr));
             }
+
+            template void RunKernelMLPOverDField<float>(Span<const size_t>, void*, void*, size_t, void*, Span<const size_t>, ai::activationFunction_t<float>, ptrdiff_t, size_t, ptrdiff_t, size_t, ptrdiff_t, size_t);
+            template void RunKernelMLPOverDField<double>(Span<const size_t>, void*, void*, size_t, void*, Span<const size_t>, ai::activationFunction_t<double>, ptrdiff_t, size_t, ptrdiff_t, size_t, ptrdiff_t, size_t);
         }
     }
 }
