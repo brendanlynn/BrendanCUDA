@@ -59,7 +59,7 @@ namespace bcuda {
         }
 
         __host__ __device__ inline vector_t IdxToCoords(uint64_t Index) const {
-            return bcuda::IndexToCoordinates<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Idx);
+            return bcuda::IndexToCoordinates<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Index);
         }
         __host__ __device__ inline uint64_t CoordsToIdx(vector_t Coords) const {
             return bcuda::CoordinatesToIndex<uint64_t, uint32_t, _DimensionCount, true>(Dimensions(), Coords);
