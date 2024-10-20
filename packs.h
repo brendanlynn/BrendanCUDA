@@ -67,7 +67,7 @@ namespace bcuda {
             struct bringOutBatch;
             template <typename... _Ts>
             struct bringOutBatch<Pack<_Ts...>> {
-                using type_t = Pack<bringOut<_Ts>, ...>;
+                using type_t = Pack<bringOut<_Ts>...>;
             };
         }
 
