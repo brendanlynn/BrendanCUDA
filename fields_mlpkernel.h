@@ -28,6 +28,8 @@ namespace bcuda {
 
         template <std::floating_point _TFloat, typename _TFieldVal, size_t _DimensionCount, ai::mlp::IsFixedMLP _TMLP>
         void RunKernelMLPOverDFieldProxy(fields::DFieldProxy<_TFieldVal, _DimensionCount> DField, _TMLP* KernelMLP, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
+            static_assert(std::same_as<typename _TMLP::element_t, _TFloat>, "_TMLP is incompatible.");
+            
             constexpr size_t areaCountByDim = details::AreaCountByDimension(_DimensionCount);
             size_t inputCount = InputThisCount + (areaCountByDim - 1) * InputSharedCount;
 
