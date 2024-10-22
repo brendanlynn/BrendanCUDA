@@ -39,7 +39,7 @@ __device__ void runMlpFromDeviceNoTemplateF(void* FixedMLP, float* Inputs, float
     runMlplFromDeviceNoTemplateF(fixedMlplInc, current, Outputs, InputCount, OutputCount, ActivationFunc);
 }
 
-__global__ void iteratePredictorFieldKernelF(bcuda::Span<const size_t> Dimensions, void* FieldFData, void* FieldBData, size_t FieldElementSize, void* KernelMLP, bcuda::Span<const size_t> HiddenWidths, bcuda::ai::activationFunction_t<float> ActivationFunc, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
+__global__ void iteratePredictorFieldKernelF(bcuda::Span<const size_t> Dimensions, void* FieldFData, void* FieldBData, size_t FieldElementSize, void* KernelMLP, bcuda::Span<const size_t> HiddenWidths, bcuda::ai::activationFunction_t<float> ActivationFunc, ptrdiff_t InputPrivateDiff, size_t InputPrivateCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
     uint32_t idx = blockIdx.x;
     size_t* pos = new size_t[Dimensions.size];
     for (size_t i = 0; i < Dimensions.size; ++i) {
@@ -61,31 +61,28 @@ __global__ void iteratePredictorFieldKernelF(bcuda::Span<const size_t> Dimension
 
     size_t thisValsIdx = getValIdx(pos);
 
-    size_t inputCount = InputThisCount + InputSharedCount * (bcuda::fields::details::AreaCountByDimension(Dimensions.size) - 1);
+    size_t inputCount = InputPrivateCount + InputSharedCount * bcuda::fields::details::AreaCountByDimension(Dimensions.size);
     float* inputs = new float[inputCount];
-    
+
     {
         float* inputsWH = inputs;
 
         {
-            void* inputsFromPast = (char*)idxToElementPtr(FieldFData, thisValsIdx) + InputThisDiff;
+            void* inputsFromPast = (char*)idxToElementPtr(FieldFData, thisValsIdx) + InputPrivateDiff;
 
-            memcpy(inputsWH, inputsFromPast, sizeof(float) * InputThisCount);
-            inputsWH += InputThisCount;
+            memcpy(inputsWH, inputsFromPast, sizeof(float) * InputPrivateCount);
+            inputsWH += InputPrivateCount;
         }
 
         size_t* coords = new size_t[Dimensions.size];
         memcpy(coords, pos, sizeof(size_t) * Dimensions.size);
 
         int32_t* offsets = new int32_t[Dimensions.size];
-        offsets[0] = 1;
-        for (size_t i = 1; i < Dimensions.size; ++i)
+        for (size_t i = 0; i < Dimensions.size; ++i)
             offsets[i] = 0;
 
-        coords[0] = decrementRoll(pos[0], Dimensions[0]);
         while (true) {
-            size_t valsIdx = getValIdx(coords);
-            void* neighborsInputs = (char*)idxToElementPtr(FieldFData, valsIdx) + InputSharedDiff;
+            void* neighborsInputs = (char*)idxToElementPtr(FieldFData, getValIdx(coords)) + InputSharedDiff;
 
             memcpy(inputsWH, neighborsInputs, sizeof(float) * InputSharedCount);
             inputsWH += InputSharedCount;
@@ -148,7 +145,7 @@ __device__ void runMlpFromDeviceNoTemplateD(void* FixedMLP, double* Inputs, doub
     runMlplFromDeviceNoTemplateD(fixedMlplInc, current, Outputs, InputCount, OutputCount, ActivationFunc);
 }
 
-__global__ void iteratePredictorFieldKernelD(bcuda::Span<const size_t> Dimensions, void* FieldFData, void* FieldBData, size_t FieldElementSize, void* KernelMLP, bcuda::Span<const size_t> HiddenWidths, bcuda::ai::activationFunction_t<double> ActivationFunc, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
+__global__ void iteratePredictorFieldKernelD(bcuda::Span<const size_t> Dimensions, void* FieldFData, void* FieldBData, size_t FieldElementSize, void* KernelMLP, bcuda::Span<const size_t> HiddenWidths, bcuda::ai::activationFunction_t<double> ActivationFunc, ptrdiff_t InputPrivateDiff, size_t InputPrivateCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
     uint32_t idx = blockIdx.x;
     size_t* pos = new size_t[Dimensions.size];
     for (size_t i = 0; i < Dimensions.size; ++i) {
@@ -163,38 +160,35 @@ __global__ void iteratePredictorFieldKernelD(bcuda::Span<const size_t> Dimension
             idx += Coords[i];
         }
         return idx;
-        };
+    };
     auto idxToElementPtr = [FieldElementSize](void* Base, size_t Idx) -> void* {
         return (char*)Base + Idx * FieldElementSize;
-        };
+    };
 
     size_t thisValsIdx = getValIdx(pos);
 
-    size_t inputCount = InputThisCount + InputSharedCount * (bcuda::fields::details::AreaCountByDimension(Dimensions.size) - 1);
+    size_t inputCount = InputPrivateCount + InputSharedCount * bcuda::fields::details::AreaCountByDimension(Dimensions.size);
     double* inputs = new double[inputCount];
 
     {
         double* inputsWH = inputs;
 
         {
-            void* inputsFromPast = (char*)idxToElementPtr(FieldFData, thisValsIdx) + InputThisDiff;
+            void* inputsFromPast = (char*)idxToElementPtr(FieldFData, thisValsIdx) + InputPrivateDiff;
 
-            memcpy(inputsWH, inputsFromPast, sizeof(double) * InputThisCount);
-            inputsWH += InputThisCount;
+            memcpy(inputsWH, inputsFromPast, sizeof(double) * InputPrivateCount);
+            inputsWH += InputPrivateCount;
         }
 
         size_t* coords = new size_t[Dimensions.size];
         memcpy(coords, pos, sizeof(size_t) * Dimensions.size);
 
         int32_t* offsets = new int32_t[Dimensions.size];
-        offsets[0] = 1;
-        for (size_t i = 1; i < Dimensions.size; ++i)
+        for (size_t i = 0; i < Dimensions.size; ++i)
             offsets[i] = 0;
 
-        coords[0] = decrementRoll(pos[0], Dimensions[0]);
         while (true) {
-            size_t valsIdx = getValIdx(coords);
-            void* neighborsInputs = (char*)idxToElementPtr(FieldFData, valsIdx) + InputSharedDiff;
+            void* neighborsInputs = (char*)idxToElementPtr(FieldFData, getValIdx(coords)) + InputSharedDiff;
 
             memcpy(inputsWH, neighborsInputs, sizeof(double) * InputSharedCount);
             inputsWH += InputSharedCount;
@@ -229,7 +223,7 @@ namespace bcuda {
     namespace fields {
         namespace details {
             template <std::floating_point _TFloat>
-            void RunKernelMLPOverDField(Span<const size_t> Dimensions, void* FieldFData, void* FieldBData, size_t FieldElementSize, void* KernelMLP, Span<const size_t> HiddenWidths, ai::activationFunction_t<_TFloat> ActivationFunc, ptrdiff_t InputThisDiff, size_t InputThisCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
+            void RunKernelMLPOverDField(Span<const size_t> Dimensions, void* FieldFData, void* FieldBData, size_t FieldElementSize, void* KernelMLP, Span<const size_t> HiddenWidths, ai::activationFunction_t<_TFloat> ActivationFunc, ptrdiff_t InputPrivateDiff, size_t InputPrivateCount, ptrdiff_t InputSharedDiff, size_t InputSharedCount, ptrdiff_t OutputDiff, size_t OutputCount) {
                 size_t* dDimsPtr;
                 bcuda::ThrowIfBad(cudaMalloc(&dDimsPtr, sizeof(size_t) * Dimensions.size));
                 bcuda::ThrowIfBad(cudaMemcpy(dDimsPtr, Dimensions.ptr, sizeof(size_t) * Dimensions.size, cudaMemcpyHostToDevice));
@@ -245,10 +239,10 @@ namespace bcuda {
                     total *= Dimensions[i];
 
                 if constexpr (std::same_as<_TFloat, float>)
-                    iteratePredictorFieldKernelF<<<total, 1>>>(dDims, FieldFData, FieldBData, FieldElementSize, KernelMLP, dHiddenWidths, ActivationFunc, InputThisDiff, InputThisCount, InputSharedDiff, InputSharedCount, OutputDiff, OutputCount);
+                    iteratePredictorFieldKernelF<<<total, 1>>>(dDims, FieldFData, FieldBData, FieldElementSize, KernelMLP, dHiddenWidths, ActivationFunc, InputPrivateDiff, InputPrivateCount, InputSharedDiff, InputSharedCount, OutputDiff, OutputCount);
                 else {
                     static_assert(std::same_as<_TFloat, double>, "_TFloat must be float or double.");
-                    iteratePredictorFieldKernelD<<<total, 1>>>(dDims, FieldFData, FieldBData, FieldElementSize, KernelMLP, dHiddenWidths, ActivationFunc, InputThisDiff, InputThisCount, InputSharedDiff, InputSharedCount, OutputDiff, OutputCount);
+                    iteratePredictorFieldKernelD<<<total, 1>>>(dDims, FieldFData, FieldBData, FieldElementSize, KernelMLP, dHiddenWidths, ActivationFunc, InputPrivateDiff, InputPrivateCount, InputSharedDiff, InputSharedCount, OutputDiff, OutputCount);
                 }
 
                 bcuda::ThrowIfBad(cudaFree(dDimsPtr));
