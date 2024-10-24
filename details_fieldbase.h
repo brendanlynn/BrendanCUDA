@@ -211,6 +211,7 @@ namespace bcuda {
 #else
                 ThrowIfBad(cudaFree(darr));
 #endif
+                darr = 0;
             }
 
             __host__ __device__ inline _T* Data() const {
