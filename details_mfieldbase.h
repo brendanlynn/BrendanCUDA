@@ -128,12 +128,14 @@ namespace bcuda {
 #pragma endregion
 
             __host__ __device__ inline void Dispose() {
-                for (size_t i = 0; i < sizeof...(_Ts); ++i)
+                for (size_t i = 0; i < sizeof...(_Ts); ++i) {
 #ifdef __CUDA_ARCH__
                     free(darrs[i]);
 #else
                     ThrowIfBad(cudaFree(darrs[i]));
 #endif
+                    darrs[i] = 0;
+                }
             }
 
             __host__ __device__ inline this_t Clone() const {

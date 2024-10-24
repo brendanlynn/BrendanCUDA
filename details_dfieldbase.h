@@ -71,6 +71,8 @@ namespace bcuda {
                 ThrowIfBad(cudaFree(darrF));
                 ThrowIfBad(cudaFree(darrB));
 #endif
+                darrF = 0;
+                darrB = 0;
             }
 
 #pragma region CpyAll
